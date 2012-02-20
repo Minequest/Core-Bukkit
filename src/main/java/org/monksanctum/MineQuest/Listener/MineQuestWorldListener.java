@@ -21,16 +21,18 @@ package org.monksanctum.MineQuest.Listener;
 
 import org.bukkit.Chunk;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
-import org.bukkit.event.world.WorldListener;
-import org.bukkit.event.world.WorldUnloadEvent;
 import org.monksanctum.MineQuest.MineQuest;
 import org.monksanctum.MineQuest.Quester.NPCQuester;
 import org.monksanctum.MineQuest.Quester.Quester;
 
-public class MineQuestWorldListener extends WorldListener{
-	@Override
+public class MineQuestWorldListener implements Listener {
+
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onChunkLoad(ChunkLoadEvent event) {
 		Chunk chunk = event.getChunk();
 		
@@ -44,7 +46,7 @@ public class MineQuestWorldListener extends WorldListener{
 		}
 	}
 	
-	@Override
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onChunkUnload(ChunkUnloadEvent event) {
 		Chunk chunk = event.getChunk();
 		
@@ -60,7 +62,6 @@ public class MineQuestWorldListener extends WorldListener{
 		MineQuest.mobHandler.unloadMobs(chunk);
 	}
 	
-	@SuppressWarnings("unused")
 	private boolean inChunk(Chunk chunk, LivingEntity entity) {
 		Chunk other = entity.getWorld().getChunkAt(entity.getLocation());
 		
@@ -73,7 +74,4 @@ public class MineQuestWorldListener extends WorldListener{
 		return false;
 	}
 
-	@Override
-	public void onWorldUnload(WorldUnloadEvent event) {
-	}
 }

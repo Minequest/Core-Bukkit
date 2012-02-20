@@ -19,20 +19,21 @@
 package org.monksanctum.MineQuest.Listener;
 
 
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockListener;
 import org.monksanctum.MineQuest.MineQuest;
 import org.monksanctum.MineQuest.Quester.Quester;
 
-public class MineQuestBlockListener extends BlockListener {
+public class MineQuestBlockListener implements Listener {
 	
 //	@Override
 //	public void onBlockInteract( event) {
 //		MineQuest.log("Block Event " + event.getBlock().getType());
 //		super.onBlockInteract(event);
 //	}
-	
-	@Override
+
+	@EventHandler
 	public void onBlockDamage(org.bukkit.event.block.BlockDamageEvent event) {
 		if (!MineQuest.isMQEnabled(event.getPlayer())) return;
 		Quester quester = MineQuest.questerHandler.getQuester(event.getPlayer());
@@ -58,7 +59,7 @@ public class MineQuestBlockListener extends BlockListener {
 		}
 	}
 	
-	@Override
+	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event) {
 		if (!MineQuest.isMQEnabled(event.getPlayer())) return;
 		Quester quester = MineQuest.questerHandler.getQuester(event.getPlayer());
@@ -114,7 +115,7 @@ public class MineQuestBlockListener extends BlockListener {
 //		super.onBlockRightClick(event);
 //	}
 	
-	@Override
+	@EventHandler
 	public void onBlockPlace(org.bukkit.event.block.BlockPlaceEvent event) {
 		if (!MineQuest.isMQEnabled(event.getPlayer())) return;
 		Quester quester = MineQuest.questerHandler.getQuester(event.getPlayer());

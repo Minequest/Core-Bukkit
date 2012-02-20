@@ -24,18 +24,19 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.World.Environment;
+import org.bukkit.WorldCreator;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -55,9 +56,9 @@ import org.monksanctum.MineQuest.Quester.SkillClass.SkillClass;
 import org.monksanctum.MineQuest.World.Property;
 import org.monksanctum.MineQuest.World.Town;
 
-public class MineQuestPlayerListener extends PlayerListener {
+public class MineQuestPlayerListener implements Listener {
 
-	@Override
+	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		if (!MineQuest.isMQEnabled(event.getPlayer())) return;
 		Quester quester = MineQuest.questerHandler.getQuester(event.getPlayer());
@@ -71,11 +72,10 @@ public class MineQuestPlayerListener extends PlayerListener {
 				quester.getChestSet().clicked(event.getPlayer(), event.getClickedBlock());
 			}
 		}
-		
-		super.onPlayerInteract(event);
+
 	}
 	
-	@Override
+	@EventHandler
 	public void onPlayerAnimation(PlayerAnimationEvent event) {
 		if (!MineQuest.isMQEnabled(event.getPlayer())) return;
 		if (event.getAnimationType() == PlayerAnimationType.ARM_SWING) {
@@ -83,19 +83,17 @@ public class MineQuestPlayerListener extends PlayerListener {
 			
 			quester.armSwing();
 		}
-		
-		super.onPlayerAnimation(event);
+
 	}
 
-	@Override
+	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent event) {
 		if (!MineQuest.isMQEnabled(event.getPlayer())) return;
 		MineQuest.questerHandler.getQuester(event.getPlayer()).setPlayer(event.getPlayer());
 		MineQuest.questerHandler.getQuester(event.getPlayer()).move(event.getFrom(), event.getTo());
-		super.onPlayerMove(event);
 	}
 
-	@Override
+	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		if (MineQuest.questerHandler.getQuester(event.getPlayer()) == null) {
 			MineQuest.questerHandler.addQuester(new Quester(event.getPlayer(), 0));
@@ -106,12 +104,13 @@ public class MineQuestPlayerListener extends PlayerListener {
 //		}
 	}
 	
-	@Override
+	@EventHandler
 	public void onPlayerTeleport(PlayerTeleportEvent event) {
 		if (!MineQuest.isMQEnabled(event.getPlayer())) return;
 		MineQuest.questerHandler.getQuester(event.getPlayer()).setPlayer(event.getPlayer());
 	}
 	
+	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		MineQuest.questerHandler.getQuester(event.getPlayer()).setPlayer(event.getPlayer());
 		if (MineQuest.questerHandler.getQuester(event.getPlayer()) != null) {
@@ -120,14 +119,14 @@ public class MineQuestPlayerListener extends PlayerListener {
 		}
 	}
 	
-	@Override
+	@EventHandler
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
 		if (!MineQuest.isMQEnabled(event.getPlayer())) return;
 		MineQuest.questerHandler.getQuester(event.getPlayer()).respawn(event);
 		MineQuest.questerHandler.getQuester(event.getPlayer()).setPlayer(event.getPlayer());
 	}
 	
-	@Override
+	@EventHandler
 	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
 		if (!MineQuest.isMQEnabled(event.getPlayer())) return;
 		MineQuest.questerHandler.getQuester(event.getPlayer()).setPlayer(event.getPlayer());
@@ -1181,7 +1180,6 @@ public class MineQuestPlayerListener extends PlayerListener {
 		return true;
 	}
 
-	@SuppressWarnings("deprecation")
 	private void processDebug(String[] split, Player player, PlayerChatEvent event) {
 		if (split[0].equals("/goto")) {
         	if (split.length < 2) {
@@ -1189,11 +1187,13 @@ public class MineQuestPlayerListener extends PlayerListener {
         	} else {
         		World world = MineQuest.getSServer().getWorld(split[1]);
         		if (world == null) {
+        			WorldCreator wc = new WorldCreator(split[1]);
         			if ((split.length < 3) || !split[2].equalsIgnoreCase("Nether")) {
-        				world = MineQuest.getSServer().createWorld(split[1], Environment.NORMAL);
+        				wc.environment(World.Environment.NORMAL);
         			} else {
-        				world = MineQuest.getSServer().createWorld(split[1], Environment.NETHER);
+        				wc.environment(World.Environment.NETHER);
         			}
+        			world = MineQuest.getSServer().createWorld(wc);
         		}
         		MineQuest.getEventQueue().addEvent(new EntityTeleportEvent(10, 
         				MineQuest.questerHandler.getQuester(player), world.getSpawnLocation()));

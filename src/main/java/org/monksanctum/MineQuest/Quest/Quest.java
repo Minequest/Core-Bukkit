@@ -33,6 +33,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
+import org.bukkit.WorldCreator;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.craftbukkit.block.CraftChest;
@@ -304,16 +305,17 @@ public class Quest {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	private void createWorld(String[] split) throws Exception {
 		if (split[0].equals("World")) {
-			World world = null;
-			if (MineQuest.getSServer().getWorld(split[1]) == null) {
+			World world = MineQuest.getSServer().getWorld(split[1]);
+			if (world == null) {
+				WorldCreator wc = new WorldCreator(split[1]);
 				if ((split.length == 2) || (split[2].equals("NORMAL"))) {
-					world = MineQuest.getSServer().createWorld(split[1], Environment.NORMAL);
+					wc.environment(World.Environment.NORMAL);
 				} else {
-					world = MineQuest.getSServer().createWorld(split[1], Environment.NETHER);
+					wc.environment(World.Environment.NETHER);
 				}
+				world = MineQuest.getSServer().createWorld(wc);
 			}
 			
 			teleport(party.getQuesterArray(), world);
@@ -323,11 +325,13 @@ public class Quest {
 				copyDirectory(new File(split[2]), new File(split[1]));
 				world = null;
 				if (MineQuest.getSServer().getWorld(split[1]) == null) {
+					WorldCreator wc = new WorldCreator(split[1]);
 					if ((split.length == 3) || (split[3].equals("NORMAL"))) {
-						world = MineQuest.getSServer().createWorld(split[1], Environment.NORMAL);
+						wc.environment(World.Environment.NORMAL);
 					} else {
-						world = MineQuest.getSServer().createWorld(split[1], Environment.NETHER);
+						wc.environment(World.Environment.NETHER);
 					}
+					world = MineQuest.getSServer().createWorld(wc);
 				}
 			} else {
 				boolean flag = false;
@@ -376,15 +380,16 @@ public class Quest {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	private void copyWorld(String orig, String cp, boolean normal) throws Exception {
 		World world = MineQuest.getSServer().getWorld(orig);
 		if (world == null) {
+			WorldCreator wc = new WorldCreator(orig);
 			if (normal) {
-				world = MineQuest.getSServer().createWorld(orig, Environment.NORMAL);
+				wc.environment(World.Environment.NORMAL);
 			} else {
-				world = MineQuest.getSServer().createWorld(orig, Environment.NETHER);
+				wc.environment(World.Environment.NETHER);
 			}
+			world = MineQuest.getSServer().createWorld(wc);
 		}
 		World copy = MineQuest.getSServer().getWorld(cp);
 

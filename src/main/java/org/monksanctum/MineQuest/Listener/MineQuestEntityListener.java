@@ -26,22 +26,24 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.EntityListener;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.monksanctum.MineQuest.MineQuest;
 import org.monksanctum.MineQuest.Mob.MQMob;
 import org.monksanctum.MineQuest.Quester.Quester;
 
-public class MineQuestEntityListener extends EntityListener {
+public class MineQuestEntityListener implements Listener {
 //	private int save_damage;
 
-	@Override
+	@EventHandler
 	public void onCreatureSpawn(CreatureSpawnEvent event) {
 		if (!MineQuest.isWorldEnabled(event.getEntity().getWorld())) return;
 		Entity entity = event.getEntity();
@@ -56,7 +58,7 @@ public class MineQuestEntityListener extends EntityListener {
 		}
 	}
 
-	@Override
+	@EventHandler
 	public void onEntityRegainHealth(EntityRegainHealthEvent event) {
 		if (!MineQuest.isWorldEnabled(event.getEntity().getWorld())) return;
 		if (event.getEntity() instanceof Player) {
@@ -67,7 +69,7 @@ public class MineQuestEntityListener extends EntityListener {
 		}
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDamage(EntityDamageEvent event) {
 		if (!MineQuest.isWorldEnabled(event.getEntity().getWorld())) return;
 		if (event.isCancelled()) return;
@@ -142,7 +144,7 @@ public class MineQuestEntityListener extends EntityListener {
         }
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityTarget(EntityTargetEvent event) {
 		if (!MineQuest.isWorldEnabled(event.getEntity().getWorld())) return;
 		if (!(event.getTarget() instanceof LivingEntity)) return;
@@ -153,7 +155,7 @@ public class MineQuestEntityListener extends EntityListener {
 		}
 	}
 	
-	@Override
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityExplode(EntityExplodeEvent event) {
 		if (event.getEntity() == null) return;
 		if (!MineQuest.isWorldEnabled(event.getEntity().getWorld())) return;
@@ -165,7 +167,7 @@ public class MineQuestEntityListener extends EntityListener {
 		}
 	}
 	
-	@Override
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDeath(EntityDeathEvent event) {
 		Entity entity = event.getEntity();
 		if (entity instanceof LivingEntity) {

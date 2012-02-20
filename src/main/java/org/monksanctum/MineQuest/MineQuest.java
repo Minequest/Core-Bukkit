@@ -37,8 +37,6 @@ import org.bukkit.World;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.Event.Priority;
 import org.bukkit.inventory.ItemStack;
 
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -811,28 +809,36 @@ public class MineQuest extends JavaPlugin {
 		
         PluginManager pm = getServer().getPluginManager();
         
-        pm.registerEvent(Event.Type.PLAYER_JOIN, pl, Priority.Normal, this);
+        pm.registerEvents(pl, this);
+/*        pm.registerEvent(Event.Type.PLAYER_JOIN, pl, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_QUIT, pl, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_COMMAND_PREPROCESS, pl, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_MOVE, pl, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_TELEPORT, pl, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_RESPAWN, pl, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_INTERACT, pl, Priority.Normal, this);
-        pm.registerEvent(Event.Type.PLAYER_ANIMATION, pl, Priority.Normal, this);
-        pm.registerEvent(Event.Type.ENTITY_COMBUST, el, Priority.Highest, this);
+        pm.registerEvent(Event.Type.PLAYER_ANIMATION, pl, Priority.Normal, this);*/
+        pm.registerEvents(el, this);
+/*        pm.registerEvent(Event.Type.ENTITY_COMBUST, el, Priority.Highest, this);
         pm.registerEvent(Event.Type.ENTITY_DAMAGE, el, Priority.Highest, this);
         pm.registerEvent(Event.Type.ENTITY_EXPLODE, el, Priority.Highest, this);
         pm.registerEvent(Event.Type.ENTITY_TARGET, el, Priority.Highest, this);
         pm.registerEvent(Event.Type.ENTITY_DEATH, el, Priority.Highest, this);
         pm.registerEvent(Event.Type.CREATURE_SPAWN, el, Priority.Normal, this);
-        pm.registerEvent(Event.Type.ENTITY_REGAIN_HEALTH, el, Priority.Normal, this);
-        pm.registerEvent(Event.Type.BLOCK_DAMAGE, bl, Priority.Normal, this);
+        pm.registerEvent(Event.Type.ENTITY_REGAIN_HEALTH, el, Priority.Normal, this);*/
+        
+        pm.registerEvents(bl,this);
+/*        pm.registerEvent(Event.Type.BLOCK_DAMAGE, bl, Priority.Normal, this);
         pm.registerEvent(Event.Type.BLOCK_PLACE, bl, Priority.Normal, this);
-        pm.registerEvent(Event.Type.BLOCK_BREAK, bl, Priority.Normal, this);
+        pm.registerEvent(Event.Type.BLOCK_BREAK, bl, Priority.Normal, this);*/
+        
  //     pm.registerEvent(Event.Type.PLUGIN_DISABLE, sl, Priority.Monitor, this);
  //     pm.registerEvent(Event.Type.PLUGIN_ENABLE, sl, Priority.Monitor, this);
-        pm.registerEvent(Event.Type.CHUNK_LOAD, wl, Priority.Monitor, this);
-        pm.registerEvent(Event.Type.CHUNK_UNLOAD, wl, Priority.Monitor, this);
+        
+        pm.registerEvents(wl, this);
+/*        pm.registerEvent(Event.Type.CHUNK_LOAD, wl, Priority.Monitor, this);
+        pm.registerEvent(Event.Type.CHUNK_UNLOAD, wl, Priority.Monitor, this);*/
+        
         System.out.println(pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!");
 		
 		if (new File("MineQuest/main.script").exists()) {
