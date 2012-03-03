@@ -1,0 +1,17 @@
+QEvents are extensions of Event for MineQuest.
+How does this work?
+
+Tasks have sets of QEvents that need to be fulfilled.
+The task will not be finished until this happens.
+
+Tasks will async-monitor to check if the task has completed.
+If it has, it will fire off ALL EVENTS with the Bukkit Event System
+for MineQuest + addons to take care of.
+
+"A task is a group of Events that will get activated when the task is issued.
+There are some Events that issue Tasks when certain things happen, and when Tasks
+are issued the activate Events. Tasks have an id (should be unique), and when Events
+that issue events are setup they must be given a Task id to activate. If the id is
+-1 then the quest is completed, and if the id is any other negative number then no
+task is issued. The task also takes a comma separated list of Event ids that should
+be activated when it is issued."
