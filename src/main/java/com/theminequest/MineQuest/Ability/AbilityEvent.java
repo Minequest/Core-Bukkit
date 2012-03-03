@@ -1,6 +1,6 @@
 package com.theminequest.MineQuest.Ability;
 
-import org.monksanctum.MineQuest.Ability.Ability;
+import com.theminequest.MineQuest.Ability.Ability;
 
 public interface AbilityEvent {
 

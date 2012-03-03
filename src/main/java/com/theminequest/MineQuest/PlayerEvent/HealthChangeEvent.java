@@ -2,7 +2,7 @@ package com.theminequest.MineQuest.PlayerEvent;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
-import org.monksanctum.MineQuest.Quest.Quest;
+import com.theminequest.MineQuest.Quest.Quest;
 
 import com.theminequest.MineQuest.QuestEvent.QuestTypicalEvent;
 
