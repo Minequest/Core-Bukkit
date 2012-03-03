@@ -2,9 +2,9 @@ package com.theminequest.MineQuest.Player;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.monksanctum.MineQuest.MineQuest;
-import org.monksanctum.MineQuest.PropertiesFile;
-import org.monksanctum.MineQuest.Quest.Quest;
+import com.theminequest.MineQuest.MineQuest;
+import com.theminequest.MineQuest.Configuration.PropertiesFile;
+import com.theminequest.MineQuest.Quest.Quest;
 
 import com.theminequest.MineQuest.PlayerEvent.ExpEvent;
 
