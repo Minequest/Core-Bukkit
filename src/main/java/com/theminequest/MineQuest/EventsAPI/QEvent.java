@@ -4,19 +4,24 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 
 import com.theminequest.MineQuest.BukkitEvents.EventCompleteEvent;
-import com.theminequest.MineQuest.Quest.Quest;
-import com.theminequest.MineQuest.Tasks.Task;
 
 public abstract class QEvent extends Event{
 
-	private Quest quest;
-	private Task task;
+	private long questid;
+	private int eventid;
 	private boolean complete;
 	
-	public QEvent(Quest q, Task t){
-		quest = q;
-		task = t;
+	/**
+	 * Initialize this QEvent with the associated Quest
+	 * @param q Associated Quest
+	 * @param e Event number
+	 * @param details Details to parse
+	 */
+	public QEvent(long q, int e, String details){
+		questid = q;
+		eventid = e;
 		complete = false;
+		parseDetails(details.split(":"));
 	}
 	
 	public void fireEvent(){
@@ -30,16 +35,29 @@ public abstract class QEvent extends Event{
 		return complete;
 	}
 	
+	/**
+	 * Parse the details given (: separated)
+	 * @param details Parameters given
+	 */
+	public abstract void parseDetails(String[] details);
+	
+	/**
+	 * Conditions for this event to be performed (and therefore complete)
+	 * @return true if all conditions are met for this event to complete
+	 */
 	public abstract boolean conditions();
 	
-	public abstract boolean action();
+	/**
+	 * Perform the event (and complete it)
+	 */
+	public abstract void action();
 	
 	public long getQuestId(){
-		return quest.getID();
+		return questid;
 	}
 	
-	public int getTaskId(){
-		return task.getTaskID();
+	public int getEventId(){
+		return eventid;
 	}
 	
 	public void complete(){
