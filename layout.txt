@@ -1,0 +1,16 @@
+Quests
+	- Tasks
+		- Events
+
+Each Quest has Tasks to complete.
+Each task has events to complete.
+Each event will do something, then complete. Or will wait on something, then complete.
+Each task will call events, wait for all of them to finish, then call other tasks
+based on that. 
+		
+Each event, on finishing, will fire a EventCompletionEvent.
+Each task, on finishing, will fire a TaskCompletionEvent.
+Each quest, on finishing, will fire a QuestCompletionEvent.
+
+Events are nothing special. They just fire off events and it's up to respective addons to use them.
+The CORE plugin should implement 

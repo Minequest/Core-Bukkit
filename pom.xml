@@ -19,11 +19,15 @@
 		</repository>
 		<repository>
 			<id>milkbowl-repo</id>
-			<url>http://ci.milkbowl.net/plugin/repository/everything/</url>
+			<url>http://ci.milkbowl.net/plugin/repository/project/Vault/LastSuccessful/repository</url>
 		</repository>
 		<repository>
 			<id>buildlincom-repo</id>
 			<url>http://build.lincomlinux.org/jenkins/plugin/repository/everything/</url>
+		</repository>
+		<repository>
+			<id>buildlincom-artifactory-remote</id>
+			<url>http://build.lincomlinux.org/artifactory/remote-repos/</url>
 		</repository>
 	</repositories>
 	<build>
@@ -43,14 +47,7 @@
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>1.1-R5-SNAPSHOT</version>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>craftbukkit</artifactId>
-			<version>1.1-R5-SNAPSHOT</version>
+			<version>1.2.2-R0.1-SNAPSHOT</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
@@ -62,7 +59,7 @@
 		<dependency>
 			<groupId>net.milkbowl.vault</groupId>
 			<artifactId>Vault</artifactId>
-			<version>1.2.9-SNAPSHOT</version>
+			<version>1.2.12-SNAPSHOT</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
