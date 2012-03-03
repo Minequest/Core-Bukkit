@@ -3,8 +3,8 @@ package com.theminequest.MineQuest.Quest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 
+import com.theminequest.MineQuest.BukkitEvents.TaskCompleteEvent;
 import com.theminequest.MineQuest.Tasks.Task;
-import com.theminequest.MineQuest.Tasks.TaskCompleteEvent;
 import com.theminequest.MineQuest.Team.Team;
 
 public class Quest {

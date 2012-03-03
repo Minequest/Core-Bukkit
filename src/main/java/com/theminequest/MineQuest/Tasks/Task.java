@@ -4,6 +4,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import com.theminequest.MineQuest.BukkitEvents.EventCompleteEvent;
+
 public abstract class Task implements Listener {
 	
 	private boolean complete;
@@ -38,6 +40,11 @@ public abstract class Task implements Listener {
 	
 	public int getTaskID(){
 		return id;
+	}
+	
+	@EventHandler
+	public void onEventComplete(EventCompleteEvent e){
+		
 	}
 
 }

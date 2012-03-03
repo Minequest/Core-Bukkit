@@ -1,4 +1,4 @@
-package com.theminequest.MineQuest.Tasks;
+package com.theminequest.MineQuest.BukkitEvents;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
