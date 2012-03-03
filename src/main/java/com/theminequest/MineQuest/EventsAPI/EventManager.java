@@ -45,12 +45,12 @@ public class EventManager {
 	/**
 	 * Retrieve a new instance of an event for use with a quest and task.
 	 * @param eventname Event to use
-	 * @param q Quest to attribute to
-	 * @param t Task to attribute to
+	 * @param q Quest ID to attribute
+	 * @param eventnum Event Number for Quest
 	 * @param d Details for use with {@link QEvent#parseDetails(String)}
 	 * @return new instance of the event requested
 	 */
-	public QEvent getNewEvent(String eventname, Quest q, Task t, String d){
+	public QEvent getNewEvent(String eventname, long q, int eventnum, String d){
 		if (!classes.containsKey(eventname))
 			return null;
 		Class<? extends QEvent> cl = classes.get(eventname);
@@ -62,7 +62,7 @@ public class EventManager {
 			return null;
 		}
 		try {
-			return (QEvent)ctor.newInstance(q,t,d);
+			return (QEvent)ctor.newInstance(q,eventnum,d);
 		} catch (Exception e){
 			return null;
 		}
