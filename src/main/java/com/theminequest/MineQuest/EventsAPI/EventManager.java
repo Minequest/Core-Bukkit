@@ -35,7 +35,7 @@ public class EventManager {
 		if (classes.containsKey(eventname) || classes.containsValue(event))
 			throw new IllegalArgumentException("We already have this class!");
 		try {
-			event.getConstructor(com.theminequest.MineQuest.Quest.Quest.class,com.theminequest.MineQuest.Tasks.Task.class,java.lang.String.class);
+			event.getConstructor(long.class,int.class,java.lang.String.class);
 		}catch (Exception e){
 			throw new IllegalArgumentException("Constructor tampered with!");
 		}
@@ -56,7 +56,7 @@ public class EventManager {
 		Class<? extends QEvent> cl = classes.get(eventname);
 		Constructor<? extends QEvent> ctor = null;
 		try {
-			ctor = cl.getConstructor(com.theminequest.MineQuest.Quest.Quest.class,com.theminequest.MineQuest.Tasks.Task.class,java.lang.String.class);
+			ctor = cl.getConstructor(long.class,int.class,java.lang.String.class);
 		} catch (NoSuchMethodException e) {
 			// we have no idea how to handle this method.
 			return null;
