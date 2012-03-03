@@ -13,14 +13,20 @@ public class EventCompleteEvent extends Event {
 	    return handlers;
 	}
 	
+	private QEvent event;
+	
 	public EventCompleteEvent(QEvent e){
-		
+		event = e;
+	}
+	
+	public QEvent getEvent(){
+		return event;
 	}
 
 	@Override
 	public HandlerList getHandlers() {
 		// TODO Auto-generated method stub
-		return null;
+		return handlers;
 	}
 
 }

@@ -3,22 +3,21 @@ package com.theminequest.MineQuest.Tasks;
 import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
-import org.bukkit.event.Event;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public abstract class RepeatingTask extends Event {
+public abstract class RepeatingTask extends Task {
 
 	public static ArrayList<RepeatingTask> events = new ArrayList<RepeatingTask>();
 	private int tasknumber;
 
-	public RepeatingTask(JavaPlugin plugin, long ticks){
-		super();
+	public RepeatingTask(JavaPlugin plugin, long ticks, long questid, int taskid){
+		super(questid, taskid);
 		events.add(this);
 		final int location = events.indexOf(this);
 		tasknumber = Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(plugin, new Runnable(){
 			@Override
 			public void run() {
-				Bukkit.getServer().getPluginManager().callEvent(RepeatingTask.events.get(location));
+				RepeatingTask.events.get(location).start();
 			}
 		}, 100L, ticks);
 	}

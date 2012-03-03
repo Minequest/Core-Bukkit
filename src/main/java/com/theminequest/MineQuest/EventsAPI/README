@@ -4,6 +4,9 @@ How does this work?
 Tasks have sets of QEvents that need to be fulfilled.
 They will fire off all QEvents with the Bukkit Event System.
 The task will not be finished until tasks have caught all EventCompletedEvents for the task.
+Then the task will fire off a TaskCompletedEvent.
+
+(Events will check for conditions...)
 
 When all events have been fired, then we can move to the next task.
 Or whatever is needed.

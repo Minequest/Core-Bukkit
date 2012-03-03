@@ -17,6 +17,10 @@ public class Quest {
 		
 	}
 	
+	public long getID(){
+		return questid;
+	}
+	
 	public Task getCurrentTask(){
 		
 	}

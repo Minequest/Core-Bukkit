@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import com.theminequest.MineQuest.BukkitEvents.EventCompleteEvent;
+import com.theminequest.MineQuest.EventsAPI.QEvent;
 
 public abstract class Task implements Listener {
 	
@@ -42,9 +43,15 @@ public abstract class Task implements Listener {
 		return id;
 	}
 	
+	public abstract void onEventCompletion(QEvent e);
+	
 	@EventHandler
 	public void onEventComplete(EventCompleteEvent e){
-		
+		if (e.getEvent().getQuestId()==questid){
+			if (e.getEvent().getTaskId()==id){
+				onEventCompletion(e.getEvent());
+			}
+		}
 	}
 
 }

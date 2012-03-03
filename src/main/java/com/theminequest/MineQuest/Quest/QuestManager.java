@@ -1,11 +1,10 @@
-package com.theminequest.MineQuest.Tasks;
+package com.theminequest.MineQuest.Quest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.entity.Player;
 
-import com.theminequest.MineQuest.Quest.Quest;
 
 public class QuestManager {
 
