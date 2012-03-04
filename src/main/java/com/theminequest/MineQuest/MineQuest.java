@@ -2,6 +2,8 @@ package com.theminequest.MineQuest;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.theminequest.MineQuest.EventsAPI.EventManager;
+
 public class MineQuest extends JavaPlugin {
 	
 	/*
@@ -10,9 +12,12 @@ public class MineQuest extends JavaPlugin {
 	 */
 	public static MineQuest activePlugin = null;
 	
+	public static EventManager eventManager = null;
+	
 	@Override
 	public void onEnable(){
 		activePlugin = this;
+		eventManager = new EventManager();
 	}
 
 	

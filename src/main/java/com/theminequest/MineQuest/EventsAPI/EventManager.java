@@ -24,7 +24,7 @@ public class EventManager {
 	 * <br>
 	 * <b>WARNING: QEvents and classes based off of it must NOT tamper
 	 * the constructor. Instead, use {@link QEvent#parseDetails(String)} to
-	 * set instance variables and conditions.
+	 * set instance variables and conditions.</b>
 	 * @param eventname Event name
 	 * @param event Class of the event (.class)
 	 */
