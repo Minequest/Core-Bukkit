@@ -5,7 +5,7 @@ import org.bukkit.block.Sign;
 
 public class QuestSign {
 	
-	public static boolean signCheck(Block block, Sign sign){
+	public static boolean signCheck(Block block){
 		if (block.getState() instanceof Sign == true){
 				return true;
 			}
@@ -22,5 +22,6 @@ public class QuestSign {
 		String[] line = sign.getLines();
 		String questName = line[2].toString();
 		return questName;
+		
 	}
 }
