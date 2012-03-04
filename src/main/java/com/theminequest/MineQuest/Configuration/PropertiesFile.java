@@ -65,6 +65,18 @@ public final class PropertiesFile {
         }catch(IOException ex) {
         }
     }
+    
+    /**
+     * Writes out the <code>key=value</code> properties that were changed into
+     * a seperate .[properties] file in UTF8.
+     */
+    public void save(File f) {
+        try {
+        props.store(new FileOutputStream(f.getAbsoluteFile()), null);
+        }catch(IOException ex) {
+        }
+    }
+
 
     /**
      * Returns a Map of all <code>key=value</code> properties in the file as <code>&lt;key (java.lang.String), value (java.lang.String)></code>

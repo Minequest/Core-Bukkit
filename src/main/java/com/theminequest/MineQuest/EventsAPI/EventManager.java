@@ -1,10 +1,7 @@
 package com.theminequest.MineQuest.EventsAPI;
 
 import java.lang.reflect.Constructor;
-import java.util.HashMap;
-
-import com.theminequest.MineQuest.Quest.Quest;
-import com.theminequest.MineQuest.Tasks.Task;
+import java.util.LinkedHashMap;
 
 /**
  * Because we don't know what classes will be available
@@ -15,10 +12,10 @@ import com.theminequest.MineQuest.Tasks.Task;
  */
 public class EventManager {
 
-	private HashMap<String,Class<? extends QEvent>> classes;
+	private LinkedHashMap<String,Class<? extends QEvent>> classes;
 
 	public EventManager(){
-		classes = new HashMap<String,Class<? extends QEvent>>();
+		classes = new LinkedHashMap<String,Class<? extends QEvent>>();
 	}
 	
 	/**

@@ -32,6 +32,7 @@ public class PlayerDetails {
 	}
 	
 	public long getQuest(){
+		playerspecs.
 		return quest;
 	}
 	

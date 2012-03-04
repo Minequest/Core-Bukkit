@@ -8,15 +8,17 @@ import com.theminequest.MineQuest.Player.PlayerManager;
 
 public class Team {
 
-	private static final int teamcapacity = 8;
+	private static final int defaultteamcapacity = 8;
 	private long teamid;
 	private ArrayList<Player> players;
+	private int capacity;
 	
 	public Team(long id, ArrayList<Player> p){
 		if (p.size()<=0)
 			throw new IllegalArgumentException("Empty Team!");
 		teamid = id;
 		players = p;
+		capacity = defaultteamcapacity;
 	}
 	
 	/*
@@ -38,8 +40,18 @@ public class Team {
 		return players.toArray(new Player[players.size()]);
 	}
 	
+	public void setCapacity(int c){
+		if (c<=0)
+			throw new IllegalArgumentException("Invalid Capacity!");
+		capacity = c;
+	}
+	
+	public int getCapacity(){
+		return capacity;
+	}
+	
 	public boolean add(Player p){
-		if (players.size()>=teamcapacity)
+		if (players.size()>=capacity)
 			return false;
 		if (players.contains(p))
 			return false;

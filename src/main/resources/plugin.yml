@@ -1,6 +1,6 @@
 name: MineQuest
-main: org.monksanctum.MineQuest.MineQuest
-version: 0.80
+main: com.theminequest.MineQuest.MineQuest
+version: 1.0.0
 author: Monk
 authors: [Echobob, Ltan, makraiz, Blaksmith]
 description: This plugin expands minecraft to add in Npcs, Quests, and custom events to create a Role-Play enviorment in Minecraft

@@ -94,7 +94,7 @@ public abstract class DatabaseHandler {
 	 * <br>
 	 * <br>
 	 */
-	abstract boolean initialize();
+	protected abstract boolean initialize();
 	
 	/**
 	 * <b>open</b><br>
@@ -104,7 +104,7 @@ public abstract class DatabaseHandler {
 	 * <br>
 	 * @return the success of the method.
 	 */
-	abstract Connection open();
+	public abstract Connection open();
 	
 	/**
 	 * <b>close</b><br>
@@ -113,7 +113,7 @@ public abstract class DatabaseHandler {
 	 * <br>
 	 * <br>
 	 */
-	abstract void close();
+	public abstract void close();
 	
 	/**
 	 * <b>getConnection</b><br>
@@ -123,7 +123,7 @@ public abstract class DatabaseHandler {
 	 * <br>
 	 * @return the <a href="http://download.oracle.com/javase/6/docs/api/java/sql/Connection.html">Connection</a> variable.
 	 */
-	abstract Connection getConnection();
+	public abstract Connection getConnection();
 	
 	/**
 	 * <b>checkConnection</b><br>
@@ -133,7 +133,7 @@ public abstract class DatabaseHandler {
 	 * <br>
 	 * @return the status of the connection, true for up, false for down.
 	 */
-	abstract boolean checkConnection();
+	public abstract boolean checkConnection();
 	
 	/**
 	 * <b>query</b><br>
@@ -143,7 +143,7 @@ public abstract class DatabaseHandler {
 	 * @param query - the SQL query to send to the database.
 	 * @return the table of results from the query.
 	 */
-	abstract ResultSet query(String query);
+	public abstract ResultSet query(String query);
 	
 	/**
 	 * <b>prepare</b><br>
@@ -153,7 +153,7 @@ public abstract class DatabaseHandler {
 	 * @param query - the SQL query to prepare to send to the database.
 	 * @return the prepared statement.
 	 */
-	abstract PreparedStatement prepare(String query);
+	public abstract PreparedStatement prepare(String query);
 	
 	/**
 	 * <b>getStatement</b><br>
@@ -204,7 +204,7 @@ public abstract class DatabaseHandler {
 	 * @param query - the SQL query for creating a table.
 	 * @return the success of the method.
 	 */
-	abstract boolean createTable(String query);
+	public abstract boolean createTable(String query);
 	
 	/**
 	 * <b>checkTable</b><br>
@@ -215,7 +215,7 @@ public abstract class DatabaseHandler {
 	 * @param table - name of the table to check.
 	 * @return success of the method.
 	 */
-	abstract boolean checkTable(String table);
+	public abstract boolean checkTable(String table);
 	
 	/**
 	 * <b>wipeTable</b><br>
@@ -226,5 +226,5 @@ public abstract class DatabaseHandler {
 	 * @param table - name of the table to wipe.
 	 * @return success of the method.
 	 */
-	abstract boolean wipeTable(String table);
+	public abstract boolean wipeTable(String table);
 }

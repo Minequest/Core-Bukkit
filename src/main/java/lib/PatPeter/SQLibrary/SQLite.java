@@ -149,7 +149,7 @@ public class SQLite extends DatabaseHandler {
 	}
 
 	@Override
-	PreparedStatement prepare(String query) {
+	public PreparedStatement prepare(String query) {
 		Connection connection = null;
 		try
 	    {

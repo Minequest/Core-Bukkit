@@ -1,5 +1,7 @@
 package com.theminequest.MineQuest.Tasks;
 
+import java.util.HashMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,12 +13,23 @@ public abstract class Task implements Listener {
 	
 	private boolean complete;
 	private long questid;
-	private int id;
+	private int taskid;
+	private HashMap<Integer,Boolean> events;
 	
-	public Task(long questid, int id){
+	/**
+	 * Task for a Quest.
+	 * @param questid Associated Quest
+	 * @param taskid Task ID
+	 * @param events Event numbers that must be completed
+	 */
+	public Task(long questid, int taskid, int[] events){
 		complete = false;
 		this.questid = questid;
-		this.id = id;
+		this.taskid = taskid;
+		this.events = new HashMap<Integer,Boolean>();
+		for (int e : events){
+			this.events.put(e, false);
+		}
 	}
 	
 	public void load(){

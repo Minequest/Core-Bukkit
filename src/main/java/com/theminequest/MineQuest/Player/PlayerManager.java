@@ -1,13 +1,12 @@
 package com.theminequest.MineQuest.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import org.bukkit.entity.Player;
 
 public class PlayerManager {
 
-	private static HashMap<Player,PlayerDetails> players = new HashMap<Player,PlayerDetails>();
+	private static LinkedHashMap<Player,PlayerDetails> players = new LinkedHashMap<Player,PlayerDetails>();
 	
 	private static void playerAcct(Player p){
 		if (!players.containsKey(p)){
