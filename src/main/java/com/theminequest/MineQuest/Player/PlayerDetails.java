@@ -47,6 +47,10 @@ public class PlayerDetails {
 		team = t;
 	}
 	
+	public void save(){
+		
+	}
+	
 	public void modifyExperienceBy(int e){
 		long currentexp = playerspecs.getLong("experience");
 		currentexp+=e;
