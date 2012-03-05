@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.Scanner;
 
 import org.bukkit.Bukkit;
@@ -26,8 +27,13 @@ public class Quest implements Listener {
 	private Team team;
 	private String questname;
 	private long questid;
+	/*
+	 * Why don't we just use <Integer,QEvent> or <Integer,Target>?
+	 * Simple. We haven't gotten to that event or target area yet ;)
+	 */
 	private ArrayList<Task> tasks;
-	private ArrayList<QEvent> events;
+	private LinkedHashMap<Integer,String> events;
+	private LinkedHashMap<Integer,TargetDetails> targets;
 	// quest configuration
 	private String displayname;
 	private boolean questRepeatable;
@@ -77,6 +83,9 @@ public class Quest implements Listener {
 			throw new RuntimeException(e);
 		}
 		
+		// sort the tasks, events, and targets in order of id.
+		// because we have absolutely 0 idea if someone would skip numbers...
+		
 		// load the world if necessary/move team to team leader
 		if (Bukkit.getWorld(world)==null)
 			Bukkit.createWorld(new WorldCreator(world));
@@ -108,6 +117,7 @@ Target:132:NPCTarget:&3Echobob,
 Edit::CanEdit::::
 Task:0:
 RepeatingTask:0:
+DisallowedAbilities:Ability,Ability2,Ability3
 	 */
 	
 	private void parseDefinition() throws FileNotFoundException {
@@ -155,34 +165,35 @@ RepeatingTask:0:
 				// I simply delete the world when done.
 			} else if (type.equals("event")){
 				int number = Integer.parseInt(ar.get(1));
-				// what is T for o.o
-				if (ar.get(2).equals("T"))
+				// T = targeted event
+				boolean targetedevent = false;
+				if (ar.get(2).equals("T")){
 					ar.remove(2);
+					targetedevent = true;
+				}
 				String eventname = ar.get(2);
 				String details = "";
+				if (targetedevent)
+					details+="T:";
 				for (int i=3; i<ar.size(); i++){
 					details+=ar.get(i);
 					if (i<ar.size()-1){
 						details+=":";
 					}
 				}
-				QEvent result = MineQuest.eventManager.getNewEvent(eventname, questid, number, details);
-				if (result!=null)
-					events.add(result);
+				events.put(number,eventname+":"+details);
+			} else if (type.equals("target")) {
+				
 			}
 		}
+	}
+	
+	public void startTask(int task){
+		
 	}
 
 	public long getID(){
 		return questid;
-	}
-	
-	public Task getCurrentTask(){
-		
-	}
-	
-	public Task[] getTasks(){
-		
 	}
 	
 	@EventHandler

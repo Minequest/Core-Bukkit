@@ -32,7 +32,6 @@ public class PlayerDetails {
 	}
 	
 	public long getQuest(){
-		playerspecs.
 		return quest;
 	}
 	
@@ -55,6 +54,11 @@ public class PlayerDetails {
 		playerspecs.save();
 		ExpEvent event = new ExpEvent(player, e);
 		Bukkit.getPluginManager().callEvent(event);
+	}
+	
+	public void modifyManaBy(int mana){
+		long currentmana = playerspecs.getLong("mana");
+		currentmana+=mana;
 	}
 
 }

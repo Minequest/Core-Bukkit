@@ -1,15 +1,16 @@
 package com.theminequest.MineQuest.EventsAPI;
 
 import org.bukkit.Bukkit;
-import org.bukkit.event.Event;
 
+import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.EventCompleteEvent;
 
-public abstract class QEvent extends Event{
+public abstract class QEvent{
 
 	private long questid;
 	private int eventid;
 	private boolean complete;
+	private int tasknumber;
 	
 	/**
 	 * Initialize this QEvent with the associated Quest
@@ -24,11 +25,20 @@ public abstract class QEvent extends Event{
 		parseDetails(details.split(":"));
 	}
 	
+	/**
+	 * Tasks call fireEvent(). Then they wait for all events to
+	 * complete, then fire off more stuff.
+	 */
 	public void fireEvent(){
-		if (conditions()){
-			action();
-			complete();
-		}
+		tasknumber = Bukkit.getScheduler().scheduleAsyncRepeatingTask(MineQuest.activePlugin, new Runnable(){
+			@Override
+			public void run() {
+				if (conditions()){
+					action();
+					complete();
+				}
+			}
+		}, 20, 100);
 	}
 	
 	public boolean isComplete(){
@@ -62,6 +72,7 @@ public abstract class QEvent extends Event{
 	
 	public void complete(){
 		complete = true;
+		Bukkit.getScheduler().cancelTask(tasknumber);
 		EventCompleteEvent e = new EventCompleteEvent(this);
 		Bukkit.getPluginManager().callEvent(e);
 	}

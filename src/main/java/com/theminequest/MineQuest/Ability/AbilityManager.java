@@ -7,9 +7,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class AbilityManager {
 	
-	private static HashMap<String,Ability> abilities = new HashMap<String,Ability>();
+	private static HashMap<String,Ability_Interface> abilities = new HashMap<String,Ability_Interface>();
 	
-	public static void registerAbility(JavaPlugin p, Ability a){
+	public static void registerAbility(JavaPlugin p, Ability_Interface a){
 		Bukkit.getPluginManager().registerEvents(a, p);
 		abilities.put(a.getName(), a);
 	}
