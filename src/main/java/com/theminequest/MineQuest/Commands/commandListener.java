@@ -1,9 +1,14 @@
 package com.theminequest.MineQuest.Commands;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import com.theminequest.MineQuest.Team.Team;
+import com.theminequest.MineQuest.Team.TeamManager;
 
 public class commandListener implements CommandExecutor{
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -18,11 +23,12 @@ public class commandListener implements CommandExecutor{
 			return true;
 		}
 		if(cmd.getName().equalsIgnoreCase("quest") && player != null){
-			sender.sendMessage("    /create_party - create a party.");
-			sender.sendMessage("    /list_party - list users in your party.");
-			sender.sendMessage("    /join_party <username> - join username's party.");
-			sender.sendMessage("    /start_quest <name of quest> - start a quest with party.");
-			sender.sendMessage("    /quit_quest - quit the instance of quest, lose current exp.");
+			sender.sendMessage("    /party create - create a party.");
+			sender.sendMessage("    /party list - list users in your party.");
+			sender.sendMessage("    /party join <username> - join username's party.");
+			sender.sendMessage("    /party quit - removes you from the party.");
+			sender.sendMessage("    /quest start <name of quest> - start a quest with party.");
+			sender.sendMessage("    /quest quit - quit the instance of quest, lose current exp.");
 			return true;
 		}
 		if(cmd.getName().equalsIgnoreCase("spell") && player != null){
@@ -44,7 +50,7 @@ public class commandListener implements CommandExecutor{
 		if(cmd.getName().equalsIgnoreCase("class") && player != null){ 
 			sender.sendMessage("    /char - Shows your level.");
 			sender.sendMessage("    /class select <Class name> - Sets your class to the given type.");
-			sender.sendMessage("    /abillist - Lists all available spells for you class.");
+			sender.sendMessage("    /spells - Lists all available spells for you class.");
 			sender.sendMessage("    /class reset - Resets character to choose a new class.");
 			sender.sendMessage("    /class reset confirm - used to confirm the reset.");
 			sender.sendMessage("    Class resets can not be undone and will reset your lvl in that class.");
@@ -58,8 +64,92 @@ public class commandListener implements CommandExecutor{
 			sender.sendMessage("    / - ");
 			return true;
 		}
-		if(cmd.getName().equalsIgnoreCase("") && player == null){
-			sender.sendMessage("This must be run by a player.");
+		if(cmd.getName().equalsIgnoreCase("char") && player !=null){
+			sender.sendMessage("Level: ");
+			//TODO: Get Class
+			//TODO: Get Class lvl
+		}
+		//Quest Core Commands
+		if(cmd.getName().startsWith("party")){
+			String partyCommand = cmd.getName().substring(7);
+			Player partyMember = Bukkit.getPlayer(sender.getName());
+			if(partyCommand == "create"){
+				TeamManager.createTeam(partyMember);
+				sender.sendMessage("CreatedParty");
+			}
+			if(partyCommand.contains("join") == true){
+				String memberTojoin = cmd.getName().substring(13);
+				//TODO:Add member to party if there is room. 
+			}
+			if(partyCommand.contains("list") == true){
+				//TODO:List party members.
+			}
+			if(partyCommand.equalsIgnoreCase("quit")){
+				//TODO:Quit Party
+			}
+		}
+		
+		if(cmd.getName().startsWith("quest")){
+			String questCommand = cmd.getName().substring(7);
+			if(questCommand.contains("start")){
+				String questName = cmd.getName().substring(12);
+				//Check if quest exists. 
+			}
+			if(questCommand.contains("quit")){
+				//Check what quest the player is currently in.
+				//Quit quest.
+			}
+		}
+		
+		//Skill Related Commands
+		if(cmd.getName().startsWith("class select") && player !=null){
+			String className = cmd.getName().substring(13);
+			String playername = sender.getName();
+			if(className.equalsIgnoreCase("warmage") == true){
+				//TODO: Set player's class to WarMage.
+			}
+			if(className.equalsIgnoreCase("peacemage") == true){
+				//TODO: Set player's class to PeaceMage.
+			}
+			if(className.equalsIgnoreCase("warrior") == true){
+				//TODO: Set player's class to Warrior.
+			}
+			if(className.equalsIgnoreCase("archer") == true){
+				//TODO: Set player's class to Archer.
+			}
+		}
+		
+		if(cmd.getName().startsWith("spells") == true){
+			String className = ""; //Get player's class
+			//TODO: Send player list of spells.
+		}
+		
+		if(cmd.getName().equalsIgnoreCase("class reset")){
+			String playerName = cmd.getName();
+			sender.sendMessage("Please type /class reset confirm");
+		}
+		
+		if(cmd.getName().equalsIgnoreCase("class reset confirm")){
+			String playerName = cmd.getName();
+			//TODO: Reset Class for player. 
+			sender.sendMessage("Reseting Character");
+			sender.sendMessage("To chose a class type /class select <class>");	
+		}
+		
+		//NPC Related Commands
+		if(cmd.getName().startsWith("npc ")){
+			String npcCommand = cmd.getName().substring(5);
+			if(npcCommand.equalsIgnoreCase("create")){
+				String npcName = cmd.getName().substring(12);
+				Location npcLocation = player.getLocation();
+				//Spawn npc at this location. 
+			}
+			
+			if(npcCommand.equalsIgnoreCase("select")){
+				String npcName = cmd.getName().substring(12);
+				//Select Npc for use with other commands.
+			}
+			
 		}
 		return false; 
 	}
