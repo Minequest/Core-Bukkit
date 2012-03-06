@@ -5,8 +5,8 @@ import org.bukkit.entity.Player;
 import com.theminequest.MineQuest.MineQuest;
 
 public class EconomyControl {
-	public boolean possible;
-	public String playerName;
+	private boolean possible;
+	private String playerName;
 	
 //Checks current players balance to make sure they have enough money.
 	private boolean hasEnough(Player player, double cost){
