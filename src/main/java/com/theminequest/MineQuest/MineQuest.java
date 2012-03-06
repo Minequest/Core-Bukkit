@@ -31,6 +31,10 @@ public class MineQuest extends JavaPlugin {
 	
     private static PluginDescriptionFile description;
     
+    public static void log(String msg){
+    	log(Level.INFO,msg);
+    }
+    
     public static void log(Level level, String msg){
    		Logger.getLogger("Minecraft").log(level, "[MineQuest] " + msg);
     }
@@ -57,10 +61,6 @@ public class MineQuest extends JavaPlugin {
             economy = economyProvider.getProvider();
         }
         return (economy != null);
-	}
-	
-	public static void log(String string) {
-		System.out.println("[MineQuest] " + string);
 	}
 
 	@Override
