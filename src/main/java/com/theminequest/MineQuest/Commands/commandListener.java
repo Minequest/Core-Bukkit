@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import com.theminequest.MineQuest.Team.Team;
 import com.theminequest.MineQuest.Team.TeamManager;
 
-public class commandListener implements CommandExecutor{
+public class CommandListener implements CommandExecutor{
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player player = null;
 		player = (Player) sender;
