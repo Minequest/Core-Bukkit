@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Scanner;
 
 import org.bukkit.Bukkit;
@@ -200,6 +201,11 @@ DisallowedAbilities:Ability,Ability2,Ability3
 	public void onTaskCompletion(TaskCompleteEvent e){
 		if (e.getQuestID()!=questid)
 			return;
+	}
+
+	public List<String> getDisallowedAbilities() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

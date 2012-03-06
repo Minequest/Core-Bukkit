@@ -1,15 +1,17 @@
 package com.theminequest.MineQuest.Ability;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerEvent;
+import org.getspout.commons.ChatColor;
 
+import com.theminequest.MineQuest.MineQuest;
+import com.theminequest.MineQuest.Player.PlayerDetails;
 import com.theminequest.MineQuest.Player.PlayerManager;
 import com.theminequest.MineQuest.Quest.QuestManager;
 
@@ -27,6 +29,12 @@ public abstract class Ability implements Listener {
 	 * @return % of total mana of a level 1 person (0-100) should be taken
 	 */
 	public abstract int getMana();
+	
+	/**
+	 * Cooldown time after using this ability, in seconds.
+	 * @return cooldown time in seconds.
+	 */
+	public abstract int getCooldown();
 	
 	/**
 	 * Abilities are listeners for all events. When an event
@@ -74,7 +82,7 @@ public abstract class Ability implements Listener {
 	public void onEventCaught(Event e){
 		String result = isRightEvent(e);
 		if (result!=null){
-			Player p = null;
+			final Player p;
 			try {
 				Method m = e.getClass().getMethod("getPlayer");
 				p = (Player) m.invoke(e);
@@ -83,9 +91,29 @@ public abstract class Ability implements Listener {
 				// or something is seriously screwed up
 				return;
 			}
-			if (questAllow(p)){
-				PlayerManager.getPlayerDetails(p).modifyManaBy(-1*getMana());
+			PlayerDetails details = PlayerManager.getPlayerDetails(p);
+			if (details.abilitiesCoolDown.containsKey(this)){
+				long currentseconds = System.currentTimeMillis()*1000;
+				long timeelapsed = currentseconds-details.abilitiesCoolDown.get(this);
+				if (timeelapsed<getCooldown()){
+					p.sendMessage(ChatColor.YELLOW+"Ability " + getName() + " is recharging... "
+							+ ChatColor.GRAY + "(" +(getCooldown()-timeelapsed)+ " s)");
+				}
+			}
+			if (details.getAbilitiesEnabled() && questAllow(p)){
+				details.modifyManaBy(-1*getMana());
 				executeEvent(result);
+				details.abilitiesCoolDown.put(this, System.currentTimeMillis()*1000);
+				final Ability a = this;
+				Bukkit.getScheduler().scheduleAsyncDelayedTask(MineQuest.activePlugin,
+						new Runnable(){
+
+							@Override
+							public void run() {
+								Bukkit.getPluginManager().callEvent(new AbilityRefreshedEvent(a,p));
+							}
+					
+				}, 20*getCooldown());
 			}
 		}
 	}

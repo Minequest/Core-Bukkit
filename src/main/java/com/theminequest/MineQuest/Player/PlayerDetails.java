@@ -1,10 +1,16 @@
 package com.theminequest.MineQuest.Player;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.Configuration.PropertiesFile;
 import com.theminequest.MineQuest.Quest.Quest;
+import com.theminequest.MineQuest.Ability.Ability;
 
 import com.theminequest.MineQuest.PlayerEvent.ExpEvent;
 
@@ -20,11 +26,16 @@ public class PlayerDetails {
 	private long team;
 	private PropertiesFile playerspecs;
 	private Player player;
+	private boolean abilitiesEnabled;
+	// >_>
+	public LinkedHashMap<Ability,Long> abilitiesCoolDown;
 
 	public PlayerDetails(Player p) {
 		quest = -1;
 		team = -1;
 		player = p;
+		abilitiesEnabled = false;
+		abilitiesCoolDown = new LinkedHashMap<Ability,Long>();
 		// get all these details...
 		playerspecs = new PropertiesFile(Bukkit.getPluginManager()
 				.getPlugin("MineQuest").getDataFolder()
@@ -49,6 +60,18 @@ public class PlayerDetails {
 	
 	public void save(){
 		
+	}
+	
+	/*
+	 * A user should be able to toggle ability use on/off
+	 * with a command, like /ability on/off?
+	 */
+	public boolean getAbilitiesEnabled(){
+		return abilitiesEnabled;
+	}
+	
+	public void setAbilitiesEnabled(boolean b){
+		abilitiesEnabled = b;
 	}
 	
 	public void modifyExperienceBy(int e){

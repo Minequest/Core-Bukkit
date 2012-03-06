@@ -15,7 +15,7 @@ public class QuestWorldManip {
 	
 	public static World copyWorld(World w) throws IOException{
 		String newname = "mqinstance_"+randGen.nextLong();
-		FileUtils.copyDirectory(w.getWorldFolder(), new File(newname), true);
+		FileUtils.copyDirectory(w.getWorldFolder(), new File(newname));
 		
 		WorldCreator tmp = new WorldCreator("mqinstance_"+randGen.nextLong());
 		tmp.copy(w);
