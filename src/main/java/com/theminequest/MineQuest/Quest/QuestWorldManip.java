@@ -14,10 +14,15 @@ public class QuestWorldManip {
 	private static Random randGen = new Random();
 	
 	public static World copyWorld(World w) throws IOException{
-		String newname = "mqinstance_"+randGen.nextLong();
-		FileUtils.copyDirectory(w.getWorldFolder(), new File(newname));
+		String newname;
+		File newdirectory;
+		do {
+			newname = "mqinstance_"+randGen.nextLong();
+			newdirectory = new File(newname);
+		}while (newdirectory.exists());
+		FileUtils.copyDirectory(w.getWorldFolder(), newdirectory);
 		
-		WorldCreator tmp = new WorldCreator("mqinstance_"+randGen.nextLong());
+		WorldCreator tmp = new WorldCreator(newname);
 		tmp.copy(w);
 		return Bukkit.createWorld(tmp);
 	}
