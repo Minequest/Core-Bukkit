@@ -77,8 +77,9 @@ public class CommandListener implements CommandExecutor{
 				TeamManager.createTeam(partyMember);
 				sender.sendMessage("CreatedParty");
 			}
-			if(partyCommand.contains("join") == true){
-				String memberTojoin = cmd.getName().substring(13);
+			if(partyCommand.contains("invite") == true){
+				String memberToInvite = cmd.getName().substring(13);
+				
 				//TODO:Add member to party if there is room. 
 			}
 			if(partyCommand.contains("list") == true){
