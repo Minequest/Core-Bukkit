@@ -65,7 +65,7 @@ public abstract class Ability implements Listener {
 	 * @param p Player Name
 	 */
 	public boolean questAllow(Player p){
-		long currentquest = PlayerManager.getPlayerDetails(p).getQuest();
+		long currentquest = MineQuest.playerManager.getPlayerDetails(p).getQuest();
 		// outside the quest, of course you can use abilities
 		if (currentquest==-1)
 			return true;

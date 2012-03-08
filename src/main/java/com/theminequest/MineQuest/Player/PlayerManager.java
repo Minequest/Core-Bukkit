@@ -11,31 +11,35 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerManager implements Listener {
 
-	private static LinkedHashMap<Player,PlayerDetails> players = new LinkedHashMap<Player,PlayerDetails>();
+	private LinkedHashMap<Player,PlayerDetails> players;
 	
-	private static void playerAcct(Player p){
+	public PlayerManager(){
+		 players = new LinkedHashMap<Player,PlayerDetails>();
+	}
+	
+	private void playerAcct(Player p){
 		if (!players.containsKey(p)){
 			players.put(p,new PlayerDetails(p));
 		}
 	}
 	
-	public static PlayerDetails getPlayerDetails(Player p){
+	public PlayerDetails getPlayerDetails(Player p){
 		playerAcct(p);
 		return players.get(p);
 	}
 	
 	@EventHandler
-	public static void onPlayerJoin(PlayerJoinEvent e){
+	public void onPlayerJoin(PlayerJoinEvent e){
 		playerAcct(e.getPlayer());
 	}
 	
 	@EventHandler
-	public static void onPlayerQuit(PlayerQuitEvent e){
+	public void onPlayerQuit(PlayerQuitEvent e){
 		getPlayerDetails(e.getPlayer()).save();
 	}
 	
 	@EventHandler
-	public static void onPlayerKick(PlayerKickEvent e){
+	public void onPlayerKick(PlayerKickEvent e){
 		getPlayerDetails(e.getPlayer()).save();
 	}
 	

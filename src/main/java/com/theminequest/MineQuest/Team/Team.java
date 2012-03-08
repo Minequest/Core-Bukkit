@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.bukkit.entity.Player;
 
+import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.Player.PlayerManager;
 
 public class Team {
@@ -50,14 +51,18 @@ public class Team {
 		return capacity;
 	}
 	
+	public boolean contains(Player p){
+		return players.contains(p);
+	}
+	
 	public boolean add(Player p){
 		if (players.size()>=capacity)
 			return false;
 		if (players.contains(p))
 			return false;
-		if (PlayerManager.getPlayerDetails(p).getTeam()!=-1)
+		if (MineQuest.playerManager.getPlayerDetails(p).getTeam()!=-1)
 			return false;
-		PlayerManager.getPlayerDetails(p).setTeam(teamid);
+		MineQuest.playerManager.getPlayerDetails(p).setTeam(teamid);
 		players.add(p);
 		return true;
 	}
@@ -65,12 +70,10 @@ public class Team {
 	public boolean remove(Player p){
 		if (!players.contains(p))
 			return false;
-		if (PlayerManager.getPlayerDetails(p).getTeam()==-1)
+		if (MineQuest.playerManager.getPlayerDetails(p).getTeam()==-1)
 			return false;
-		PlayerManager.getPlayerDetails(p).setTeam(-1);
+		MineQuest.playerManager.getPlayerDetails(p).setTeam(-1);
 		players.remove(p);
-		if (players.size()<=0)
-			TeamManager.removeTeam(teamid);
 		return true;
 	}
 	
