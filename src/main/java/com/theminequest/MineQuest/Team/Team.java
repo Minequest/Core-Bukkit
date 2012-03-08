@@ -13,7 +13,7 @@ public class Team {
 	private ArrayList<Player> players;
 	private int capacity;
 	
-	public Team(long id, ArrayList<Player> p){
+	protected Team(long id, ArrayList<Player> p){
 		if (p.size()<=0)
 			throw new IllegalArgumentException("Empty Team!");
 		teamid = id;

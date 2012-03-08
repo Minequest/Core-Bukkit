@@ -98,12 +98,14 @@ public abstract class Ability implements Listener {
 				if (timeelapsed<getCooldown()){
 					p.sendMessage(ChatColor.YELLOW+"Ability " + getName() + " is recharging... "
 							+ ChatColor.GRAY + "(" +(getCooldown()-timeelapsed)+ " s)");
+					return;
 				}
 			}
 			if (details.getAbilitiesEnabled() && questAllow(p)){
 				details.modifyManaBy(-1*getMana());
 				executeEvent(result);
 				details.abilitiesCoolDown.put(this, System.currentTimeMillis()*1000);
+				p.sendMessage(ChatColor.GREY + "Used ability " + getName() + ".");
 				final Ability a = this;
 				Bukkit.getScheduler().scheduleAsyncDelayedTask(MineQuest.activePlugin,
 						new Runnable(){

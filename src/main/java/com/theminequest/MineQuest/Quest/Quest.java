@@ -51,7 +51,7 @@ public class Quest implements Listener {
 	private String world;
 	private boolean loadworld;
 
-	public Quest(long questid, String id, Team t) {
+	protected Quest(long questid, String id, Team t) {
 		team = t;
 		questname = id;
 		this.questid = questid;
