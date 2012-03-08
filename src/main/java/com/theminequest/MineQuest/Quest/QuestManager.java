@@ -5,26 +5,39 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
+import com.theminequest.MineQuest.BukkitEvents.TaskCompleteEvent;
 import com.theminequest.MineQuest.Team.Team;
 
 
-public class QuestManager {
+public class QuestManager implements Listener {
 
-	private static LinkedHashMap<Long,Quest> quests = new LinkedHashMap<Long,Quest>();
-	private static long questid = 0;
+	private LinkedHashMap<Long,Quest> quests;
+	private long questid;
 	
-	public static long startQuest(String id, Team t){
+	public QuestManager(){
+		quests = new LinkedHashMap<Long,Quest>();
+		questid = 0;
+	}
+	
+	public long startQuest(String id, Team t){
 		quests.put(questid,new Quest(questid,id,t));
 		long thisquestid = questid;
 		questid++;
 		return thisquestid;
 	}
 
-	public static Quest getQuest(long currentquest) {
+	public Quest getQuest(long currentquest) {
 		if (quests.containsKey(currentquest))
 			return quests.get(currentquest);
 		return null;
+	}
+	
+	@EventHandler
+	public void taskCompletion(TaskCompleteEvent e){
+		getQuest(e.getQuestID()).onTaskCompletion(e);
 	}
 	
 }

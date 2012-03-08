@@ -10,8 +10,11 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.theminequest.MineQuest.Ability.AbilityManager;
 import com.theminequest.MineQuest.Configuration.QuestConfig;
 import com.theminequest.MineQuest.EventsAPI.EventManager;
+import com.theminequest.MineQuest.Quest.QuestManager;
+import com.theminequest.MineQuest.Tasks.TaskManager;
 
 public class MineQuest extends JavaPlugin {
 	
@@ -25,7 +28,13 @@ public class MineQuest extends JavaPlugin {
 	
 	public static MineQuest activePlugin = null;
 	
+	public static AbilityManager abilityManager = null;
+	
 	public static EventManager eventManager = null;
+	
+	public static TaskManager taskManager = null;
+	
+	public static QuestManager questManager = null;
 	
 	public static QuestConfig configuration = null;
 	
@@ -66,7 +75,12 @@ public class MineQuest extends JavaPlugin {
 	@Override
 	public void onEnable(){
 		activePlugin = this;
+		abilityManager = new AbilityManager();
 		eventManager = new EventManager();
+		taskManager = new TaskManager();
+		getServer().getPluginManager().registerEvents(taskManager, this);
+		questManager = new QuestManager();
+		getServer().getPluginManager().registerEvents(questManager, this);
 		configuration = new QuestConfig();
 	}	
 	

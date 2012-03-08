@@ -70,7 +70,7 @@ public abstract class Ability implements Listener {
 		if (currentquest==-1)
 			return true;
 		// inside the quest...
-		List<String> abilities = QuestManager.getQuest(currentquest).getDisallowedAbilities();
+		List<String> abilities = MineQuest.questManager.getQuest(currentquest).getDisallowedAbilities();
 		for (String s : abilities){
 			if (s.equalsIgnoreCase(getName()))
 				return false;
@@ -105,7 +105,7 @@ public abstract class Ability implements Listener {
 				details.modifyManaBy(-1*getMana());
 				executeEvent(result);
 				details.abilitiesCoolDown.put(this, System.currentTimeMillis()*1000);
-				p.sendMessage(ChatColor.GREY + "Used ability " + getName() + ".");
+				p.sendMessage(ChatColor.GRAY + "Used ability " + getName() + ".");
 				final Ability a = this;
 				Bukkit.getScheduler().scheduleAsyncDelayedTask(MineQuest.activePlugin,
 						new Runnable(){

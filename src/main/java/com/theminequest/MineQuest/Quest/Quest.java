@@ -24,7 +24,7 @@ import com.theminequest.MineQuest.EventsAPI.QEvent;
 import com.theminequest.MineQuest.Tasks.Task;
 import com.theminequest.MineQuest.Team.Team;
 
-public class Quest implements Listener {
+public class Quest {
 	
 	private Team team;
 	private String questname;
@@ -221,7 +221,7 @@ DisallowedAbilities:Ability,Ability2,Ability3
 		return questid;
 	}
 	
-	@EventHandler
+	// passed in from QuestManager
 	public void onTaskCompletion(TaskCompleteEvent e){
 		if (e.getQuestID()!=questid)
 			return;

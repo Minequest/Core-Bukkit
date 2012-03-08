@@ -34,7 +34,7 @@ public abstract class Task {
 	
 	public void start(){
 		for (Integer eventid : events.keySet()){
-			String eventdesc = QuestManager.getQuest(questid).getEventDesc(eventid);
+			String eventdesc = MineQuest.questManager.getQuest(questid).getEventDesc(eventid);
 			String[] details = eventdesc.split(":");
 			String eventname = details[0];
 			String passind = "";
