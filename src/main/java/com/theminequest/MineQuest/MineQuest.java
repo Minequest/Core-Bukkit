@@ -86,6 +86,6 @@ public class MineQuest extends JavaPlugin {
 	
 	@Override
 	public void onDisable(){
-		
+		// null out all static variables.
 	}
 }
