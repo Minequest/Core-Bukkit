@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -32,7 +33,8 @@ public class Quest implements Listener {
 	 * Why don't we just use <Integer,QEvent> or <Integer,Target>?
 	 * Simple. We haven't gotten to that event or target area yet ;)
 	 */
-	private ArrayList<Task> tasks;
+	// always <ID #,OBJECT/DETAILS>
+	private LinkedHashMap<Integer,Task> tasks;
 	private LinkedHashMap<Integer,String> events;
 	private LinkedHashMap<Integer,TargetDetails> targets;
 	// quest configuration
@@ -182,6 +184,7 @@ DisallowedAbilities:Ability,Ability2,Ability3
 						details+=":";
 					}
 				}
+				// final result: "eventname:T:details"
 				events.put(number,eventname+":"+details);
 			} else if (type.equals("target")) {
 				
@@ -189,8 +192,29 @@ DisallowedAbilities:Ability,Ability2,Ability3
 		}
 	}
 	
+	/**
+	 * Get all possible events
+	 * @return all possible events (# association)
+	 */
+	public Set<Integer> getEventNums(){
+		return events.keySet();
+	}
+	
+	/**
+	 * 
+	 * @param eventid
+	 * @return the string description of the event; null if not found.
+	 */
+	public String getEventDesc(int eventid){
+		return events.get(eventid);
+	}
+	
 	public void startTask(int task){
 		
+	}
+	
+	public Task getTask(int id){
+		return tasks.get(id);
 	}
 
 	public long getID(){

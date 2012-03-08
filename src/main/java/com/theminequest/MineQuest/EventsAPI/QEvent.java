@@ -3,6 +3,7 @@ package com.theminequest.MineQuest.EventsAPI;
 import org.bukkit.Bukkit;
 
 import com.theminequest.MineQuest.MineQuest;
+import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.BukkitEvents.EventCompleteEvent;
 
 public abstract class QEvent{
@@ -34,8 +35,7 @@ public abstract class QEvent{
 			@Override
 			public void run() {
 				if (conditions()){
-					action();
-					complete();
+					complete(action());
 				}
 			}
 		}, 20, 100);
@@ -58,9 +58,11 @@ public abstract class QEvent{
 	public abstract boolean conditions();
 	
 	/**
-	 * Perform the event (and complete it)
+	 * Perform the event (and complete it, returning true if successful,
+	 * false if not. Remember that failing an event fails the whole task,
+	 * and possible the whole mission.)
 	 */
-	public abstract void action();
+	public abstract boolean action();
 	
 	public long getQuestId(){
 		return questid;
@@ -70,10 +72,19 @@ public abstract class QEvent{
 		return eventid;
 	}
 	
-	public void complete(){
+	public int getTaskId(){
+		return tasknumber;
+	}
+	
+	public void complete(boolean actionresult){
 		complete = true;
 		Bukkit.getScheduler().cancelTask(tasknumber);
-		EventCompleteEvent e = new EventCompleteEvent(this);
+		CompleteStatus c = CompleteStatus.IGNORE;
+		if (actionresult)
+			c = CompleteStatus.SUCCESS;
+		else
+			c = CompleteStatus.FAILURE;
+		EventCompleteEvent e = new EventCompleteEvent(this,c);
 		Bukkit.getPluginManager().callEvent(e);
 	}
 	

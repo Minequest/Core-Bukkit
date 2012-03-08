@@ -5,11 +5,17 @@ import org.bukkit.event.HandlerList;
 
 public class TaskCompleteEvent extends Event {
 
+	private static final HandlerList handlers = new HandlerList();
+	
+	public static HandlerList getHandlerList() {
+	    return handlers;
+	}
+	
 	private long questid;
 	private int id;
-	private int result;
+	private CompleteStatus result;
 	
-	public TaskCompleteEvent(long questid, int id, int result) {
+	public TaskCompleteEvent(long questid, int id, CompleteStatus t) {
 		this.questid = questid;
 		this.id = id;
 		this.result = result;
@@ -23,14 +29,13 @@ public class TaskCompleteEvent extends Event {
 		return id;
 	}
 	
-	public int getResult(){
+	public CompleteStatus getResult(){
 		return result;
 	}
 
 	@Override
 	public HandlerList getHandlers() {
-		// TODO Auto-generated method stub
-		return null;
+		return handlers;
 	}
 
 }

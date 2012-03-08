@@ -14,18 +14,23 @@ public class EventCompleteEvent extends Event {
 	}
 	
 	private QEvent event;
+	private CompleteStatus status;
 	
-	public EventCompleteEvent(QEvent e){
+	public EventCompleteEvent(QEvent e, CompleteStatus c){
 		event = e;
+		status = c;
 	}
 	
 	public QEvent getEvent(){
 		return event;
 	}
+	
+	public CompleteStatus getCompleteStatus(){
+		return status;
+	}
 
 	@Override
 	public HandlerList getHandlers() {
-		// TODO Auto-generated method stub
 		return handlers;
 	}
 
