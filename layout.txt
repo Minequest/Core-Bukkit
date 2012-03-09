@@ -13,4 +13,5 @@ Each task, on finishing, will fire a TaskCompletionEvent.
 Each quest, on finishing, will fire a QuestCompletionEvent.
 
 Events are nothing special. They just fire off events and it's up to respective addons to use them.
-The CORE plugin should implement 
+The CORE plugin should not implement Events or Abilities.
+(See Minequest-1-Events and Minequest-1-Abilities)
