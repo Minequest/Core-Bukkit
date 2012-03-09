@@ -3,6 +3,7 @@ package com.theminequest.MineQuest.Ability;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -19,7 +20,6 @@ public class AbilityManager implements Listener {
 	}
 	
 	public void registerAbility(Ability a){
-		Bukkit.getPluginManager().registerEvents(a, MineQuest.activePlugin);
 		abilities.put(a.getName(), a);
 	}
 
@@ -27,5 +27,12 @@ public class AbilityManager implements Listener {
 	public void abilityRefreshed(AbilityRefreshedEvent e){
 		e.getPlayer().sendMessage(
 				ChatColor.GRAY+"Ability " + e.getAbility().getName() + " recharged!");
+	}
+	
+	@EventHandler
+	public void eventForAbility(Event e){
+		for (Ability a : abilities.values()){
+			a.onEventCaught(e);
+		}
 	}
 }

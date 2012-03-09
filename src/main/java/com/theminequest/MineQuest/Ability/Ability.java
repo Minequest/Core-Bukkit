@@ -15,7 +15,7 @@ import com.theminequest.MineQuest.Player.PlayerDetails;
 import com.theminequest.MineQuest.Player.PlayerManager;
 import com.theminequest.MineQuest.Quest.QuestManager;
 
-public abstract class Ability implements Listener {
+public abstract class Ability {
 	
 	/**
 	 * Give this ability a name, please?
@@ -78,8 +78,7 @@ public abstract class Ability implements Listener {
 		return true;
 	}
 	
-	@EventHandler
-	public void onEventCaught(Event e){
+	protected void onEventCaught(Event e){
 		String result = isRightEvent(e);
 		if (result!=null){
 			final Player p;
@@ -91,7 +90,7 @@ public abstract class Ability implements Listener {
 				// or something is seriously screwed up
 				return;
 			}
-			PlayerDetails details = PlayerManager.getPlayerDetails(p);
+			PlayerDetails details = MineQuest.playerManager.getPlayerDetails(p);
 			if (details.abilitiesCoolDown.containsKey(this)){
 				long currentseconds = System.currentTimeMillis()*1000;
 				long timeelapsed = currentseconds-details.abilitiesCoolDown.get(this);
