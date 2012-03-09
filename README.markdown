@@ -30,3 +30,5 @@ Eclipse has some handy guides to using m2e - Google is your friend.
 Please follow the general Java coding standards.
 
 Feel free to fork and submit pull requests to this repository. Please remember that by submitting your code you hereby release it under the project's license.
+
+Abilities and Events do **not** go in this repository; see _Minequest-1-Events_ and _Minequest-1-Abilities_.    
