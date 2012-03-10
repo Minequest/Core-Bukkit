@@ -10,7 +10,7 @@ public abstract class QEvent{
 
 	private long questid;
 	private int eventid;
-	private boolean complete;
+	private CompleteStatus complete;
 	private int tasknumber;
 	
 	/**
@@ -22,7 +22,7 @@ public abstract class QEvent{
 	public QEvent(long q, int e, String details){
 		questid = q;
 		eventid = e;
-		complete = false;
+		complete = null;
 		parseDetails(details.split(":"));
 	}
 	
@@ -30,7 +30,7 @@ public abstract class QEvent{
 	 * Tasks call fireEvent(). Then they wait for all events to
 	 * complete, then fire off more stuff.
 	 */
-	public void fireEvent(){
+	public final void fireEvent(){
 		tasknumber = Bukkit.getScheduler().scheduleAsyncRepeatingTask(MineQuest.activePlugin, new Runnable(){
 			@Override
 			public void run() {
@@ -41,7 +41,12 @@ public abstract class QEvent{
 		}, 20, 100);
 	}
 	
-	public boolean isComplete(){
+	/**
+	 * Returns the status of this event.
+	 * @return Respective status, or <code>null</code> if it has
+	 * not been declared yet.
+	 */
+	public final CompleteStatus isComplete(){
 		return complete;
 	}
 	
@@ -59,31 +64,42 @@ public abstract class QEvent{
 	
 	/**
 	 * Perform the event (and complete it, returning true if successful,
-	 * false if not. Remember that failing an event fails the whole task,
-	 * and possible the whole mission.)
+	 * false if not, and null to ignore it completely. Remember that failing
+	 * an event fails the whole task, and possibly the whole mission.)
+	 * @return the event action result: <b>TRUE</b> and <b>FALSE</b>
+	 * are successful and failure statuses respectively; while passing
+	 * in <code>null</code> will return a ignore status.
 	 */
-	public abstract boolean action();
+	public abstract Boolean action();
 	
-	public long getQuestId(){
+	public final long getQuestId(){
 		return questid;
 	}
 	
-	public int getEventId(){
+	public final int getEventId(){
 		return eventid;
 	}
 	
-	public int getTaskId(){
+	public final int getTaskId(){
 		return tasknumber;
 	}
 	
-	public void complete(boolean actionresult){
-		complete = true;
+	/**
+	 * Notify that the event has been completed with the status given.
+	 * @param actionresult Status to pass in. <b>TRUE</b> and <b>FALSE</b>
+	 * are successful and failure statuses respectively; while passing
+	 * in <code>null</code> will return a ignore status.
+	 */
+	public void complete(Boolean actionresult){
 		Bukkit.getScheduler().cancelTask(tasknumber);
 		CompleteStatus c = CompleteStatus.IGNORE;
-		if (actionresult)
-			c = CompleteStatus.SUCCESS;
-		else
-			c = CompleteStatus.FAILURE;
+		if (actionresult!=null){
+			if (actionresult==true)
+				c = CompleteStatus.SUCCESS;
+			else
+				c = CompleteStatus.FAILURE;
+		}
+		complete = c;
 		EventCompleteEvent e = new EventCompleteEvent(this,c);
 		Bukkit.getPluginManager().callEvent(e);
 	}

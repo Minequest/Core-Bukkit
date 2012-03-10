@@ -3,12 +3,16 @@ package com.theminequest.MineQuest.Quest;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -29,14 +33,15 @@ public class Quest {
 	private Team team;
 	private String questname;
 	private long questid;
-	/*
-	 * Why don't we just use <Integer,QEvent> or <Integer,Target>?
-	 * Simple. We haven't gotten to that event or target area yet ;)
-	 */
+
 	// always <ID #,OBJECT/DETAILS>
-	private LinkedHashMap<Integer,Task> tasks;
-	private LinkedHashMap<Integer,String> events;
-	private LinkedHashMap<Integer,TargetDetails> targets;
+	// TreeMap guarantees key order.
+	// (yes, treemap is RESOURCE intensive D:,
+	// but I have to combine it with LinkedHashMap to ensure there
+	// will be no duplicates)
+	private TreeMap<Integer,Task> tasks;
+	private TreeMap<Integer,String> events;
+	private TreeMap<Integer,TargetDetails> targets;
 	// quest configuration
 	private String displayname;
 	private boolean questRepeatable;
@@ -124,6 +129,9 @@ DisallowedAbilities:Ability,Ability2,Ability3
 	 */
 	
 	private void parseDefinition() throws FileNotFoundException {
+		LinkedHashMap<Integer,Task> tasks = new LinkedHashMap<Integer,Task>();
+		LinkedHashMap<Integer,String> events = new LinkedHashMap<Integer,String>();
+		LinkedHashMap<Integer,TargetDetails> targets = new LinkedHashMap<Integer,TargetDetails>();
 		File f = new File(MineQuest.activePlugin.getDataFolder()+File.separator+"quests"+File.separator+questname+".quest");
 		Scanner filereader = new Scanner(f);
 		while (filereader.hasNextLine()){
@@ -190,6 +198,9 @@ DisallowedAbilities:Ability,Ability2,Ability3
 				
 			}
 		}
+		this.tasks = new TreeMap<Integer,Task>(tasks);
+		this.events = new TreeMap<Integer,String>(events);
+		this.targets = new TreeMap<Integer,TargetDetails>(targets);
 	}
 	
 	/**
