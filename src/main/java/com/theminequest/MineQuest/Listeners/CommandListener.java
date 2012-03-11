@@ -1,4 +1,4 @@
-package com.theminequest.MineQuest.Commands;
+package com.theminequest.MineQuest.Listeners;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -74,7 +74,7 @@ public class CommandListener implements CommandExecutor{
 			String partyCommand = cmd.getName().substring(7);
 			Player partyMember = Bukkit.getPlayer(sender.getName());
 			if(partyCommand == "create"){
-				TeamManager.createTeam(partyMember);
+				
 				sender.sendMessage("CreatedParty");
 			}
 			if(partyCommand.contains("invite") == true){
