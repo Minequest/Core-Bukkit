@@ -2,6 +2,7 @@ package com.theminequest.MineQuest.Team;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -50,7 +51,7 @@ public class TeamManager implements Listener{
 	
 	public void removeTeam(long id){
 		Team t = teams.get(id);
-		Player[] members = t.getPlayers();
+		List<Player> members = t.getPlayers();
 		for (Player p : members)
 			removePlayerFromTeam(p);
 		teams.remove(id);

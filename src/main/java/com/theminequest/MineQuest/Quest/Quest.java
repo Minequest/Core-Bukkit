@@ -25,6 +25,7 @@ import org.bukkit.event.Listener;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.TaskCompleteEvent;
 import com.theminequest.MineQuest.EventsAPI.QEvent;
+import com.theminequest.MineQuest.Target.TargetDetails;
 import com.theminequest.MineQuest.Tasks.Task;
 import com.theminequest.MineQuest.Team.Team;
 
@@ -230,6 +231,23 @@ DisallowedAbilities:Ability,Ability2,Ability3
 
 	public long getID(){
 		return questid;
+	}
+	
+	public String getWorld(){
+		return world;
+	}
+	
+	/**
+	 * Retrieve the target specification.
+	 * @param id target ID
+	 * @return specification, or <code>null</code> if there is no such target id.
+	 */
+	public TargetDetails getTarget(int id){
+		return targets.get(id);
+	}
+	
+	public Team getTeam(){
+		return team;
 	}
 	
 	// passed in from QuestManager

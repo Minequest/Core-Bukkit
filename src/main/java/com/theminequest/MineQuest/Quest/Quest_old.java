@@ -82,6 +82,8 @@ import org.monksanctum.MineQuest.Quester.NPCMode;
 import org.monksanctum.MineQuest.Quester.NPCQuester;
 import org.monksanctum.MineQuest.Quester.Quester;
 
+import com.theminequest.MineQuest.Target.Target;
+
 public class Quest_old {
 	private List<Quester> questers;
 	private List<QuestTask> tasks;

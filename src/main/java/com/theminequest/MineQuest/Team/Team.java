@@ -1,6 +1,7 @@
 package com.theminequest.MineQuest.Team;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.entity.Player;
 
@@ -37,8 +38,8 @@ public class Team {
 		players.add(0, p);
 	}
 	
-	public Player[] getPlayers(){
-		return players.toArray(new Player[players.size()]);
+	public List<Player> getPlayers(){
+		return players;
 	}
 	
 	public void setCapacity(int c){
