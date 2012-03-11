@@ -67,6 +67,23 @@ public class TargetManager {
 		return list;
 	}
 	
+	/*
+	 * eventid1:eventid2:etc...
+	 */
+	private static List<LivingEntity> targetter(TargetDetails t){
+		String[] ids = t.getDetails().split(":");
+		List<LivingEntity> toreturn = new ArrayList<LivingEntity>();
+		for (String id : ids){
+			int i = Integer.parseInt(id);
+			Quest q = MineQuest.questManager.getQuest(t.getQuest());
+			// getEvent
+			// event instanceof AreaEvent {
+			// getEntities... add them to global toreturn
+			// }
+		}
+		return toreturn;
+	}
+	
 	private static List<LivingEntity> getEntitiesAroundRadius(Location l, double radius){
 		List<LivingEntity> toreturn = new ArrayList<LivingEntity>();
 		List<LivingEntity> entities = l.getWorld().getLivingEntities();
