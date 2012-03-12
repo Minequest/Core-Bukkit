@@ -74,13 +74,13 @@ public class EventManager {
 	}
 
 	/**
-	 * Check if the eventname implements an interface.
+	 * Check if the event implements an interface.
 	 * 
 	 * @param eventname
 	 *            Event to check
 	 * @param interfaze
 	 *            Interface to check
-	 * @return true if thie event does implement the specified interface
+	 * @return true if this event does implement the specified interface
 	 */
 	public boolean hasInterface(String eventname, String interfaze) {
 		if (!classes.containsKey(eventname))

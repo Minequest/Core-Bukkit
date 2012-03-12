@@ -2,6 +2,6 @@ package com.theminequest.MineQuest.BukkitEvents;
 
 public enum CompleteStatus {
 
-	SUCCESS,FAILURE,IGNORE;
+	SUCCESS,FAILURE,IGNORE,CANCELED;
 	
 }

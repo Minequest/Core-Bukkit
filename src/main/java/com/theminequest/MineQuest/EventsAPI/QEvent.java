@@ -66,11 +66,9 @@ public abstract class QEvent{
 	 * Perform the event (and complete it, returning true if successful,
 	 * false if not, and null to ignore it completely. Remember that failing
 	 * an event fails the whole task, and possibly the whole mission.)
-	 * @return the event action result: <b>TRUE</b> and <b>FALSE</b>
-	 * are successful and failure statuses respectively; while passing
-	 * in <code>null</code> will return a ignore status.
+	 * @return the event action result
 	 */
-	public abstract Boolean action();
+	public abstract CompleteStatus action();
 	
 	public final long getQuestId(){
 		return questid;
@@ -86,19 +84,10 @@ public abstract class QEvent{
 	
 	/**
 	 * Notify that the event has been completed with the status given.
-	 * @param actionresult Status to pass in. <b>TRUE</b> and <b>FALSE</b>
-	 * are successful and failure statuses respectively; while passing
-	 * in <code>null</code> will return a ignore status.
+	 * @param actionresult Status to pass in.
 	 */
-	public void complete(Boolean actionresult){
+	public void complete(CompleteStatus c){
 		Bukkit.getScheduler().cancelTask(tasknumber);
-		CompleteStatus c = CompleteStatus.IGNORE;
-		if (actionresult!=null){
-			if (actionresult==true)
-				c = CompleteStatus.SUCCESS;
-			else
-				c = CompleteStatus.FAILURE;
-		}
 		complete = c;
 		EventCompleteEvent e = new EventCompleteEvent(this,c);
 		Bukkit.getPluginManager().callEvent(e);

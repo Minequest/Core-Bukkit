@@ -1,6 +1,8 @@
 package com.theminequest.MineQuest.Tasks;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import com.theminequest.MineQuest.MineQuest;
@@ -15,6 +17,7 @@ public abstract class Task {
 	private long questid;
 	private int taskid;
 	private LinkedHashMap<Integer,Boolean> events;
+	private List<QEvent> objects;
 	
 	/**
 	 * Task for a Quest.
@@ -30,6 +33,7 @@ public abstract class Task {
 		for (int e : events){
 			this.events.put(e, false);
 		}
+		this.objects = new ArrayList<QEvent>();
 	}
 	
 	public void start(){
@@ -44,13 +48,17 @@ public abstract class Task {
 			if (e==null)
 				// invalid event.
 				events.remove(eventid);
+			e.fireEvent();
+			objects.add(e);
 		}
 	}
 	
-	public void finishEvent(int eventid, boolean hasFailed){
+	public void finishEvent(int eventid, CompleteStatus completeStatus ){
 		if (!complete && events.containsKey(eventid) && !events.get(eventid)){
 			events.put(eventid, true);
-			if (hasFailed){
+			if (completeStatus==CompleteStatus.FAILURE){
+				for (QEvent event : objects)
+					event.complete(CompleteStatus.CANCELED);
 				complete = true;
 				TaskCompleteEvent e = new TaskCompleteEvent(questid,taskid,CompleteStatus.FAILURE);
 				Bukkit.getPluginManager().callEvent(e);
@@ -79,6 +87,10 @@ public abstract class Task {
 	
 	public int getTaskID(){
 		return taskid;
+	}
+	
+	public List<QEvent> getEventsRunning(){
+		return objects;
 	}
 
 }

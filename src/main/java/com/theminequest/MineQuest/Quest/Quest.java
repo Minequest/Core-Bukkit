@@ -30,19 +30,21 @@ import com.theminequest.MineQuest.Tasks.Task;
 import com.theminequest.MineQuest.Team.Team;
 
 public class Quest {
-	
+
 	private Team team;
 	private String questname;
 	private long questid;
+	private boolean started;
+	private int currenttask;
 
 	// always <ID #,OBJECT/DETAILS>
 	// TreeMap guarantees key order.
 	// (yes, treemap is RESOURCE intensive D:,
 	// but I have to combine it with LinkedHashMap to ensure there
 	// will be no duplicates)
-	private TreeMap<Integer,Task> tasks;
-	private TreeMap<Integer,String> events;
-	private TreeMap<Integer,TargetDetails> targets;
+	private TreeMap<Integer, Task> tasks;
+	private TreeMap<Integer, String> events;
+	private TreeMap<Integer, TargetDetails> targets;
 	// quest configuration
 	private String displayname;
 	private boolean questRepeatable;
@@ -63,16 +65,18 @@ public class Quest {
 		team = t;
 		questname = id;
 		this.questid = questid;
+		started = false;
+		currenttask = -1;
 		// DEFAULTS start
 		displayname = questname;
 		questRepeatable = false;
 		spawnReset = true;
-		
+
 		spawnPoint = new double[3];
 		spawnPoint[0] = 0;
 		spawnPoint[1] = 64;
 		spawnPoint[2] = 0;
-		
+
 		areaPreserve = new double[6];
 		areaPreserve[0] = 0;
 		areaPreserve[1] = 64;
@@ -80,79 +84,71 @@ public class Quest {
 		areaPreserve[3] = 0;
 		areaPreserve[4] = 64;
 		areaPreserve[5] = 0;
-		
+
 		editMessage = ChatColor.GRAY + "You cannot edit inside a quest.";
 		world = t.getLeader().getWorld().getName();
 		loadworld = false;
-		
+
 		// DEFAULTS end
 		try {
 			parseDefinition();
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);
 		}
-		
+
 		// sort the tasks, events, and targets in order of id.
 		// because we have absolutely 0 idea if someone would skip numbers...
-		
+
 		// load the world if necessary/move team to team leader
-		if (Bukkit.getWorld(world)==null)
+		if (Bukkit.getWorld(world) == null)
 			Bukkit.createWorld(new WorldCreator(world));
-		if (loadworld){
+		if (loadworld) {
 			try {
-				world = QuestWorldManip.copyWorld(Bukkit.getWorld(world)).getName();
+				world = QuestWorldManip.copyWorld(Bukkit.getWorld(world))
+						.getName();
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
 		}
 	}
-	
+
 	/*
-	 * Name:dsafasdf
-Repeatable:true
-Reset:true
-Spawn:0:64:0
-AreaPreserve:10:10:10:30:30:30
-EditMessage:Eeek! No editing!
-NPC:&3Echobob:0:64:0:0:0
-NPCV:&4DrEeeevil:5:64:5:0:0
-World:fadsf
-LoadWorld::
-Instance:::
-QuestArea::::::
-Event:3:T:StartQuest::5:
-Event:2:T:NPCPropertyEvent:::
-Target:132:NPCTarget:&3Echobob,
-Edit::CanEdit::::
-Task:0:
-RepeatingTask:0:
-DisallowedAbilities:Ability,Ability2,Ability3
+	 * Name:dsafasdf Repeatable:true Reset:true Spawn:0:64:0
+	 * AreaPreserve:10:10:10:30:30:30 EditMessage:Eeek! No editing!
+	 * NPC:&3Echobob:0:64:0:0:0 NPCV:&4DrEeeevil:5:64:5:0:0 World:fadsf
+	 * LoadWorld:: Instance::: QuestArea:::::: Event:3:T:StartQuest::5:
+	 * Event:2:T:NPCPropertyEvent::: Target:132:NPCTarget:&3Echobob,
+	 * Edit::CanEdit:::: Task:0: RepeatingTask:0:
+	 * DisallowedAbilities:Ability,Ability2,Ability3
 	 */
-	
+
 	private void parseDefinition() throws FileNotFoundException {
-		LinkedHashMap<Integer,Task> tasks = new LinkedHashMap<Integer,Task>();
-		LinkedHashMap<Integer,String> events = new LinkedHashMap<Integer,String>();
-		LinkedHashMap<Integer,TargetDetails> targets = new LinkedHashMap<Integer,TargetDetails>();
-		File f = new File(MineQuest.activePlugin.getDataFolder()+File.separator+"quests"+File.separator+questname+".quest");
+		LinkedHashMap<Integer, Task> tasks = new LinkedHashMap<Integer, Task>();
+		LinkedHashMap<Integer, String> events = new LinkedHashMap<Integer, String>();
+		LinkedHashMap<Integer, TargetDetails> targets = new LinkedHashMap<Integer, TargetDetails>();
+		File f = new File(MineQuest.activePlugin.getDataFolder()
+				+ File.separator + "quests" + File.separator + questname
+				+ ".quest");
 		Scanner filereader = new Scanner(f);
-		while (filereader.hasNextLine()){
+		while (filereader.hasNextLine()) {
 			String nextline = filereader.nextLine();
-			ArrayList<String> ar = (ArrayList<String>) Arrays.asList(nextline.split(":"));
+			ArrayList<String> ar = (ArrayList<String>) Arrays.asList(nextline
+					.split(":"));
 			String type = ar.get(0).toLowerCase();
 			if (type.equals("name"))
-				displayname = ar.get(1);				
+				displayname = ar.get(1);
 			else if (type.equals("repeatable"))
 				questRepeatable = (ar.get(1).equals("true"));
 			else if (type.equals("reset"))
 				spawnReset = (ar.get(1).equals("true"));
-			else if (type.equals("spawn")){
+			else if (type.equals("spawn")) {
 				if (!ar.get(1).equals(""))
 					spawnPoint[0] = Double.parseDouble(ar.get(1));
 				if (!ar.get(2).equals(""))
 					spawnPoint[1] = Double.parseDouble(ar.get(2));
 				if (!ar.get(3).equals(""))
 					spawnPoint[2] = Double.parseDouble(ar.get(3));
-			} else if (type.equals("areapreserve")){
+			} else if (type.equals("areapreserve")) {
 				if (!ar.get(1).equals(""))
 					areaPreserve[0] = Double.parseDouble(ar.get(1));
 				if (!ar.get(2).equals(""))
@@ -166,93 +162,121 @@ DisallowedAbilities:Ability,Ability2,Ability3
 				if (!ar.get(6).equals(""))
 					areaPreserve[5] = Double.parseDouble(ar.get(6));
 			} else if (type.equals("editmessage"))
-				editMessage = ChatColor.GRAY+ar.get(1);
+				editMessage = ChatColor.GRAY + ar.get(1);
 			else if (type.equals("world"))
 				world = ar.get(1);
-			else if (type.equals("loadworld")){
+			else if (type.equals("loadworld")) {
 				// I say YES to instances.
 				loadworld = true;
 				world = ar.get(2);
 				// I do NOT care about QuestArea, because
 				// I simply delete the world when done.
-			} else if (type.equals("event")){
+			} else if (type.equals("event")) {
 				int number = Integer.parseInt(ar.get(1));
 				// T = targeted event
 				boolean targetedevent = false;
-				if (ar.get(2).equals("T")){
+				if (ar.get(2).equals("T")) {
 					ar.remove(2);
 					targetedevent = true;
 				}
 				String eventname = ar.get(2);
 				String details = "";
 				if (targetedevent)
-					details+="T:";
-				for (int i=3; i<ar.size(); i++){
-					details+=ar.get(i);
-					if (i<ar.size()-1){
-						details+=":";
+					details += "T:";
+				for (int i = 3; i < ar.size(); i++) {
+					details += ar.get(i);
+					if (i < ar.size() - 1) {
+						details += ":";
 					}
 				}
 				// final result: "eventname:T:details"
-				events.put(number,eventname+":"+details);
+				events.put(number, eventname + ":" + details);
 			} else if (type.equals("target")) {
-				
+
 			}
 		}
-		this.tasks = new TreeMap<Integer,Task>(tasks);
-		this.events = new TreeMap<Integer,String>(events);
-		this.targets = new TreeMap<Integer,TargetDetails>(targets);
+		this.tasks = new TreeMap<Integer, Task>(tasks);
+		this.events = new TreeMap<Integer, String>(events);
+		this.targets = new TreeMap<Integer, TargetDetails>(targets);
 	}
-	
+
 	/**
 	 * Get all possible events
+	 * 
 	 * @return all possible events (# association)
 	 */
-	public Set<Integer> getEventNums(){
+	public Set<Integer> getEventNums() {
 		return events.keySet();
 	}
-	
+
 	/**
 	 * 
 	 * @param eventid
 	 * @return the string description of the event; null if not found.
 	 */
-	public String getEventDesc(int eventid){
+	public String getEventDesc(int eventid) {
 		return events.get(eventid);
 	}
 	
-	public void startTask(int task){
-		
-	}
-	
-	public Task getTask(int id){
-		return tasks.get(id);
-	}
-
-	public long getID(){
-		return questid;
-	}
-	
-	public String getWorld(){
-		return world;
+	/**
+	 * Start the Quest. Launches each task in an asynchronous thread.
+	 */
+	public void startQuest(){
+		int firsttask = tasks.firstKey();
 	}
 	
 	/**
-	 * Retrieve the target specification.
-	 * @param id target ID
-	 * @return specification, or <code>null</code> if there is no such target id.
+	 * Start a task of the quest.
+	 * @param taskid task to start
+	 * @return true if task was started successfully
 	 */
-	public TargetDetails getTarget(int id){
+	public boolean startTask(int taskid){
+		if (!tasks.containsKey(taskid))
+			return false;
+		currenttask = taskid;
+		tasks.get(taskid).start();
+		return true;
+	}
+	
+	/**
+	 * Retrieve the current task ID.
+	 * @return Current Task ID, or <code>-1</code> if none is running.
+	 */
+	public int getCurrentTaskID(){
+		return currenttask;
+	}
+
+	public Task getTask(int id) {
+		return tasks.get(id);
+	}
+
+	public long getID() {
+		return questid;
+	}
+
+	public String getWorld() {
+		return world;
+	}
+
+	/**
+	 * Retrieve the target specification.
+	 * 
+	 * @param id
+	 *            target ID
+	 * @return specification, or <code>null</code> if there is no such target
+	 *         id.
+	 */
+	public TargetDetails getTarget(int id) {
 		return targets.get(id);
 	}
-	
-	public Team getTeam(){
+
+	public Team getTeam() {
 		return team;
 	}
-	
+
 	// passed in from QuestManager
-	public void onTaskCompletion(TaskCompleteEvent e){
-		if (e.getQuestID()!=questid)
+	public void onTaskCompletion(TaskCompleteEvent e) {
+		if (e.getQuestID() != questid)
 			return;
 	}
 

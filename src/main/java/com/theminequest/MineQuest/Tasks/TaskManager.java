@@ -16,7 +16,7 @@ public class TaskManager implements Listener {
 		long questid = e.getEvent().getQuestId();
 		Quest q = MineQuest.questManager.getQuest(questid);
 		Task t = q.getTask(e.getEvent().getTaskId());
-		t.finishEvent(e.getEvent().getEventId(),(e.getCompleteStatus()==CompleteStatus.FAILURE));
+		t.finishEvent(e.getEvent().getEventId(),(e.getCompleteStatus()));
 	}
 
 }
