@@ -19,67 +19,61 @@ import com.theminequest.MineQuest.Tasks.TaskManager;
 import com.theminequest.MineQuest.Team.TeamManager;
 
 public class MineQuest extends JavaPlugin {
-	
+
 	/*
-	 * I NEED IT >_<
-	 * But we could use Bukkit.getPluginManager().getPlugin("MineQuest")...
+	 * I NEED IT >_< But we could use
+	 * Bukkit.getPluginManager().getPlugin("MineQuest")...
 	 */
 	public static Permission permission = null;
-	
 	public static Economy economy = null;
-	
 	public static MineQuest activePlugin = null;
-	
 	public static AbilityManager abilityManager = null;
-	
 	public static EventManager eventManager = null;
-	
 	public static TaskManager taskManager = null;
-	
 	public static QuestManager questManager = null;
-	
 	public static PlayerManager playerManager = null;
-	
 	public static TeamManager teamManager = null;
-	
 	public static QuestConfig configuration = null;
-	
-    private static PluginDescriptionFile description;
-    
-    public static void log(String msg){
-    	log(Level.INFO,msg);
-    }
-    
-    public static void log(Level level, String msg){
-   		Logger.getLogger("Minecraft").log(level, "[MineQuest] " + msg);
-    }
-    
-    public static String getVersion() {
-        return description.getVersion();
-    }
+	private static PluginDescriptionFile description;
 
-    public static String getPluginName() {
-        return description.getName();
-    }
-    
-    public Boolean setupPermissions(){
-		RegisteredServiceProvider<Permission> permissionProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
+	public static void log(String msg) {
+		log(Level.INFO, msg);
+	}
+
+	public static void log(Level level, String msg) {
+		Logger.getLogger("Minecraft").log(level, "[MineQuest] " + msg);
+	}
+
+	public static String getVersion() {
+		return description.getVersion();
+	}
+
+	public static String getPluginName() {
+		return description.getName();
+	}
+
+	private boolean setupPermissions() {
+		RegisteredServiceProvider<Permission> permissionProvider = getServer()
+				.getServicesManager().getRegistration(
+						net.milkbowl.vault.permission.Permission.class);
 		if (permissionProvider != null) {
-	    	 permission = permissionProvider.getProvider();
-	     }
-	     return (permission != null);
-    }
+			permission = permissionProvider.getProvider();
+		}
+		return (permission != null);
+	}
 
-	public Boolean setupEconomy(){
-        RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
-        if (economyProvider != null){
-            economy = economyProvider.getProvider();
-        }
-        return (economy != null);
+	private boolean setupEconomy() {
+		RegisteredServiceProvider<Economy> economyProvider = getServer()
+				.getServicesManager().getRegistration(
+						net.milkbowl.vault.economy.Economy.class);
+		if (economyProvider != null) {
+			economy = economyProvider.getProvider();
+		}
+		return (economy != null);
 	}
 
 	@Override
-	public void onEnable(){
+	public void onEnable() {
 		activePlugin = this;
 		abilityManager = new AbilityManager();
 		getServer().getPluginManager().registerEvents(abilityManager, this);
@@ -93,10 +87,14 @@ public class MineQuest extends JavaPlugin {
 		teamManager = new TeamManager();
 		getServer().getPluginManager().registerEvents(teamManager, this);
 		configuration = new QuestConfig();
-	}	
-	
+		if (!setupPermissions())
+			log(Level.SEVERE,"Permissions could not be setup!");
+		if (!setupEconomy())
+			log(Level.SEVERE,"Economy could not be setup!");
+	}
+
 	@Override
-	public void onDisable(){
+	public void onDisable() {
 		// null out all static variables.
 	}
 }
