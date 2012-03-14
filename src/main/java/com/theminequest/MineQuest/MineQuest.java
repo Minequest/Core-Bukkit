@@ -10,7 +10,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.theminequest.MineQuest.Ability.AbilityManager;
+import com.theminequest.MineQuest.AbilityAPI.AbilityManager;
 import com.theminequest.MineQuest.Configuration.QuestConfig;
 import com.theminequest.MineQuest.EventsAPI.EventManager;
 import com.theminequest.MineQuest.Player.PlayerManager;

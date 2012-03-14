@@ -1,4 +1,4 @@
-package com.theminequest.MineQuest.Ability;
+package com.theminequest.MineQuest.AbilityAPI;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;

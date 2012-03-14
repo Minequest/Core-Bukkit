@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.Configuration.PropertiesFile;
 import com.theminequest.MineQuest.Quest.Quest;
-import com.theminequest.MineQuest.Ability.Ability;
+import com.theminequest.MineQuest.AbilityAPI.Ability;
 
 import com.theminequest.MineQuest.PlayerEvent.ExpEvent;
 
