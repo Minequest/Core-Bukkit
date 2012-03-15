@@ -26,6 +26,8 @@ public class TargetManager {
 			return areaTargetQuester(t);
 		else if (t.getType() == TargetType.TEAMTARGET)
 			return partyTarget(t);
+		else if (t.getType() == TargetType.TARGETTER)
+			return targetter(t);
 		return null;
 	}
 
