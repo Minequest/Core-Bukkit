@@ -14,16 +14,8 @@
 		<repository>
 			<id>spout-repo</id>
 			<name>Spout API</name>
-			<url>http://nexus.getspout.org/content/groups/public/</url>
+			<url>http://nexus.spout.org/content/groups/public/</url>
 			<layout>default</layout>
-		</repository>
-		<repository>
-			<id>milkbowl-repo</id>
-			<url>http://ci.milkbowl.net/plugin/repository/project/Vault/LastSuccessful/repository</url>
-		</repository>
-		<repository>
-			<id>buildlincom-repo</id>
-			<url>http://build.lincomlinux.org/jenkins/plugin/repository/everything/</url>
 		</repository>
 		<repository>
 			<id>buildlincom-artifactory-remote</id>
@@ -31,6 +23,7 @@
 		</repository>
 	</repositories>
 	<build>
+		<finalName>MineQuest</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -59,9 +52,9 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>net.milkbowl</groupId>
+			<groupId>net.milkbowl.vault</groupId>
 			<artifactId>Vault</artifactId>
-			<version>1.2.12-SNAPSHOT</version>
+			<version>1.2.13-SNAPSHOT</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
