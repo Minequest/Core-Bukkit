@@ -54,6 +54,7 @@ public class MySQL extends DatabaseHandler {
 			this.log.info(this.PREFIX + this.DATABASE_PREFIX + toWrite);
 		}
 	}
+	*/
 	
 	@Override
 	public void writeError(String toWrite, boolean severe) {
@@ -64,7 +65,7 @@ public class MySQL extends DatabaseHandler {
 				this.log.warning(this.PREFIX + this.DATABASE_PREFIX + toWrite);
 			}
 		}
-	}*/
+	}
 	
 	@Override
 	protected boolean initialize() {
@@ -157,6 +158,47 @@ public class MySQL extends DatabaseHandler {
 				this.writeError("Error in SQL prepare() query: " + e.getMessage(), false);
 		}
 		return ps;
+	}
+	
+	public void insertQuery(String query) {
+		try {
+			Connection connection = getConnection();
+		    Statement statement = connection.createStatement();
+		    statement.executeUpdate(query); 
+		} 
+		
+		catch (SQLException ex) {
+				if (!ex.toString().contains("not return ResultSet")) writeError("Error at SQL INSERT Query: " + ex, false);
+		}
+	}
+	
+	public void updateQuery(String query)  {
+		try {
+			Connection connection = getConnection();
+		    Statement statement = connection.createStatement();
+
+		    statement.executeUpdate(query);
+		}
+		
+		catch (SQLException ex) {
+
+				if (!ex.toString().contains("not return ResultSet")) writeError("Error at SQL UPDATE Query: " + ex, false);
+
+		}
+	}
+
+	public void deleteQuery(String query) {
+		try {
+			Connection connection = getConnection();
+		    Statement statement = connection.createStatement();
+		    statement.executeUpdate(query);
+		} 
+		
+		catch (SQLException ex) {
+
+				if (!ex.toString().contains("not return ResultSet")) writeError("Error at SQL DELETE Query: " + ex, false);
+
+		}
 	}
 	
 	@Override
