@@ -2,6 +2,8 @@ package com.theminequest.MineQuest.SQLCore;
 
 import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
+
 import lib.PatPeter.SQLibrary.*;
 
 public class CreateSQLFile {
@@ -23,7 +25,7 @@ public class CreateSQLFile {
 			return true;
 		}
 		if(config == "SQLite"){
-			sqlite = new SQLite(log, "lib.PatPeter.SQLibrary", "Minequest", "URL");
+			sqlite = new SQLite(log, "lib.PatPeter.SQLibrary", "Minequest", Bukkit.getPluginManager().getPlugin("Minequest").getDataFolder().getPath());
 		}
 		return false;
 	}
