@@ -1,5 +1,6 @@
 package com.theminequest.MineQuest.Player;
 
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -11,8 +12,8 @@ import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.PropertiesFile;
 import com.theminequest.MineQuest.Quest.Quest;
 import com.theminequest.MineQuest.AbilityAPI.Ability;
-
-import com.theminequest.MineQuest.PlayerEvent.ExpEvent;
+import com.theminequest.MineQuest.BukkitEvents.PlayerExperienceEvent;
+import com.theminequest.MineQuest.BukkitEvents.PlayerManaEvent;
 
 /**
  * Extra details about the Player
@@ -24,11 +25,13 @@ public class PlayerDetails {
 
 	private long quest;
 	private long team;
-	private PropertiesFile playerspecs;
 	private Player player;
 	private boolean abilitiesEnabled;
 	// >_>
 	public LinkedHashMap<Ability,Long> abilitiesCoolDown;
+	// player properties
+	private long experience;
+	private long mana;
 
 	public PlayerDetails(Player p) {
 		quest = -1;
@@ -36,10 +39,14 @@ public class PlayerDetails {
 		player = p;
 		abilitiesEnabled = false;
 		abilitiesCoolDown = new LinkedHashMap<Ability,Long>();
-		// get all these details...
-		playerspecs = new PropertiesFile(Bukkit.getPluginManager()
-				.getPlugin("MineQuest").getDataFolder()
-				+ "/players/" + p.getName() + ".properties");
+		// check for player existence in DB.
+		// if player does not, add.
+		
+		// now get player Experience
+		
+		// and now get player Mana
+		
+		// and feel happeh.
 	}
 	
 	public long getQuest(){
@@ -75,17 +82,22 @@ public class PlayerDetails {
 	}
 	
 	public void modifyExperienceBy(int e){
-		long currentexp = playerspecs.getLong("experience");
+		// TODO STUB
+		long currentexp = 0;
 		currentexp+=e;
-		playerspecs.setLong("experience", currentexp);
-		playerspecs.save();
-		ExpEvent event = new ExpEvent(player, e);
+		PlayerExperienceEvent event = new PlayerExperienceEvent(player, e);
 		Bukkit.getPluginManager().callEvent(event);
 	}
 	
 	public void modifyManaBy(int mana){
-		long currentmana = playerspecs.getLong("mana");
+		// TODO STUB
+		long currentmana = 0;
 		currentmana+=mana;
+		PlayerManaEvent event = new PlayerManaEvent(player,mana);
+		Bukkit.getPluginManager().callEvent(event);
+		if (event.isCancelled())
+			currentmana-=mana;
+		
 	}
 
 }

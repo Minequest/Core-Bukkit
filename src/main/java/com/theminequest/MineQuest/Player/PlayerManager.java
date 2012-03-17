@@ -2,6 +2,7 @@ package com.theminequest.MineQuest.Player;
 
 import java.util.LinkedHashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -9,12 +10,25 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import com.theminequest.MineQuest.MineQuest;
+
 public class PlayerManager implements Listener {
 
 	private LinkedHashMap<Player,PlayerDetails> players;
 	
 	public PlayerManager(){
 		 players = new LinkedHashMap<Player,PlayerDetails>();
+		 // mana +1 every 5 seconds.
+		 Bukkit.getScheduler().scheduleSyncRepeatingTask(MineQuest.activePlugin, new Runnable(){
+
+			@Override
+			public void run() {
+				for (Player p : Bukkit.getOnlinePlayers()){
+					MineQuest.playerManager.getPlayerDetails(p).modifyManaBy(1);
+				}
+			}
+			 
+		 }, 300, 100);
 	}
 	
 	private void playerAcct(Player p){
