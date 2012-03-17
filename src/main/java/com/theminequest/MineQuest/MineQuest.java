@@ -11,7 +11,6 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.theminequest.MineQuest.AbilityAPI.AbilityManager;
-import com.theminequest.MineQuest.Configuration.QuestConfig;
 import com.theminequest.MineQuest.EventsAPI.EventManager;
 import com.theminequest.MineQuest.Player.PlayerManager;
 import com.theminequest.MineQuest.Quest.QuestManager;
@@ -34,6 +33,7 @@ public class MineQuest extends JavaPlugin {
 	public static PlayerManager playerManager = null;
 	public static TeamManager teamManager = null;
 	public static QuestConfig configuration = null;
+	public static SQLExecutor sqlstorage = null;
 	private static PluginDescriptionFile description;
 
 	public static void log(String msg) {
@@ -87,6 +87,7 @@ public class MineQuest extends JavaPlugin {
 		teamManager = new TeamManager();
 		getServer().getPluginManager().registerEvents(teamManager, this);
 		configuration = new QuestConfig();
+		sqlstorage = new SQLExecutor();
 		if (!setupPermissions())
 			log(Level.SEVERE,"Permissions could not be setup!");
 		if (!setupEconomy())

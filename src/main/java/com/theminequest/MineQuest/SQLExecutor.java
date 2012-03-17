@@ -15,11 +15,9 @@ import lib.PatPeter.SQLibrary.SQLite;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.theminequest.MineQuest.Configuration.PropertiesFile;
 
 public class SQLExecutor {
 	
-	private JavaPlugin plugin;
 	private enum Mode{
 		MySQL, SQlite;
 	}
@@ -27,9 +25,8 @@ public class SQLExecutor {
 	private DatabaseHandler db;
 	private File datafolder;
 	
-	public SQLExecutor(JavaPlugin p){
-		plugin = p;
-		PropertiesFile config = new PropertiesFile(p.getDataFolder()+File.separator+"config.properties");
+	public SQLExecutor(){
+		PropertiesFile config = MineQuest.configuration.getMainConfig();
 		String dbtype = config.getString("databasetype");
 		if (dbtype.equalsIgnoreCase("mysql"))
 			databasetype = Mode.MySQL;
@@ -43,8 +40,8 @@ public class SQLExecutor {
 		if (databasetype == Mode.MySQL)
 			db = new MySQL(Logger.getLogger("Minecraft"),"mq_",hostname,port,databasename,username,password);
 		else
-			db = new SQLite(Logger.getLogger("Minecraft"),"mq_","minequest",plugin.getDataFolder().getAbsolutePath());
-		datafolder = new File(p.getDataFolder()+File.separator+"sql");
+			db = new SQLite(Logger.getLogger("Minecraft"),"mq_","minequest",MineQuest.activePlugin.getDataFolder().getAbsolutePath());
+		datafolder = new File(MineQuest.activePlugin.getDataFolder().getAbsolutePath()+File.separator+"sql");
 		checkInitialization();
 	}
 

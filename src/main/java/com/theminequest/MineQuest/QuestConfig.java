@@ -1,11 +1,10 @@
-package com.theminequest.MineQuest.Configuration;
+package com.theminequest.MineQuest;
 
 import java.io.File;
 import java.util.logging.Level;
 
 import lib.PatPeter.SQLibrary.DatabaseHandler;
 
-import com.theminequest.MineQuest.MineQuest;
 
 public final class QuestConfig {
 
@@ -25,6 +24,10 @@ public final class QuestConfig {
 	
 	public enum Main {
 		
+	}
+
+	public PropertiesFile getMainConfig() {
+		return mainConfig;
 	}
 	
 }
