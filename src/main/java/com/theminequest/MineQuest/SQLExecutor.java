@@ -79,7 +79,8 @@ public class SQLExecutor {
 	/**
 	 * Query an SQL and return a {@link java.sql.ResultSet} of the result.
 	 * If the SQL file contains {@code %s} in the query, the parameters
-	 * specified will replace {@code %s} in the query.
+	 * specified will replace {@code %s} in the query. Remember that if the query
+	 * is not a {@code SELECT} query, this will ALWAYS return null.
 	 * @param queryfilename sql filename to use
 	 * @param params parameters for sql file
 	 * @return ResultSet of SQL query (or null... if there really is nothing good.)
