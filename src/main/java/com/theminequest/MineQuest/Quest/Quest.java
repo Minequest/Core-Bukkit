@@ -24,6 +24,7 @@ import org.bukkit.event.Listener;
 
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.TaskCompleteEvent;
+import com.theminequest.MineQuest.Editable.Edit;
 import com.theminequest.MineQuest.EventsAPI.QEvent;
 import com.theminequest.MineQuest.Target.TargetDetails;
 import com.theminequest.MineQuest.Tasks.Task;
@@ -45,6 +46,7 @@ public class Quest {
 	private TreeMap<Integer, Task> tasks;
 	private TreeMap<Integer, String> events;
 	private TreeMap<Integer, TargetDetails> targets;
+	private TreeMap<Integer, Edit> editables;
 	// quest configuration
 	private String displayname;
 	private boolean questRepeatable;
@@ -226,6 +228,14 @@ public class Quest {
 	}
 	
 	/**
+	 * Get the "YOU CAN'T EDIT THIS PLACE" message...
+	 * @return cannot edit message
+	 */
+	public String getEditMessage(){
+		return editMessage;
+	}
+	
+	/**
 	 * Start a task of the quest.
 	 * @param taskid task to start
 	 * @return true if task was started successfully
@@ -256,6 +266,10 @@ public class Quest {
 
 	public String getWorld() {
 		return world;
+	}
+	
+	public void switchTaskTo(int taskid){
+		// TODO stub
 	}
 
 	/**
