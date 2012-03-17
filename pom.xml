@@ -20,6 +20,11 @@
 		<repository>
 			<id>buildlincom-artifactory-remote</id>
 			<url>http://build.lincomlinux.org/artifactory/remote-repos/</url>
+			<layout>default</layout>
+		</repository>
+		<repository>
+			<id>milkbowl-repo</id>
+			<url>http://ci.milkbowl.net/plugin/repository/everything/</url>
 		</repository>
 	</repositories>
 	<build>
