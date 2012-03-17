@@ -29,6 +29,24 @@
 	</repositories>
 	<build>
 		<finalName>MineQuest</finalName>
+		<resources>
+			<resource>
+				<targetPath>.</targetPath>
+				<directory>${basedir}/src/main/resources/</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>plugin.yml</include>
+				</includes>
+			</resource>
+			<resource>
+				<targetPath>sql</targetPath>
+				<directory>${basedir}/src/main/resources/sql/</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/*.sql</include>
+				</includes>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
