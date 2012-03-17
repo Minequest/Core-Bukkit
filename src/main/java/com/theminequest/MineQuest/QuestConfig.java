@@ -3,31 +3,32 @@ package com.theminequest.MineQuest;
 import java.io.File;
 import java.util.logging.Level;
 
-import lib.PatPeter.SQLibrary.DatabaseHandler;
-
-
 public final class QuestConfig {
 
-	private PropertiesFile mainConfig;
-	private PropertiesFile economyConfig;
-	private DatabaseHandler databaseStorage;
+	public PropertiesFile mainConfig;
+	public PropertiesFile questConfig;
+	public PropertiesFile economyConfig;
+	public PropertiesFile databaseConfig;
 	
 	public QuestConfig(){
 		MineQuest.log(Level.INFO, "Loading configuration...");
+		String basefolder = MineQuest.activePlugin.getDataFolder()+File.separator;
 		/*
 		 * Load Main Configuration
 		 */
-		mainConfig = new PropertiesFile(MineQuest.activePlugin.getDataFolder()
-				+File.separator+"config.properties");
-		
-	}
-	
-	public enum Main {
-		
-	}
-
-	public PropertiesFile getMainConfig() {
-		return mainConfig;
+		mainConfig = new PropertiesFile(basefolder+"config.properties");
+		/*
+		 * Load Quest Configuration
+		 */
+		questConfig = new PropertiesFile(basefolder+"quest.properties");
+		/*
+		 * Load Economy Hookin Configuration
+		 */
+		economyConfig = new PropertiesFile(basefolder+"economy.properties");
+		/*
+		 * Load Database Configuration
+		 */
+		databaseConfig = new PropertiesFile(basefolder+"database.properties");
 	}
 	
 }

@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.ResultSet;
-import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
@@ -13,7 +12,6 @@ import lib.PatPeter.SQLibrary.MySQL;
 import lib.PatPeter.SQLibrary.SQLite;
 
 import org.apache.commons.io.FileUtils;
-import org.bukkit.plugin.java.JavaPlugin;
 
 
 public class SQLExecutor {
@@ -26,8 +24,8 @@ public class SQLExecutor {
 	private File datafolder;
 	
 	public SQLExecutor(){
-		PropertiesFile config = MineQuest.configuration.getMainConfig();
-		String dbtype = config.getString("databasetype");
+		PropertiesFile config = MineQuest.configuration.databaseConfig;
+		String dbtype = config.getString("db_type");
 		if (dbtype.equalsIgnoreCase("mysql"))
 			databasetype = Mode.MySQL;
 		else
@@ -82,7 +80,7 @@ public class SQLExecutor {
 	 * @param params parameters for sql file
 	 * @return ResultSet of SQL query (or null... if there really is nothing good.)
 	 */
-	public ResultSet querySQL(String queryfilename, String params){
+	public ResultSet querySQL(String queryfilename, String params) {
 		Scanner file = new Scanner(datafolder + File.separator + queryfilename + ".sql");
 		while (file.hasNextLine()){
 			String line = file.nextLine();
