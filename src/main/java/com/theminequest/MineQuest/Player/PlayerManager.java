@@ -13,6 +13,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import com.theminequest.MineQuest.MineQuest;
 
 public class PlayerManager implements Listener {
+	
+	public static final int BASE_EXP = 100;
+	public static final int BASE_MANA = 100;
 
 	private LinkedHashMap<Player,PlayerDetails> players;
 	

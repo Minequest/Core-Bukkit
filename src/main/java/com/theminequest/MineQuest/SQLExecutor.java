@@ -61,14 +61,7 @@ public class SQLExecutor {
 		}
 		if (s==null || s.nextLine().compareTo(MineQuest.getVersion())<0){
 			// update SQL files
-			try {
-				FileUtils.cleanDirectory(datafolder);
-				Downloader.download("http://www.theminequest.com/sql.zip", datafolder.getAbsolutePath());
-				ZipUtils.unzip(datafolder.getAbsolutePath()+File.separator+"sql.zip", datafolder.getAbsolutePath());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			MineQuest.activePlugin.getResource("sql/update.sql");
 		}
 		
 	}

@@ -18,7 +18,7 @@ public class TaskCompleteEvent extends Event {
 	public TaskCompleteEvent(long questid, int id, CompleteStatus t) {
 		this.questid = questid;
 		this.id = id;
-		this.result = result;
+		this.result = t;
 	}
 	
 	public long getQuestID(){
