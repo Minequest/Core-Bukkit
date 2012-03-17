@@ -8,6 +8,7 @@ import java.util.Scanner;
 import java.util.logging.Logger;
 
 import lib.PatPeter.SQLibrary.DatabaseHandler;
+import lib.PatPeter.SQLibrary.H2;
 import lib.PatPeter.SQLibrary.MySQL;
 import lib.PatPeter.SQLibrary.SQLite;
 
@@ -17,7 +18,7 @@ import org.apache.commons.io.FileUtils;
 public class SQLExecutor {
 	
 	private enum Mode{
-		MySQL, SQlite;
+		MySQL, SQlite, H2;
 	}
 	private Mode databasetype;
 	private DatabaseHandler db;
@@ -25,11 +26,13 @@ public class SQLExecutor {
 	
 	public SQLExecutor(){
 		PropertiesFile config = MineQuest.configuration.databaseConfig;
-		String dbtype = config.getString("db_type");
+		String dbtype = config.getString("db_type","h2");
 		if (dbtype.equalsIgnoreCase("mysql"))
 			databasetype = Mode.MySQL;
-		else
+		else if (dbtype.equalsIgnoreCase("sqlite"))
 			databasetype = Mode.SQlite;
+		else
+			databasetype = Mode.H2;
 		String hostname = config.getString("db_hostname","localhost");
 		String port = config.getString("db_port","3306");
 		String databasename = config.getString("db_name","minequest");
@@ -37,8 +40,10 @@ public class SQLExecutor {
 		String password = config.getString("db_password","toor");
 		if (databasetype == Mode.MySQL)
 			db = new MySQL(Logger.getLogger("Minecraft"),"mq_",hostname,port,databasename,username,password);
-		else
+		else if (databasetype == Mode.SQlite)
 			db = new SQLite(Logger.getLogger("Minecraft"),"mq_","minequest",MineQuest.activePlugin.getDataFolder().getAbsolutePath());
+		else
+			db = new H2(Logger.getLogger("Minecraft"),"mq_","minequest",MineQuest.activePlugin.getDataFolder().getAbsolutePath());
 		datafolder = new File(MineQuest.activePlugin.getDataFolder().getAbsolutePath()+File.separator+"sql");
 		checkInitialization();
 	}

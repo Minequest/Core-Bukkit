@@ -94,12 +94,13 @@ public class SQLite extends DatabaseHandler {
 	@Override
 	public void close() {
 		Connection connection = this.open();
-		if (connection != null)
+		if (connection != null){
 			try {
 				connection.close();
 			} catch (SQLException ex) {
 				this.writeError("Error on Connection close: " + ex, true);
 			}
+		}
 	}
 	
 	@Override
