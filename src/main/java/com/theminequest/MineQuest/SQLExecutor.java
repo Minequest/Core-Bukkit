@@ -45,7 +45,7 @@ public class SQLExecutor {
 		else
 			db = new H2(Logger.getLogger("Minecraft"),"mq_","minequest",MineQuest.activePlugin.getDataFolder().getAbsolutePath());
 		datafolder = new File(MineQuest.activePlugin.getDataFolder().getAbsolutePath()+File.separator+"sql");
-		checkInitialization();
+		//checkInitialization();
 	}
 
 	private void checkInitialization() {
@@ -59,7 +59,7 @@ public class SQLExecutor {
 		} catch (FileNotFoundException e) {
 			// ignore
 		}
-		if (s.nextLine().compareTo(MineQuest.getVersion())<0){
+		if (s==null || s.nextLine().compareTo(MineQuest.getVersion())<0){
 			// update SQL files
 			try {
 				FileUtils.cleanDirectory(datafolder);
@@ -70,6 +70,7 @@ public class SQLExecutor {
 				e.printStackTrace();
 			}
 		}
+		
 	}
 	
 	public DatabaseHandler getDB(){

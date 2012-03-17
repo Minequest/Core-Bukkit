@@ -11,6 +11,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.theminequest.MineQuest.AbilityAPI.AbilityManager;
+import com.theminequest.MineQuest.Editable.EditableManager;
 import com.theminequest.MineQuest.EventsAPI.EventManager;
 import com.theminequest.MineQuest.Player.PlayerManager;
 import com.theminequest.MineQuest.Quest.QuestManager;
@@ -28,13 +29,14 @@ public class MineQuest extends JavaPlugin {
 	public static MineQuest activePlugin = null;
 	public static AbilityManager abilityManager = null;
 	public static EventManager eventManager = null;
+	public static EditableManager editableManager = null;
 	public static TaskManager taskManager = null;
 	public static QuestManager questManager = null;
 	public static PlayerManager playerManager = null;
 	public static TeamManager teamManager = null;
 	public static QuestConfig configuration = null;
 	public static SQLExecutor sqlstorage = null;
-	private static PluginDescriptionFile description;
+	private static PluginDescriptionFile description = null;;
 
 	public static void log(String msg) {
 		log(Level.INFO, msg);
@@ -74,10 +76,15 @@ public class MineQuest extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		if (!getDataFolder().exists())
+			getDataFolder().mkdirs();
+		description = this.getDescription();
 		activePlugin = this;
 		abilityManager = new AbilityManager();
 		getServer().getPluginManager().registerEvents(abilityManager, this);
 		eventManager = new EventManager();
+		editableManager = new EditableManager();
+		getServer().getPluginManager().registerEvents(editableManager, this);
 		taskManager = new TaskManager();
 		getServer().getPluginManager().registerEvents(taskManager, this);
 		questManager = new QuestManager();
@@ -96,6 +103,18 @@ public class MineQuest extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		// null out all static variables.
+		description = null;
+		activePlugin = null;
+		abilityManager = null;
+		eventManager = null;
+		editableManager = null;
+		taskManager = null;
+		questManager = null;
+		playerManager = null;
+		teamManager = null;
+		configuration = null;
+		sqlstorage = null;
+		permission = null;
+		economy = null;
 	}
 }
