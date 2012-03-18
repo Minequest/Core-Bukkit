@@ -17,7 +17,6 @@ import lib.PatPeter.SQLibrary.H2;
 import lib.PatPeter.SQLibrary.MySQL;
 import lib.PatPeter.SQLibrary.SQLite;
 
-
 public class SQLExecutor {
 
 	private enum Mode{
@@ -102,7 +101,7 @@ public class SQLExecutor {
 	 * @return ResultSet of SQL query (or null... if there really is nothing good.)
 	 */
 	public ResultSet querySQL(String queryfilename, String ...params) {
-		InputStream i = MineQuest.activePlugin.getResource(queryfilename+".sql");
+		InputStream i = MineQuest.activePlugin.getResource("sql/"+queryfilename+".sql");
 		if (i==null)
 			throw new NoSuchElementException("No such resource: " + queryfilename + ".sql");
 		String[] filecontents = convertStreamToString(i).split("\n");
