@@ -24,7 +24,13 @@ import org.bukkit.event.Listener;
 
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.TaskCompleteEvent;
+import com.theminequest.MineQuest.Editable.AreaEdit;
+import com.theminequest.MineQuest.Editable.CertainBlockEdit;
+import com.theminequest.MineQuest.Editable.CoordinateEdit;
 import com.theminequest.MineQuest.Editable.Edit;
+import com.theminequest.MineQuest.Editable.InsideAreaEdit;
+import com.theminequest.MineQuest.Editable.ItemInHandEdit;
+import com.theminequest.MineQuest.Editable.OutsideAreaEdit;
 import com.theminequest.MineQuest.EventsAPI.QEvent;
 import com.theminequest.MineQuest.Target.TargetDetails;
 import com.theminequest.MineQuest.Tasks.Task;
@@ -128,6 +134,7 @@ public class Quest {
 		LinkedHashMap<Integer, Task> tasks = new LinkedHashMap<Integer, Task>();
 		LinkedHashMap<Integer, String> events = new LinkedHashMap<Integer, String>();
 		LinkedHashMap<Integer, TargetDetails> targets = new LinkedHashMap<Integer, TargetDetails>();
+		LinkedHashMap<Integer, Edit> editables = new LinkedHashMap<Integer,Edit>();
 		File f = new File(MineQuest.activePlugin.getDataFolder()
 				+ File.separator + "quests" + File.separator + questname
 				+ ".quest");
@@ -195,12 +202,49 @@ public class Quest {
 				events.put(number, eventname + ":" + details);
 			} else if (type.equals("target")) {
 				int number = Integer.parseInt(ar.get(1));
-				String t = ar.get(2).toLowerCase();
+				String d = "";
+				for (int i=2; i<ar.size(); i++){
+					d += ar.get(i);
+					if (i!=ar.size()-1)
+						d+=":";
+				}
+				targets.put(number, new TargetDetails(questid,d));
+			} else if (type.equals("edit")) {
+				int number = Integer.parseInt(ar.get(1));
+				String edittype = ar.get(2);
+				String d = "";
+				for (int i=3; i<ar.size(); i++){
+					d += ar.get(i);
+					if (i!=ar.size()-1)
+						d+=":";
+				}
+				Edit e;
+				if (edittype.equalsIgnoreCase("CanEdit"))
+					e = new CoordinateEdit(questid,number,Integer.parseInt(d.split(":")[3]),d);
+				else if (edittype.equalsIgnoreCase("CanEditArea"))
+					e = new InsideAreaEdit(questid,number,Integer.parseInt(d.split(":")[6]),d);
+				else if (edittype.equalsIgnoreCase("CanEditOutsideArea"))
+					e = new OutsideAreaEdit(questid,number,Integer.parseInt(d.split(":")[6]),d);
+				else {
+					int taskid = Integer.parseInt(ar.get(3));
+					d = "";
+					for (int i=4; i<ar.size(); i++){
+						d += ar.get(i);
+						if (i!=ar.size()-1)
+							d+=":";
+					}
+					if (edittype.equalsIgnoreCase("CanEditTypesInHand"))
+						e = new ItemInHandEdit(questid,number,taskid,d);
+					else
+						e = new CertainBlockEdit(questid,number,taskid,d);
+				}
+				editables.put(number, e);
 			}
 		}
 		this.tasks = new TreeMap<Integer, Task>(tasks);
 		this.events = new TreeMap<Integer, String>(events);
 		this.targets = new TreeMap<Integer, TargetDetails>(targets);
+		this.editables = new TreeMap<Integer, Edit>(editables);
 	}
 
 	/**
@@ -220,14 +264,14 @@ public class Quest {
 	public String getEventDesc(int eventid) {
 		return events.get(eventid);
 	}
-	
+
 	/**
 	 * Start the Quest. Launches each task in an asynchronous thread.
 	 */
 	public void startQuest(){
 		int firsttask = tasks.firstKey();
 	}
-	
+
 	/**
 	 * Get the "YOU CAN'T EDIT THIS PLACE" message...
 	 * @return cannot edit message
@@ -235,7 +279,7 @@ public class Quest {
 	public String getEditMessage(){
 		return editMessage;
 	}
-	
+
 	/**
 	 * Start a task of the quest.
 	 * @param taskid task to start
@@ -248,7 +292,7 @@ public class Quest {
 		tasks.get(taskid).start();
 		return true;
 	}
-	
+
 	/**
 	 * Retrieve the current task ID.
 	 * @return Current Task ID, or <code>-1</code> if none is running.
@@ -268,7 +312,7 @@ public class Quest {
 	public String getWorld() {
 		return world;
 	}
-	
+
 	public void switchTaskTo(int taskid){
 		// TODO stub
 	}
