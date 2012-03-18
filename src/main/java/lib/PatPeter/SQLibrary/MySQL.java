@@ -160,7 +160,7 @@ public class MySQL extends DatabaseHandler {
 		return ps;
 	}
 	
-	public void insertQuery(String query) {
+	public void simpleQuery(String query) {
 		try {
 			Connection connection = getConnection();
 		    Statement statement = connection.createStatement();
@@ -169,35 +169,6 @@ public class MySQL extends DatabaseHandler {
 		
 		catch (SQLException ex) {
 				if (!ex.toString().contains("not return ResultSet")) writeError("Error at SQL INSERT Query: " + ex, false);
-		}
-	}
-	
-	public void updateQuery(String query)  {
-		try {
-			Connection connection = getConnection();
-		    Statement statement = connection.createStatement();
-
-		    statement.executeUpdate(query);
-		}
-		
-		catch (SQLException ex) {
-
-				if (!ex.toString().contains("not return ResultSet")) writeError("Error at SQL UPDATE Query: " + ex, false);
-
-		}
-	}
-
-	public void deleteQuery(String query) {
-		try {
-			Connection connection = getConnection();
-		    Statement statement = connection.createStatement();
-		    statement.executeUpdate(query);
-		} 
-		
-		catch (SQLException ex) {
-
-				if (!ex.toString().contains("not return ResultSet")) writeError("Error at SQL DELETE Query: " + ex, false);
-
 		}
 	}
 	
