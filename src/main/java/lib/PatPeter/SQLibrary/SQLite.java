@@ -183,65 +183,6 @@ public class SQLite extends DatabaseHandler {
 		}
 	}
 	
-	public void insertQuery(String query) {
-		try {
-			Connection connection = getConnection();
-		    Statement statement = connection.createStatement();
-
-		    statement.executeQuery(query);
-
-
-		} 
-		catch (SQLException ex) {
-
-			if (ex.getMessage().toLowerCase().contains("locking") || ex.getMessage().toLowerCase().contains("locked")) {
-				retry(query);
-			}
-			else{
-				if (!ex.toString().contains("not return ResultSet")) writeError("Error at SQL INSERT Query: " + ex, false);
-			}
-
-		}
-	}
-
-	public void updateQuery(String query) {
-		try {
-			Connection connection = getConnection();
-		    Statement statement = connection.createStatement();
-
-		    statement.executeQuery(query);
-
-
-		} 
-		catch (SQLException ex) {
-			if (ex.getMessage().toLowerCase().contains("locking") || ex.getMessage().toLowerCase().contains("locked")) {
-				retry(query);
-			}
-			else{
-				if (!ex.toString().contains("not return ResultSet")) writeError("Error at SQL UPDATE Query: " + ex, false);
-			}
-		}
-	}
-
-	public void deleteQuery(String query) {
-		try {
-			Connection connection = getConnection();
-		    Statement statement = connection.createStatement();
-
-		    statement.executeQuery(query);
-
-
-		} 
-		catch (SQLException ex) {
-			if (ex.getMessage().toLowerCase().contains("locking") || ex.getMessage().toLowerCase().contains("locked")) {
-				retry(query);
-			}
-			else{
-				if (!ex.toString().contains("not return ResultSet")) writeError("Error at SQL DELETE Query: " + ex, false);
-			}
-		}
-	}
-	
 	@Override
 	public boolean checkTable(String table) {
 		DatabaseMetaData dbm = null;

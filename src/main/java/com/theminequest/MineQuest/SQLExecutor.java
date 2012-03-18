@@ -111,7 +111,9 @@ public class SQLExecutor {
 			if (!line.startsWith("#")){
 				if (line.contains("%s"))
 					line = line.replaceAll("%s", params);
-				return db.query(line);
+				ResultSet result = db.query(line);
+				if (result!=null)
+					return result;
 			}
 		}
 		return null;
