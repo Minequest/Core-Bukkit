@@ -1,9 +1,5 @@
 package com.theminequest.MineQuest.SQLCore;
 
-import java.util.logging.Logger;
-
-import org.bukkit.Bukkit;
-
 import lib.PatPeter.SQLibrary.*;
 
 public class CreateSQLFile {
