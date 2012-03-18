@@ -28,6 +28,7 @@ public class SQLExecutor {
 	private File datafolder;
 
 	public SQLExecutor(){
+		MineQuest.log("Loading and connecting to SQL...");
 		PropertiesFile config = MineQuest.configuration.databaseConfig;
 		String dbtype = config.getString("db_type","h2");
 		if (dbtype.equalsIgnoreCase("mysql"))
@@ -36,6 +37,7 @@ public class SQLExecutor {
 			databasetype = Mode.SQlite;
 		else
 			databasetype = Mode.H2;
+		MineQuest.log("[SQL] Using "+databasetype.name()+" as database.");
 		String hostname = config.getString("db_hostname","localhost");
 		String port = config.getString("db_port","3306");
 		String databasename = config.getString("db_name","minequest");
