@@ -17,8 +17,6 @@ import lib.PatPeter.SQLibrary.H2;
 import lib.PatPeter.SQLibrary.MySQL;
 import lib.PatPeter.SQLibrary.SQLite;
 
-import org.apache.commons.io.FileUtils;
-
 
 public class SQLExecutor {
 
@@ -109,9 +107,14 @@ public class SQLExecutor {
 		for (String line : filecontents){
 			// ignore comments
 			if (!line.startsWith("#")){
-				if (line.contains("%s"))
+				if (line.contains("%s")){
+					if (params==null)
+						params = "";
 					line = line.replaceAll("%s", params);
-				return db.query(line);
+				}
+				ResultSet result = db.query(line);
+				if (result!=null)
+					return result;
 			}
 		}
 		return null;
