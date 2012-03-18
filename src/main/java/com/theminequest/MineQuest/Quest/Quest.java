@@ -194,7 +194,7 @@ public class Quest {
 				// final result: "eventname:T:details"
 				events.put(number, eventname + ":" + details);
 			} else if (type.equals("target")) {
-
+				
 			}
 		}
 		this.tasks = new TreeMap<Integer, Task>(tasks);

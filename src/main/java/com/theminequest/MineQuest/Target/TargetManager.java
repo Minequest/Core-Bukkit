@@ -2,6 +2,7 @@ package com.theminequest.MineQuest.Target;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -28,6 +29,10 @@ public class TargetManager {
 			return partyTarget(t);
 		else if (t.getType() == TargetType.TARGETTER)
 			return targetter(t);
+		else if (t.getType() == TargetType.TARGETTEREDIT)
+			return targetteredit(t);
+		else if (t.getType() == TargetType.RANDOMTARGET)
+			return randomtarget(t);
 		return null;
 	}
 
@@ -92,6 +97,24 @@ public class TargetManager {
 				}
 			}
 		}
+		return toreturn;
+	}
+	
+	/*
+	 * editid1:editid2:editid3...
+	 * TODO: actually implement this... even though this doesn't make any sense.
+	 */
+	private static List<LivingEntity> targetteredit(TargetDetails t) {
+		String[] ids = t.getDetails().split(":");
+		List<LivingEntity> toreturn = new ArrayList<LivingEntity>();
+		return toreturn;
+	}
+	
+	private static List<LivingEntity> randomtarget(TargetDetails t){
+		String targetid = t.getDetails();
+		List<LivingEntity> toreturn = new ArrayList<LivingEntity>();
+		List<LivingEntity> randomchoosing = TargetManager.getTarget(MineQuest.questManager.getQuest(t.getQuest()).getTarget(Integer.parseInt(targetid)));
+		toreturn.add(randomchoosing.get(new Random().nextInt(randomchoosing.size())));
 		return toreturn;
 	}
 
