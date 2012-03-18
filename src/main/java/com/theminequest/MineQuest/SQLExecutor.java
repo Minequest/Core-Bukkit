@@ -108,7 +108,7 @@ public class SQLExecutor {
 		String[] filecontents = convertStreamToString(i).split("\n");
 		for (String line : filecontents){
 			// ignore comments
-			if (!line.startsWith("#") || !line.equals("")){
+			if (!line.startsWith("#") && !line.equals("")){
 				if (params!=null && params.length!=0){
 					int paramsposition = 0;
 					while (paramsposition<params.length && line.contains("%s")){
