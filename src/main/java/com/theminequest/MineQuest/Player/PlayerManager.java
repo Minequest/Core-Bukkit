@@ -45,7 +45,7 @@ public class PlayerManager implements Listener {
 		 }, 1200, 18000);
 	}
 	
-	private void saveAll(){
+	public void saveAll(){
 		for (PlayerDetails d : players.values())
 			d.save();
 	}

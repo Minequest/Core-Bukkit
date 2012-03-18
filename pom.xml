@@ -6,10 +6,15 @@
 	<version>dev-SNAPSHOT</version>
 	<name>MineQuest</name>
 	<description>The Minecraft ultimate MMORPG plugin!</description>
+	
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	
 	<scm>
 		<connection>scm:git:git://github.com/Minequest/Minequest-Reloaded-Core.git</connection>
 		<url>https://github.com/Minequest/Minequest-Reloaded-Core</url>
-		<developerConnection>scm:git:https://robxu9@github.com/Minequest/Minequest-Reloaded-Core.git</developerConnection>
+		<developerConnection>scm:git:https://github.com/Minequest/Minequest-Reloaded-Core.git</developerConnection>
 	</scm>
 	<repositories>
 		<repository>

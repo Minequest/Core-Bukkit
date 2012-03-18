@@ -103,6 +103,7 @@ public class MineQuest extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
+		playerManager.saveAll();
 		description = null;
 		activePlugin = null;
 		abilityManager = null;
