@@ -61,7 +61,8 @@ public class SQLExecutor {
 		String lastv = null;
 		try {
 			s = new Scanner(versionfile);
-			lastv = s.nextLine();
+			if (s.hasNextLine())
+				lastv = s.nextLine();
 		} catch (FileNotFoundException e) {
 			try {
 				versionfile.createNewFile();
