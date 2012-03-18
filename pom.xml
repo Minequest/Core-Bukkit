@@ -29,6 +29,7 @@
 	</repositories>
 	<build>
 		<finalName>MineQuest</finalName>
+		<defaultGoal>clean package install</defaultGoal>
 		<resources>
 			<resource>
 				<targetPath>.</targetPath>
@@ -48,6 +49,30 @@
 			</resource>
 		</resources>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<artifactSet>
+								<excludes>
+									<exclude>org.bukkit:*</exclude>
+									<exclude>org.getspout:*</exclude>
+									<exclude>net.milkbowl.vault:*</exclude>
+								</excludes>
+							</artifactSet>
+							<minimizeJar>true</minimizeJar>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

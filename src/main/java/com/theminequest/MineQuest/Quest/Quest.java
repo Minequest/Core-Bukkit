@@ -194,7 +194,8 @@ public class Quest {
 				// final result: "eventname:T:details"
 				events.put(number, eventname + ":" + details);
 			} else if (type.equals("target")) {
-				
+				int number = Integer.parseInt(ar.get(1));
+				String t = ar.get(2).toLowerCase();
 			}
 		}
 		this.tasks = new TreeMap<Integer, Task>(tasks);
