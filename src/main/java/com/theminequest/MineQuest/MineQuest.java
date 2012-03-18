@@ -80,6 +80,8 @@ public class MineQuest extends JavaPlugin {
 			getDataFolder().mkdirs();
 		description = this.getDescription();
 		activePlugin = this;
+		configuration = new QuestConfig();
+		sqlstorage = new SQLExecutor();
 		abilityManager = new AbilityManager();
 		getServer().getPluginManager().registerEvents(abilityManager, this);
 		eventManager = new EventManager();
@@ -93,8 +95,6 @@ public class MineQuest extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(playerManager, this);
 		teamManager = new TeamManager();
 		getServer().getPluginManager().registerEvents(teamManager, this);
-		configuration = new QuestConfig();
-		sqlstorage = new SQLExecutor();
 		if (!setupPermissions())
 			log(Level.SEVERE,"Permissions could not be setup!");
 		if (!setupEconomy())

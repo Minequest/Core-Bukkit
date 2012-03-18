@@ -1,6 +1,13 @@
 # minequest initial database creation
 
-CREATE TABLE `mq_players` (ID char(6), Name char(25), ClassName char(10) default 'none', Level char(6) default '1', Exp char(10) default '1');
-CREATE TABLE `mq_quests` (ID char(6), Name char(25), QuestName char(25), Completed smallint(1) default '0');
-CREATE TABLE `mq_npcs` (ID char(6), Name char(25), Class char(10), Health char(20), Vulnerable smallint(1) default '0');
-CREATE TABLE `mq_abilities` (ID char(6), Name char(25), AbilityName char(25));
+# MineQuest Player Table (PlayerName, PlayerClass, PlayerLevel, PlayerEXP)
+CREATE TABLE mq_player (P_NAME text, C_ID int, level int, exp bigint);
+
+# MineQuest isQuestCompleted Table (PlayerName, QuestName, isCompleted)
+CREATE TABLE mq_quest (P_NAME text, Q_ID text, isCompleted smallint(1));
+
+# MineQuest NPC Table (NPCID, NPCName, NPCClass, NPCSkinURL, NPCCapeURL, NPCNearbyText, NPCGreetingText, NPCAboutText, NPCHealth, isVulnerable)
+CREATE TABLE mq_npc (N_ID int, name text, C_ID int, skin text, cape text, nearby text, greeting longtext, about longtext, health int(20), isVulnerable smallint(1));
+
+# MineQuest Abilities Table (PlayerName, AbilityID)
+CREATE TABLE mq_ability (P_NAME text, A_ID text);

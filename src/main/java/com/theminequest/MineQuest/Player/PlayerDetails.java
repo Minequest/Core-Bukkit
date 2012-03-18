@@ -1,6 +1,7 @@
 package com.theminequest.MineQuest.Player;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -32,8 +33,11 @@ public class PlayerDetails {
 	public LinkedHashMap<Ability,Long> abilitiesCoolDown;
 	// player properties
 	private long mana;
+	private int level;
+	private long exp;
+	private int classid;
 
-	public PlayerDetails(Player p) {
+	public PlayerDetails(Player p) throws SQLException {
 		quest = -1;
 		team = -1;
 		player = p;
@@ -41,9 +45,17 @@ public class PlayerDetails {
 		abilitiesCoolDown = new LinkedHashMap<Ability,Long>();
 		// check for player existence in DB.
 		// if player does not, add.
-		
-		// get level from SQL;
-		int level = 0;
+		ResultSet playerresults = MineQuest.sqlstorage.querySQL("Players/retrievePlayer", p.getName());
+		if (playerresults==null || !playerresults.first()){
+			// this means that the player does not exist; add them.
+			MineQuest.sqlstorage.querySQL("Players/addPlayer",p.getName());
+			level = 1;
+			exp = 0;
+		}else{
+			level = playerresults.getInt("LEVEL");
+			classid = playerresults.getInt("C_ID");
+			exp = playerresults.getLong("EXP");
+		}
 		// give the player almost full mana (3/4 full)
 		mana = (3/4)*(PlayerManager.BASE_MANA*level);
 		// and feel happeh.
@@ -66,17 +78,21 @@ public class PlayerDetails {
 	}
 	
 	public void save(){
-		
+		MineQuest.sqlstorage.querySQL("Players/modPlayer_class",String.valueOf(classid),player.getName());
+		MineQuest.sqlstorage.querySQL("Players/modPlayer_exp",String.valueOf(level),player.getName());
+		MineQuest.sqlstorage.querySQL("Players/modPlayer_lvl",String.valueOf(exp),player.getName());
 	}
 	
 	public int getLevel(){
-		// get level from sql; TODO STUB
-		return 0;
+		return level;
 	}
 	
 	public long getExperience(){
-		// get experience from sql; TODO STUB
-		return 0;
+		return exp;
+	}
+	
+	public int getClassId(){
+		return classid;
 	}
 	
 	public long getMana(){
@@ -96,27 +112,21 @@ public class PlayerDetails {
 	}
 	
 	public void levelUp(){
-		// TODO STUB
-		int currentlevel = 0;
-		currentlevel+=1;
+		level+=1;
 		PlayerLevelEvent event = new PlayerLevelEvent(player);
 		Bukkit.getPluginManager().callEvent(event);
-		// set experience to (PlayerManager.Base_EXP*newlevel)-currentexp;
+		exp = (PlayerManager.BASE_EXP*level)-exp;
 	}
 	
 	public void modifyExperienceBy(int e){
-		// TODO STUB
-		long currentexp = 0;
-		currentexp+=e;
+		exp+=e;
 		PlayerExperienceEvent event = new PlayerExperienceEvent(player, e);
 		Bukkit.getPluginManager().callEvent(event);
-		// set in SQL
-		if (currentexp>=(PlayerManager.BASE_EXP*getLevel()))
+		if (exp>=(PlayerManager.BASE_EXP*getLevel()))
 			levelUp();
 	}
 	
 	public void modifyManaBy(int m){
-		int level = getLevel();
 		long manatoadd = m;
 		if (mana==PlayerManager.BASE_MANA*level)
 			return;

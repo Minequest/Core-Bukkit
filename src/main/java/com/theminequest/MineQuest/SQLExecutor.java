@@ -99,18 +99,19 @@ public class SQLExecutor {
 	 * @param params parameters for sql file
 	 * @return ResultSet of SQL query (or null... if there really is nothing good.)
 	 */
-	public ResultSet querySQL(String queryfilename, String params) {
+	public ResultSet querySQL(String queryfilename, String ...params) {
 		InputStream i = MineQuest.activePlugin.getResource(queryfilename+".sql");
 		if (i==null)
 			throw new NoSuchElementException("No such resource: " + queryfilename + ".sql");
 		String[] filecontents = convertStreamToString(i).split("\n");
 		for (String line : filecontents){
 			// ignore comments
-			if (!line.startsWith("#")){
-				if (line.contains("%s")){
-					if (params==null)
-						params = "";
-					line = line.replaceAll("%s", params);
+			if (!line.startsWith("#") || !line.equals("")){
+				if (params!=null && params.length!=0){
+					int paramsposition = 0;
+					while (paramsposition<params.length && line.contains("%s")){
+						line = line.replaceFirst("%s", params[paramsposition]);
+					}
 				}
 				ResultSet result = db.query(line);
 				if (result!=null)

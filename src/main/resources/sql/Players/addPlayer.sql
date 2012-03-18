@@ -1,3 +1,4 @@
 # Adds a player to the SQL database.
-# %s: double id, String name, String className, String level, double exp
-INSERT INTO `mq_players` VALUES (%s)
+# %s = Player Name
+# Player added with given name, no class (-1), level 1, and no exp (0).
+INSERT INTO mq_player VALUES ('%s',-1,1,0);

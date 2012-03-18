@@ -1,8 +1,10 @@
-package com.theminequest.MineQuest.AbilityAPI;
+package com.theminequest.MineQuest.BukkitEvents;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+
+import com.theminequest.MineQuest.AbilityAPI.Ability;
 
 public class AbilityRefreshedEvent extends Event {
 	

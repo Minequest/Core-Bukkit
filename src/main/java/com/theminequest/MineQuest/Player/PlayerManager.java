@@ -1,5 +1,6 @@
 package com.theminequest.MineQuest.Player;
 
+import java.sql.SQLException;
 import java.util.LinkedHashMap;
 
 import org.bukkit.Bukkit;
@@ -32,11 +33,30 @@ public class PlayerManager implements Listener {
 			}
 			 
 		 }, 300, 100);
+		 
+		 Bukkit.getScheduler().scheduleSyncRepeatingTask(MineQuest.activePlugin, new Runnable(){
+
+			@Override
+			public void run() {
+				saveAll();
+				MineQuest.log("Saved all PlayerDetails.");
+			}
+			 
+		 }, 1200, 18000);
+	}
+	
+	private void saveAll(){
+		for (PlayerDetails d : players.values())
+			d.save();
 	}
 	
 	private void playerAcct(Player p){
 		if (!players.containsKey(p)){
-			players.put(p,new PlayerDetails(p));
+			try {
+				players.put(p,new PlayerDetails(p));
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 	

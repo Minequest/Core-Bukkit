@@ -10,6 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.getspout.commons.ChatColor;
 
 import com.theminequest.MineQuest.MineQuest;
+import com.theminequest.MineQuest.BukkitEvents.AbilityRefreshedEvent;
 
 public class AbilityManager implements Listener {
 	
@@ -32,7 +33,8 @@ public class AbilityManager implements Listener {
 	@EventHandler
 	public void eventForAbility(Event e){
 		for (Ability a : abilities.values()){
-			a.onEventCaught(e);
+			if (a.onEventCaught(e))
+				return;
 		}
 	}
 }

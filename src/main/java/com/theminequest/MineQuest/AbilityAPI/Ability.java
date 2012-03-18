@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.getspout.commons.ChatColor;
 
 import com.theminequest.MineQuest.MineQuest;
+import com.theminequest.MineQuest.BukkitEvents.AbilityRefreshedEvent;
 import com.theminequest.MineQuest.Player.PlayerDetails;
 import com.theminequest.MineQuest.Player.PlayerManager;
 import com.theminequest.MineQuest.Quest.QuestManager;
@@ -78,7 +79,7 @@ public abstract class Ability {
 		return true;
 	}
 	
-	protected void onEventCaught(Event e){
+	protected boolean onEventCaught(Event e){
 		String result = isRightEvent(e);
 		if (result!=null){
 			final Player p;
@@ -88,7 +89,7 @@ public abstract class Ability {
 			} catch (Exception ex){
 				// ignore... no player did this, obviously,
 				// or something is seriously screwed up
-				return;
+				return true;
 			}
 			PlayerDetails details = MineQuest.playerManager.getPlayerDetails(p);
 			if (details.abilitiesCoolDown.containsKey(this)){
@@ -97,7 +98,7 @@ public abstract class Ability {
 				if (timeelapsed<getCooldown()){
 					p.sendMessage(ChatColor.YELLOW+"Ability " + getName() + " is recharging... "
 							+ ChatColor.GRAY + "(" +(getCooldown()-timeelapsed)+ " s)");
-					return;
+					return true;
 				}
 			}
 			if (details.getAbilitiesEnabled() && questAllow(p)){
@@ -115,8 +116,10 @@ public abstract class Ability {
 							}
 					
 				}, 20*getCooldown());
+				return true;
 			}
 		}
+		return false;
 	}
 	
 }
