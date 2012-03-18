@@ -71,7 +71,7 @@ public class SQLExecutor {
 		if (lastv==null || lastv.compareTo(MineQuest.getVersion())!=0){
 			if (lastv==null)
 				lastv = "initial";
-			querySQL("update/"+lastv,(String[])null);
+			querySQL("update/"+lastv,"");
 			Writer out;
 			try {
 				out = new OutputStreamWriter(new FileOutputStream(versionfile));
