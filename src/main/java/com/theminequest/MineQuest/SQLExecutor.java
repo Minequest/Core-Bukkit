@@ -2,8 +2,13 @@ package com.theminequest.MineQuest;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.sql.ResultSet;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
@@ -16,14 +21,14 @@ import org.apache.commons.io.FileUtils;
 
 
 public class SQLExecutor {
-	
+
 	private enum Mode{
 		MySQL, SQlite, H2;
 	}
 	private Mode databasetype;
 	private DatabaseHandler db;
 	private File datafolder;
-	
+
 	public SQLExecutor(){
 		PropertiesFile config = MineQuest.configuration.databaseConfig;
 		String dbtype = config.getString("db_type","h2");
@@ -45,7 +50,7 @@ public class SQLExecutor {
 		else
 			db = new H2(Logger.getLogger("Minecraft"),"mq_","minequest",MineQuest.activePlugin.getDataFolder().getAbsolutePath());
 		datafolder = new File(MineQuest.activePlugin.getDataFolder().getAbsolutePath()+File.separator+"sql");
-		//checkInitialization();
+		checkInitialization();
 	}
 
 	private void checkInitialization() {
@@ -54,18 +59,35 @@ public class SQLExecutor {
 		}
 		File versionfile = new File(datafolder+File.separator+"version");
 		Scanner s = null;
+		String lastv = null;
 		try {
 			s = new Scanner(versionfile);
+			lastv = s.nextLine();
 		} catch (FileNotFoundException e) {
-			// ignore
+			try {
+				versionfile.createNewFile();
+			} catch (IOException e1) {
+				throw new RuntimeException(e1);
+			}
 		}
-		if (s==null || s.nextLine().compareTo(MineQuest.getVersion())<0){
-			// update SQL files
-			MineQuest.activePlugin.getResource("sql/update.sql");
+		if (lastv==null || lastv.compareTo(MineQuest.getVersion())!=0){
+			if (lastv==null)
+				lastv = "initial";
+			querySQL("update/"+lastv,null);
+			Writer out;
+			try {
+				out = new OutputStreamWriter(new FileOutputStream(versionfile));
+				out.write(MineQuest.getVersion());
+				out.close();
+			} catch (FileNotFoundException e) {
+				// never going to happen
+			} catch (IOException e) {
+				// never going to happen either
+			}
 		}
-		
+
 	}
-	
+
 	public DatabaseHandler getDB(){
 		return db;
 	}
@@ -80,9 +102,11 @@ public class SQLExecutor {
 	 * @return ResultSet of SQL query (or null... if there really is nothing good.)
 	 */
 	public ResultSet querySQL(String queryfilename, String params) {
-		Scanner file = new Scanner(datafolder + File.separator + queryfilename + ".sql");
-		while (file.hasNextLine()){
-			String line = file.nextLine();
+		InputStream i = MineQuest.activePlugin.getResource(queryfilename+".sql");
+		if (i==null)
+			throw new NoSuchElementException("No such resource: " + queryfilename + ".sql");
+		String[] filecontents = convertStreamToString(i).split("\n");
+		for (String line : filecontents){
 			// ignore comments
 			if (!line.startsWith("#")){
 				if (line.contains("%s"))
@@ -92,5 +116,13 @@ public class SQLExecutor {
 		}
 		return null;
 	}
-	
+
+	private String convertStreamToString(InputStream is) {
+		try {
+			return new java.util.Scanner(is).useDelimiter("\\A").next();
+		} catch (java.util.NoSuchElementException e) {
+			return "";
+		}
+	}
+
 }
