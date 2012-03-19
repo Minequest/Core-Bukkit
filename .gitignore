@@ -1,4 +1,4 @@
-.settings
+.settings/*.prefs
 .classpath
 .project
 .euml2
