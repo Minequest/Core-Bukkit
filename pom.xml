@@ -6,11 +6,11 @@
 	<version>dev-SNAPSHOT</version>
 	<name>MineQuest</name>
 	<description>The Minecraft ultimate MMORPG plugin!</description>
-	
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	
+
 	<scm>
 		<connection>scm:git:git://github.com/Minequest/Minequest-Reloaded-Core.git</connection>
 		<url>https://github.com/Minequest/Minequest-Reloaded-Core</url>
@@ -40,7 +40,16 @@
 	<build>
 		<finalName>MineQuest</finalName>
 		<defaultGoal>clean package install</defaultGoal>
+		<sourceDirectory>${basedir}/src/main/java</sourceDirectory>
 		<resources>
+			<resource>
+				<targetPath>.</targetPath>
+				<filtering>false</filtering>
+				<directory>${basedir}</directory>
+				<includes>
+					<include>LICENSE.txt</include>
+				</includes>
+			</resource>
 			<resource>
 				<targetPath>.</targetPath>
 				<directory>${basedir}/src/main/resources/</directory>

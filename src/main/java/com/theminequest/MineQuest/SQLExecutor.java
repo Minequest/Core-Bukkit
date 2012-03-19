@@ -29,6 +29,7 @@ import java.io.Writer;
 import java.sql.ResultSet;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import lib.PatPeter.SQLibrary.DatabaseHandler;
@@ -46,7 +47,7 @@ public class SQLExecutor {
 	private File datafolder;
 
 	public SQLExecutor(){
-		MineQuest.log("Loading and connecting to SQL...");
+		MineQuest.log("[SQL] Loading and connecting to SQL...");
 		PropertiesFile config = MineQuest.configuration.databaseConfig;
 		String dbtype = config.getString("db_type","h2");
 		if (dbtype.equalsIgnoreCase("mysql"))
@@ -92,7 +93,11 @@ public class SQLExecutor {
 		if (lastv==null || lastv.compareTo(MineQuest.getVersion())!=0){
 			if (lastv==null)
 				lastv = "initial";
-			querySQL("update/"+lastv,"");
+			try {
+				querySQL("update/"+lastv,"");
+			} catch (NoSuchElementException e){
+				MineQuest.log(Level.WARNING,"[SQL] No update path from build " + lastv + " to this build; Probably normal.");
+			}
 			Writer out;
 			try {
 				out = new OutputStreamWriter(new FileOutputStream(versionfile));
