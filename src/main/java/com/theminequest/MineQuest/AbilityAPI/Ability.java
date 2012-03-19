@@ -63,7 +63,7 @@ public abstract class Ability {
 	 * Execute the event given the parameters.
 	 * @param details Execution details
 	 */
-	public abstract void executeEvent(String details);
+	public abstract void executeEvent(PlayerEvent e, String details);
 	
 	/**
 	 * Quests can disallow certain abilities.
@@ -101,7 +101,7 @@ public abstract class Ability {
 			}
 			if (details.getAbilitiesEnabled() && questAllow(p)){
 				details.modifyManaBy(-1*getMana());
-				executeEvent(result);
+				executeEvent(e,result);
 				details.abilitiesCoolDown.put(this, System.currentTimeMillis()*1000);
 				p.sendMessage(ChatColor.GRAY + "Used ability " + getName() + ".");
 				final Ability a = this;
