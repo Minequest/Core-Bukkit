@@ -3,9 +3,15 @@ package com.theminequest.MineQuest.AbilityAPI;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerEggThrowEvent;
+import org.bukkit.event.player.PlayerEvent;
+import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.getspout.commons.ChatColor;
 
@@ -31,7 +37,26 @@ public class AbilityManager implements Listener {
 	}
 	
 	@EventHandler
-	public void eventForAbility(Event e){
+	public void onPlayerEggThrowEvent(PlayerEggThrowEvent e){
+		onEvent(e);
+	}
+	
+	@EventHandler
+	public void onPlayerFishEvent(PlayerFishEvent e){
+		onEvent(e);
+	}
+	
+	@EventHandler
+	public void onPlayerInteractEntityEvent(PlayerInteractEntityEvent e){
+		onEvent(e);
+	}
+	
+	@EventHandler
+	public void onPlayerInteractEvent(PlayerInteractEvent e){
+		onEvent(e);
+	}
+	
+	private void onEvent(PlayerEvent e){
 		for (Ability a : abilities.values()){
 			if (a.onEventCaught(e))
 				return;

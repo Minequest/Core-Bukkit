@@ -4,10 +4,12 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerEvent;
 import org.getspout.commons.ChatColor;
 
 import com.theminequest.MineQuest.MineQuest;
@@ -46,12 +48,16 @@ public abstract class Ability {
 	 * perform the event, return true.<br>
 	 * <b>Hint</b>: For a specific event, use <i>instanceof</i>
 	 * as an if statement to check if the event is the one you
-	 * want.
+	 * want. The four events we support are
+	 * {@link org.bukkit.event.player.PlayerEggThrowEvent},
+	 * {@link org.bukkit.event.player.PlayerFishEvent},
+	 * {@link org.bukkit.event.player.PlayerInteractEntityEvent},
+	 * and {@link org.bukkit.event.player.PlayerInteractEvent}.
 	 * @param e Event caught.
 	 * @return string with details for execution,
 	 * (or {@link null} for wrong event/something wrong).
 	 */
-	public abstract String isRightEvent(Event e);
+	public abstract String isRightEvent(PlayerEvent e);
 	
 	/**
 	 * Execute the event given the parameters.
@@ -79,18 +85,10 @@ public abstract class Ability {
 		return true;
 	}
 	
-	protected boolean onEventCaught(Event e){
+	protected boolean onEventCaught(PlayerEvent e){
 		String result = isRightEvent(e);
 		if (result!=null){
-			final Player p;
-			try {
-				Method m = e.getClass().getMethod("getPlayer");
-				p = (Player) m.invoke(e);
-			} catch (Exception ex){
-				// ignore... no player did this, obviously,
-				// or something is seriously screwed up
-				return true;
-			}
+			final Player p = e.getPlayer();
 			PlayerDetails details = MineQuest.playerManager.getPlayerDetails(p);
 			if (details.abilitiesCoolDown.containsKey(this)){
 				long currentseconds = System.currentTimeMillis()*1000;
