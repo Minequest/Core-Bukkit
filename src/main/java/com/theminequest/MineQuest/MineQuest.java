@@ -99,6 +99,10 @@ public class MineQuest extends JavaPlugin {
 			getDataFolder().mkdirs();
 		description = this.getDescription();
 		activePlugin = this;
+		if (description.getVersion().equals("unofficialDev")){
+			MineQuest.log(Level.SEVERE,"[Core] You're using an unofficial dev build!");
+			MineQuest.log(Level.SEVERE,"[Core] I CANNOT keep track of changes with this.");
+		}
 		configuration = new QuestConfig();
 		sqlstorage = new SQLExecutor();
 		abilityManager = new AbilityManager();
