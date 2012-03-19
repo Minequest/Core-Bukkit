@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.TaskCompleteEvent;
 import com.theminequest.MineQuest.Team.Team;
 
@@ -18,6 +19,7 @@ public class QuestManager implements Listener {
 	private long questid;
 	
 	public QuestManager(){
+		MineQuest.log("[Quest] Starting Manager...");
 		quests = new LinkedHashMap<Long,Quest>();
 		questid = 0;
 	}

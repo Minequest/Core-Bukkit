@@ -1,4 +1,4 @@
-package com.theminequest.MineQuest.QuestSign;
+package com.theminequest.MineQuest.Frontend.QuestSign;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;

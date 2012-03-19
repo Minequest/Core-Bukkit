@@ -48,6 +48,7 @@ public class PlayerDetails {
 		ResultSet playerresults = MineQuest.sqlstorage.querySQL("Players/retrievePlayer", p.getName());
 		if (playerresults==null || !playerresults.first()){
 			// this means that the player does not exist; add them.
+			MineQuest.log("[Player] Player not found in SQL; creating: " + p.getName());
 			MineQuest.sqlstorage.querySQL("Players/addPlayer",p.getName());
 			level = 1;
 			exp = 0;

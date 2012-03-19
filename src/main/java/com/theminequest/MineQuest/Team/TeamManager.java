@@ -16,6 +16,7 @@ public class TeamManager implements Listener{
 	private long teamid;
 	
 	public TeamManager(){
+		MineQuest.log("[Team] Starting Manager...");
 		teams = new LinkedHashMap<Long,Team>();
 		teamid = 0;
 	}

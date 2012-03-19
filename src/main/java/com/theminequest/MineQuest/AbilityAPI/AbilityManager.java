@@ -23,10 +23,12 @@ public class AbilityManager implements Listener {
 	private HashMap<String,Ability> abilities;
 	
 	public AbilityManager(){
+		MineQuest.log("[Ability] Starting Manager...");
 		abilities = new HashMap<String,Ability>();
 	}
 	
 	public void registerAbility(Ability a){
+		MineQuest.log("[Ability] Registered " + a.getName());
 		abilities.put(a.getName(), a);
 	}
 

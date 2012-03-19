@@ -3,6 +3,8 @@ package com.theminequest.MineQuest.EventsAPI;
 import java.lang.reflect.Constructor;
 import java.util.LinkedHashMap;
 
+import com.theminequest.MineQuest.MineQuest;
+
 /**
  * Because we don't know what classes will be available on runtime, we need to
  * keep track of all classes that extend QEvent and record them here.
@@ -15,6 +17,7 @@ public class EventManager {
 	private LinkedHashMap<String, Class<? extends QEvent>> classes;
 
 	public EventManager() {
+		MineQuest.log("[Event] Starting Manager...");
 		classes = new LinkedHashMap<String, Class<? extends QEvent>>();
 	}
 

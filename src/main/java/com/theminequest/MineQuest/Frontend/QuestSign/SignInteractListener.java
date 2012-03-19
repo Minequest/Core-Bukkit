@@ -1,4 +1,4 @@
-package com.theminequest.MineQuest.QuestSign;
+package com.theminequest.MineQuest.Frontend.QuestSign;
 
 import java.io.File;
 import java.io.FileNotFoundException;

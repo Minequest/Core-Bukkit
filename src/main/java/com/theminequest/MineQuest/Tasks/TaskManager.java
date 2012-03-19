@@ -11,6 +11,10 @@ import com.theminequest.MineQuest.Quest.QuestManager;
 
 public class TaskManager implements Listener {
 	
+	public TaskManager(){
+		MineQuest.log("[Task] Starting Manager...");
+	}
+	
 	@EventHandler
 	public void onEventComplete(EventCompleteEvent e){
 		long questid = e.getEvent().getQuestId();

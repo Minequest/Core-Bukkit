@@ -1,4 +1,4 @@
-package com.theminequest.MineQuest.Listeners;
+package com.theminequest.MineQuest.Frontend.Command;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

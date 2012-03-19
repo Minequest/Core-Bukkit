@@ -10,20 +10,23 @@ import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
+import com.theminequest.MineQuest.MineQuest;
+
 public class EditableManager implements Listener{
 
 	private List<Edit> registeredEdits;
 	
 	public EditableManager(){
+		MineQuest.log("[Edit] Starting manager...");
 		registeredEdits = new ArrayList<Edit>();
 	}
 	
 	public void registerEdit(Edit e){
-		
+		registeredEdits.add(e);
 	}
 	
 	public void deregisterEdit(Edit e){
-		
+		registeredEdits.remove(e);
 	}
 
 	@EventHandler

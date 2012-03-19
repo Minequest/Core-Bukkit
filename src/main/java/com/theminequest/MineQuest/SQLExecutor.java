@@ -43,11 +43,11 @@ public class SQLExecutor {
 		String username = config.getString("db_username","root");
 		String password = config.getString("db_password","toor");
 		if (databasetype == Mode.MySQL)
-			db = new MySQL(Logger.getLogger("Minecraft"),"mq_",hostname,port,databasename,username,password);
+			db = new MySQL(Logger.getLogger("Minecraft"),"[MySQL]",hostname,port,databasename,username,password);
 		else if (databasetype == Mode.SQlite)
-			db = new SQLite(Logger.getLogger("Minecraft"),"mq_","minequest",MineQuest.activePlugin.getDataFolder().getAbsolutePath());
+			db = new SQLite(Logger.getLogger("Minecraft"),"[SQLite]","minequest",MineQuest.activePlugin.getDataFolder().getAbsolutePath());
 		else
-			db = new H2(Logger.getLogger("Minecraft"),"mq_","minequest",MineQuest.activePlugin.getDataFolder().getAbsolutePath());
+			db = new H2(Logger.getLogger("Minecraft"),"[H2]","minequest",MineQuest.activePlugin.getDataFolder().getAbsolutePath());
 		datafolder = new File(MineQuest.activePlugin.getDataFolder().getAbsolutePath()+File.separator+"sql");
 		checkInitialization();
 	}
