@@ -75,14 +75,6 @@ public class CommandListener implements CommandExecutor{
 			sender.sendMessage("    Class resets can not be undone and will reset your lvl in that class.");
 			return true;
 		}
-		if(cmd.getName().equalsIgnoreCase("cubeconomy") && player != null){
-			sender.sendMessage("    / - ");
-			sender.sendMessage("    / - ");
-			sender.sendMessage("    / - ");
-			sender.sendMessage("    / - ");
-			sender.sendMessage("    / - ");
-			return true;
-		}
 		if(cmd.getName().equalsIgnoreCase("char") && player !=null){
 			sender.sendMessage("Level: ");
 			//TODO: Get Class
