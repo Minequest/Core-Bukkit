@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  **/
 // This is being borrowed from hey0, for some reason I liked it too much to bother to write my own
-package com.theminequest.MineQuest;
+package com.theminequest.MineQuest.Utils;
 
 import java.io.File;
 import java.io.FileInputStream;

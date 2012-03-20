@@ -40,11 +40,11 @@ public class EditableManager implements Listener{
 		registeredEdits = new ArrayList<Edit>();
 	}
 	
-	public void registerEdit(Edit e){
+	public synchronized void registerEdit(Edit e){
 		registeredEdits.add(e);
 	}
 	
-	public void deregisterEdit(Edit e){
+	public synchronized void deregisterEdit(Edit e){
 		registeredEdits.remove(e);
 	}
 

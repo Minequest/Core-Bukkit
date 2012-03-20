@@ -32,6 +32,7 @@ import com.theminequest.MineQuest.Quest.QuestManager;
 
 public abstract class Task {
 	
+	private boolean started;
 	private boolean complete;
 	private long questid;
 	private int taskid;
@@ -45,6 +46,7 @@ public abstract class Task {
 	 * @param events Event numbers that must be completed
 	 */
 	public Task(long questid, int taskid, int[] events){
+		started = false;
 		complete = false;
 		this.questid = questid;
 		this.taskid = taskid;
@@ -55,7 +57,10 @@ public abstract class Task {
 		this.objects = new ArrayList<QEvent>();
 	}
 	
-	public void start(){
+	public synchronized void start(){
+		if (started)
+			return;
+		started = true;
 		for (Integer eventid : events.keySet()){
 			String eventdesc = MineQuest.questManager.getQuest(questid).getEventDesc(eventid);
 			String[] details = eventdesc.split(":");
@@ -72,8 +77,19 @@ public abstract class Task {
 		}
 	}
 	
-	public void finishEvent(int eventid, CompleteStatus completeStatus ){
-		if (!complete && events.containsKey(eventid) && !events.get(eventid)){
+	public synchronized void cancelTask(){
+		if (complete || !started)
+			return;
+		complete = true;
+		for (QEvent e : objects){
+			e.complete(CompleteStatus.CANCELED);
+		}
+		TaskCompleteEvent e = new TaskCompleteEvent(questid, taskid, CompleteStatus.CANCELED);
+		Bukkit.getPluginManager().callEvent(e);
+	}
+	
+	public synchronized void finishEvent(int eventid, CompleteStatus completeStatus ){
+		if (!complete && started && events.containsKey(eventid) && !events.get(eventid)){
 			events.put(eventid, true);
 			if (completeStatus==CompleteStatus.FAILURE){
 				for (QEvent event : objects)
@@ -86,7 +102,7 @@ public abstract class Task {
 		}
 	}
 	
-	private void checkCompletion() {
+	private synchronized void checkCompletion() {
 		for (Integer eventid : events.keySet()){
 			if (!events.get(eventid))
 				return;

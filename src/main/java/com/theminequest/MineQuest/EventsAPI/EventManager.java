@@ -45,14 +45,16 @@ public class EventManager {
 	 * QuestFinishEvent, that the quest file can use. <br>
 	 * <b>WARNING: QEvents and classes based off of it must NOT tamper the
 	 * constructor. Instead, use {@link QEvent#parseDetails(String)} to set
-	 * instance variables and conditions.</b>
+	 * instance variables and conditions.</b> This method explicitly
+	 * requests the original constructor and if the event does not have
+	 * this constructor, classes will fail to be hooked in entirely.
 	 * 
 	 * @param eventname
 	 *            Event name
 	 * @param event
 	 *            Class of the event (.class)
 	 */
-	public void registerEvent(String eventname, Class<? extends QEvent> event) {
+	public synchronized void registerEvent(String eventname, Class<? extends QEvent> event) {
 		if (classes.containsKey(eventname) || classes.containsValue(event))
 			throw new IllegalArgumentException("We already have this class!");
 		try {

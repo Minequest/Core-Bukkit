@@ -36,6 +36,7 @@ import com.theminequest.MineQuest.Player.PlayerManager;
 import com.theminequest.MineQuest.Quest.QuestManager;
 import com.theminequest.MineQuest.Tasks.TaskManager;
 import com.theminequest.MineQuest.Team.TeamManager;
+import com.theminequest.MineQuest.Utils.UtilManager;
 
 public class MineQuest extends JavaPlugin {
 
@@ -53,6 +54,7 @@ public class MineQuest extends JavaPlugin {
 	public static QuestManager questManager = null;
 	public static PlayerManager playerManager = null;
 	public static TeamManager teamManager = null;
+	public static UtilManager utilManager = null;
 	public static QuestConfig configuration = null;
 	public static SQLExecutor sqlstorage = null;
 	private static PluginDescriptionFile description = null;;
@@ -118,6 +120,8 @@ public class MineQuest extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(playerManager, this);
 		teamManager = new TeamManager();
 		getServer().getPluginManager().registerEvents(teamManager, this);
+		utilManager = new UtilManager();
+		getServer().getPluginManager().registerEvents(utilManager, this);
 		if (!setupPermissions())
 			log(Level.SEVERE,"Permissions could not be setup!");
 		if (!setupEconomy())
@@ -136,6 +140,7 @@ public class MineQuest extends JavaPlugin {
 		questManager = null;
 		playerManager = null;
 		teamManager = null;
+		utilManager = null;
 		configuration = null;
 		sqlstorage = null;
 		permission = null;

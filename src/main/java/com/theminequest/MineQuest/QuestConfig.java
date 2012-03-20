@@ -22,6 +22,8 @@ package com.theminequest.MineQuest;
 import java.io.File;
 import java.util.logging.Level;
 
+import com.theminequest.MineQuest.Utils.PropertiesFile;
+
 public final class QuestConfig {
 
 	public PropertiesFile mainConfig;

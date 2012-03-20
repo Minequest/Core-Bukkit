@@ -42,6 +42,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import com.theminequest.MineQuest.MineQuest;
+import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
+import com.theminequest.MineQuest.BukkitEvents.QuestCompleteEvent;
 import com.theminequest.MineQuest.BukkitEvents.TaskCompleteEvent;
 import com.theminequest.MineQuest.Editable.AreaEdit;
 import com.theminequest.MineQuest.Editable.CertainBlockEdit;
@@ -275,6 +277,12 @@ public class Quest {
 		return events.keySet();
 	}
 
+	public void finishQuest(CompleteStatus c){
+		// TODO STUB
+		QuestCompleteEvent event = new QuestCompleteEvent(questid,c,team);
+		Bukkit.getPluginManager().callEvent(event);
+	}
+	
 	/**
 	 * 
 	 * @param eventid
@@ -335,6 +343,8 @@ public class Quest {
 	public void switchTaskTo(int taskid){
 		// TODO stub
 	}
+	
+	// TODO on finishing quest, unlock Time in TimeUtils if necessary.
 
 	/**
 	 * Retrieve the target specification.
@@ -356,6 +366,7 @@ public class Quest {
 	public void onTaskCompletion(TaskCompleteEvent e) {
 		if (e.getQuestID() != questid)
 			return;
+		// TODO
 	}
 
 	public List<String> getDisallowedAbilities() {

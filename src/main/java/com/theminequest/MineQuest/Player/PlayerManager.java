@@ -31,6 +31,8 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.theminequest.MineQuest.MineQuest;
+import com.theminequest.MineQuest.BukkitEvents.QuestAvailableEvent;
+import com.theminequest.MineQuest.BukkitEvents.QuestCompleteEvent;
 
 public class PlayerManager implements Listener {
 
@@ -101,6 +103,17 @@ public class PlayerManager implements Listener {
 	public void onPlayerKick(PlayerKickEvent e){
 		MineQuest.log("[Player] Saving details for player " + e.getPlayer().getName());
 		getPlayerDetails(e.getPlayer()).save();
+	}
+	
+	@EventHandler
+	public void onQuestAvailableEvent(QuestAvailableEvent e){
+		MineQuest.log("[Player] New Quest Available for player " + e.getPlayer().getName());
+		// TODO
+	}
+	
+	@EventHandler
+	public void onQuestCompleteEvent(QuestCompleteEvent e){
+		// TODO
 	}
 
 }

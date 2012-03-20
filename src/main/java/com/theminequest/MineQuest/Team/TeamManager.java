@@ -40,7 +40,7 @@ public class TeamManager implements Listener{
 		teamid = 0;
 	}
 	
-	public long createTeam(ArrayList<Player> p){
+	public synchronized long createTeam(ArrayList<Player> p){
 		long id = teamid;
 		teamid++;
 		teams.put(id, new Team(teamid,p));
@@ -50,7 +50,7 @@ public class TeamManager implements Listener{
 		return id;
 	}
 	
-	public long createTeam(Player p){
+	public synchronized long createTeam(Player p){
 		ArrayList<Player> group = new ArrayList<Player>();
 		group.add(p);
 		return createTeam(group);
@@ -60,7 +60,7 @@ public class TeamManager implements Listener{
 		return teams.get(id);
 	}
 	
-	public void removePlayerFromTeam(Player p){
+	public synchronized void removePlayerFromTeam(Player p){
 		PlayerDetails d = MineQuest.playerManager.getPlayerDetails(p);
 		long team = d.getTeam();
 		if (team==-1)
@@ -69,7 +69,7 @@ public class TeamManager implements Listener{
 		d.setTeam(-1);
 	}
 	
-	public void removeTeam(long id){
+	public synchronized void removeTeam(long id){
 		Team t = teams.get(id);
 		List<Player> members = t.getPlayers();
 		for (Player p : members)
