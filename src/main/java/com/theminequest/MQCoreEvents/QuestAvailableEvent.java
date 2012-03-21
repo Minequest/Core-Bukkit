@@ -23,6 +23,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import com.theminequest.MineQuest.MineQuest;
+import com.theminequest.MineQuest.Backend.QuestBackend;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.EventsAPI.QEvent;
 import com.theminequest.MineQuest.Team.Team;
@@ -61,12 +62,15 @@ public class QuestAvailableEvent extends QEvent {
 	@Override
 	public CompleteStatus action() {
 		Team t = MineQuest.questManager.getQuest(getQuestId()).getTeam();
+		CompleteStatus toreturn = CompleteStatus.SUCCESS;
 		for (Player p : t.getPlayers()){
-			com.theminequest.MineQuest.BukkitEvents.QuestAvailableEvent event = 
-					new com.theminequest.MineQuest.BukkitEvents.QuestAvailableEvent(questavailable, p);
-			Bukkit.getPluginManager().callEvent(event);
+			try {
+				QuestBackend.giveQuestToPlayer(p,questavailable);
+			} catch (IllegalArgumentException e) {
+				toreturn = CompleteStatus.WARNING;
+			}
 		}
-		return CompleteStatus.SUCCESS;
+		return toreturn;
 	}
 
 }

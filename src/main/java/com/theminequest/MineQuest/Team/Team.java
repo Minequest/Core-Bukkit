@@ -46,11 +46,11 @@ public class Team {
 	 * Need to add listeners when someone quits to leave the party as well.
 	 */
 	
-	public Player getLeader(){
+	public synchronized Player getLeader(){
 		return players.get(0);
 	}
 	
-	public void setLeader(Player p){
+	public synchronized void setLeader(Player p){
 		if (players.contains(p))
 			throw new IllegalArgumentException("Not in team!");
 		players.remove(p);
@@ -75,7 +75,7 @@ public class Team {
 		return players.contains(p);
 	}
 	
-	public boolean add(Player p){
+	public synchronized boolean add(Player p){
 		if (players.size()>=capacity)
 			return false;
 		if (players.contains(p))
@@ -87,7 +87,7 @@ public class Team {
 		return true;
 	}
 	
-	public boolean remove(Player p){
+	public synchronized boolean remove(Player p){
 		if (!players.contains(p))
 			return false;
 		if (MineQuest.playerManager.getPlayerDetails(p).getTeam()==-1)
