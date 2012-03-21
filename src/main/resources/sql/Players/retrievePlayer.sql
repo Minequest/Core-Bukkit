@@ -1,3 +1,3 @@
 # Retrieve a player from SQL
 # %s = Player Name
-SELECT * FROM MQ_PLAYER WHERE P_NAME IS '%s';
+SELECT * FROM mq_player WHERE P_NAME IS '%s';
