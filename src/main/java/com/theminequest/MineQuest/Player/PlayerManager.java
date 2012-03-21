@@ -33,6 +33,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.QuestAvailableEvent;
 import com.theminequest.MineQuest.BukkitEvents.QuestCompleteEvent;
+import com.theminequest.MineQuest.BukkitEvents.TeamInviteEvent;
 
 public class PlayerManager implements Listener {
 
@@ -114,6 +115,11 @@ public class PlayerManager implements Listener {
 	@EventHandler
 	public void onQuestCompleteEvent(QuestCompleteEvent e){
 		// TODO
+	}
+	
+	@EventHandler
+	public void onTeamInviteEvent(TeamInviteEvent e){
+		getPlayerDetails(e.getInvited()).invitePlayer(e.getInviterName(), e.getTeamId(), false);
 	}
 
 }

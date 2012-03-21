@@ -50,6 +50,10 @@ public class PlayerDetails {
 	private boolean abilitiesEnabled;
 	// >_>
 	public LinkedHashMap<Ability,Long> abilitiesCoolDown;
+	// end >_>
+	private long teamwaiting;
+	private int waitingid;
+	
 	// player properties
 	private long mana;
 	private int level;
@@ -62,6 +66,8 @@ public class PlayerDetails {
 		player = p;
 		abilitiesEnabled = false;
 		abilitiesCoolDown = new LinkedHashMap<Ability,Long>();
+		teamwaiting = -1;
+		waitingid = -1;
 		// check for player existence in DB.
 		// if player does not, add.
 		ResultSet playerresults = MineQuest.sqlstorage.querySQL("Players/retrievePlayer", p.getName());
@@ -79,6 +85,35 @@ public class PlayerDetails {
 		// give the player almost full mana (3/4 full)
 		mana = (3/4)*(PlayerManager.BASE_MANA*level);
 		// and feel happeh.
+	}
+	
+	public synchronized void invitePlayer(String string, long teamid, boolean yes){
+		if (team!=-1)
+			throw new IllegalArgumentException("Player is already on a team!");
+		if (teamwaiting!=-1)
+			throw new IllegalArgumentException("Player has an invite pending. Try again in a few seconds.");
+		if (yes){
+			team = teamid;
+			player.sendMessage("[TeamManager] Joined the team!");
+			return;
+		}
+		player.sendMessage("[TeamManager] " + string + " has sent" +
+				"you an invite to a team! To accept, type /accept. You have 30 seconds.");
+		teamwaiting = teamid;
+		waitingid = Bukkit.getScheduler().scheduleSyncDelayedTask(MineQuest.activePlugin, 
+				new Runnable(){
+					@Override
+					public void run() {
+						teamwaiting = -1;
+					}
+		}, 600);
+	}
+	
+	public synchronized void acceptInvite(){
+		Bukkit.getScheduler().cancelTask(waitingid);
+		team = teamwaiting;
+		teamwaiting = -1;
+		player.sendMessage("[TeamManager] Joined the team!");
 	}
 	
 	public long getQuest(){
