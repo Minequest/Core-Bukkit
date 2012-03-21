@@ -39,11 +39,11 @@ public abstract class DatabaseHandler {
 		SELECT, INSERT, UPDATE, DELETE, DO, REPLACE, LOAD, HANDLER, CALL, // Data manipulation statements
 		CREATE, ALTER, DROP, TRUNCATE, RENAME  // Data definition statements
 	}
-	
+
 	/*
 	 *  MySQL, SQLLite
 	 */
-	
+
 	public DatabaseHandler(Logger log, String prefix, String dp) {
 		this.log = log;
 		this.PREFIX = prefix;
@@ -51,7 +51,7 @@ public abstract class DatabaseHandler {
 		this.connected = false;
 		this.connection = null;
 	}
-	
+
 	/**
 	 * <b>writeInfo</b><br>
 	 * <br>
@@ -66,7 +66,7 @@ public abstract class DatabaseHandler {
 			this.log.info(this.PREFIX + this.DATABASE_PREFIX + toWrite);
 		}
 	}
-	
+
 	/**
 	 * <b>writeError</b><br>
 	 * <br>
@@ -86,7 +86,7 @@ public abstract class DatabaseHandler {
 			}
 		}
 	}
-	
+
 	/**
 	 * <b>initialize</b><br>
 	 * <br>
@@ -95,7 +95,7 @@ public abstract class DatabaseHandler {
 	 * <br>
 	 */
 	protected abstract boolean initialize();
-	
+
 	/**
 	 * <b>open</b><br>
 	 * <br>
@@ -105,7 +105,7 @@ public abstract class DatabaseHandler {
 	 * @return the success of the method.
 	 */
 	public abstract Connection open();
-	
+
 	/**
 	 * <b>close</b><br>
 	 * <br>
@@ -114,7 +114,7 @@ public abstract class DatabaseHandler {
 	 * <br>
 	 */
 	public abstract void close();
-	
+
 	/**
 	 * <b>getConnection</b><br>
 	 * <br>
@@ -124,7 +124,7 @@ public abstract class DatabaseHandler {
 	 * @return the <a href="http://download.oracle.com/javase/6/docs/api/java/sql/Connection.html">Connection</a> variable.
 	 */
 	public abstract Connection getConnection();
-	
+
 	/**
 	 * <b>checkConnection</b><br>
 	 * <br>
@@ -134,7 +134,7 @@ public abstract class DatabaseHandler {
 	 * @return the status of the connection, true for up, false for down.
 	 */
 	public abstract boolean checkConnection();
-	
+
 	/**
 	 * <b>query</b><br>
 	 * &nbsp;&nbsp;Sends a query to the SQL database.
@@ -144,7 +144,7 @@ public abstract class DatabaseHandler {
 	 * @return the table of results from the query.
 	 */
 	public abstract ResultSet query(String query);
-	
+
 	/**
 	 * <b>prepare</b><br>
 	 * &nbsp;&nbsp;Prepares to send a query to the database.
@@ -154,7 +154,7 @@ public abstract class DatabaseHandler {
 	 * @return the prepared statement.
 	 */
 	public abstract PreparedStatement prepare(String query);
-	
+
 	/**
 	 * <b>getStatement</b><br>
 	 * &nbsp;&nbsp;Determines the name of the statement and converts it into an enum.
@@ -163,38 +163,57 @@ public abstract class DatabaseHandler {
 	 */
 	protected Statements getStatement(String query) {
 		String trimmedQuery = query.trim();
-		if (trimmedQuery.substring(0,6).equalsIgnoreCase("SELECT"))
-			return Statements.SELECT;
-		else if (trimmedQuery.substring(0,6).equalsIgnoreCase("INSERT"))
-			return Statements.INSERT;
-		else if (trimmedQuery.substring(0,6).equalsIgnoreCase("UPDATE"))
-			return Statements.UPDATE;
-		else if (trimmedQuery.substring(0,6).equalsIgnoreCase("DELETE"))
-			return Statements.DELETE;
-		else if (trimmedQuery.substring(0,6).equalsIgnoreCase("CREATE"))
-			return Statements.CREATE;
-		else if (trimmedQuery.substring(0,5).equalsIgnoreCase("ALTER"))
-			return Statements.ALTER;
-		else if (trimmedQuery.substring(0,4).equalsIgnoreCase("DROP"))
-			return Statements.DROP;
-		else if (trimmedQuery.substring(0,8).equalsIgnoreCase("TRUNCATE"))
-			return Statements.TRUNCATE;
-		else if (trimmedQuery.substring(0,6).equalsIgnoreCase("RENAME"))
-			return Statements.RENAME;
-		else if (trimmedQuery.substring(0,2).equalsIgnoreCase("DO"))
-			return Statements.DO;
-		else if (trimmedQuery.substring(0,7).equalsIgnoreCase("REPLACE"))
-			return Statements.REPLACE;
-		else if (trimmedQuery.substring(0,4).equalsIgnoreCase("LOAD"))
-			return Statements.LOAD;
-		else if (trimmedQuery.substring(0,7).equalsIgnoreCase("HANDLER"))
-			return Statements.HANDLER;
-		else if (trimmedQuery.substring(0,4).equalsIgnoreCase("CALL"))
-			return Statements.CALL;
-		else
-			return Statements.SELECT;
+		if (trimmedQuery.length()>=6){
+			if (trimmedQuery.substring(0,6).equalsIgnoreCase("SELECT"))
+				return Statements.SELECT;
+			else if (trimmedQuery.substring(0,6).equalsIgnoreCase("INSERT"))
+				return Statements.INSERT;
+			else if (trimmedQuery.substring(0,6).equalsIgnoreCase("UPDATE"))
+				return Statements.UPDATE;
+			else if (trimmedQuery.substring(0,6).equalsIgnoreCase("DELETE"))
+				return Statements.DELETE;
+			else if (trimmedQuery.substring(0,6).equalsIgnoreCase("CREATE"))
+				return Statements.CREATE;
+		}
+		if (trimmedQuery.length()>=5){
+			if (trimmedQuery.substring(0,5).equalsIgnoreCase("ALTER"))
+				return Statements.ALTER;
+		}
+		if (trimmedQuery.length()>=4){
+			if (trimmedQuery.substring(0,4).equalsIgnoreCase("DROP"))
+				return Statements.DROP;
+		}
+		if (trimmedQuery.length()>=8){
+			if (trimmedQuery.substring(0,8).equalsIgnoreCase("TRUNCATE"))
+				return Statements.TRUNCATE;
+		}
+		if (trimmedQuery.length()>=6){
+			if (trimmedQuery.substring(0,6).equalsIgnoreCase("RENAME"))
+				return Statements.RENAME;
+		}
+		if (trimmedQuery.length()>=2){
+			if (trimmedQuery.substring(0,2).equalsIgnoreCase("DO"))
+				return Statements.DO;
+		}
+		if (trimmedQuery.length()>=7){
+			if (trimmedQuery.substring(0,7).equalsIgnoreCase("REPLACE"))
+				return Statements.REPLACE;
+		}
+		if (trimmedQuery.length()>=4){
+			if (trimmedQuery.substring(0,4).equalsIgnoreCase("LOAD"))
+				return Statements.LOAD;
+		}
+		if (trimmedQuery.length()>=7){
+			if (trimmedQuery.substring(0,7).equalsIgnoreCase("HANDLER"))
+				return Statements.HANDLER;
+		}
+		if (trimmedQuery.length()>=4){
+			if (trimmedQuery.substring(0,4).equalsIgnoreCase("CALL"))
+				return Statements.CALL;
+		}
+		return Statements.SELECT;
 	}
-	
+
 	/**
 	 * <b>createTable</b><br>
 	 * <br>
@@ -205,7 +224,7 @@ public abstract class DatabaseHandler {
 	 * @return the success of the method.
 	 */
 	public abstract boolean createTable(String query);
-	
+
 	/**
 	 * <b>checkTable</b><br>
 	 * <br>
@@ -216,7 +235,7 @@ public abstract class DatabaseHandler {
 	 * @return success of the method.
 	 */
 	public abstract boolean checkTable(String table);
-	
+
 	/**
 	 * <b>wipeTable</b><br>
 	 * <br>
