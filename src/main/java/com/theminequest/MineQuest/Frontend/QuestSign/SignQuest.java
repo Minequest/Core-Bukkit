@@ -34,7 +34,30 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.theminequest.MineQuest.MineQuest;
 
-public class SignInteractListener implements Listener {
+public class SignQuest implements Listener {
+	
+	public static boolean signCheck(Block block){
+		if (block.getState() instanceof Sign == true){
+				return true;
+			}
+		return false;
+	}
+	public static boolean isQuestSign(Sign sign){
+		String[] line = sign.getLines();
+		if (line[1] != null && (line[2].contentEquals("[Quest]"))){
+			return true;
+		}
+		return false;
+	}
+	public static String questName(Sign sign){
+		String[] line = sign.getLines();
+		String questName = line[2].toString();
+		return questName;
+	}
+	
+	
+	//Listeners For Sign interact and place. 
+	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public static void onPlayerInteract(PlayerInteractEvent event){
 		Action action = event.getAction();
@@ -44,10 +67,10 @@ public class SignInteractListener implements Listener {
 		Block block = event.getClickedBlock();
 		Player player = event.getPlayer();
 		
-		if (QuestSign.signCheck(block) == true){
+		if (signCheck(block) == true){
 			Sign sign = (Sign) block.getState();
-			if (QuestSign.isQuestSign(sign) == true){
-				String questName = QuestSign.questName(sign);
+			if (isQuestSign(sign) == true){
+				String questName = questName(sign);
 				try {
 					if (checkQuest(questName) == true){
 					//TODO: Add to quest list for player.
@@ -72,7 +95,7 @@ public class SignInteractListener implements Listener {
 	@EventHandler
 	public static void onBlockPlace(BlockPlaceEvent event) {
 		Block block = event.getBlockAgainst();
-	    if (QuestSign.signCheck(block) && QuestSign.isQuestSign((Sign) block.getState())) {
+	    if (signCheck(block) && isQuestSign((Sign) block.getState())) {
 	        event.setCancelled(true);
 	        return;
 	    }
