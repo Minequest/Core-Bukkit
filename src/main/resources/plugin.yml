@@ -14,33 +14,33 @@ loadbefore: [Minequest-NPC, Minequest-Spells, Minequest-spout]
 depend: [Vault]
 
 commands:
-	minequest: 
-		permission: minequest.user
-	class:
-		aliases: mqclass
-		permission: minequest.user	
-	quest:
-		aliases: mqquest
-		permission: minequest.user
-	spell:
-		aliases: mqspell
-		permission: minequest.user
-	npc:
-		aliases: mqnpc
-		permission: minequest.user
-	char:
-		aliases: mqchar
-		permission: minequest.user
-		
+  minequest: 
+    permission: minequest.user
+  class:
+    aliases: mqclass
+    permission: minequest.user  
+  quest:
+    aliases: mqquest
+    permission: minequest.user
+  spell:
+    aliases: mqspell
+    permission: minequest.user
+  npc:
+    aliases: mqnpc
+    permission: minequest.user
+  char:
+    aliases: mqchar
+    permission: minequest.user
+    
 permissions:
-	minequest.*:
-		description: Access to all Minequest-Core commands
-		children:
-			minequest.user:true
-			minequest.op:true
-	minequest.user:
-		default: true
-	minequest:
-		default: op		
-		children:
-			minequest.user:true
+  minequest.*:
+    description: Access to all Minequest-Core commands
+    children:
+      minequest.user:true
+      minequest.op:true
+  minequest.user:
+    default: true
+  minequest.op:
+    default: op    
+    children:
+      minequest.user:true
