@@ -37,15 +37,17 @@ import com.theminequest.MineQuest.MineQuest;
 public class SignQuest implements Listener {
 	
 	public static boolean signCheck(Block block){
-		if (block.getState() instanceof Sign == true){
+		if (block.getState() instanceof Sign){
 				return true;
 			}
 		return false;
 	}
 	public static boolean isQuestSign(Sign sign){
 		String[] line = sign.getLines();
-		if (line[1] != null && (line[2].contentEquals("[Quest]"))){
-			return true;
+		if (line[1] != null && (line[1].contentEquals("[Quest]"))){
+			if(line[2] != null){
+				return true;
+			}
 		}
 		return false;
 	}
@@ -73,10 +75,10 @@ public class SignQuest implements Listener {
 				String questName = questName(sign);
 				try {
 					if (checkQuest(questName) == true){
-					//TODO: Add to quest list for player.
+						//TODO: Add to quest list for player.
 					}
 				} catch (FileNotFoundException e) {
-					//TODO: Log Error (Quest Not Found)
+					MineQuest.log("Quest File not found.");
 					e.printStackTrace();
 				} 
 			}

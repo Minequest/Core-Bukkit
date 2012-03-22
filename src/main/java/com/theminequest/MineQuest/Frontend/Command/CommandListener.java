@@ -132,7 +132,8 @@ public class CommandListener implements CommandExecutor{
 		}
 		
 		if(cmd.getName().startsWith("spells") == true){
-			String className = ""; //Get player's class
+			String className; 
+			//Get player's class
 			//TODO: Send player list of spells.
 		}
 		
