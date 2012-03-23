@@ -94,9 +94,9 @@ public class SQLExecutor {
 		}
 		if (lastv==null || lastv.compareTo(MineQuest.getVersion())!=0){
 			if (lastv==null || lastv.equals("unofficialDev")){
-				lastv = "initial";
 				if (lastv.equals("unofficialDev"))
-					MineQuest.log(Level.WARNING, "[SQL] I don't know what your previous build was; reinitializing.");
+					MineQuest.log(Level.WARNING, "[SQL] I don't know what your previous build was; attempting to reinitializing.");
+				lastv = "initial";
 			}
 			try {
 				querySQL("update/"+lastv,"");
