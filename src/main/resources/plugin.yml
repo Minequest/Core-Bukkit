@@ -9,38 +9,40 @@ description: This plugin, and its add-ons expands Minecraft to add in Npcs, Ques
 website: www.theminequest.com
 
 load: POSTWORLD
-loadbefore: [Minequest-NPC, Minequest-Spells, Minequest-spout]
+loadbefore: [Minequest-NPC, Minequest-Events, Minequest-Abilities, Minequest-Spout]
 
 depend: [Vault]
 
 commands:
-  minequest: 
+  minequest:
     permission: minequest.user
   class:
-    aliases: mqclass
+    aliases: [mqclass]
     permission: minequest.user  
   quest:
-    aliases: mqquest
+    aliases: [mqquest]
     permission: minequest.user
   spell:
-    aliases: mqspell
+    aliases: [mqspell]
     permission: minequest.user
   npc:
-    aliases: mqnpc
+    aliases: [mqnpc]
     permission: minequest.user
   char:
-    aliases: mqchar
+    aliases: [mqchar]
     permission: minequest.user
     
 permissions:
   minequest.*:
-    description: Access to all Minequest-Core commands
+    description: Allows all MineQuest-1-Core commands.
     children:
-      minequest.user:true
-      minequest.op:true
+      minequest.user: true
+      minequest.op: true
   minequest.user:
+    description: Allows MQ-1-Core user-related commands.
     default: true
   minequest.op:
-    default: op    
+    description: Allows MQ-1-Core administrator-related commands.
+    default: op
     children:
-      minequest.user:true
+      minequest.user: true
