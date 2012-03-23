@@ -94,10 +94,10 @@ public class SQLExecutor {
 		}
 		if (lastv==null || lastv.compareTo(MineQuest.getVersion())!=0){
 			if (lastv==null || lastv.equals("unofficialDev")){
-				if (lastv.equals("unofficialDev"))
-					MineQuest.log(Level.WARNING, "[SQL] I don't know what your previous build was; attempting to reinitializing.");
-				else
+				if (lastv==null)
 					MineQuest.log(Level.WARNING, "[SQL] No existing DBVERSION file; initializing DB as new.");
+				else
+					MineQuest.log(Level.WARNING, "[SQL] I don't know what your previous build was; attempting to reinitializing.");
 				lastv = "initial";
 			}
 			
