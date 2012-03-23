@@ -32,6 +32,8 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.IOUtils;
+
 import com.theminequest.MineQuest.Utils.PropertiesFile;
 
 import lib.PatPeter.SQLibrary.DatabaseHandler;
@@ -133,11 +135,11 @@ public class SQLExecutor {
 	 * @param params parameters for sql file
 	 * @return ResultSet of SQL query (or null... if there really is nothing good.)
 	 */
-	public synchronized ResultSet querySQL(String queryfilename, String ...params) {
+	public ResultSet querySQL(String queryfilename, String ...params) {
 		InputStream i = MineQuest.activePlugin.getResource("sql/"+queryfilename+".sql");
 		if (i==null)
 			throw new NoSuchElementException("No such resource: " + queryfilename + ".sql");
-		String[] filecontents = convertStreamToString(i).split("\n");
+		String[] filecontents = convertStreamToString(i).split(IOUtils.LINE_SEPARATOR);
 		for (String line : filecontents){
 			// ignore comments
 			if (!line.startsWith("#") && !line.equals("")){
@@ -157,9 +159,9 @@ public class SQLExecutor {
 
 	private String convertStreamToString(InputStream is) {
 		try {
-			return new java.util.Scanner(is).useDelimiter("\\A").next();
-		} catch (java.util.NoSuchElementException e) {
-			return "";
+			return IOUtils.toString(is);
+		} catch (IOException e) {
+			return null;
 		}
 	}
 
