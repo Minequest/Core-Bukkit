@@ -120,7 +120,7 @@
 		<dependency>
 			<groupId>net.milkbowl.vault</groupId>
 			<artifactId>Vault</artifactId>
-			<version>LATEST</version>
+			<version>1.2.13-SNAPSHOT</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
