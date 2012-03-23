@@ -87,20 +87,40 @@ public class H2 extends DatabaseHandler {
 	public ResultSet query(String query) {
 		Connection connection = null;
 		Statement statement = null;
-		ResultSet result = null/*new JdbcRowSetImpl()*/;
+		ResultSet result = null;
 		try {
 			connection = open();
 			statement = connection.createStatement();
-			result = statement.executeQuery("SELECT CURTIME()");
 
 			switch (this.getStatement(query)) {
 			case SELECT:
 				result = statement.executeQuery(query);
 				return result;
-
+				break;
+			case EXPLAIN:
+				result = statement.executeQuery(query);
+				return result;
+				break;
+			case CALL:
+				result = statement.executeQuery(query);
+				return result;
+				break;
+			case SCRIPT:
+				result = statement.executeQuery(query);
+				return result;
+				break;
+			case SHOW:
+				result = statement.executeQuery(query);
+				return result;
+				break;
+			case HELP:
+				result = statement.executeQuery(query);
+				return result;
+				break;
 			default:
 				statement.executeUpdate(query);
-				return result;
+				return null;
+				break;
 			}
 		} catch (SQLException ex) {
 			if (ex.getMessage().toLowerCase().contains("locking") || ex.getMessage().toLowerCase().contains("locked")) {
