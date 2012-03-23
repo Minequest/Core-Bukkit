@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 public class H2 extends DatabaseHandler {
 	public String location;
 	public String name;
-	private File sqlFile;
+	private String sqlFileURL;
 
 	public H2(Logger log, String prefix, String name, String location) {
 		super(log, prefix, "[H2] ");
@@ -21,14 +21,15 @@ public class H2 extends DatabaseHandler {
 		File folder = new File(this.location);
 		if (this.name.contains("/") ||
 				this.name.contains("\\") ||
-				this.name.endsWith(".h2")) {
-			this.writeError("The database name can not contain: /, \\, or .h2", true);
+				this.name.contains(".h2") ||
+				this.name.endsWith(".db")) {
+			this.writeError("The database name can not contain: /, \\, .h2, or .db", true);
 		}
 		if (!folder.exists()) {
 			folder.mkdir();
 		}
 
-		sqlFile = new File(folder.getAbsolutePath() + File.separator + name + ".h2");
+		sqlFileURL = folder.getAbsolutePath() + File.separator + name;
 	}
 
 	@Override
@@ -47,7 +48,7 @@ public class H2 extends DatabaseHandler {
 		if (initialize()) {
 			try {
 				return DriverManager.getConnection("jdbc:h2:file:" +
-						sqlFile.getAbsolutePath()+";MODE=MYSQL;IGNORECASE=TRUE;AUTO_SERVER=TRUE");
+						sqlFileURL+";MODE=MYSQL;IGNORECASE=TRUE;AUTO_SERVER=TRUE");
 			} catch (SQLException e) {
 				this.writeError("SQLite exception on initialize " + e, true);
 			}
