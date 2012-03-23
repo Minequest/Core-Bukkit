@@ -178,7 +178,7 @@ public abstract class DatabaseHandler {
 	protected Statements getStatement(String query) throws SQLException {
 		String trimmedQuery = query.trim();
 		for (Statements s : Statements.values()){
-			if (trimmedQuery.toLowerCase().startsWith(s.name()))
+			if (trimmedQuery.toLowerCase().startsWith(s.name().toLowerCase()))
 				return s;
 		}
 		throw new SQLException("Not a valid statement: " + trimmedQuery);
