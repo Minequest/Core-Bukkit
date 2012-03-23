@@ -19,11 +19,11 @@ public class H2 extends DatabaseHandler {
 		this.name = name;
 		this.location = location;
 		File folder = new File(this.location);
-		if (this.name.contains("/") ||
-				this.name.contains("\\") ||
-				this.name.contains(".h2") ||
-				this.name.endsWith(".db")) {
-			this.writeError("The database name can not contain: /, \\, .h2, or .db", true);
+		if (this.name.contains("/") || this.name.contains("\\")
+				|| this.name.contains(".h2") || this.name.endsWith(".db")) {
+			this.writeError(
+					"The database name can not contain: /, \\, .h2, or .db",
+					true);
 		}
 		if (!folder.exists()) {
 			folder.mkdir();
@@ -47,8 +47,8 @@ public class H2 extends DatabaseHandler {
 	public Connection open() {
 		if (initialize()) {
 			try {
-				return DriverManager.getConnection("jdbc:h2:file:" +
-						sqlFileURL+";MODE=MYSQL;IGNORECASE=TRUE;AUTO_SERVER=TRUE");
+				return DriverManager.getConnection("jdbc:h2:file:" + sqlFileURL
+						+ ";MODE=MYSQL;IGNORECASE=TRUE;AUTO_SERVER=TRUE");
 			} catch (SQLException e) {
 				this.writeError("SQLite exception on initialize " + e, true);
 			}
@@ -59,7 +59,7 @@ public class H2 extends DatabaseHandler {
 	@Override
 	public void close() {
 		Connection connection = this.open();
-		if (connection != null){
+		if (connection != null) {
 			try {
 				connection.close();
 			} catch (SQLException ex) {
@@ -93,39 +93,23 @@ public class H2 extends DatabaseHandler {
 			statement = connection.createStatement();
 
 			switch (this.getStatement(query)) {
-			case SELECT:
-				result = statement.executeQuery(query);
-				return result;
-				break;
-			case EXPLAIN:
-				result = statement.executeQuery(query);
-				return result;
-				break;
-			case CALL:
-				result = statement.executeQuery(query);
-				return result;
-				break;
-			case SCRIPT:
-				result = statement.executeQuery(query);
-				return result;
-				break;
-			case SHOW:
-				result = statement.executeQuery(query);
-				return result;
-				break;
-			case HELP:
-				result = statement.executeQuery(query);
-				return result;
-				break;
-			default:
-				statement.executeUpdate(query);
-				return null;
-				break;
+				case SELECT:
+				case EXPLAIN:
+				case CALL:
+				case SCRIPT:
+				case SHOW:
+				case HELP:
+					result = statement.executeQuery(query);
+					return result;
+				default:
+					statement.executeUpdate(query);
+					return null;
 			}
 		} catch (SQLException ex) {
-			if (ex.getMessage().toLowerCase().contains("locking") || ex.getMessage().toLowerCase().contains("locked")) {
+			if (ex.getMessage().toLowerCase().contains("locking")
+					|| ex.getMessage().toLowerCase().contains("locked")) {
 				return retryResult(query);
-				//this.writeError("",false);
+				// this.writeError("",false);
 			} else {
 				this.writeError("Error at SQL Query: " + ex.getMessage(), false);
 			}
@@ -137,14 +121,15 @@ public class H2 extends DatabaseHandler {
 	public PreparedStatement prepare(String query) {
 		Connection connection = null;
 		PreparedStatement ps = null;
-		try
-		{
+		try {
 			connection = open();
 			ps = connection.prepareStatement(query);
 			return ps;
-		} catch(SQLException e) {
-			if(!e.toString().contains("not return ResultSet"))
-				this.writeError("Error in SQL prepare() query: " + e.getMessage(), false);
+		} catch (SQLException e) {
+			if (!e.toString().contains("not return ResultSet"))
+				this.writeError(
+						"Error in SQL prepare() query: " + e.getMessage(),
+						false);
 		}
 		return ps;
 	}
@@ -155,7 +140,8 @@ public class H2 extends DatabaseHandler {
 		try {
 			this.connection = this.open();
 			if (query.equals("") || query == null) {
-				this.writeError("SQL query empty: createTable(" + query + ")", true);
+				this.writeError("SQL query empty: createTable(" + query + ")",
+						true);
 				return false;
 			}
 
@@ -175,7 +161,7 @@ public class H2 extends DatabaseHandler {
 	public boolean checkTable(String table) {
 		try {
 			Connection connection = open();
-			//this.connection = this.open();
+			// this.connection = this.open();
 			Statement statement = connection.createStatement();
 
 			ResultSet result = statement.executeQuery("SELECT * FROM " + table);
@@ -192,22 +178,23 @@ public class H2 extends DatabaseHandler {
 			}
 		}
 
-
-		if (query("SELECT * FROM " + table) == null) return true;
+		if (query("SELECT * FROM " + table) == null)
+			return true;
 		return false;
 	}
 
 	@Override
 	public boolean wipeTable(String table) {
-		//Connection connection = null;
+		// Connection connection = null;
 		Statement statement = null;
 		String query = null;
 		try {
 			if (!this.checkTable(table)) {
-				this.writeError("Error wiping table: \"" + table + "\" does not exist.", true);
+				this.writeError("Error wiping table: \"" + table
+						+ "\" does not exist.", true);
 				return false;
 			}
-			//connection = open();
+			// connection = open();
 			this.connection = this.open();
 			statement = this.connection.createStatement();
 			query = "DELETE FROM " + table + ";";
@@ -215,20 +202,17 @@ public class H2 extends DatabaseHandler {
 
 			return true;
 		} catch (SQLException ex) {
-			if (!(ex.getMessage().toLowerCase().contains("locking") ||
-					ex.getMessage().toLowerCase().contains("locked")) &&
-					!ex.toString().contains("not return ResultSet"))
-						this.writeError("Error at SQL Wipe Table Query: " + ex, false);
-				return false;
+			if (!(ex.getMessage().toLowerCase().contains("locking") || ex
+					.getMessage().toLowerCase().contains("locked"))
+					&& !ex.toString().contains("not return ResultSet"))
+				this.writeError("Error at SQL Wipe Table Query: " + ex, false);
+			return false;
 		}
 	}
 
 	/*
-	 * <b>retry</b><br>
-	 * <br>
-	 * Retries.
-	 * <br>
-	 * <br>
+	 * <b>retry</b><br> <br> Retries. <br> <br>
+	 * 
 	 * @param query The SQL query.
 	 */
 	public void retry(String query) {
@@ -242,10 +226,12 @@ public class H2 extends DatabaseHandler {
 				statement.executeQuery(query);
 				passed = true;
 			} catch (SQLException ex) {
-				if (ex.getMessage().toLowerCase().contains("locking") || ex.getMessage().toLowerCase().contains("locked") ) {
+				if (ex.getMessage().toLowerCase().contains("locking")
+						|| ex.getMessage().toLowerCase().contains("locked")) {
 					passed = false;
 				} else {
-					this.writeError("Error at SQL Query: " + ex.getMessage(), false);
+					this.writeError("Error at SQL Query: " + ex.getMessage(),
+							false);
 				}
 			}
 		}
@@ -255,6 +241,7 @@ public class H2 extends DatabaseHandler {
 	 * Retries a result.
 	 * 
 	 * @param query The SQL query to retry.
+	 * 
 	 * @return The SQL query result.
 	 */
 	public ResultSet retryResult(String query) {
@@ -270,10 +257,12 @@ public class H2 extends DatabaseHandler {
 				passed = true;
 				return result;
 			} catch (SQLException ex) {
-				if (ex.getMessage().toLowerCase().contains("locking") || ex.getMessage().toLowerCase().contains("locked")) {
+				if (ex.getMessage().toLowerCase().contains("locking")
+						|| ex.getMessage().toLowerCase().contains("locked")) {
 					passed = false;
 				} else {
-					this.writeError("Error at SQL Query: " + ex.getMessage(), false);
+					this.writeError("Error at SQL Query: " + ex.getMessage(),
+							false);
 				}
 			}
 		}

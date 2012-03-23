@@ -23,6 +23,7 @@ package lib.PatPeter.SQLibrary;
  */
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 //import java.sql.DriverManager;
 import java.sql.ResultSet;
 //import java.sql.SQLException;
@@ -37,7 +38,19 @@ public abstract class DatabaseHandler {
 	protected Connection connection;
 	protected enum Statements {
 		SELECT, INSERT, UPDATE, DELETE, DO, REPLACE, LOAD, HANDLER, CALL, // Data manipulation statements
-		CREATE, ALTER, DROP, TRUNCATE, RENAME  // Data definition statements
+		CREATE, ALTER, DROP, TRUNCATE, RENAME,  // Data definition statements
+		
+		// H2-specific
+		SCRIPT,
+		
+		// MySQL-specific
+		START, COMMIT, ROLLBACK, SAVEPOINT, LOCK, UNLOCK, // MySQL Transactional and Locking Statements
+		PREPARE, EXECUTE, DEALLOCATE, // Prepared Statements
+		SET, SHOW, // Database Administration
+		DESCRIBE, EXPLAIN, HELP, USE, // Utility Statements
+		
+		// SQLite-specific
+		ANALYZE, ATTACH, BEGIN, DETACH, END, INDEXED, ON, PRAGMA, REINDEX, RELEASE, VACUUM
 	}
 
 	/*
@@ -160,10 +173,16 @@ public abstract class DatabaseHandler {
 	 * &nbsp;&nbsp;Determines the name of the statement and converts it into an enum.
 	 * <br>
 	 * <br>
+	 * @throws SQLException 
 	 */
-	protected Statements getStatement(String query) {
+	protected Statements getStatement(String query) throws SQLException {
 		String trimmedQuery = query.trim();
-		if (trimmedQuery.length()>=6){
+		for (Statements s : Statements.values()){
+			if (trimmedQuery.startsWith(s.name().toLowerCase()))
+				return s;
+		}
+		throw new SQLException("Not a valid statement!");
+		/*if (trimmedQuery.length()>=6){
 			if (trimmedQuery.substring(0,6).equalsIgnoreCase("SELECT"))
 				return Statements.SELECT;
 			else if (trimmedQuery.substring(0,6).equalsIgnoreCase("INSERT"))
@@ -211,7 +230,7 @@ public abstract class DatabaseHandler {
 			if (trimmedQuery.substring(0,4).equalsIgnoreCase("CALL"))
 				return Statements.CALL;
 		}
-		return Statements.SELECT;
+		return Statements.SELECT;*/
 	}
 
 	/**

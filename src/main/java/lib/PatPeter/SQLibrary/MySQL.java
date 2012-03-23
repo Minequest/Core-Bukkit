@@ -133,7 +133,6 @@ public class MySQL extends DatabaseHandler {
 			    case SELECT:
 				    result = statement.executeQuery(query);
 				    return result;
-			    
 			    default:
 			    	statement.executeUpdate(query);
 			    	return result;
