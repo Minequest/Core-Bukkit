@@ -181,7 +181,7 @@ public abstract class DatabaseHandler {
 			if (trimmedQuery.toLowerCase().startsWith(s.name()))
 				return s;
 		}
-		throw new SQLException("Not a valid statement: " + query);
+		throw new SQLException("Not a valid statement: " + trimmedQuery);
 		/*if (trimmedQuery.length()>=6){
 			if (trimmedQuery.substring(0,6).equalsIgnoreCase("SELECT"))
 				return Statements.SELECT;
