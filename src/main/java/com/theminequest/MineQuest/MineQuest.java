@@ -128,7 +128,7 @@ public class MineQuest extends JavaPlugin {
 			log(Level.SEVERE,"Permissions could not be setup!");
 		if (!setupEconomy())
 			log(Level.SEVERE,"Economy could not be setup!");
-		RegisterEvents.RegisterEvents();
+		RegisterEvents.registerEvents();
 	}
 
 	@Override

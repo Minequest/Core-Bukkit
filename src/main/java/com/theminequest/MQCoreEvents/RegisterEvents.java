@@ -8,13 +8,12 @@ import com.theminequest.MineQuest.EventsAPI.EventManager;
 
 public final class RegisterEvents {
 
-	public static void RegisterEvents(){
+	public static void registerEvents(){
 		EventManager e = MineQuest.eventManager;
 		e.registerEvent("CompleteQuestEvent", CompleteQuestEvent.class);
 		e.registerEvent("LockWorldTimeEvent", LockWorldTimeEvent.class);
 		e.registerEvent("MessageEvent", MessageEvent.class);
 		e.registerEvent("PartyHealthEvent", PartyHealthEvent.class);
-		e.registerEvent("TeamHealthEvent",PartyHealthEvent.class);
 		e.registerEvent("QuestAvailableEvent",QuestAvailableEvent.class);
 		e.registerEvent("QuestEvent", QuestEvent.class);
 		e.registerEvent("RewardExpEvent",RewardExpEvent.class);
