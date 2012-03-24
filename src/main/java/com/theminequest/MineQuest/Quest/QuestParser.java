@@ -9,6 +9,7 @@ import java.util.Scanner;
 import java.util.TreeMap;
 
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.Editable.CertainBlockEdit;
@@ -136,6 +137,20 @@ public class QuestParser {
 		q.events = new TreeMap<Integer, String>(events);
 		q.targets = new TreeMap<Integer, TargetDetails>(targets);
 		q.editables = new TreeMap<Integer, Edit>(editables);
+	}
+	
+	public static void parseYAMLDefinition(Quest q){
+		LinkedHashMap<Integer, Task> tasks = new LinkedHashMap<Integer, Task>();
+		LinkedHashMap<Integer, String> events = new LinkedHashMap<Integer, String>();
+		LinkedHashMap<Integer, TargetDetails> targets = new LinkedHashMap<Integer, TargetDetails>();
+		LinkedHashMap<Integer, Edit> editables = new LinkedHashMap<Integer,Edit>();
+		File f = new File(MineQuest.questManager.locationofQuests + File.separator + q.questname
+				+ ".yml");
+		if (!f.exists())
+			throw new RuntimeException(new FileNotFoundException("NO SUCH FILE " + f));
+		YamlConfiguration definition = YamlConfiguration.loadConfiguration(f);
+		
+		// TODO new file format
 	}
 
 }

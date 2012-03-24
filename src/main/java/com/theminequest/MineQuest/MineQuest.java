@@ -29,6 +29,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.theminequest.MQCoreEvents.RegisterEvents;
 import com.theminequest.MineQuest.AbilityAPI.AbilityManager;
 import com.theminequest.MineQuest.Editable.EditableManager;
 import com.theminequest.MineQuest.EventsAPI.EventManager;
@@ -127,6 +128,7 @@ public class MineQuest extends JavaPlugin {
 			log(Level.SEVERE,"Permissions could not be setup!");
 		if (!setupEconomy())
 			log(Level.SEVERE,"Economy could not be setup!");
+		RegisterEvents.RegisterEvents();
 	}
 
 	@Override
