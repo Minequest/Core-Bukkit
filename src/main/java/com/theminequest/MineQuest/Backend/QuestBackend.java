@@ -28,7 +28,8 @@ public final class QuestBackend {
 		// check if the player already has this quest
 		List<String> noncompletedquests;
 		try {
-			noncompletedquests = getQuests(false,p);
+			noncompletedquests = getQuests(QuestAvailability.ACCEPTED,p);
+			noncompletedquests.addAll(getQuests(QuestAvailability.AVAILABLE,p));
 		} catch (SQLException e) {
 			MineQuest.log(Level.SEVERE, "[QuestBackend] Invoked giveQuestToPlayer by " +
 					p.getName() + " on quest " + quest_name + " threw exception:");
@@ -44,7 +45,7 @@ public final class QuestBackend {
 		if (!repeatable){
 			List<String> completedquests;
 			try {
-				completedquests = getQuests(true,p);
+				completedquests = getQuests(QuestAvailability.COMPLETED,p);
 			} catch (SQLException e) {
 				MineQuest.log(Level.SEVERE, "[QuestBackend] Invoked giveQuestToPlayer by " +
 						p.getName() + " on quest " + quest_name + " threw exception:");
@@ -64,14 +65,17 @@ public final class QuestBackend {
 		Bukkit.getPluginManager().callEvent(event);
 	}
 
-	public static List<String> getQuests(boolean completed, Player p) throws SQLException{
+	public static List<String> getQuests(QuestAvailability type, Player p) throws SQLException{
 		ResultSet currentquests;
-		if (!completed)
+		if (type == QuestAvailability.ACCEPTED)
 			currentquests = MineQuest.sqlstorage.querySQL(
 					"Quests/getPlayerQuestsNotCompleted", p.getName());
-		else
+		else if (type == QuestAvailability.COMPLETED)
 			currentquests = MineQuest.sqlstorage.querySQL(
 					"Quests/getPlayerQuestsCompleted", p.getName());
+		else
+			currentquests = MineQuest.sqlstorage.querySQL(
+					"Quests/getPlayerQuestsAvailable", p.getName());
 		List<String> quests = new ArrayList<String>();
 		if (!currentquests.first())
 			return quests;
