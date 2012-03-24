@@ -22,6 +22,7 @@ package com.theminequest.MineQuest.Team;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.theminequest.MineQuest.MineQuest;
@@ -95,6 +96,12 @@ public class Team {
 		MineQuest.playerManager.getPlayerDetails(p).setTeam(-1);
 		players.remove(p);
 		return true;
+	}
+	
+	public synchronized void teleport(Location l){
+		for (Player p : players){
+			p.teleport(l);
+		}
 	}
 	
 }

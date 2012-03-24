@@ -35,6 +35,7 @@ import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
@@ -44,6 +45,7 @@ import org.bukkit.event.Listener;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.BukkitEvents.QuestCompleteEvent;
+import com.theminequest.MineQuest.BukkitEvents.QuestStartedEvent;
 import com.theminequest.MineQuest.BukkitEvents.TaskCompleteEvent;
 import com.theminequest.MineQuest.Editable.AreaEdit;
 import com.theminequest.MineQuest.Editable.CertainBlockEdit;
@@ -56,6 +58,7 @@ import com.theminequest.MineQuest.EventsAPI.QEvent;
 import com.theminequest.MineQuest.Target.TargetDetails;
 import com.theminequest.MineQuest.Tasks.Task;
 import com.theminequest.MineQuest.Team.Team;
+import com.theminequest.MineQuest.Utils.TimeUtils;
 
 public class Quest {
 
@@ -64,6 +67,8 @@ public class Quest {
 	protected long questid;
 	protected boolean started;
 	protected int currenttask;
+	
+	protected Location enteredfrom;
 
 	// always <ID #,OBJECT/DETAILS>
 	// TreeMap guarantees key order.
@@ -90,6 +95,9 @@ public class Quest {
 	protected String world;
 	protected boolean loadworld;
 
+	/*
+	 * Constructor will start the quest for the user.
+	 */
 	protected Quest(long questid, String id, Team t) {
 		team = t;
 		questname = id;
@@ -139,6 +147,9 @@ public class Quest {
 				throw new RuntimeException(e);
 			}
 		}
+		QuestStartedEvent event = new QuestStartedEvent(this);
+		Bukkit.getPluginManager().callEvent(event);
+		startTask(tasks.firstKey());
 	}
 
 	/**
@@ -149,36 +160,10 @@ public class Quest {
 	public Set<Integer> getEventNums() {
 		return events.keySet();
 	}
-
-	public void finishQuest(CompleteStatus c){
-		// TODO STUB
-		QuestCompleteEvent event = new QuestCompleteEvent(questid,c,team);
-		Bukkit.getPluginManager().callEvent(event);
-	}
 	
-	/**
-	 * 
-	 * @param eventid
-	 * @return the string description of the event; null if not found.
-	 */
-	public String getEventDesc(int eventid) {
-		return events.get(eventid);
-	}
-
-	/**
-	 * Start the Quest. Launches each task in an asynchronous thread.
-	 */
-	public void startQuest(){
-		// TODO
-		startTask(tasks.firstKey());
-	}
-
-	/**
-	 * Get the "YOU CAN'T EDIT THIS PLACE" message...
-	 * @return cannot edit message
-	 */
-	public String getEditMessage(){
-		return editMessage;
+	public void enterQuest(){
+		enteredfrom = team.getLeader().getLocation();
+		team.teleport(new Location(Bukkit.getWorld(world),spawnPoint[0],spawnPoint[1],spawnPoint[2]));
 	}
 
 	/**
@@ -198,9 +183,34 @@ public class Quest {
 		return true;
 	}
 
+	public void finishQuest(CompleteStatus c){
+		team.teleport(enteredfrom);
+		TimeUtils.unlock(Bukkit.getWorld(world));
+		Bukkit.unloadWorld(Bukkit.getWorld(world), false);
+		QuestCompleteEvent event = new QuestCompleteEvent(questid,c,team);
+		Bukkit.getPluginManager().callEvent(event);
+	}
+	
+	/**
+	 * 
+	 * @param eventid
+	 * @return the string description of the event; null if not found.
+	 */
+	public String getEventDesc(int eventid) {
+		return events.get(eventid);
+	}
+
+	/**
+	 * Get the "YOU CAN'T EDIT THIS PLACE" message...
+	 * @return cannot edit message
+	 */
+	public String getEditMessage(){
+		return editMessage;
+	}
+
 	/**
 	 * Retrieve the current task ID.
-	 * @return Current Task ID, or <code>-1</code> if none is running.
+	 * @return Current Task ID.
 	 */
 	public int getCurrentTaskID(){
 		return currenttask;
@@ -217,8 +227,6 @@ public class Quest {
 	public String getWorld() {
 		return world;
 	}
-	
-	// TODO on finishing quest, unlock Time in TimeUtils if necessary.
 
 	/**
 	 * Retrieve the target specification.
@@ -231,6 +239,11 @@ public class Quest {
 	public TargetDetails getTarget(int id) {
 		return targets.get(id);
 	}
+	
+	public List<String> getDisallowedAbilities() {
+		// TODO not done yet
+		return new ArrayList<String>();
+	}
 
 	public Team getTeam() {
 		return team;
@@ -240,12 +253,7 @@ public class Quest {
 	public void onTaskCompletion(TaskCompleteEvent e) {
 		if (e.getQuestID() != questid)
 			return;
-		// TODO
-	}
-
-	public List<String> getDisallowedAbilities() {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO this is lovely and all, but tasks should trigger other tasks...
 	}
 
 }
