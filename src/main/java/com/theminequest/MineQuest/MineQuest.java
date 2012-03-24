@@ -110,6 +110,7 @@ public class MineQuest extends JavaPlugin {
 		abilityManager = new AbilityManager();
 		getServer().getPluginManager().registerEvents(abilityManager, this);
 		eventManager = new EventManager();
+		getServer().getPluginManager().registerEvents(eventManager, this);
 		editableManager = new EditableManager();
 		getServer().getPluginManager().registerEvents(editableManager, this);
 		taskManager = new TaskManager();

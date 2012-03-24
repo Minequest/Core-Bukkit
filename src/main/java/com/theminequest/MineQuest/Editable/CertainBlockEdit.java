@@ -29,7 +29,7 @@ public class CertainBlockEdit extends Edit {
 	
 	public CertainBlockEdit(long qid, int eid, int tid, String d) {
 		super(qid, eid, tid, d);
-		blockIDs = d.split(":");
+		blockIDs = d.split(",");
 	}
 
 	@Override

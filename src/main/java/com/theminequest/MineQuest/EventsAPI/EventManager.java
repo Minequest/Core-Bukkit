@@ -20,7 +20,14 @@
 package com.theminequest.MineQuest.EventsAPI;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import com.theminequest.MineQuest.MineQuest;
 
@@ -31,13 +38,15 @@ import com.theminequest.MineQuest.MineQuest;
  * @author xu_robert <xu_robert@linux.com>
  * 
  */
-public class EventManager {
+public class EventManager implements Listener {
 
 	private LinkedHashMap<String, Class<? extends QEvent>> classes;
+	private List<QEvent> activeevents;
 
 	public EventManager() {
 		MineQuest.log("[Event] Starting Manager...");
 		classes = new LinkedHashMap<String, Class<? extends QEvent>>();
+		activeevents = new ArrayList<QEvent>();
 	}
 
 	/**
@@ -116,6 +125,28 @@ public class EventManager {
 				return true;
 		}
 		return false;
+	}
+	
+	public synchronized void addEventListener(QEvent e){
+		activeevents.add(e);
+	}
+	
+	public synchronized void rmEventListener(QEvent e){
+		activeevents.remove(e);
+	}
+	
+	@EventHandler
+	public void onBlockBreak(BlockBreakEvent e){
+		for (QEvent a : activeevents){
+			a.onBlockBreak(e);
+		}
+	}
+	
+	@EventHandler
+	public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent e){
+		for (QEvent a : activeevents){
+			a.onEntityDamageByEntityEvent(e);
+		}
 	}
 
 }

@@ -64,7 +64,7 @@ public abstract class Edit {
 			e.setCancelled(true);
 			e.getPlayer().sendMessage(ChatColor.YELLOW+"[!] " +MineQuest.questManager.getQuest(questid).getEditMessage());
 		}
-		MineQuest.questManager.getQuest(questid).switchTaskTo(taskid);
+		MineQuest.questManager.getQuest(questid).startTask(taskid);
 	}
 	
 	public void onBlockDamage(BlockDamageEvent e){
@@ -72,7 +72,7 @@ public abstract class Edit {
 			e.setCancelled(true);
 			e.getPlayer().sendMessage(ChatColor.YELLOW+"[!] " +MineQuest.questManager.getQuest(questid).getEditMessage());
 		}
-		MineQuest.questManager.getQuest(questid).switchTaskTo(taskid);
+		MineQuest.questManager.getQuest(questid).startTask(taskid);
 	}
 
 }

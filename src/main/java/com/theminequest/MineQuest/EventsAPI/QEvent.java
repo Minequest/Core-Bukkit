@@ -20,6 +20,8 @@
 package com.theminequest.MineQuest.EventsAPI;
 
 import org.bukkit.Bukkit;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
@@ -52,6 +54,7 @@ public abstract class QEvent{
 	 * complete, then fire off more stuff.
 	 */
 	public final void fireEvent(){
+		MineQuest.eventManager.addEventListener(this);
 		tasknumber = Bukkit.getScheduler().scheduleAsyncRepeatingTask(MineQuest.activePlugin, new Runnable(){
 			@Override
 			public void run() {
@@ -110,10 +113,29 @@ public abstract class QEvent{
 	public synchronized void complete(CompleteStatus c){
 		if (complete==null){
 			Bukkit.getScheduler().cancelTask(tasknumber);
+			MineQuest.eventManager.rmEventListener(this);
 			complete = c;
 			EventCompleteEvent e = new EventCompleteEvent(this,c);
 			Bukkit.getPluginManager().callEvent(e);
 		}
+	}
+	
+	/**
+	 * Optional method that QEvents can override if they want;
+	 * by default, doesn't do anything.
+	 * @param e
+	 */
+	public void onBlockBreak(BlockBreakEvent e){
+		
+	}
+	
+	/**
+	 * Optional method that QEvents can override if they want;
+	 * by default, doesn't do anything.
+	 * @param e
+	 */
+	public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent e){
+		
 	}
 
 }

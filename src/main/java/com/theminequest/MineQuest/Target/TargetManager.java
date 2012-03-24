@@ -98,10 +98,10 @@ public class TargetManager {
 	}
 
 	/*
-	 * eventid1:eventid2:etc...
+	 * eventid1,eventid2,etc...
 	 */
 	private static List<LivingEntity> targetter(TargetDetails t) {
-		String[] ids = t.getDetails().split(":");
+		String[] ids = t.getDetails().split(",");
 		List<LivingEntity> toreturn = new ArrayList<LivingEntity>();
 		for (String id : ids) {
 			int i = Integer.parseInt(id);
@@ -120,11 +120,11 @@ public class TargetManager {
 	}
 	
 	/*
-	 * editid1:editid2:editid3...
+	 * editid1,editid2,editid3...
 	 * TODO: actually implement this... even though this doesn't make any sense.
 	 */
 	private static List<LivingEntity> targetteredit(TargetDetails t) {
-		String[] ids = t.getDetails().split(":");
+		String[] ids = t.getDetails().split(",");
 		List<LivingEntity> toreturn = new ArrayList<LivingEntity>();
 		return toreturn;
 	}

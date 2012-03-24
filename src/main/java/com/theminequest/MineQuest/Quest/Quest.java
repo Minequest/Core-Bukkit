@@ -296,7 +296,8 @@ public class Quest {
 	 * Start the Quest. Launches each task in an asynchronous thread.
 	 */
 	public void startQuest(){
-		int firsttask = tasks.firstKey();
+		// TODO
+		startTask(tasks.firstKey());
 	}
 
 	/**
@@ -313,6 +314,10 @@ public class Quest {
 	 * @return true if task was started successfully
 	 */
 	public boolean startTask(int taskid){
+		if (taskid==-1){
+			finishQuest(CompleteStatus.SUCCESS);
+			return true;
+		}
 		if (!tasks.containsKey(taskid))
 			return false;
 		currenttask = taskid;
@@ -338,10 +343,6 @@ public class Quest {
 
 	public String getWorld() {
 		return world;
-	}
-
-	public void switchTaskTo(int taskid){
-		// TODO stub
 	}
 	
 	// TODO on finishing quest, unlock Time in TimeUtils if necessary.

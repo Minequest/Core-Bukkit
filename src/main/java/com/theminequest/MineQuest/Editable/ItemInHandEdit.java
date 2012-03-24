@@ -29,7 +29,7 @@ public class ItemInHandEdit extends Edit {
 
 	public ItemInHandEdit(long qid, int eid, int tid, String d) {
 		super(qid, eid, tid, d);
-		materialsID = d.split(":");
+		materialsID = d.split(",");
 	}
 
 	@Override
