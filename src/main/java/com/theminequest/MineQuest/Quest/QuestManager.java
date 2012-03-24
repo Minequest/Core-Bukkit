@@ -19,6 +19,7 @@
  **/
 package com.theminequest.MineQuest.Quest;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -34,6 +35,7 @@ import com.theminequest.MineQuest.Team.Team;
 
 public class QuestManager implements Listener {
 
+	protected final String locationofQuests;
 	private LinkedHashMap<Long,Quest> quests;
 	private long questid;
 	
@@ -41,6 +43,10 @@ public class QuestManager implements Listener {
 		MineQuest.log("[Quest] Starting Manager...");
 		quests = new LinkedHashMap<Long,Quest>();
 		questid = 0;
+		locationofQuests = MineQuest.configuration.questConfig
+				.getString("questfolderlocation",
+				MineQuest.activePlugin.getDataFolder().getAbsolutePath()
+				+File.separator+"quests");
 	}
 	
 	public long startQuest(String id, Team t){
