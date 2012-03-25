@@ -33,6 +33,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.theminequest.MineQuest.MineQuest;
+import com.theminequest.MineQuest.Backend.QuestBackend;
 
 public class SignQuest implements Listener {
 	
@@ -75,7 +76,7 @@ public class SignQuest implements Listener {
 				String questName = questName(sign);
 				try {
 					if (checkQuest(questName) == true){
-						//TODO: Add to quest list for player.
+						QuestBackend.giveQuestToPlayer(player, questName);
 					}
 				} catch (FileNotFoundException e) {
 					MineQuest.log("Quest File not found.");
@@ -86,7 +87,6 @@ public class SignQuest implements Listener {
 	}
 	public static boolean checkQuest(String questName) throws FileNotFoundException{
 		File f = new File(MineQuest.activePlugin.getDataFolder()+File.separator+"quests"+File.separator+questName+".quest");
-
 		if (f.exists() != true){
 			return true;
 		}

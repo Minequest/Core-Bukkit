@@ -7,6 +7,11 @@ import com.theminequest.MineQuest.Player.PlayerDetails;
 import com.theminequest.MineQuest.Team.Team;
 
 public final class TeamBackend {
+	
+	//TODO Need create Team. 
+	public synchronized static void createTeam(Player p){
+		
+	}
 
 	public synchronized static Team getCurrentTeam(Player p){
 		PlayerDetails d = MineQuest.playerManager.getPlayerDetails(p);
@@ -14,6 +19,12 @@ public final class TeamBackend {
 		if (teamid==-1)
 			return null;
 		return MineQuest.teamManager.getTeam(teamid);
+	}
+	
+	public synchronized static long teamID(Player p){
+		PlayerDetails d = MineQuest.playerManager.getPlayerDetails(p);
+		long id = d.getTeam();
+		return id;
 	}
 	
 	public synchronized static void invitePlayer(Player inviter, Player invitee, long teamid) throws IllegalArgumentException{

@@ -19,6 +19,11 @@
  **/
 package com.theminequest.MineQuest.Frontend.Command;
 
+import java.io.File;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.logging.Level;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -26,8 +31,13 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.theminequest.MineQuest.MineQuest;
+import com.theminequest.MineQuest.Player.PlayerDetails;
 import com.theminequest.MineQuest.Team.Team;
-import com.theminequest.MineQuest.Team.TeamManager;
+import com.theminequest.MineQuest.Backend.TeamBackend;
+import com.theminequest.MineQuest.Backend.QuestAvailability;
+import com.theminequest.MineQuest.Backend.QuestBackend;
+
 
 public class CommandListener implements CommandExecutor{
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -75,29 +85,56 @@ public class CommandListener implements CommandExecutor{
 			sender.sendMessage("    Class resets can not be undone and will reset your lvl in that class.");
 			return true;
 		}
+		
+		//Don't worry about this command for now. 
 		if(cmd.getName().equalsIgnoreCase("char") && player !=null){
-			sender.sendMessage("Level: ");
-			//TODO: Get Class
+			sender.sendMessage("Class: " + "");
+			sender.sendMessage("Level: " + "");			
 			//TODO: Get Class lvl
+			return true;
 		}
+		
 		//Quest Core Commands
 		if(cmd.getName().startsWith("party")){
 			String partyCommand = cmd.getName().substring(7);
-			Player partyMember = Bukkit.getPlayer(sender.getName());
-			if(partyCommand == "create"){
-				
+			Team t = TeamBackend.getCurrentTeam(Bukkit.getPlayer(sender.getName()));
+			
+			if((partyCommand == "create") && (t == null)){
+				//TODO: Create team. 
 				sender.sendMessage("CreatedParty");
+				return true;
 			}
+			
 			if(partyCommand.contains("invite") == true){
-				String memberToInvite = cmd.getName().substring(13);
+				long teamID= TeamBackend.teamID(player); 
+				Player invitee = Bukkit.getPlayer(cmd.getName().substring(13));
 				
-				//TODO:Add member to party if there is room. 
+				if (invitee == null){
+					sender.sendMessage("Could not find player.");
+				}
+				if (TeamBackend.getCurrentTeam(invitee) != null){
+					sender.sendMessage("Player is already in a group.");
+					return true;
+				}
+				if (invitee != null && (TeamBackend.getCurrentTeam(invitee) == null)){
+					TeamBackend.invitePlayer(player, invitee, teamID);
+					sender.sendMessage("Player invited to group");
+					return true;
+				}
 			}
 			if(partyCommand.contains("list") == true){
-				//TODO:List party members.
+				Team team = TeamBackend.getCurrentTeam(player); 
+				List<Player> players = team.getPlayers();
+				sender.sendMessage(players.toString());
+				return true;
 			}
-			if(partyCommand.equalsIgnoreCase("quit")){
-				//TODO:Quit Party
+			if(partyCommand.equalsIgnoreCase("leave")){
+				t.remove(player);
+				sender.sendMessage("Removed from party");
+				return true;
+			}
+			else{
+				sender.sendMessage("Unknown Party Command.");
 			}
 		}
 		
@@ -105,65 +142,31 @@ public class CommandListener implements CommandExecutor{
 			String questCommand = cmd.getName().substring(7);
 			if(questCommand.contains("start")){
 				String questName = cmd.getName().substring(12);
-				//Check if quest exists. 
+				//Just In case the file was deleted. 
+				File f = new File(MineQuest.activePlugin.getDataFolder()+File.separator+"quests"+File.separator+questName+".quest");
+				if (f.exists() != true){
+					//TODO: Start quest. Needed in the QuestBackend class.
+				}
 			}
-			if(questCommand.contains("quit")){
-				//Check what quest the player is currently in.
-				//Quit quest.
+			if(questCommand.equalsIgnoreCase("quit")){
+				try {
+					List<String> questlist = QuestBackend.getQuests(QuestAvailability.ACCEPTED, player);
+					//TODO: Quit quest. Needed in the QuestBackend class.
+				} catch (SQLException e) {
+					sender.sendMessage("No quest found");
+				}
+			}
+			if(questCommand.equals("List")){
+				try {
+					List<String> questlist = QuestBackend.getQuests(QuestAvailability.AVAILABLE, player);
+					String ql = questlist.toString();
+					sender.sendMessage(ql);
+				} catch (SQLException e) {
+					MineQuest.log(Level.SEVERE, e.toString());
+					sender.sendMessage("Could not find your Quest List");
+				}
 			}
 		}
-		
-		//Skill Related Commands
-		if(cmd.getName().startsWith("class select") && player !=null){
-			String className = cmd.getName().substring(13);
-			String playername = sender.getName();
-			if(className.equalsIgnoreCase("warmage") == true){
-				//TODO: Set player's class to WarMage.
-			}
-			if(className.equalsIgnoreCase("peacemage") == true){
-				//TODO: Set player's class to PeaceMage.
-			}
-			if(className.equalsIgnoreCase("warrior") == true){
-				//TODO: Set player's class to Warrior.
-			}
-			if(className.equalsIgnoreCase("archer") == true){
-				//TODO: Set player's class to Archer.
-			}
-		}
-		
-		if(cmd.getName().startsWith("spells") == true){
-			String className; 
-			//Get player's class
-			//TODO: Send player list of spells.
-		}
-		
-		if(cmd.getName().equalsIgnoreCase("class reset")){
-			String playerName = cmd.getName();
-			sender.sendMessage("Please type /class reset confirm");
-		}
-		
-		if(cmd.getName().equalsIgnoreCase("class reset confirm")){
-			String playerName = cmd.getName();
-			//TODO: Reset Class for player. 
-			sender.sendMessage("Reseting Character");
-			sender.sendMessage("To chose a class type /class select <class>");	
-		}
-		
-		//NPC Related Commands
-		if(cmd.getName().startsWith("npc ")){
-			String npcCommand = cmd.getName().substring(5);
-			if(npcCommand.equalsIgnoreCase("create")){
-				String npcName = cmd.getName().substring(12);
-				Location npcLocation = player.getLocation();
-				//Spawn npc at this location. 
-			}
-			
-			if(npcCommand.equalsIgnoreCase("select")){
-				String npcName = cmd.getName().substring(12);
-				//Select Npc for use with other commands.
-			}
-			
-		}
-		return false; 
+	return false;
 	}
 }

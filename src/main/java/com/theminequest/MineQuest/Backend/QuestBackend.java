@@ -105,5 +105,17 @@ public final class QuestBackend {
 		}
 		return true;
 	}
+	
+	//TODO: Start quest. Returns true if quests starts. 
+	public static boolean startQuest(String name){
+		
+		return false;
+	}
+	
+	//TODO: Quit quest. Returns true if quest quits. false if it couldn't. 
+	public static boolean quitQuest(){
+		
+		return true;
+	}
 
 }
