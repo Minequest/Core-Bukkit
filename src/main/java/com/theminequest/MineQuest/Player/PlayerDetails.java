@@ -61,13 +61,8 @@ public class PlayerDetails {
 	private int classid;
 
 	public PlayerDetails(Player p) throws SQLException {
-		quest = -1;
-		team = -1;
-		player = p;
-		abilitiesEnabled = false;
+		reload();
 		abilitiesCoolDown = new LinkedHashMap<Ability,Long>();
-		teamwaiting = -1;
-		waitingid = -1;
 		// check for player existence in DB.
 		// if player does not, add.
 		ResultSet playerresults = MineQuest.sqlstorage.querySQL("Players/retrievePlayer", p.getName());
@@ -85,6 +80,14 @@ public class PlayerDetails {
 		// give the player almost full mana (3/4 full)
 		mana = (3/4)*(PlayerManager.BASE_MANA*level);
 		// and feel happeh.
+	}
+	
+	protected synchronized void reload() {
+		quest = -1;
+		team = -1;
+		teamwaiting = -1;
+		waitingid = -1;
+		abilitiesEnabled = false;
 	}
 	
 	public synchronized void invitePlayer(String string, long teamid, boolean yes){

@@ -24,7 +24,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.Player.PlayerDetails;
@@ -75,6 +79,23 @@ public class TeamManager implements Listener{
 		for (Player p : members)
 			removePlayerFromTeam(p);
 		teams.remove(id);
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerQuit(PlayerQuitEvent e){
+		PlayerDetails p = MineQuest.playerManager.getPlayerDetails(e.getPlayer());
+		if (p.getTeam()!=-1){
+			MineQuest.teamManager.getTeam(p.getTeam()).remove(e.getPlayer());
+		}
+		
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerKick(PlayerKickEvent e){
+		PlayerDetails p = MineQuest.playerManager.getPlayerDetails(e.getPlayer());
+		if (p.getTeam()!=-1){
+			MineQuest.teamManager.getTeam(p.getTeam()).remove(e.getPlayer());
+		}
 	}
 	
 }

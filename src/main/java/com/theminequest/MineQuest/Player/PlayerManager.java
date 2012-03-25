@@ -24,7 +24,9 @@ import java.util.LinkedHashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -80,6 +82,8 @@ public class PlayerManager implements Listener {
 			} catch (SQLException e) {
 				throw new RuntimeException(e);
 			}
+		} else {
+			players.get(p).reload();
 		}
 	}
 
@@ -88,19 +92,19 @@ public class PlayerManager implements Listener {
 		return players.get(p);
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerJoin(PlayerJoinEvent e){
 		MineQuest.log("[Player] Retrieving details for player " + e.getPlayer().getName());
 		playerAcct(e.getPlayer());
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerQuit(PlayerQuitEvent e){
 		MineQuest.log("[Player] Saving details for player " + e.getPlayer().getName());
 		getPlayerDetails(e.getPlayer()).save();
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerKick(PlayerKickEvent e){
 		MineQuest.log("[Player] Saving details for player " + e.getPlayer().getName());
 		getPlayerDetails(e.getPlayer()).save();
