@@ -40,7 +40,7 @@
 	</repositories>
 	<build>
 		<finalName>MineQuest</finalName>
-		<defaultGoal>clean compile package install</defaultGoal>
+		<defaultGoal>clean package javadoc:javadoc javadoc:jar install</defaultGoal>
 		<sourceDirectory>${basedir}/src/main/java</sourceDirectory>
 		<resources>
 			<resource>
