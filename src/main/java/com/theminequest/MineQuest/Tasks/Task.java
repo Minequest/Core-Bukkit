@@ -30,7 +30,7 @@ import com.theminequest.MineQuest.BukkitEvents.TaskCompleteEvent;
 import com.theminequest.MineQuest.EventsAPI.QEvent;
 import com.theminequest.MineQuest.Quest.QuestManager;
 
-public abstract class Task {
+public class Task {
 	
 	private boolean started;
 	private boolean complete;
@@ -45,7 +45,7 @@ public abstract class Task {
 	 * @param taskid Task ID
 	 * @param events Event numbers that must be completed
 	 */
-	public Task(long questid, int taskid, int[] events){
+	public Task(long questid, int taskid, List<Integer> events){
 		started = false;
 		complete = false;
 		this.questid = questid;
@@ -61,7 +61,7 @@ public abstract class Task {
 		if (started)
 			return;
 		started = true;
-		for (Integer eventid : events.keySet()){
+		for (int eventid : events.keySet()){
 			String eventdesc = MineQuest.questManager.getQuest(questid).getEventDesc(eventid);
 			String[] details = eventdesc.split(":");
 			String eventname = details[0];

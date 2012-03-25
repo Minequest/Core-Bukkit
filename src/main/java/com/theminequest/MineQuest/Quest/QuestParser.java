@@ -5,10 +5,13 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
 
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.theminequest.MineQuest.MineQuest;
@@ -24,7 +27,7 @@ import com.theminequest.MineQuest.Tasks.Task;
 public class QuestParser {
 	
 	protected static void parseDefinition(Quest q) throws FileNotFoundException{
-		LinkedHashMap<Integer, Task> tasks = new LinkedHashMap<Integer, Task>();
+		LinkedHashMap<Integer, String> tasks = new LinkedHashMap<Integer, String>();
 		LinkedHashMap<Integer, String> events = new LinkedHashMap<Integer, String>();
 		LinkedHashMap<Integer, TargetDetails> targets = new LinkedHashMap<Integer, TargetDetails>();
 		LinkedHashMap<Integer, Edit> editables = new LinkedHashMap<Integer,Edit>();
@@ -92,6 +95,8 @@ public class QuestParser {
 				}
 				// final result: "eventname:T:details"
 				events.put(number, eventname + ":" + details);
+			} else if (type.equals("task")) {
+				// TODO apparently not implemented D:
 			} else if (type.equals("target")) {
 				int number = Integer.parseInt(ar.get(1));
 				String d = "";
@@ -133,14 +138,14 @@ public class QuestParser {
 				editables.put(number, e);
 			}
 		}
-		q.tasks = new TreeMap<Integer, Task>(tasks);
+		q.tasks = new TreeMap<Integer, String>(tasks);
 		q.events = new TreeMap<Integer, String>(events);
 		q.targets = new TreeMap<Integer, TargetDetails>(targets);
 		q.editables = new TreeMap<Integer, Edit>(editables);
 	}
 	
 	public static void parseYAMLDefinition(Quest q){
-		LinkedHashMap<Integer, Task> tasks = new LinkedHashMap<Integer, Task>();
+		LinkedHashMap<Integer, String> tasks = new LinkedHashMap<Integer, String>();
 		LinkedHashMap<Integer, String> events = new LinkedHashMap<Integer, String>();
 		LinkedHashMap<Integer, TargetDetails> targets = new LinkedHashMap<Integer, TargetDetails>();
 		LinkedHashMap<Integer, Edit> editables = new LinkedHashMap<Integer,Edit>();
@@ -150,7 +155,81 @@ public class QuestParser {
 			throw new RuntimeException(new FileNotFoundException("NO SUCH FILE " + f));
 		YamlConfiguration definition = YamlConfiguration.loadConfiguration(f);
 		
-		// TODO new file format
+		q.displayname = definition.getString("name","Quest");
+		q.displaydesc = definition.getString("description","This is a quest.");
+		q.displayaccept = definition.getString("accepttext","You have accepted the quest.");
+		q.displaycancel = definition.getString("canceltext","You have canceled the quest.");
+		q.displayfinish = definition.getString("finishtext","You have finished the quest.");
+		q.questRepeatable = definition.getBoolean("isRepeatable", false);
+		q.spawnReset = definition.getBoolean("resetSpawn",true);
+		
+		String[] setSpawn = definition.getString("setSpawn","0:64:0").split(":");
+		q.spawnPoint[0] = Double.parseDouble(setSpawn[0]);
+		q.spawnPoint[1] = Double.parseDouble(setSpawn[1]);
+		q.spawnPoint[2] = Double.parseDouble(setSpawn[2]);
+		
+		String[] areaPreserve = definition.getString("areaPreserve","0:64:0:0:64:0").split(":");
+		q.areaPreserve[0] = Double.parseDouble(areaPreserve[0]);
+		q.areaPreserve[1] = Double.parseDouble(areaPreserve[1]);
+		q.areaPreserve[2] = Double.parseDouble(areaPreserve[2]);
+		q.areaPreserve[3] = Double.parseDouble(areaPreserve[3]);
+		q.areaPreserve[4] = Double.parseDouble(areaPreserve[4]);
+		q.areaPreserve[5] = Double.parseDouble(areaPreserve[5]);
+		
+		q.editMessage = definition.getString("doNotEditMessage",ChatColor.GRAY+"You cannot edit while in the quest.");
+		q.world = definition.getString("world","world");
+		q.loadworld = definition.getBoolean("loadWorld",false);
+		
+		ConfigurationSection eventss = definition.getConfigurationSection("events");
+		for (int i : definition.getIntegerList("")){
+			events.put(i,eventss.getString(String.valueOf(i)));
+		}
+		
+		q.events = new TreeMap<Integer, String>(events);
+		
+		ConfigurationSection taskss = definition.getConfigurationSection("tasks");
+		for (int i : definition.getIntegerList("")){
+			tasks.put(i,taskss.getString(String.valueOf(i)));
+		}
+		
+		q.tasks = new TreeMap<Integer, String>(tasks);
+		
+		ConfigurationSection targetss = definition.getConfigurationSection("targets");
+		for (int i : definition.getIntegerList("")){
+			targets.put(i,new TargetDetails(q.questid,targetss.getString(String.valueOf(i))));
+		}
+		
+		q.targets = new TreeMap<Integer, TargetDetails>(targets);
+		
+		ConfigurationSection editss = definition.getConfigurationSection("edits");
+		for (int i : definition.getIntegerList("")){
+			editables.put(i,processEdit(editss.getString(String.valueOf(i))));
+		}
+		
+		q.editables = new TreeMap<Integer, Edit>(editables);
+		
+		/*
+		 * name: <String name>
+		 * description: <description of quest>
+		 * accepttext: <upon accepting quest>
+		 * canceltext: <upon canceling quest>
+		 * finishtext: <upon finishing quest>
+		 * isRepeatable: boolean
+		 * resetSpawn: boolean
+		 * setSpawn: String
+		 * areaPreserve: String
+		 * doNotEditMessage: String
+		 * world: String
+		 * loadWorld: boolean (is this dungeoned?)
+		 * events: Map<Integer,String>
+		 * tasks: Map<Integer,String>
+		 * targets: Map<Integer,String>
+		 * edits: Map<Integer,String>
+		 */
+	}
+	
+	private static Edit processEdit(String details){
+		return null;
 	}
 
 }

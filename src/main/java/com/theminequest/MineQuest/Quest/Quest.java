@@ -75,12 +75,17 @@ public class Quest {
 	// (yes, treemap is RESOURCE intensive D:,
 	// but I have to combine it with LinkedHashMap to ensure there
 	// will be no duplicates)
-	protected TreeMap<Integer, Task> tasks;
+	protected TreeMap<Integer, String> tasks;
+	protected Task activeTask;
 	protected TreeMap<Integer, String> events;
 	protected TreeMap<Integer, TargetDetails> targets;
 	protected TreeMap<Integer, Edit> editables;
 	// quest configuration
 	protected String displayname;
+	protected String displaydesc;
+	protected String displayaccept;
+	protected String displaycancel;
+	protected String displayfinish;
 	protected boolean questRepeatable;
 	protected boolean spawnReset;
 	/**
@@ -106,6 +111,10 @@ public class Quest {
 		currenttask = -1;
 		// DEFAULTS start
 		displayname = questname;
+		displaydesc = "This is a quest.";
+		displayaccept = "You have accepted the quest.";
+		displaycancel = "You have canceled the quest.";
+		displayfinish = "You have finished the quest.";
 		questRepeatable = false;
 		spawnReset = true;
 
@@ -125,6 +134,8 @@ public class Quest {
 		editMessage = ChatColor.GRAY + "You cannot edit inside a quest.";
 		world = t.getLeader().getWorld().getName();
 		loadworld = false;
+		
+		activeTask = null;
 
 		// DEFAULTS end
 		try {
@@ -179,8 +190,18 @@ public class Quest {
 		if (!tasks.containsKey(taskid))
 			return false;
 		currenttask = taskid;
-		tasks.get(taskid).start();
+		String[] eventnums = tasks.get(taskid).split(":");
+		List<Integer> eventnum = new ArrayList<Integer>();
+		for (String e : eventnums){
+			eventnum.add(Integer.parseInt(e));
+		}
+		activeTask = new Task(questid,taskid,eventnum);
+		activeTask.start();
 		return true;
+	}
+	
+	public Task getActiveTask(){
+		return activeTask;
 	}
 
 	public void finishQuest(CompleteStatus c){
@@ -216,7 +237,7 @@ public class Quest {
 		return currenttask;
 	}
 
-	public Task getTask(int id) {
+	public String getTaskDetails(int id) {
 		return tasks.get(id);
 	}
 

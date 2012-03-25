@@ -38,7 +38,7 @@ public class TaskManager implements Listener {
 	public void onEventComplete(EventCompleteEvent e){
 		long questid = e.getEvent().getQuestId();
 		Quest q = MineQuest.questManager.getQuest(questid);
-		Task t = q.getTask(e.getEvent().getTaskId());
+		Task t = q.getActiveTask();
 		t.finishEvent(e.getEvent().getEventId(),(e.getCompleteStatus()));
 	}
 

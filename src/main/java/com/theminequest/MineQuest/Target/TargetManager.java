@@ -106,7 +106,7 @@ public class TargetManager {
 		for (String id : ids) {
 			int i = Integer.parseInt(id);
 			Quest q = MineQuest.questManager.getQuest(t.getQuest());
-			Task ts = q.getTask(q.getCurrentTaskID());
+			Task ts = q.getActiveTask();
 			List<QEvent> running = ts.getEventsRunning();
 			for (QEvent event : running) {
 				if (event.getEventId() == i) {
