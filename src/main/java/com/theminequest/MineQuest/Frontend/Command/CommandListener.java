@@ -54,44 +54,22 @@ public class CommandListener implements CommandExecutor{
 		if (args.length == 0){
 			if(cmd.getName().equalsIgnoreCase("minequest")){
 				sender.sendMessage("Type /Quest for Quest help");
-				sender.sendMessage("Type /Spell for spell help");
-				sender.sendMessage("Type /Npc for npc help");
-				sender.sendMessage("Type /Class for class help");
-				sender.sendMessage("Type /Cubeconomy for Mq economy help");
+				sender.sendMessage("Type /Party for party help");
 				return true;
 			}
-			else if(cmd.getName().equalsIgnoreCase("quest") && player != null){
+			else if(cmd.getName().equalsIgnoreCase("party") && player != null){
+				sender.sendMessage("Party Commands:");
 				sender.sendMessage("    /party create - create a party.");
 				sender.sendMessage("    /party list - list users in your party.");
 				sender.sendMessage("    /party join <username> - join username's party.");
-				sender.sendMessage("    /party quit - removes you from the party.");
+				sender.sendMessage("    /party leave - removes you from the party.");
+				return true;
+			}
+			else if(cmd.getName().equalsIgnoreCase("quest") && player != null){
+				sender.sendMessage("Quest Commands:");
+				sender.sendMessage("    /quest list");
 				sender.sendMessage("    /quest start <name of quest> - start a quest with party.");
 				sender.sendMessage("    /quest quit - quit the instance of quest, lose current exp.");
-				return true;
-			}
-			else if(cmd.getName().equalsIgnoreCase("spell") && player != null){
-				sender.sendMessage("    /bind <spellname> - binds a spell to the item.");
-				sender.sendMessage("    /unbind - list users in your party.");
-				sender.sendMessage("    /spellcomp <username> - join username's party.");
-				return true;
-			}
-			else if(cmd.getName().equalsIgnoreCase("npc") && player != null){
-				sender.sendMessage("    /npc create <name> - creates a npc at your current location.");
-				sender.sendMessage("    /npc select - selects the npc that you click on.");
-				sender.sendMessage("    /npc path create - Starts the path creation.");
-				sender.sendMessage("    /npc path point - Adds a point for the npcs path.");
-				sender.sendMessage("    /npc path finish - Ends the path creation.");
-				sender.sendMessage("    /npc message <#> <message> - Adds a message to the npc.");
-				sender.sendMessage("    /npc property <property> <value> - Adds the given property.");
-				return true;
-			}
-			else if(cmd.getName().equalsIgnoreCase("class") && player != null){ 
-				sender.sendMessage("    /char - Shows your level.");
-				sender.sendMessage("    /class select <Class name> - Sets your class to the given type.");
-				sender.sendMessage("    /spells - Lists all available spells for you class.");
-				sender.sendMessage("    /class reset - Resets character to choose a new class.");
-				sender.sendMessage("    /class reset confirm - used to confirm the reset.");
-				sender.sendMessage("    Class resets can not be undone and will reset your lvl in that class.");
 				return true;
 			}
 		}
@@ -113,7 +91,7 @@ public class CommandListener implements CommandExecutor{
 					} catch (BackendFailedException e) {
 						sender.sendMessage(e.toString());
 					}
-					sender.sendMessage("CreatedParty");
+					sender.sendMessage("Created Party");
 					return true;
 				}
 
@@ -189,7 +167,7 @@ public class CommandListener implements CommandExecutor{
 						try {
 							QuestBackend.acceptQuest(player, args[1]);
 						} catch (BackendFailedException e) {
-							sender.sendMessage(e.toString());
+							sender.sendMessage(e.getMessage());
 						}
 					}
 					return true;
@@ -203,7 +181,7 @@ public class CommandListener implements CommandExecutor{
 					try {
 						QuestBackend.cancelActiveQuest(player);
 					} catch (BackendFailedException e) {
-						sender.sendMessage(e.toString());
+						sender.sendMessage(e.getMessage());
 					}
 					return true;
 				}
@@ -213,7 +191,7 @@ public class CommandListener implements CommandExecutor{
 						String ql = questlist.toString();
 						sender.sendMessage(ql);
 					} catch (SQLException e) {
-						MineQuest.log(Level.SEVERE, e.toString());
+						MineQuest.log(Level.SEVERE, e.getMessage());
 						sender.sendMessage("Could not find your Quest List");
 					}
 					return true;
