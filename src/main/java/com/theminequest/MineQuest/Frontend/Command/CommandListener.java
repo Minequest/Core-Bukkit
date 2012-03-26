@@ -48,11 +48,8 @@ public class CommandListener implements CommandExecutor{
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player player = null;
-		player = (Player) sender;
-		String[] command = cmd.toString().split(" ");
-		String word1 = command[1];
-		String word2 = command[2];
-		String word3 = command[3];
+		if (sender instanceof Player)
+			player = (Player) sender;
 		
 		if(cmd.getName().equalsIgnoreCase("minequest")){ // If the player typed /basic then do the following...
 			sender.sendMessage("Type /Quest for Quest help");
@@ -96,6 +93,8 @@ public class CommandListener implements CommandExecutor{
 			sender.sendMessage("    Class resets can not be undone and will reset your lvl in that class.");
 			return true;
 		}
+		
+		/* REFACTOR ALL COMMANDS DOWN BELOW ~robxu9 */
 		
 		//Don't worry about this command for now. 
 		if(word1.equalsIgnoreCase("char") && player !=null){
