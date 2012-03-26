@@ -62,6 +62,7 @@ public class PlayerDetails {
 	private int classid;
 
 	public PlayerDetails(Player p) throws SQLException {
+		player = p;
 		reload();
 		abilitiesCoolDown = new LinkedHashMap<Ability,Long>();
 		// check for player existence in DB.
