@@ -85,6 +85,7 @@ public class Team {
 			return false;
 		MineQuest.playerManager.getPlayerDetails(p).setTeam(teamid);
 		players.add(p);
+		// TODO add TeamPlayerJoinedEvent
 		return true;
 	}
 	
@@ -95,12 +96,19 @@ public class Team {
 			return false;
 		MineQuest.playerManager.getPlayerDetails(p).setTeam(-1);
 		players.remove(p);
+		// TODO add TeamPlayerQuitEvent
 		return true;
 	}
 	
 	public synchronized void teleport(Location l){
 		for (Player p : players){
 			p.teleport(l);
+		}
+	}
+	
+	public synchronized void assignQuest(long questid){
+		for (Player p : players){
+			MineQuest.playerManager.getPlayerDetails(p).setQuest(questid);
 		}
 	}
 	

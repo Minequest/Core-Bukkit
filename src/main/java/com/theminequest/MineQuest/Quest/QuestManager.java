@@ -20,15 +20,19 @@
 package com.theminequest.MineQuest.Quest;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import com.theminequest.MineQuest.MineQuest;
+import com.theminequest.MineQuest.BukkitEvents.QuestCompleteEvent;
+import com.theminequest.MineQuest.BukkitEvents.QuestStartedEvent;
 import com.theminequest.MineQuest.BukkitEvents.TaskCompleteEvent;
 import com.theminequest.MineQuest.Team.Team;
 
@@ -53,6 +57,8 @@ public class QuestManager implements Listener {
 		quests.put(questid,new Quest(questid,id,t));
 		long thisquestid = questid;
 		questid++;
+		QuestStartedEvent e = new QuestStartedEvent(quests.get(thisquestid));
+		Bukkit.getPluginManager().callEvent(e);
 		return thisquestid;
 	}
 
@@ -65,6 +71,16 @@ public class QuestManager implements Listener {
 	@EventHandler
 	public void taskCompletion(TaskCompleteEvent e){
 		getQuest(e.getQuestID()).onTaskCompletion(e);
+	}
+	
+	@EventHandler
+	public void onQuestCompletion(QuestCompleteEvent e){
+		e.getTeam().assignQuest(-1);
+		String questname = quests.get(e.getQuestId()).questname;
+		for (Player p : e.getTeam().getPlayers()){
+			MineQuest.sqlstorage.querySQL("Quests/completeQuest", p.getName(), questname);
+		}
+		quests.put(e.getQuestId(), null);
 	}
 	
 }

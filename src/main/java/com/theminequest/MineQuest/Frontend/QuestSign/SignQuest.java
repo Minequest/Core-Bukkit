@@ -31,31 +31,30 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.getspout.commons.ChatColor;
 
 import com.theminequest.MineQuest.MineQuest;
+import com.theminequest.MineQuest.Backend.BackendFailedException;
 import com.theminequest.MineQuest.Backend.QuestBackend;
 
 public class SignQuest implements Listener {
 	
 	public static boolean signCheck(Block block){
-		if (block.getState() instanceof Sign){
-				return true;
-			}
-		return false;
+		return block.getState() instanceof Sign;
 	}
+	
 	public static boolean isQuestSign(Sign sign){
 		String[] line = sign.getLines();
-		if (line[1] != null && (line[1].contentEquals("[Quest]"))){
-			if(line[2] != null){
+		if (line[1] != null && line[1].contentEquals("[Quest]")){
+			if(line[2] != null && !line[2].equals("")){
 				return true;
 			}
 		}
 		return false;
 	}
+	
 	public static String questName(Sign sign){
-		String[] line = sign.getLines();
-		String questName = line[2].toString();
-		return questName;
+		return sign.getLines()[2];
 	}
 	
 	
@@ -70,36 +69,34 @@ public class SignQuest implements Listener {
 		Block block = event.getClickedBlock();
 		Player player = event.getPlayer();
 		
-		if (signCheck(block) == true){
+		if (signCheck(block)){
 			Sign sign = (Sign) block.getState();
-			if (isQuestSign(sign) == true){
+			if (isQuestSign(sign)){
 				String questName = questName(sign);
 				try {
-					if (checkQuest(questName) == true){
-						QuestBackend.giveQuestToPlayer(player, questName);
-					}
-				} catch (FileNotFoundException e) {
-					MineQuest.log("Quest File not found.");
-					e.printStackTrace();
+					QuestBackend.giveQuestToPlayer(player, questName);
+					QuestBackend.acceptQuest(player, questName);
+				} catch (BackendFailedException e) {
+					block.breakNaturally();
+					player.sendMessage(ChatColor.RED + "No such quest!");
 				} 
 			}
 		}
 	}
-	public static boolean checkQuest(String questName) throws FileNotFoundException{
-		File f = new File(MineQuest.activePlugin.getDataFolder()+File.separator+"quests"+File.separator+questName+".quest");
-		if (f.exists() != true){
-			return true;
-		}
-		else{
-			return false;
-		}
-	}
+	
 	@EventHandler
 	public static void onBlockPlace(BlockPlaceEvent event) {
 		Block block = event.getBlockAgainst();
-	    if (signCheck(block) && isQuestSign((Sign) block.getState())) {
-	        event.setCancelled(true);
-	        return;
+	    if (signCheck(block)){
+	    	Sign s = (Sign)block.getState();
+	    	if (isQuestSign(s)){
+	    		try {
+	    			QuestBackend.isRepeatable(s.getLine(2));
+	    		}catch (IllegalArgumentException e){
+	    			event.setCancelled(true);
+	    			event.getPlayer().sendMessage(ChatColor.RED + "No such quest!");
+	    		}
+	    	}
 	    }
 	    
 	}

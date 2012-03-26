@@ -32,6 +32,7 @@ import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.Quest.Quest;
 import com.theminequest.MineQuest.Utils.PropertiesFile;
 import com.theminequest.MineQuest.AbilityAPI.Ability;
+import com.theminequest.MineQuest.Backend.TeamBackend;
 import com.theminequest.MineQuest.BukkitEvents.PlayerExperienceEvent;
 import com.theminequest.MineQuest.BukkitEvents.PlayerLevelEvent;
 import com.theminequest.MineQuest.BukkitEvents.PlayerManaEvent;
@@ -116,6 +117,7 @@ public class PlayerDetails {
 		Bukkit.getScheduler().cancelTask(waitingid);
 		team = teamwaiting;
 		teamwaiting = -1;
+		MineQuest.teamManager.getTeam(team).add(player);
 		player.sendMessage("[TeamManager] Joined the team!");
 	}
 	

@@ -23,6 +23,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import com.theminequest.MineQuest.MineQuest;
+import com.theminequest.MineQuest.Backend.BackendFailedException;
 import com.theminequest.MineQuest.Backend.QuestBackend;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.EventsAPI.QEvent;
@@ -67,6 +68,8 @@ public class QuestAvailableEvent extends QEvent {
 			try {
 				QuestBackend.giveQuestToPlayer(p,questavailable);
 			} catch (IllegalArgumentException e) {
+				toreturn = CompleteStatus.WARNING;
+			} catch (BackendFailedException e) {
 				toreturn = CompleteStatus.WARNING;
 			}
 		}

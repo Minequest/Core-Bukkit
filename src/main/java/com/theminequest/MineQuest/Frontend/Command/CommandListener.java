@@ -34,6 +34,7 @@ import org.bukkit.entity.Player;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.Player.PlayerDetails;
 import com.theminequest.MineQuest.Team.Team;
+import com.theminequest.MineQuest.Backend.BackendFailedException;
 import com.theminequest.MineQuest.Backend.TeamBackend;
 import com.theminequest.MineQuest.Backend.QuestAvailability;
 import com.theminequest.MineQuest.Backend.QuestBackend;
@@ -106,7 +107,7 @@ public class CommandListener implements CommandExecutor{
 			}
 			
 			if(partyCommand.contains("invite") == true){
-				long teamID= TeamBackend.teamID(player); 
+				// FIXME what is the 13 for? O_O ~robxu9
 				Player invitee = Bukkit.getPlayer(cmd.getName().substring(13));
 				
 				if (invitee == null){
@@ -117,7 +118,12 @@ public class CommandListener implements CommandExecutor{
 					return true;
 				}
 				if (invitee != null && (TeamBackend.getCurrentTeam(invitee) == null)){
-					TeamBackend.invitePlayer(player, invitee, teamID);
+					try {
+						TeamBackend.invitePlayer(player, invitee);
+					} catch (BackendFailedException e) {
+						sender.sendMessage("Could not invite player: " + e.getMessage());
+						return true;
+					}
 					sender.sendMessage("Player invited to group");
 					return true;
 				}
@@ -129,7 +135,7 @@ public class CommandListener implements CommandExecutor{
 				return true;
 			}
 			if(partyCommand.equalsIgnoreCase("leave")){
-				t.remove(player);
+				TeamBackend.removePlayerFromTeam(player);
 				sender.sendMessage("Removed from party");
 				return true;
 			}
