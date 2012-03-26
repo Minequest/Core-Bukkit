@@ -41,6 +41,11 @@ import com.theminequest.MineQuest.Backend.QuestBackend;
 
 
 public class CommandListener implements CommandExecutor{
+	
+	public CommandListener(){
+		MineQuest.log("[CommandFrontend] Starting Command Frontend...");
+	}
+	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player player = null;
 		player = (Player) sender;

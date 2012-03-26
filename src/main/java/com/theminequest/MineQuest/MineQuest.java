@@ -33,6 +33,7 @@ import com.theminequest.MQCoreEvents.RegisterEvents;
 import com.theminequest.MineQuest.AbilityAPI.AbilityManager;
 import com.theminequest.MineQuest.Editable.EditableManager;
 import com.theminequest.MineQuest.EventsAPI.EventManager;
+import com.theminequest.MineQuest.Frontend.Command.CommandListener;
 import com.theminequest.MineQuest.Frontend.QuestSign.SignFrontend;
 import com.theminequest.MineQuest.Player.PlayerManager;
 import com.theminequest.MineQuest.Quest.QuestManager;
@@ -62,6 +63,7 @@ public class MineQuest extends JavaPlugin {
 	private static PluginDescriptionFile description = null;
 	
 	public static SignFrontend signFrontend = null;
+	public static CommandListener commandFrontend = null;
 
 	public static void log(String msg) {
 		log(Level.INFO, msg);
@@ -136,6 +138,12 @@ public class MineQuest extends JavaPlugin {
 		// core frontends
 		signFrontend = new SignFrontend();
 		getServer().getPluginManager().registerEvents(signFrontend, this);
+		commandFrontend = new CommandListener();
+		getCommand("minequest").setExecutor(commandFrontend);
+		getCommand("quest").setExecutor(commandFrontend);
+		getCommand("spell").setExecutor(commandFrontend);
+		getCommand("npc").setExecutor(commandFrontend);
+		getCommand("class").setExecutor(commandFrontend);
 	}
 
 	@Override
