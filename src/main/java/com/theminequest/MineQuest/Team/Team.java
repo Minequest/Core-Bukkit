@@ -20,96 +20,117 @@
 package com.theminequest.MineQuest.Team;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.theminequest.MineQuest.MineQuest;
+import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
+import com.theminequest.MineQuest.BukkitEvents.QuestStartedEvent;
 import com.theminequest.MineQuest.Player.PlayerManager;
+import com.theminequest.MineQuest.Quest.Quest;
+import com.theminequest.MineQuest.Team.TeamExceptionEvent.Cause;
 
 public class Team {
 
-	private static final int defaultteamcapacity = 8;
+	private static final int MAX_CAPACITY = 8;
 	private long teamid;
 	private ArrayList<Player> players;
 	private int capacity;
-	
+	private Quest quest;
+
 	protected Team(long id, ArrayList<Player> p){
-		if (p.size()<=0)
-			throw new IllegalArgumentException("Empty Team!");
+		if (p.size()<=0 || p.size()>Team.MAX_CAPACITY)
+			throw new IllegalArgumentException("Invalid team size!");
 		teamid = id;
-		players = p;
-		capacity = defaultteamcapacity;
+		players = (ArrayList<Player>) Collections.synchronizedList(p);
+		quest = null;
+		capacity = Team.MAX_CAPACITY;
 	}
-	
-	/*
-	 * Need to add listeners when someone quits to leave the party as well.
-	 */
-	
+
 	public synchronized Player getLeader(){
 		return players.get(0);
 	}
-	
-	public synchronized void setLeader(Player p){
-		if (players.contains(p))
-			throw new IllegalArgumentException("Not in team!");
+
+	public synchronized void setLeader(Player p) throws TeamExceptionEvent{
+		if (!contains(p))
+			throw new TeamExceptionEvent(Cause.NOTONTEAM);
 		players.remove(p);
 		players.add(0, p);
 	}
-	
-	public List<Player> getPlayers(){
+
+	public synchronized List<Player> getPlayers(){
 		return players;
 	}
 	
-	public void setCapacity(int c){
-		if (c<=0)
-			throw new IllegalArgumentException("Invalid Capacity!");
+	/*
+	 * Mark team in a way such that nobody can get on the team anymore.
+	 * This should help Java trigger GC on this object.
+	 */
+	protected void lockTeam(){
+		capacity = 0;
+	}
+
+	public synchronized void setCapacity(int c) throws TeamExceptionEvent{
+		if (c<=0 || c>players.size())
+			throw new TeamExceptionEvent(Cause.BADCAPACITY);
 		capacity = c;
 	}
-	
-	public int getCapacity(){
+
+	public synchronized int getCapacity(){
 		return capacity;
 	}
-	
-	public boolean contains(Player p){
+
+	public long getTeamID(){
+		return teamid;
+	}
+
+	public synchronized boolean contains(Player p){
 		return players.contains(p);
 	}
-	
-	public synchronized boolean add(Player p){
-		if (players.size()>=capacity)
-			return false;
-		if (players.contains(p))
-			return false;
-		if (MineQuest.playerManager.getPlayerDetails(p).getTeam()!=-1)
-			return false;
-		MineQuest.playerManager.getPlayerDetails(p).setTeam(teamid);
-		players.add(p);
-		// TODO add TeamPlayerJoinedEvent
-		return true;
+
+	public synchronized void startQuest(Quest quest) throws TeamExceptionEvent {
+		if (quest!=null)
+			throw new TeamExceptionEvent(Cause.ALREADYONQUEST);
+		this.quest = quest;
+		QuestStartedEvent event = new QuestStartedEvent(quest);
+		Bukkit.getPluginManager().callEvent(event);
 	}
-	
-	public synchronized boolean remove(Player p){
-		if (!players.contains(p))
-			return false;
-		if (MineQuest.playerManager.getPlayerDetails(p).getTeam()==-1)
-			return false;
-		MineQuest.playerManager.getPlayerDetails(p).setTeam(-1);
-		players.remove(p);
-		// TODO add TeamPlayerQuitEvent
-		return true;
+
+	public synchronized void abandonQuest() throws TeamExceptionEvent {
+		if (quest==null)
+			throw new TeamExceptionEvent(Cause.NOQUEST);
+		quest.finishQuest(CompleteStatus.CANCELED);
+		quest = null;
 	}
-	
-	public synchronized void teleport(Location l){
+
+	public synchronized void teleportPlayers(Location l) {
 		for (Player p : players){
 			p.teleport(l);
 		}
 	}
-	
-	public synchronized void assignQuest(long questid){
-		for (Player p : players){
-			MineQuest.playerManager.getPlayerDetails(p).setQuest(questid);
-		}
+
+	public synchronized void add(Player p) throws TeamExceptionEvent {
+		if (players.size()>=capacity)
+			throw new TeamExceptionEvent(Cause.OVERCAPACITY);
+		if (contains(p))
+			throw new TeamExceptionEvent(Cause.ALREADYINTEAM);
+		//MineQuest.playerManager.getPlayerDetails(p).setTeam(teamid);
+		players.add(p);
+		// TODO add TeamPlayerJoinedEvent
 	}
-	
+
+	public synchronized void remove(Player p) throws TeamExceptionEvent{
+		if (!contains(p))
+			throw new TeamExceptionEvent(Cause.NOTONTEAM);
+		//MineQuest.playerManager.getPlayerDetails(p).setTeam(-1);
+		players.remove(p);
+		
+		if (players.size()<=0)
+			MineQuest.teamManager.removeEmptyTeam(teamid);
+	}
+
 }

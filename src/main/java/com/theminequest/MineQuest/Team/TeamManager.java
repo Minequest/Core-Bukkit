@@ -20,8 +20,10 @@
 package com.theminequest.MineQuest.Team;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -37,65 +39,86 @@ public class TeamManager implements Listener{
 
 	private LinkedHashMap<Long,Team> teams;
 	private long teamid;
-	
+
 	public TeamManager(){
 		MineQuest.log("[Team] Starting Manager...");
-		teams = new LinkedHashMap<Long,Team>();
+		teams = (LinkedHashMap<Long, Team>) Collections.synchronizedMap(new LinkedHashMap<Long,Team>());
 		teamid = 0;
 	}
-	
+
 	public synchronized long createTeam(ArrayList<Player> p){
 		long id = teamid;
 		teamid++;
 		teams.put(id, new Team(teamid,p));
-		for (Player player : p){
-			MineQuest.playerManager.getPlayerDetails(player).setTeam(id);
-		}
+		//for (Player player : p){
+		//	MineQuest.playerManager.getPlayerDetails(player).setTeam(id);
+		//}
 		return id;
 	}
-	
+
 	public synchronized long createTeam(Player p){
 		ArrayList<Player> group = new ArrayList<Player>();
 		group.add(p);
 		return createTeam(group);
 	}
-	
-	public Team getTeam(long id){
+
+	public synchronized Team getTeam(long id){
 		return teams.get(id);
 	}
-	
-	public synchronized void removePlayerFromTeam(Player p){
-		PlayerDetails d = MineQuest.playerManager.getPlayerDetails(p);
-		long team = d.getTeam();
-		if (team==-1)
-			return;
-		teams.get(team).remove(p);
-		d.setTeam(-1);
-	}
-	
-	public synchronized void removeTeam(long id){
-		Team t = teams.get(id);
-		List<Player> members = t.getPlayers();
-		for (Player p : members)
-			removePlayerFromTeam(p);
-		teams.remove(id);
-	}
-	
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerQuit(PlayerQuitEvent e){
-		PlayerDetails p = MineQuest.playerManager.getPlayerDetails(e.getPlayer());
-		if (p.getTeam()!=-1){
-			MineQuest.teamManager.getTeam(p.getTeam()).remove(e.getPlayer());
+
+	/**
+	 * Determine if a player is on a team.
+	 * @param p Player to check for.
+	 * @return Team ID, or -1 if not on team.
+	 */
+	public synchronized long indexOf(Player p){
+		for (long id : teams.keySet()){
+			Team t = teams.get(id);
+			if (t!=null && t.contains(p))
+				return id;
 		}
-		
+		return -1;
 	}
-	
+
+	/*
+	 * Only called by Team objects when everyone leaves the team.
+	 */
+	protected synchronized void removeEmptyTeam(long id){
+		teams.get(id).lockTeam();
+		teams.put(id, null);
+	}
+
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerKick(PlayerKickEvent e){
-		PlayerDetails p = MineQuest.playerManager.getPlayerDetails(e.getPlayer());
-		if (p.getTeam()!=-1){
-			MineQuest.teamManager.getTeam(p.getTeam()).remove(e.getPlayer());
+	public synchronized void onPlayerQuit(PlayerQuitEvent e){
+		//PlayerDetails p = MineQuest.playerManager.getPlayerDetails(e.getPlayer());
+		//if (p.getTeam()!=-1){
+		//	MineQuest.teamManager.getTeam(p.getTeam()).remove(e.getPlayer());
+		//}
+		long team = indexOf(e.getPlayer());
+		if (team!=-1){
+			try {
+				teams.get(team).remove(e.getPlayer());
+			} catch (TeamExceptionEvent e1) {
+				MineQuest.log(Level.SEVERE, "Failed to remove player from team: " + e1);
+			}
+		}
+
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public synchronized void onPlayerKick(PlayerKickEvent e){
+		//PlayerDetails p = MineQuest.playerManager.getPlayerDetails(e.getPlayer());
+		//if (p.getTeam()!=-1){
+		//	MineQuest.teamManager.getTeam(p.getTeam()).remove(e.getPlayer());
+		//}
+		long team = indexOf(e.getPlayer());
+		if (team!=-1){
+			try {
+				teams.get(team).remove(e.getPlayer());
+			} catch (TeamExceptionEvent e1) {
+				MineQuest.log(Level.SEVERE, "Failed to remove player from team: " + e1);
+			}
 		}
 	}
-	
+
 }
