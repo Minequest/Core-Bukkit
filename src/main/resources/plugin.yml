@@ -22,6 +22,9 @@ commands:
   quest:
     aliases: [mqquest]
     permission: minequest.user
+  party:
+    aliases: [mqparty]
+    permission: minequest.user
   spell:
     aliases: [mqspell]
     permission: minequest.user
