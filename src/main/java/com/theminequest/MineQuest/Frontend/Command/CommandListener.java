@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -46,146 +45,180 @@ public class CommandListener implements CommandExecutor{
 		MineQuest.log("[CommandFrontend] Starting Command Frontend...");
 	}
 	
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String cmdLable, String[] args) {
+		String command = cmdLable;
 		Player player = null;
 		if (sender instanceof Player)
 			player = (Player) sender;
 		
-		if(cmd.getName().equalsIgnoreCase("minequest")){ // If the player typed /basic then do the following...
-			sender.sendMessage("Type /Quest for Quest help");
-			sender.sendMessage("Type /Spell for spell help");
-			sender.sendMessage("Type /Npc for npc help");
-			sender.sendMessage("Type /Class for class help");
-			sender.sendMessage("Type /Cubeconomy for Mq economy help");
-			return true;
+		if (args.length == 0){
+			if(cmd.getName().equalsIgnoreCase("minequest")){
+				sender.sendMessage("Type /Quest for Quest help");
+				sender.sendMessage("Type /Spell for spell help");
+				sender.sendMessage("Type /Npc for npc help");
+				sender.sendMessage("Type /Class for class help");
+				sender.sendMessage("Type /Cubeconomy for Mq economy help");
+				return true;
+			}
+			else if(cmd.getName().equalsIgnoreCase("quest") && player != null){
+				sender.sendMessage("    /party create - create a party.");
+				sender.sendMessage("    /party list - list users in your party.");
+				sender.sendMessage("    /party join <username> - join username's party.");
+				sender.sendMessage("    /party quit - removes you from the party.");
+				sender.sendMessage("    /quest start <name of quest> - start a quest with party.");
+				sender.sendMessage("    /quest quit - quit the instance of quest, lose current exp.");
+				return true;
+			}
+			else if(cmd.getName().equalsIgnoreCase("spell") && player != null){
+				sender.sendMessage("    /bind <spellname> - binds a spell to the item.");
+				sender.sendMessage("    /unbind - list users in your party.");
+				sender.sendMessage("    /spellcomp <username> - join username's party.");
+				return true;
+			}
+			else if(cmd.getName().equalsIgnoreCase("npc") && player != null){
+				sender.sendMessage("    /npc create <name> - creates a npc at your current location.");
+				sender.sendMessage("    /npc select - selects the npc that you click on.");
+				sender.sendMessage("    /npc path create - Starts the path creation.");
+				sender.sendMessage("    /npc path point - Adds a point for the npcs path.");
+				sender.sendMessage("    /npc path finish - Ends the path creation.");
+				sender.sendMessage("    /npc message <#> <message> - Adds a message to the npc.");
+				sender.sendMessage("    /npc property <property> <value> - Adds the given property.");
+				return true;
+			}
+			else if(cmd.getName().equalsIgnoreCase("class") && player != null){ 
+				sender.sendMessage("    /char - Shows your level.");
+				sender.sendMessage("    /class select <Class name> - Sets your class to the given type.");
+				sender.sendMessage("    /spells - Lists all available spells for you class.");
+				sender.sendMessage("    /class reset - Resets character to choose a new class.");
+				sender.sendMessage("    /class reset confirm - used to confirm the reset.");
+				sender.sendMessage("    Class resets can not be undone and will reset your lvl in that class.");
+				return true;
+			}
 		}
-		if(cmd.getName().equalsIgnoreCase("quest") && player != null){
-			sender.sendMessage("    /party create - create a party.");
-			sender.sendMessage("    /party list - list users in your party.");
-			sender.sendMessage("    /party join <username> - join username's party.");
-			sender.sendMessage("    /party quit - removes you from the party.");
-			sender.sendMessage("    /quest start <name of quest> - start a quest with party.");
-			sender.sendMessage("    /quest quit - quit the instance of quest, lose current exp.");
-			return true;
-		}
-		if(cmd.getName().equalsIgnoreCase("spell") && player != null){
-			sender.sendMessage("    /bind <spellname> - binds a spell to the item.");
-			sender.sendMessage("    /unbind - list users in your party.");
-			sender.sendMessage("    /spellcomp <username> - join username's party.");
-			return true;
-		}
-		if(cmd.getName().equalsIgnoreCase("npc") && player != null){
-			sender.sendMessage("    /npc create <name> - creates a npc at your current location.");
-			sender.sendMessage("    /npc select - selects the npc that you click on.");
-			sender.sendMessage("    /npc path create - Starts the path creation.");
-			sender.sendMessage("    /npc path point - Adds a point for the npcs path.");
-			sender.sendMessage("    /npc path finish - Ends the path creation.");
-			sender.sendMessage("    /npc message <#> <message> - Adds a message to the npc.");
-			sender.sendMessage("    /npc property <property> <value> - Adds the given property.");
-			return true;
-		}
-		if(cmd.getName().equalsIgnoreCase("class") && player != null){ 
-			sender.sendMessage("    /char - Shows your level.");
-			sender.sendMessage("    /class select <Class name> - Sets your class to the given type.");
-			sender.sendMessage("    /spells - Lists all available spells for you class.");
-			sender.sendMessage("    /class reset - Resets character to choose a new class.");
-			sender.sendMessage("    /class reset confirm - used to confirm the reset.");
-			sender.sendMessage("    Class resets can not be undone and will reset your lvl in that class.");
-			return true;
-		}
-		
-		/* REFACTOR ALL COMMANDS DOWN BELOW ~robxu9 */
-		
-		//Don't worry about this command for now. 
-		if(word1.equalsIgnoreCase("char") && player !=null){
-			sender.sendMessage("Class: " + "");
-			sender.sendMessage("Level: " + "");			
-			//TODO: Get Class lvl
-			return true;
-		}
-		
-		//Quest Core Commands
-		if(word1.equalsIgnoreCase("party")){
-			Team t = TeamBackend.getCurrentTeam(Bukkit.getPlayer(sender.getName()));
+	
+	//Quest Core Commands			
 			
-			if(word2.equalsIgnoreCase("Create") && (t == null)){
-				try {
-					TeamBackend.createTeam(player);
-				} catch (BackendFailedException e) {
-					sender.sendMessage(e.toString());
-				}
-				sender.sendMessage("CreatedParty");
-				return true;
-			}
-			
-			if(word2.equalsIgnoreCase("invite") == true){
-				Player invitee = Bukkit.getPlayer(command[3]);
-				
-				if (invitee == null){
-					sender.sendMessage("You must specify a player.");
-				}
-				if (TeamBackend.getCurrentTeam(invitee) != null){
-					sender.sendMessage("Player is already in a group.");
-					return true;
-				}
-				if (invitee != null && (TeamBackend.getCurrentTeam(invitee) == null)){
+			/*Party Commands:
+			 * party create
+			 * party invite [player name]
+			 * party list
+			 * party leave
+			 */
+
+			if(command.equalsIgnoreCase("party")){
+				Team t = TeamBackend.getCurrentTeam(Bukkit.getPlayer(sender.getName()));
+				if(args[0].equalsIgnoreCase("create") && (t == null)){
 					try {
-						TeamBackend.invitePlayer(player, invitee);
-					} catch (BackendFailedException e) {
-						sender.sendMessage("Could not invite player: " + e.getMessage());
-						return true;
-					}
-					sender.sendMessage("Player invited to group");
-					return true;
-				}
-			}
-			if(word2.equalsIgnoreCase("list") == true){
-				Team team = TeamBackend.getCurrentTeam(player); 
-				List<Player> players = team.getPlayers();
-				sender.sendMessage(players.toString());
-				return true;
-			}
-			if(word2.equalsIgnoreCase("leave")){
-				TeamBackend.removePlayerFromTeam(player);
-				sender.sendMessage("Removed from party");
-				return true;
-			}
-			else{
-				sender.sendMessage("Unknown Party Command.");
-			}
-		}
-		
-		if(word1.equalsIgnoreCase("quest")){
-			if(word2.equalsIgnoreCase("start")){
-				//Just In case the file was deleted. 
-				File f = new File(MineQuest.activePlugin.getDataFolder()+File.separator+"quests"+File.separator+word3+".quest");
-				if (f.exists() != true){
-					try {
-						QuestBackend.acceptQuest(player, word3);
+						TeamBackend.createTeam(player);
 					} catch (BackendFailedException e) {
 						sender.sendMessage(e.toString());
 					}
-				}
-			}
-			if(word2.equalsIgnoreCase("quit")){
-				try {
-					QuestBackend.cancelActiveQuest(player);
-				} catch (BackendFailedException e) {
-					sender.sendMessage(e.toString());
+					sender.sendMessage("CreatedParty");
+					return true;
 				}
 
-			}
-			if(word2.equalsIgnoreCase("List")){
-				try {
-					List<String> questlist = QuestBackend.getQuests(QuestAvailability.AVAILABLE, player);
-					String ql = questlist.toString();
-					sender.sendMessage(ql);
-				} catch (SQLException e) {
-					MineQuest.log(Level.SEVERE, e.toString());
-					sender.sendMessage("Could not find your Quest List");
+				else if(args[0].equalsIgnoreCase("invite") == true){
+					
+					if (args.length == 1){
+						sender.sendMessage("You must specify a player");
+						return true;
+					}
+					
+					else if (args.length == 2){
+						Player invitee = Bukkit.getPlayer(args[1]);
+						
+						if (args[1] == null){
+							sender.sendMessage("You must specify a player.");
+							return true;
+						}
+						
+						else if (invitee == null){
+							sender.sendMessage("That player is not online.");
+							return true;
+						}
+
+						else if (TeamBackend.getCurrentTeam(invitee) != null){
+							sender.sendMessage("Player is already in a group.");
+							return true;
+						}
+						
+						else if (invitee != null && (TeamBackend.getCurrentTeam(invitee) == null)){
+							try {
+								TeamBackend.invitePlayer(player, invitee);
+							} catch (BackendFailedException e) {
+								sender.sendMessage("Could not invite player: " + e.getMessage());
+							}
+							sender.sendMessage("Player invited to group");
+							return true;
+						}
+					}
+				}
+				
+				else if(args[0].equalsIgnoreCase("list") == true){
+					Team team = TeamBackend.getCurrentTeam(player); 
+					List<Player> players = team.getPlayers();
+					sender.sendMessage(players.toString());
+					return true;
+				}
+				
+				else if(args[0].equalsIgnoreCase("leave")){
+					TeamBackend.removePlayerFromTeam(player);
+					sender.sendMessage("Removed from party");
+					return true;
+				}
+				
+				else{
+					sender.sendMessage("Unknown Party Command.");
+					return true;
 				}
 			}
-		}
+			
+			/*
+			 * Quest Commands:
+			 * 
+			 * Quest List
+			 * Quest start
+			 * Quest Quit
+			 */
+			
+			else if(command.equalsIgnoreCase("quest")){
+				if(args[0].equalsIgnoreCase("start")){
+					//Just In case the file was deleted. 
+					File f = new File(MineQuest.activePlugin.getDataFolder()+File.separator+"quests"+File.separator+args[1]+".quest");
+					if (f.exists() != true){
+						try {
+							QuestBackend.acceptQuest(player, args[1]);
+						} catch (BackendFailedException e) {
+							sender.sendMessage(e.toString());
+						}
+					}
+					return true;
+				}
+				else if((args[0].equalsIgnoreCase("start")) && (args.length != 2)){
+					sender.sendMessage("Incorrect number of arguments!");
+					return true;
+				}
+				
+				else if(args[0].equalsIgnoreCase("quit")){
+					try {
+						QuestBackend.cancelActiveQuest(player);
+					} catch (BackendFailedException e) {
+						sender.sendMessage(e.toString());
+					}
+					return true;
+				}
+				else if(args[0].equalsIgnoreCase("List")){
+					try {
+						List<String> questlist = QuestBackend.getQuests(QuestAvailability.AVAILABLE, player);
+						String ql = questlist.toString();
+						sender.sendMessage(ql);
+					} catch (SQLException e) {
+						MineQuest.log(Level.SEVERE, e.toString());
+						sender.sendMessage("Could not find your Quest List");
+					}
+					return true;
+				}
+			}
 	return false;
 	}
 }
