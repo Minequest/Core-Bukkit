@@ -49,7 +49,7 @@ public class SignFrontend implements Listener {
 	
 	private boolean isQuestSign(Sign sign){
 		String[] line = sign.getLines();
-		if (line[1] != null && line[1].contentEquals("[Quest]")){
+		if (line[1] != null && line[1].equalsIgnoreCase("[Quest]")){
 			if(line[2] != null && !line[2].equals("")){
 				return true;
 			}
@@ -99,6 +99,8 @@ public class SignFrontend implements Listener {
 	    			event.setCancelled(true);
 	    			event.getPlayer().sendMessage(ChatColor.RED + "No such quest!");
 	    		}
+	    		// oh, prettify it ;D
+	    		s.setLine(1,ChatColor.GREEN+"[Quest]");
 	    	}
 	    }
 	    
