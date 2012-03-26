@@ -49,6 +49,11 @@ public class CommandListener implements CommandExecutor{
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player player = null;
 		player = (Player) sender;
+		String[] command = cmd.toString().split(" ");
+		String word1 = command[1];
+		String word2 = command[2];
+		String word3 = command[3];
+		
 		if(cmd.getName().equalsIgnoreCase("minequest")){ // If the player typed /basic then do the following...
 			sender.sendMessage("Type /Quest for Quest help");
 			sender.sendMessage("Type /Spell for spell help");
@@ -93,7 +98,7 @@ public class CommandListener implements CommandExecutor{
 		}
 		
 		//Don't worry about this command for now. 
-		if(cmd.getName().equalsIgnoreCase("char") && player !=null){
+		if(word1.equalsIgnoreCase("char") && player !=null){
 			sender.sendMessage("Class: " + "");
 			sender.sendMessage("Level: " + "");			
 			//TODO: Get Class lvl
@@ -101,22 +106,24 @@ public class CommandListener implements CommandExecutor{
 		}
 		
 		//Quest Core Commands
-		if(cmd.getName().startsWith("party")){
-			String partyCommand = cmd.getName().substring(7);
+		if(word1.equalsIgnoreCase("party")){
 			Team t = TeamBackend.getCurrentTeam(Bukkit.getPlayer(sender.getName()));
 			
-			if((partyCommand == "create") && (t == null)){
-				//TODO: Create team. 
+			if(word2.equalsIgnoreCase("Create") && (t == null)){
+				try {
+					TeamBackend.createTeam(player);
+				} catch (BackendFailedException e) {
+					sender.sendMessage(e.toString());
+				}
 				sender.sendMessage("CreatedParty");
 				return true;
 			}
 			
-			if(partyCommand.contains("invite") == true){
-				// FIXME what is the 13 for? O_O ~robxu9
-				Player invitee = Bukkit.getPlayer(cmd.getName().substring(13));
+			if(word2.equalsIgnoreCase("invite") == true){
+				Player invitee = Bukkit.getPlayer(command[3]);
 				
 				if (invitee == null){
-					sender.sendMessage("Could not find player.");
+					sender.sendMessage("You must specify a player.");
 				}
 				if (TeamBackend.getCurrentTeam(invitee) != null){
 					sender.sendMessage("Player is already in a group.");
@@ -133,13 +140,13 @@ public class CommandListener implements CommandExecutor{
 					return true;
 				}
 			}
-			if(partyCommand.contains("list") == true){
+			if(word2.equalsIgnoreCase("list") == true){
 				Team team = TeamBackend.getCurrentTeam(player); 
 				List<Player> players = team.getPlayers();
 				sender.sendMessage(players.toString());
 				return true;
 			}
-			if(partyCommand.equalsIgnoreCase("leave")){
+			if(word2.equalsIgnoreCase("leave")){
 				TeamBackend.removePlayerFromTeam(player);
 				sender.sendMessage("Removed from party");
 				return true;
@@ -149,25 +156,27 @@ public class CommandListener implements CommandExecutor{
 			}
 		}
 		
-		if(cmd.getName().startsWith("quest")){
-			String questCommand = cmd.getName().substring(7);
-			if(questCommand.contains("start")){
-				String questName = cmd.getName().substring(12);
+		if(word1.equalsIgnoreCase("quest")){
+			if(word2.equalsIgnoreCase("start")){
 				//Just In case the file was deleted. 
-				File f = new File(MineQuest.activePlugin.getDataFolder()+File.separator+"quests"+File.separator+questName+".quest");
+				File f = new File(MineQuest.activePlugin.getDataFolder()+File.separator+"quests"+File.separator+word3+".quest");
 				if (f.exists() != true){
-					//TODO: Start quest. Needed in the QuestBackend class.
+					try {
+						QuestBackend.acceptQuest(player, word3);
+					} catch (BackendFailedException e) {
+						sender.sendMessage(e.toString());
+					}
 				}
 			}
-			if(questCommand.equalsIgnoreCase("quit")){
+			if(word2.equalsIgnoreCase("quit")){
 				try {
-					List<String> questlist = QuestBackend.getQuests(QuestAvailability.ACCEPTED, player);
-					//TODO: Quit quest. Needed in the QuestBackend class.
-				} catch (SQLException e) {
-					sender.sendMessage("No quest found");
+					QuestBackend.cancelActiveQuest(player);
+				} catch (BackendFailedException e) {
+					sender.sendMessage(e.toString());
 				}
+
 			}
-			if(questCommand.equals("List")){
+			if(word2.equalsIgnoreCase("List")){
 				try {
 					List<String> questlist = QuestBackend.getQuests(QuestAvailability.AVAILABLE, player);
 					String ql = questlist.toString();
