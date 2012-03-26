@@ -113,7 +113,7 @@ public class PlayerManager implements Listener {
 	@EventHandler
 	public void onQuestAvailableEvent(QuestAvailableEvent e){
 		MineQuest.log("[Player] New Quest Available for player " + e.getPlayer().getName());
-		// TODO
+		e.getPlayer().sendMessage("[Quest] You have a new quest, " + e.getQuestAvailableName() + ", available!");
 	}
 	
 	@EventHandler

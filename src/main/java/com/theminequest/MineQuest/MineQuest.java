@@ -141,6 +141,7 @@ public class MineQuest extends JavaPlugin {
 		commandFrontend = new CommandListener();
 		getCommand("minequest").setExecutor(commandFrontend);
 		getCommand("quest").setExecutor(commandFrontend);
+		getCommand("party").setExecutor(commandFrontend);
 		getCommand("spell").setExecutor(commandFrontend);
 		getCommand("npc").setExecutor(commandFrontend);
 		getCommand("class").setExecutor(commandFrontend);

@@ -81,8 +81,7 @@ public class SignFrontend implements Listener {
 					QuestBackend.giveQuestToPlayer(player, questName);
 					QuestBackend.acceptQuest(player, questName);
 				} catch (BackendFailedException e) {
-					block.breakNaturally();
-					player.sendMessage(ChatColor.RED + "No such quest!");
+					player.sendMessage(ChatColor.RED + "Error: " + e.getMessage());
 				} 
 			}
 		}
