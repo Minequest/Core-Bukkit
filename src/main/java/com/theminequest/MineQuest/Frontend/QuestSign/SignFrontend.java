@@ -37,13 +37,17 @@ import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.Backend.BackendFailedException;
 import com.theminequest.MineQuest.Backend.QuestBackend;
 
-public class SignQuest implements Listener {
+public class SignFrontend implements Listener {
 	
-	public static boolean signCheck(Block block){
+	public SignFrontend(){
+		MineQuest.log("[SignFrontend] Starting Sign Frontends...");
+	}
+	
+	private boolean signCheck(Block block){
 		return block.getState() instanceof Sign;
 	}
 	
-	public static boolean isQuestSign(Sign sign){
+	private boolean isQuestSign(Sign sign){
 		String[] line = sign.getLines();
 		if (line[1] != null && line[1].contentEquals("[Quest]")){
 			if(line[2] != null && !line[2].equals("")){
@@ -53,7 +57,7 @@ public class SignQuest implements Listener {
 		return false;
 	}
 	
-	public static String questName(Sign sign){
+	private String questName(Sign sign){
 		return sign.getLines()[2];
 	}
 	
@@ -61,7 +65,7 @@ public class SignQuest implements Listener {
 	//Listeners For Sign interact and place. 
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public static void onPlayerInteract(PlayerInteractEvent event){
+	public void onPlayerInteract(PlayerInteractEvent event){
 		Action action = event.getAction();
 		if (action != Action.RIGHT_CLICK_BLOCK){
 			return;
@@ -85,7 +89,7 @@ public class SignQuest implements Listener {
 	}
 	
 	@EventHandler
-	public static void onBlockPlace(BlockPlaceEvent event) {
+	public void onBlockPlace(BlockPlaceEvent event) {
 		Block block = event.getBlockAgainst();
 	    if (signCheck(block)){
 	    	Sign s = (Sign)block.getState();

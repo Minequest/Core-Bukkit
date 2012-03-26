@@ -33,6 +33,7 @@ import com.theminequest.MQCoreEvents.RegisterEvents;
 import com.theminequest.MineQuest.AbilityAPI.AbilityManager;
 import com.theminequest.MineQuest.Editable.EditableManager;
 import com.theminequest.MineQuest.EventsAPI.EventManager;
+import com.theminequest.MineQuest.Frontend.QuestSign.SignFrontend;
 import com.theminequest.MineQuest.Player.PlayerManager;
 import com.theminequest.MineQuest.Quest.QuestManager;
 import com.theminequest.MineQuest.Tasks.TaskManager;
@@ -58,7 +59,9 @@ public class MineQuest extends JavaPlugin {
 	public static UtilManager utilManager = null;
 	public static QuestConfig configuration = null;
 	public static SQLExecutor sqlstorage = null;
-	private static PluginDescriptionFile description = null;;
+	private static PluginDescriptionFile description = null;
+	
+	public static SignFrontend signFrontend = null;
 
 	public static void log(String msg) {
 		log(Level.INFO, msg);
@@ -129,6 +132,10 @@ public class MineQuest extends JavaPlugin {
 		if (!setupEconomy())
 			log(Level.SEVERE,"Economy could not be setup!");
 		RegisterEvents.registerEvents();
+		
+		// core frontends
+		signFrontend = new SignFrontend();
+		getServer().getPluginManager().registerEvents(signFrontend, this);
 	}
 
 	@Override
