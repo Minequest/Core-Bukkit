@@ -28,6 +28,7 @@ public final class QuestBackend {
 	public static void giveQuestToPlayer(Player p, String quest_name)
 			throws BackendFailedException {
 		boolean repeatable = false;
+		boolean regive = false;
 		try {
 			repeatable = isRepeatable(quest_name);
 		} catch (IllegalArgumentException e){
@@ -50,7 +51,6 @@ public final class QuestBackend {
 		}
 
 		// if not repeatable, check if already completed
-		if (!repeatable){
 			List<String> completedquests;
 			try {
 				completedquests = getQuests(QuestAvailability.COMPLETED,p);
@@ -62,15 +62,17 @@ public final class QuestBackend {
 			}
 			for (String s : completedquests){
 				if (quest_name.equalsIgnoreCase(s)){
-					throw new BackendFailedException("This quest is not repeatable!");
+					if (repeatable)
+						regive = true;
+					else
+						throw new BackendFailedException("This quest is not repeatable!");
 				}
 			}
-		}
 
-		if (!repeatable)
+		if (!regive)
 			MineQuest.sqlstorage.querySQL("Quests/giveQuest", p.getName(), quest_name);
 		else
-			MineQuest.sqlstorage.querySQL("Quest/reGiveQuest", p.getName(), quest_name);
+			MineQuest.sqlstorage.querySQL("Quests/reGiveQuest", p.getName(), quest_name);
 		QuestAvailableEvent event = new QuestAvailableEvent(quest_name, p);
 		Bukkit.getPluginManager().callEvent(event);
 	}
