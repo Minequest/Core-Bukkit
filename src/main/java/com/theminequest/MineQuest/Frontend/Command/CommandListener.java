@@ -45,8 +45,7 @@ public class CommandListener implements CommandExecutor{
 		MineQuest.log("[CommandFrontend] Starting Command Frontend...");
 	}
 	
-	public boolean onCommand(CommandSender sender, Command cmd, String cmdLable, String[] args) {
-		String command = cmdLable;
+	public boolean onCommand(CommandSender sender, Command cmd, String command, String[] args) {
 		Player player = null;
 		if (sender instanceof Player)
 			player = (Player) sender;
