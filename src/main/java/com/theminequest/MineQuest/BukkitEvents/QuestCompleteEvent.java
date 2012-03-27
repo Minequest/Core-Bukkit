@@ -22,7 +22,7 @@ package com.theminequest.MineQuest.BukkitEvents;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import com.theminequest.MineQuest.Team.Team;
+import com.theminequest.MineQuest.Group.Team;
 
 public class QuestCompleteEvent extends Event {
 

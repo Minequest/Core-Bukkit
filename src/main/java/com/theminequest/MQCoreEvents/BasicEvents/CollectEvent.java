@@ -28,7 +28,7 @@ import org.bukkit.inventory.PlayerInventory;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.EventsAPI.QEvent;
-import com.theminequest.MineQuest.Team.Team;
+import com.theminequest.MineQuest.Group.Team;
 
 public class CollectEvent extends QEvent {
 	

@@ -32,11 +32,11 @@ import org.bukkit.entity.Player;
 
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.Player.PlayerDetails;
-import com.theminequest.MineQuest.Team.Team;
 import com.theminequest.MineQuest.Backend.BackendFailedException;
 import com.theminequest.MineQuest.Backend.TeamBackend;
 import com.theminequest.MineQuest.Backend.QuestAvailability;
 import com.theminequest.MineQuest.Backend.QuestBackend;
+import com.theminequest.MineQuest.Group.Team;
 
 
 public class CommandListener implements CommandExecutor{

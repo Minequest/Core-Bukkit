@@ -27,7 +27,7 @@ import com.theminequest.MineQuest.Backend.BackendFailedException;
 import com.theminequest.MineQuest.Backend.QuestBackend;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.EventsAPI.QEvent;
-import com.theminequest.MineQuest.Team.Team;
+import com.theminequest.MineQuest.Group.Team;
 
 public class QuestAvailableEvent extends QEvent {
 

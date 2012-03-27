@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.BukkitEvents.QuestAvailableEvent;
-import com.theminequest.MineQuest.Team.Team;
+import com.theminequest.MineQuest.Group.Team;
 
 public final class QuestBackend {
 
@@ -162,9 +162,9 @@ public final class QuestBackend {
 	public static void startQuest(Player p, String name) throws BackendFailedException {
 		long teamid = MineQuest.playerManager.getPlayerDetails(p).getTeam();
 		if (teamid==-1){
-			teamid = MineQuest.teamManager.createTeam(p);
+			teamid = MineQuest.groupManager.createTeam(p);
 		}
-		Team t = MineQuest.teamManager.getTeam(teamid);
+		Team t = MineQuest.groupManager.getTeam(teamid);
 		Player leader = t.getLeader();
 		if (leader!=p)
 			throw new BackendFailedException("Only leaders can start quests!");
@@ -191,7 +191,7 @@ public final class QuestBackend {
 		if (teamid==-1){
 			throw new BackendFailedException("You're not on a team!");
 		}
-		Team t = MineQuest.teamManager.getTeam(teamid);
+		Team t = MineQuest.groupManager.getTeam(teamid);
 		Player leader = t.getLeader();
 		if (leader!=p)
 			throw new BackendFailedException("Only leaders can cancel the current quest!");

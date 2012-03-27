@@ -1,6 +1,6 @@
-package com.theminequest.MineQuest.Team;
+package com.theminequest.MineQuest.Group;
 
-public class TeamExceptionEvent extends Exception {
+public class GroupExceptionEvent extends Exception {
 
 	/**
 	 * 
@@ -9,18 +9,18 @@ public class TeamExceptionEvent extends Exception {
 	
 	private Cause cause;
 
-	public TeamExceptionEvent(Cause c){
+	public GroupExceptionEvent(Cause c){
 		super(c.name());
 		cause = c;
 	}
 
-	public TeamExceptionEvent(Throwable arg0) {
+	public GroupExceptionEvent(Throwable arg0) {
 		super(Cause.EXTERNALEXCEPTION.name(), arg0);
 		cause = Cause.EXTERNALEXCEPTION;
 		// TODO Auto-generated constructor stub
 	}
 
-	public TeamExceptionEvent(Cause c, Throwable arg1) {
+	public GroupExceptionEvent(Cause c, Throwable arg1) {
 		super(c.name(), arg1);
 		cause = c;
 		// TODO Auto-generated constructor stub

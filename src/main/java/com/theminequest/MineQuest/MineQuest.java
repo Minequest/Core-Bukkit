@@ -35,10 +35,10 @@ import com.theminequest.MineQuest.Editable.EditableManager;
 import com.theminequest.MineQuest.EventsAPI.EventManager;
 import com.theminequest.MineQuest.Frontend.Command.CommandListener;
 import com.theminequest.MineQuest.Frontend.QuestSign.SignFrontend;
+import com.theminequest.MineQuest.Group.GroupManager;
 import com.theminequest.MineQuest.Player.PlayerManager;
 import com.theminequest.MineQuest.Quest.QuestManager;
 import com.theminequest.MineQuest.Tasks.TaskManager;
-import com.theminequest.MineQuest.Team.TeamManager;
 import com.theminequest.MineQuest.Utils.UtilManager;
 
 public class MineQuest extends JavaPlugin {
@@ -56,7 +56,7 @@ public class MineQuest extends JavaPlugin {
 	public static TaskManager taskManager = null;
 	public static QuestManager questManager = null;
 	public static PlayerManager playerManager = null;
-	public static TeamManager teamManager = null;
+	public static GroupManager groupManager = null;
 	public static UtilManager utilManager = null;
 	public static QuestConfig configuration = null;
 	public static SQLExecutor sqlstorage = null;
@@ -125,8 +125,8 @@ public class MineQuest extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(questManager, this);
 		playerManager = new PlayerManager();
 		getServer().getPluginManager().registerEvents(playerManager, this);
-		teamManager = new TeamManager();
-		getServer().getPluginManager().registerEvents(teamManager, this);
+		groupManager = new GroupManager();
+		getServer().getPluginManager().registerEvents(groupManager, this);
 		utilManager = new UtilManager();
 		getServer().getPluginManager().registerEvents(utilManager, this);
 		if (!setupPermissions())
@@ -158,7 +158,7 @@ public class MineQuest extends JavaPlugin {
 		taskManager = null;
 		questManager = null;
 		playerManager = null;
-		teamManager = null;
+		groupManager = null;
 		utilManager = null;
 		configuration = null;
 		sqlstorage = null;

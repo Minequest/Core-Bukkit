@@ -1,4 +1,4 @@
-package com.theminequest.MineQuest.Team;
+package com.theminequest.MineQuest.Group;
 
 import java.util.List;
 
@@ -13,17 +13,17 @@ public interface Group {
 	 * Basic Group Commands
 	 */
 	Player getLeader();
-	void setLeader(Player p);
+	void setLeader(Player p) throws GroupExceptionEvent;
 	List<Player> getPlayers();
-	void add(Player p);
-	void remove(Player p);
+	void add(Player p) throws GroupExceptionEvent;
+	void remove(Player p) throws GroupExceptionEvent;
 	boolean contains(Player p);
 
 	/*
 	 * Group Configuration Commands
 	 */
 	int getCapacity();
-	void setCapacity();
+	void setCapacity(int capacity) throws GroupExceptionEvent;
 	/*
 	 * Group identification
 	 */
@@ -32,13 +32,13 @@ public interface Group {
 	/*
 	 * Group questing
 	 */
-	void startQuest(Quest quest);
-	void abandonQuest();
+	void startQuest(Quest quest) throws GroupExceptionEvent;
+	void abandonQuest() throws GroupExceptionEvent;
 	Quest getQuest();
 	void teleportPlayers(Location l);
 	
 	/*
-	 * TeamManager usage
+	 * GroupManager usage
 	 */
 	void lockTeam();
 

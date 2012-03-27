@@ -34,7 +34,7 @@ import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.QuestCompleteEvent;
 import com.theminequest.MineQuest.BukkitEvents.QuestStartedEvent;
 import com.theminequest.MineQuest.BukkitEvents.TaskCompleteEvent;
-import com.theminequest.MineQuest.Team.Team;
+import com.theminequest.MineQuest.Group.Team;
 
 
 public class QuestManager implements Listener {

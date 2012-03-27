@@ -99,10 +99,10 @@ public class PlayerDetails {
 			throw new IllegalArgumentException("Player has an invite pending. Try again in a few seconds.");
 		if (yes){
 			team = teamid;
-			player.sendMessage("[TeamManager] Joined the team!");
+			player.sendMessage("[GroupManager] Joined the team!");
 			return;
 		}
-		player.sendMessage("[TeamManager] " + string + " has sent" +
+		player.sendMessage("[GroupManager] " + string + " has sent" +
 				"you an invite to a team! To accept, type /accept. You have 30 seconds.");
 		teamwaiting = teamid;
 		waitingid = Bukkit.getScheduler().scheduleSyncDelayedTask(MineQuest.activePlugin, 
@@ -118,8 +118,8 @@ public class PlayerDetails {
 		Bukkit.getScheduler().cancelTask(waitingid);
 		team = teamwaiting;
 		teamwaiting = -1;
-		MineQuest.teamManager.getTeam(team).add(player);
-		player.sendMessage("[TeamManager] Joined the team!");
+		MineQuest.groupManager.getTeam(team).add(player);
+		player.sendMessage("[GroupManager] Joined the team!");
 	}
 	
 	public long getQuest(){

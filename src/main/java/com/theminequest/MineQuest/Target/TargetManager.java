@@ -32,10 +32,10 @@ import org.bukkit.entity.Player;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.EventsAPI.QEvent;
 import com.theminequest.MineQuest.EventsAPI.TargetEvent;
+import com.theminequest.MineQuest.Group.Team;
 import com.theminequest.MineQuest.Quest.Quest;
 import com.theminequest.MineQuest.Target.TargetDetails.TargetType;
 import com.theminequest.MineQuest.Tasks.Task;
-import com.theminequest.MineQuest.Team.Team;
 
 public class TargetManager {
 

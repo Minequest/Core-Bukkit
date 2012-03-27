@@ -1,5 +1,5 @@
 /**
- * This file, TeamManager.java, is part of MineQuest:
+ * This file, GroupManager.java, is part of MineQuest:
  * A full featured and customizable quest/mission system.
  * Copyright (C) 2012 The MineQuest Team
  * 
@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  **/
-package com.theminequest.MineQuest.Team;
+package com.theminequest.MineQuest.Group;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,27 +32,31 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import com.theminequest.MineQuest.ManagerException;
+import com.theminequest.MineQuest.ManagerException.Reason;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.Player.PlayerDetails;
 import com.theminequest.MineQuest.Quest.Quest;
 
-public class TeamManager implements Listener{
+public class GroupManager implements Listener{
 
-	protected final int MAX_CAPACITY;
-	private LinkedHashMap<Long,Team> teams;
-	private long teamid;
+	protected final int TEAM_MAX_CAPACITY;
+	protected final int SUPER_MAX_CAPACITY;
+	private LinkedHashMap<Long,Group> groups;
+	private long groupid;
 
-	public TeamManager(){
+	public GroupManager(){
 		MineQuest.log("[Team] Starting Manager...");
-		teams = (LinkedHashMap<Long, Team>) Collections.synchronizedMap(new LinkedHashMap<Long,Team>());
-		teamid = 0;
-		MAX_CAPACITY = MineQuest.configuration.groupConfig.getInt("team_max_capacity", 8);
+		groups = (LinkedHashMap<Long,Group>) Collections.synchronizedMap(new LinkedHashMap<Long,Group>());
+		groupid = 0;
+		TEAM_MAX_CAPACITY = MineQuest.configuration.groupConfig.getInt("team_max_capacity", 8);
+		SUPER_MAX_CAPACITY = MineQuest.configuration.groupConfig.getInt("super_max_capacity", 3);
 	}
 
 	public synchronized long createTeam(ArrayList<Player> p){
-		long id = teamid;
-		teamid++;
-		teams.put(id, new Team(teamid,p));
+		long id = groupid;
+		groupid++;
+		groups.put(id, new Team(groupid,p));
 		//for (Player player : p){
 		//	MineQuest.playerManager.getPlayerDetails(player).setTeam(id);
 		//}
@@ -64,9 +68,19 @@ public class TeamManager implements Listener{
 		group.add(p);
 		return createTeam(group);
 	}
+	
+	public synchronized long createSuperTeam(ArrayList<Player> p){
+		// to implement
+		throw new RuntimeException(new ManagerException(Reason.NOTIMPLEMENTED));
+	}
+	
+	public synchronized long createSuperTeam(Player p){
+		// to implement
+		throw new RuntimeException(new ManagerException(Reason.NOTIMPLEMENTED));
+	}
 
-	public synchronized Team getTeam(long id){
-		return teams.get(id);
+	public synchronized Group getTeam(long id){
+		return groups.get(id);
 	}
 
 	/**
@@ -75,8 +89,8 @@ public class TeamManager implements Listener{
 	 * @return Team ID, or -1 if not on team.
 	 */
 	public synchronized long indexOf(Player p){
-		for (long id : teams.keySet()){
-			Team t = teams.get(id);
+		for (long id : groups.keySet()){
+			Group t = groups.get(id);
 			if (t!=null && t.contains(p))
 				return id;
 		}
@@ -89,8 +103,8 @@ public class TeamManager implements Listener{
 	 * @return Team ID, or -1 if not on a team.
 	 */
 	public synchronized long indexOfQuest(Quest q){
-		for (long id : teams.keySet()){
-			Team t = teams.get(id);
+		for (long id : groups.keySet()){
+			Group t = groups.get(id);
 			if (t!=null && t.getQuest()!=null && t.getQuest().equals(q))
 				return id;
 		}
@@ -101,21 +115,21 @@ public class TeamManager implements Listener{
 	 * Only called by Team objects when everyone leaves the team.
 	 */
 	protected synchronized void removeEmptyTeam(long id){
-		teams.get(id).lockTeam();
-		teams.put(id, null);
+		groups.get(id).lockTeam();
+		groups.put(id, null);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public synchronized void onPlayerQuit(PlayerQuitEvent e){
 		//PlayerDetails p = MineQuest.playerManager.getPlayerDetails(e.getPlayer());
 		//if (p.getTeam()!=-1){
-		//	MineQuest.teamManager.getTeam(p.getTeam()).remove(e.getPlayer());
+		//	MineQuest.groupManager.getTeam(p.getTeam()).remove(e.getPlayer());
 		//}
 		long team = indexOf(e.getPlayer());
 		if (team!=-1){
 			try {
-				teams.get(team).remove(e.getPlayer());
-			} catch (TeamExceptionEvent e1) {
+				groups.get(team).remove(e.getPlayer());
+			} catch (GroupExceptionEvent e1) {
 				MineQuest.log(Level.SEVERE, "Failed to remove player from team: " + e1);
 			}
 		}
@@ -126,13 +140,13 @@ public class TeamManager implements Listener{
 	public synchronized void onPlayerKick(PlayerKickEvent e){
 		//PlayerDetails p = MineQuest.playerManager.getPlayerDetails(e.getPlayer());
 		//if (p.getTeam()!=-1){
-		//	MineQuest.teamManager.getTeam(p.getTeam()).remove(e.getPlayer());
+		//	MineQuest.groupManager.getTeam(p.getTeam()).remove(e.getPlayer());
 		//}
 		long team = indexOf(e.getPlayer());
 		if (team!=-1){
 			try {
-				teams.get(team).remove(e.getPlayer());
-			} catch (TeamExceptionEvent e1) {
+				groups.get(team).remove(e.getPlayer());
+			} catch (GroupExceptionEvent e1) {
 				MineQuest.log(Level.SEVERE, "Failed to remove player from team: " + e1);
 			}
 		}
