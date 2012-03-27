@@ -27,6 +27,7 @@ import com.theminequest.MineQuest.Utils.PropertiesFile;
 public final class QuestConfig {
 
 	public PropertiesFile mainConfig;
+	public PropertiesFile groupConfig;
 	public PropertiesFile questConfig;
 	public PropertiesFile economyConfig;
 	public PropertiesFile databaseConfig;
@@ -38,6 +39,10 @@ public final class QuestConfig {
 		 * Load Main Configuration
 		 */
 		mainConfig = new PropertiesFile(basefolder+"config.properties");
+		/*
+		 * Load Group Configuration
+		 */
+		groupConfig = new PropertiesFile(basefolder+"groups.properties");
 		/*
 		 * Load Quest Configuration
 		 */

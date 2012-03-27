@@ -36,19 +36,19 @@ import com.theminequest.MineQuest.Team.TeamExceptionEvent.Cause;
 
 public class Team {
 
-	private static final int MAX_CAPACITY = 8;
+
 	private long teamid;
 	private ArrayList<Player> players;
 	private int capacity;
 	private Quest quest;
 
 	protected Team(long id, ArrayList<Player> p){
-		if (p.size()<=0 || p.size()>Team.MAX_CAPACITY)
+		if (p.size()<=0 || p.size()>MineQuest.teamManager.MAX_CAPACITY)
 			throw new IllegalArgumentException("Invalid team size!");
 		teamid = id;
 		players = (ArrayList<Player>) Collections.synchronizedList(p);
 		quest = null;
-		capacity = Team.MAX_CAPACITY;
+		capacity = MineQuest.teamManager.MAX_CAPACITY;
 	}
 
 	public synchronized Player getLeader(){
@@ -84,7 +84,7 @@ public class Team {
 		return capacity;
 	}
 
-	public long getTeamID(){
+	public long getID(){
 		return teamid;
 	}
 
@@ -105,6 +105,15 @@ public class Team {
 			throw new TeamExceptionEvent(Cause.NOQUEST);
 		quest.finishQuest(CompleteStatus.CANCELED);
 		quest = null;
+	}
+	
+	/**
+	 * Get the quest the team is undertaking.
+	 * @return Quest the team is undertaking, or <code>null</code> if the team
+	 * is not on a quest.
+	 */
+	public synchronized Quest getQuest() {
+		return quest;
 	}
 
 	public synchronized void teleportPlayers(Location l) {

@@ -277,4 +277,15 @@ public class Quest {
 		// TODO this is lovely and all, but tasks should trigger other tasks...
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object arg0) {
+		if (!(arg0 instanceof Quest))
+			return false;
+		Quest q = (Quest)arg0;
+		return (q.questid==this.questid);
+	}
+
 }

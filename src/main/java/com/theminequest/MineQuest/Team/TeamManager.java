@@ -34,9 +34,11 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.Player.PlayerDetails;
+import com.theminequest.MineQuest.Quest.Quest;
 
 public class TeamManager implements Listener{
 
+	protected final int MAX_CAPACITY;
 	private LinkedHashMap<Long,Team> teams;
 	private long teamid;
 
@@ -44,6 +46,7 @@ public class TeamManager implements Listener{
 		MineQuest.log("[Team] Starting Manager...");
 		teams = (LinkedHashMap<Long, Team>) Collections.synchronizedMap(new LinkedHashMap<Long,Team>());
 		teamid = 0;
+		MAX_CAPACITY = MineQuest.configuration.groupConfig.getInt("team_max_capacity", 8);
 	}
 
 	public synchronized long createTeam(ArrayList<Player> p){
@@ -75,6 +78,20 @@ public class TeamManager implements Listener{
 		for (long id : teams.keySet()){
 			Team t = teams.get(id);
 			if (t!=null && t.contains(p))
+				return id;
+		}
+		return -1;
+	}
+	
+	/**
+	 * Determine if a quest is being played by a team
+	 * @param q Quest
+	 * @return Team ID, or -1 if not on a team.
+	 */
+	public synchronized long indexOfQuest(Quest q){
+		for (long id : teams.keySet()){
+			Team t = teams.get(id);
+			if (t!=null && t.getQuest()!=null && t.getQuest().equals(q))
 				return id;
 		}
 		return -1;
