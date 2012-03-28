@@ -85,8 +85,13 @@ public class SQLExecutor {
 		String lastv = null;
 		try {
 			s = new Scanner(versionfile);
-			if (s.hasNextLine())
-				lastv = s.nextLine();
+			if (s.hasNextLine()){
+				String dbtype = s.nextLine();
+				if (dbtype.equalsIgnoreCase(databasetype.name())){
+					if (s.hasNextLine())
+						lastv = s.nextLine();
+				}
+			}
 		} catch (FileNotFoundException e) {
 			try {
 				versionfile.createNewFile();
@@ -111,12 +116,14 @@ public class SQLExecutor {
 			Writer out;
 			try {
 				out = new OutputStreamWriter(new FileOutputStream(versionfile));
-				out.write(MineQuest.getVersion());
+				out.write(databasetype.name()+IOUtils.LINE_SEPARATOR+MineQuest.getVersion());
 				out.close();
 			} catch (FileNotFoundException e) {
-				// never going to happen
+				MineQuest.log(Level.SEVERE,"[SQL] Failed to commit DBVERSION: " + e.getMessage());
+				throw new RuntimeException(e);
 			} catch (IOException e) {
-				// never going to happen either
+				MineQuest.log(Level.SEVERE,"[SQL] Failed to commit DBVERSION: " + e.getMessage());
+				throw new RuntimeException(e);
 			}
 		}
 
