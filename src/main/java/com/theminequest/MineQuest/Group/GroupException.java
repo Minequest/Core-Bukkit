@@ -1,6 +1,6 @@
 package com.theminequest.MineQuest.Group;
 
-public class GroupExceptionEvent extends Exception {
+public class GroupException extends Exception {
 
 	/**
 	 * 
@@ -9,18 +9,18 @@ public class GroupExceptionEvent extends Exception {
 	
 	private Cause cause;
 
-	public GroupExceptionEvent(Cause c){
+	public GroupException(Cause c){
 		super(c.name());
 		cause = c;
 	}
 
-	public GroupExceptionEvent(Throwable arg0) {
+	public GroupException(Throwable arg0) {
 		super(Cause.EXTERNALEXCEPTION.name(), arg0);
 		cause = Cause.EXTERNALEXCEPTION;
 		// TODO Auto-generated constructor stub
 	}
 
-	public GroupExceptionEvent(Cause c, Throwable arg1) {
+	public GroupException(Cause c, Throwable arg1) {
 		super(c.name(), arg1);
 		cause = c;
 		// TODO Auto-generated constructor stub
@@ -31,8 +31,8 @@ public class GroupExceptionEvent extends Exception {
 	}
 	
 	public enum Cause {
-		BADCAPACITY, OVERCAPACITY, ALREADYONQUEST, NOQUEST,
-		ALREADYINTEAM, NOTONTEAM, EXTERNALEXCEPTION;
+		BADCAPACITY, OVERCAPACITY, ALREADYONQUEST, INSIDEQUEST, NOTINSIDEQUEST, NOQUEST,
+		ALREADYINTEAM, NOTONTEAM, NOLOCATIONS, UNFINISHEDQUEST, EXTERNALEXCEPTION;
 	}
 
 }

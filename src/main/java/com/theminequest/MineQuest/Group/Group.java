@@ -13,17 +13,17 @@ public interface Group {
 	 * Basic Group Commands
 	 */
 	Player getLeader();
-	void setLeader(Player p) throws GroupExceptionEvent;
+	void setLeader(Player p) throws GroupException;
 	List<Player> getPlayers();
-	void add(Player p) throws GroupExceptionEvent;
-	void remove(Player p) throws GroupExceptionEvent;
+	void add(Player p) throws GroupException;
+	void remove(Player p) throws GroupException;
 	boolean contains(Player p);
 
 	/*
 	 * Group Configuration Commands
 	 */
 	int getCapacity();
-	void setCapacity(int capacity) throws GroupExceptionEvent;
+	void setCapacity(int capacity) throws GroupException;
 	/*
 	 * Group identification
 	 */
@@ -32,10 +32,15 @@ public interface Group {
 	/*
 	 * Group questing
 	 */
-	void startQuest(Quest quest) throws GroupExceptionEvent;
-	void abandonQuest() throws GroupExceptionEvent;
+	void startQuest(Quest quest) throws GroupException;
+	void enterQuest() throws GroupException;
+	void exitQuest() throws GroupException;
+	void abandonQuest() throws GroupException;
 	Quest getQuest();
+	boolean isInQuest();
 	void teleportPlayers(Location l);
+	void recordCurrentLocations();
+	void moveBackToLocations() throws GroupException;
 	
 	/*
 	 * GroupManager usage

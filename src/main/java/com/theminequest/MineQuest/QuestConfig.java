@@ -31,6 +31,7 @@ public final class QuestConfig {
 	public PropertiesFile questConfig;
 	public PropertiesFile economyConfig;
 	public PropertiesFile databaseConfig;
+	public PropertiesFile localizationConfig;
 	
 	public QuestConfig(){
 		MineQuest.log(Level.INFO, "Loading configuration...");
@@ -55,6 +56,10 @@ public final class QuestConfig {
 		 * Load Database Configuration
 		 */
 		databaseConfig = new PropertiesFile(basefolder+"database.properties");
+		/*
+		 * Load Localization Configuration
+		 */
+		localizationConfig = new PropertiesFile(basefolder+"localization.properties");
 	}
 	
 }

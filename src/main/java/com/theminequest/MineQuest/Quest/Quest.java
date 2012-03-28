@@ -62,13 +62,12 @@ import com.theminequest.MineQuest.Utils.TimeUtils;
 
 public class Quest {
 
-	protected Team team;
 	protected String questname;
 	protected long questid;
 	protected boolean started;
 	protected int currenttask;
-	
-	protected Location enteredfrom;
+
+	protected CompleteStatus finished;
 
 	// always <ID #,OBJECT/DETAILS>
 	// TreeMap guarantees key order.
@@ -103,8 +102,7 @@ public class Quest {
 	/*
 	 * Constructor will start the quest for the user.
 	 */
-	protected Quest(long questid, String id, Team t) {
-		team = t;
+	protected Quest(long questid, String id) {
 		questname = id;
 		this.questid = questid;
 		started = false;
@@ -132,7 +130,7 @@ public class Quest {
 		areaPreserve[5] = 0;
 
 		editMessage = ChatColor.GRAY + "You cannot edit inside a quest.";
-		world = t.getLeader().getWorld().getName();
+		world = Bukkit.getWorlds().get(0).getName();
 		loadworld = false;
 		
 		activeTask = null;
@@ -171,11 +169,6 @@ public class Quest {
 	public Set<Integer> getEventNums() {
 		return events.keySet();
 	}
-	
-	public void enterQuest(){
-		enteredfrom = team.getLeader().getLocation();
-		team.teleport(new Location(Bukkit.getWorld(world),spawnPoint[0],spawnPoint[1],spawnPoint[2]));
-	}
 
 	/**
 	 * Start a task of the quest.
@@ -205,11 +198,14 @@ public class Quest {
 	}
 
 	public void finishQuest(CompleteStatus c){
-		team.teleport(enteredfrom);
 		TimeUtils.unlock(Bukkit.getWorld(world));
 		Bukkit.unloadWorld(Bukkit.getWorld(world), false);
-		QuestCompleteEvent event = new QuestCompleteEvent(questid,c,team);
+		QuestCompleteEvent event = new QuestCompleteEvent(questid,c);
 		Bukkit.getPluginManager().callEvent(event);
+	}
+	
+	public CompleteStatus isFinished(){
+		return finished;
 	}
 	
 	/**
@@ -265,9 +261,9 @@ public class Quest {
 		// TODO not done yet
 		return new ArrayList<String>();
 	}
-
-	public Team getTeam() {
-		return team;
+	
+	public Location getSpawnLocation(){
+		return new Location(Bukkit.getWorld(world),spawnPoint[0],spawnPoint[1],spawnPoint[2]);
 	}
 
 	// passed in from QuestManager

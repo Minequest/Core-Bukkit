@@ -129,7 +129,7 @@ public class GroupManager implements Listener{
 		if (team!=-1){
 			try {
 				groups.get(team).remove(e.getPlayer());
-			} catch (GroupExceptionEvent e1) {
+			} catch (GroupException e1) {
 				MineQuest.log(Level.SEVERE, "Failed to remove player from team: " + e1);
 			}
 		}
@@ -146,7 +146,7 @@ public class GroupManager implements Listener{
 		if (team!=-1){
 			try {
 				groups.get(team).remove(e.getPlayer());
-			} catch (GroupExceptionEvent e1) {
+			} catch (GroupException e1) {
 				MineQuest.log(Level.SEVERE, "Failed to remove player from team: " + e1);
 			}
 		}
