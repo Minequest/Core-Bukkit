@@ -200,23 +200,40 @@ public class CommandListener implements CommandExecutor{
 
 	public void showMineQuestHelp(CommandSender sender){
 		String[] message = {
-				ChatColor.GREEN + "==== {" + ChatColor.YELLOW + "MineQuest Help (1/1)" + ChatColor.GREEN + "} ====",
-				ChatColor.GREEN + "/quest" + "\t" + ChatColor.YELLOW + "Show the Quest help menu.",
-				ChatColor.GREEN + "/party" + "\t" + ChatColor.YELLOW + "Show the Party help menu.",
+				formatHeader("MineQuest Help"),
+				formatHelp("quest", "List quest commands."),
+				formatHelp("party", "List party commands.")
 		};
 		sender.sendMessage(message);
 	}
 	
 	public void showPartyHelp(CommandSender sender){
 		String[] message = {
-				ChatColor.GREEN + "==== {" + ChatColor.YELLOW + "Party Help (1/1)" + ChatColor.GREEN + "} ====",
-				ChatColor.GREEN + "/party create" + "\t" + ChatColor.YELLOW + "Create a party.",
-				ChatColor.GREEN + "/party list" + "\t" + ChatColor.YELLOW + "List users in your party.",
-				ChatColor.GREEN + "/party accept" + "\t" + ChatColor.YELLOW + "Accept party invite.",
-				ChatColor.GREEN + "/party join <user>" + "\t" + ChatColor.YELLOW + "Join a certain username's party.",
-				ChatColor.GREEN + "/party leave" + "\t" + ChatColor.YELLOW + "Depart the party.",
+				formatHeader("Party Help"),
+				formatHelp("party create","Create a party."),
+				formatHelp("party list", "List users in your party."),
+				formatHelp("party accept", "Accept party invitation."),
+				formatHelp("party join <user>", "Join a user's party."),
+				formatHelp("party leave", "Depart your current party.")
 		};
-
+		
 		sender.sendMessage(message);
+	}
+	
+	private String formatHeader(String headername) {
+		return ChatColor.GREEN + "==== { " + ChatColor.YELLOW + headername + ChatColor.GREEN + " } ====";
+	}
+	
+	private String formatHelp(String command, String description) {
+		String toreturn = "";
+		toreturn += ChatColor.GREEN + "/" + command;
+		for (int i=0; i<20-command.length(); i++)
+			toreturn+=" ";
+		for (int i=0; i<10; i++)
+			toreturn+=" ";
+		for (int i=0; i<40-description.length(); i++)
+			toreturn+=" ";
+		toreturn += ChatColor.YELLOW + description;
+		return toreturn;
 	}
 }
