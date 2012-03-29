@@ -27,6 +27,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.EventsAPI.QEvent;
+import com.theminequest.MineQuest.Group.Group;
 
 public class DestroyEvent extends QEvent {
 	
@@ -74,7 +75,9 @@ public class DestroyEvent extends QEvent {
 	 */
 	@Override
 	public void onBlockBreak(BlockBreakEvent e) {
-		if (MineQuest.questManager.getQuest(getQuestId()).getTeam().getPlayers().contains(e.getPlayer())){
+		long gid = MineQuest.groupManager.indexOfQuest(MineQuest.questManager.getQuest(getQuestId()));
+		Group g = MineQuest.groupManager.getGroup(gid);
+		if (g.getPlayers().contains(e.getPlayer())){
 			int blockid = e.getBlock().getType().getId();
 			for (int t : typestodestroy){
 				if (blockid==t){

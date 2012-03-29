@@ -27,6 +27,7 @@ import com.theminequest.MineQuest.Backend.BackendFailedException;
 import com.theminequest.MineQuest.Backend.QuestBackend;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.EventsAPI.QEvent;
+import com.theminequest.MineQuest.Group.Group;
 import com.theminequest.MineQuest.Group.Team;
 
 public class QuestAvailableEvent extends QEvent {
@@ -62,9 +63,10 @@ public class QuestAvailableEvent extends QEvent {
 
 	@Override
 	public CompleteStatus action() {
-		Team t = MineQuest.questManager.getQuest(getQuestId()).getTeam();
+		long gid = MineQuest.groupManager.indexOfQuest(MineQuest.questManager.getQuest(getQuestId()));
+		Group g = MineQuest.groupManager.getGroup(gid);
 		CompleteStatus toreturn = CompleteStatus.SUCCESS;
-		for (Player p : t.getPlayers()){
+		for (Player p : g.getPlayers()){
 			try {
 				QuestBackend.giveQuestToPlayer(p,questavailable);
 			} catch (IllegalArgumentException e) {

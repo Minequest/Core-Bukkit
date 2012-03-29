@@ -29,6 +29,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.getspout.commons.ChatColor;
 
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.Player.PlayerDetails;
@@ -41,28 +42,23 @@ import com.theminequest.MineQuest.Group.Team;
 
 
 public class CommandListener implements CommandExecutor{
-	
+
 	public CommandListener(){
 		MineQuest.log("[CommandFrontend] Starting Command Frontend...");
 	}
-	
+
 	public boolean onCommand(CommandSender sender, Command cmd, String command, String[] args) {
 		Player player = null;
 		if (sender instanceof Player)
 			player = (Player) sender;
-		
+
 		if (args.length == 0){
 			if(cmd.getName().equalsIgnoreCase("minequest")){
-				sender.sendMessage("Type /Quest for Quest help");
-				sender.sendMessage("Type /Party for party help");
+				showMineQuestHelp(sender);
 				return true;
 			}
 			else if(cmd.getName().equalsIgnoreCase("party") && player != null){
-				sender.sendMessage("Party Commands:");
-				sender.sendMessage("    /party create - create a party.");
-				sender.sendMessage("    /party list - list users in your party.");
-				sender.sendMessage("    /party join <username> - join username's party.");
-				sender.sendMessage("    /party leave - removes you from the party.");
+				showPartyHelp(sender);
 				return true;
 			}
 			else if(cmd.getName().equalsIgnoreCase("quest") && player != null){
@@ -73,130 +69,154 @@ public class CommandListener implements CommandExecutor{
 				return true;
 			}
 		}
-	
-	//Quest Core Commands			
-			
-			/*Party Commands:
-			 * party create
-			 * party invite [player name]
-			 * party list
-			 * party leave
-			 */
 
-			if(command.equalsIgnoreCase("party")){
-				Group t = GroupBackend.getCurrentGroup(Bukkit.getPlayer(sender.getName()));
-				if(args[0].equalsIgnoreCase("create") && (t == null)){
-					try {
-						GroupBackend.createTeam(player);
-					} catch (BackendFailedException e) {
-						sender.sendMessage(e.toString());
-					}
-					sender.sendMessage("Created Party");
+		//Quest Core Commands			
+
+		/*Party Commands:
+		 * party create
+		 * party invite [player name]
+		 * party list
+		 * party leave
+		 */
+
+		if(command.equalsIgnoreCase("party")){
+			Group t = GroupBackend.getCurrentGroup(Bukkit.getPlayer(sender.getName()));
+			if(args[0].equalsIgnoreCase("create") && (t == null)){
+				try {
+					GroupBackend.createTeam(player);
+				} catch (BackendFailedException e) {
+					sender.sendMessage(e.toString());
+				}
+				sender.sendMessage("Created Party");
+				return true;
+			}
+
+			else if(args[0].equalsIgnoreCase("invite") == true){
+
+				if (args.length == 1){
+					sender.sendMessage("You must specify a player");
 					return true;
 				}
 
-				else if(args[0].equalsIgnoreCase("invite") == true){
-					
-					if (args.length == 1){
-						sender.sendMessage("You must specify a player");
+				else if (args.length == 2){
+					Player invitee = Bukkit.getPlayer(args[1]);
+
+					if (args[1] == null){
+						sender.sendMessage("You must specify a player.");
 						return true;
 					}
-					
-					else if (args.length == 2){
-						Player invitee = Bukkit.getPlayer(args[1]);
-						
-						if (args[1] == null){
-							sender.sendMessage("You must specify a player.");
-							return true;
-						}
-						
-						else if (invitee == null){
-							sender.sendMessage("That player is not online.");
-							return true;
-						}
 
-						else if (GroupBackend.getCurrentGroup(invitee) != null){
-							sender.sendMessage("Player is already in a group.");
-							return true;
-						}
-						
-						else if (invitee != null && (GroupBackend.getCurrentGroup(invitee) == null)){
-							try {
-								GroupBackend.invitePlayer(player, invitee);
-							} catch (BackendFailedException e) {
-								sender.sendMessage("Could not invite player: " + e.getMessage());
-							}
-							sender.sendMessage("Player invited to group");
-							return true;
-						}
+					else if (invitee == null){
+						sender.sendMessage("That player is not online.");
+						return true;
 					}
-				}
-				
-				else if(args[0].equalsIgnoreCase("list") == true){
-					Group team = GroupBackend.getCurrentGroup(player); 
-					List<Player> players = team.getPlayers();
-					sender.sendMessage(players.toString());
-					return true;
-				}
-				
-				else if(args[0].equalsIgnoreCase("leave")){
-					GroupBackend.removePlayerFromTeam(player);
-					sender.sendMessage("Removed from party");
-					return true;
-				}
-				
-				else{
-					sender.sendMessage("Unknown Party Command.");
-					return true;
+
+					else if (GroupBackend.getCurrentGroup(invitee) != null){
+						sender.sendMessage("Player is already in a group.");
+						return true;
+					}
+
+					else if (invitee != null && (GroupBackend.getCurrentGroup(invitee) == null)){
+						try {
+							GroupBackend.invitePlayer(player, invitee);
+						} catch (BackendFailedException e) {
+							sender.sendMessage("Could not invite player: " + e.getMessage());
+						}
+						sender.sendMessage("Player invited to group");
+						return true;
+					}
 				}
 			}
-			
-			/*
-			 * Quest Commands:
-			 * 
-			 * Quest List
-			 * Quest start
-			 * Quest Quit
-			 */
-			
-			else if(command.equalsIgnoreCase("quest")){
-				if(args[0].equalsIgnoreCase("start")){
-					//Just In case the file was deleted. 
-					File f = new File(MineQuest.activePlugin.getDataFolder()+File.separator+"quests"+File.separator+args[1]+".quest");
-					if (f.exists() != true){
-						try {
-							QuestBackend.acceptQuest(player, args[1]);
-						} catch (BackendFailedException e) {
-							sender.sendMessage(e.getMessage());
-						}
-					}
-					return true;
-				}
-				else if((args[0].equalsIgnoreCase("start")) && (args.length != 2)){
-					sender.sendMessage("Incorrect number of arguments!");
-					return true;
-				}
-				
-				else if(args[0].equalsIgnoreCase("quit")){
+
+			else if(args[0].equalsIgnoreCase("list") == true){
+				Group team = GroupBackend.getCurrentGroup(player); 
+				List<Player> players = team.getPlayers();
+				sender.sendMessage(players.toString());
+				return true;
+			}
+
+			else if(args[0].equalsIgnoreCase("leave")){
+				// FIXME REFACTOR
+				//GroupBackend.removePlayerFromTeam(player);
+				sender.sendMessage("Removed from party");
+				return true;
+			}
+
+			else{
+				sender.sendMessage("Unknown Party Command.");
+				return true;
+			}
+		}
+
+		/*
+		 * Quest Commands:
+		 * 
+		 * Quest List
+		 * Quest start
+		 * Quest Quit
+		 */
+
+		else if(command.equalsIgnoreCase("quest")){
+			if(args[0].equalsIgnoreCase("start")){
+				//Just In case the file was deleted. 
+				File f = new File(MineQuest.activePlugin.getDataFolder()+File.separator+"quests"+File.separator+args[1]+".quest");
+				if (f.exists() != true){
 					try {
-						QuestBackend.cancelActiveQuest(player);
+						QuestBackend.acceptQuest(player, args[1]);
 					} catch (BackendFailedException e) {
 						sender.sendMessage(e.getMessage());
 					}
-					return true;
 				}
-				else if(args[0].equalsIgnoreCase("List")){
-					try {
-						List<String> questlist = QuestBackend.getQuests(QuestAvailability.AVAILABLE, player);
-						String ql = questlist.toString();
-						sender.sendMessage(ql);
-					} catch (SQLException e) {
-						MineQuest.log(Level.SEVERE, e.getMessage());
-						sender.sendMessage("Could not find your Quest List");
-					}
-					return true;
-				}
+				return true;
 			}
-	return false;
+			else if((args[0].equalsIgnoreCase("start")) && (args.length != 2)){
+				sender.sendMessage("Incorrect number of arguments!");
+				return true;
+			}
+
+			else if(args[0].equalsIgnoreCase("quit")){
+				// FIXME REFACTOR
+				/*try {
+					QuestBackend.cancelActiveQuest(player);
+				} catch (BackendFailedException e) {
+					sender.sendMessage(e.getMessage());
+				}*/
+				return true;
+			}
+			else if(args[0].equalsIgnoreCase("List")){
+				try {
+					List<String> questlist = QuestBackend.getQuests(QuestAvailability.AVAILABLE, player);
+					String ql = questlist.toString();
+					sender.sendMessage(ql);
+				} catch (SQLException e) {
+					MineQuest.log(Level.SEVERE, e.getMessage());
+					sender.sendMessage("Could not find your Quest List");
+				}
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void showMineQuestHelp(CommandSender sender){
+		String[] message = {
+				ChatColor.GREEN + "==== {" + ChatColor.YELLOW + "MineQuest Help (1/1)" + ChatColor.GREEN + "} ====",
+				ChatColor.GREEN + "/quest" + "\t" + ChatColor.YELLOW + "Show the Quest help menu.",
+				ChatColor.GREEN + "/party" + "\t" + ChatColor.YELLOW + "Show the Party help menu.",
+		};
+		sender.sendMessage(message);
+	}
+	
+	public void showPartyHelp(CommandSender sender){
+		String[] message = {
+				ChatColor.GREEN + "==== {" + ChatColor.YELLOW + "Party Help (1/1)" + ChatColor.GREEN + "} ====",
+				ChatColor.GREEN + "/party create" + "\t" + ChatColor.YELLOW + "Create a party.",
+				ChatColor.GREEN + "/party list" + "\t" + ChatColor.YELLOW + "List users in your party.",
+				ChatColor.GREEN + "/party accept" + "\t" + ChatColor.YELLOW + "Accept party invite.",
+				ChatColor.GREEN + "/party join <user>" + "\t" + ChatColor.YELLOW + "Join a certain username's party.",
+				ChatColor.GREEN + "/party leave" + "\t" + ChatColor.YELLOW + "Depart the party.",
+		};
+
+		sender.sendMessage(message);
 	}
 }

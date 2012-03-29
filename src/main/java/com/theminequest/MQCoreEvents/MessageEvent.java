@@ -25,6 +25,7 @@ import org.bukkit.entity.Player;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.EventsAPI.QEvent;
+import com.theminequest.MineQuest.Group.Group;
 import com.theminequest.MineQuest.Group.Team;
 import com.theminequest.MineQuest.Utils.ChatUtils;
 
@@ -54,8 +55,9 @@ public class MessageEvent extends QEvent {
 
 	@Override
 	public CompleteStatus action() {
-		Team t = MineQuest.questManager.getQuest(getQuestId()).getTeam();
-		for (Player p : t.getPlayers())
+		long gid = MineQuest.groupManager.indexOfQuest(MineQuest.questManager.getQuest(getQuestId()));
+		Group g = MineQuest.groupManager.getGroup(gid);
+		for (Player p : g.getPlayers())
 			p.sendMessage(ChatColor.YELLOW + "[QUEST] " + ChatColor.WHITE + message);
 		return CompleteStatus.SUCCESS;
 	}

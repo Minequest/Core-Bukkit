@@ -28,6 +28,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.EventsAPI.QEvent;
+import com.theminequest.MineQuest.Group.Group;
 import com.theminequest.MineQuest.Group.Team;
 
 public class KillEvent extends QEvent {
@@ -80,7 +81,9 @@ public class KillEvent extends QEvent {
 			Player p = (Player)e.getDamager();
 			for (EntityType t : typestokill){
 				if (e.getEntityType()==t){
-					List<Player> team = MineQuest.questManager.getQuest(getQuestId()).getTeam().getPlayers();
+					long gid = MineQuest.groupManager.indexOfQuest(MineQuest.questManager.getQuest(getQuestId()));
+					Group g = MineQuest.groupManager.getGroup(gid);
+					List<Player> team = g.getPlayers();
 					if (team.contains(p)){
 						currentkill++;
 						if (currentkill>=totaltokill)

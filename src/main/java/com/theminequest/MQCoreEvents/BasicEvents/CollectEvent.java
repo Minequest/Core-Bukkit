@@ -28,6 +28,7 @@ import org.bukkit.inventory.PlayerInventory;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.EventsAPI.QEvent;
+import com.theminequest.MineQuest.Group.Group;
 import com.theminequest.MineQuest.Group.Team;
 
 public class CollectEvent extends QEvent {
@@ -63,8 +64,9 @@ public class CollectEvent extends QEvent {
 	 */
 	@Override
 	public boolean conditions() {
-		Team t = MineQuest.questManager.getQuest(getQuestId()).getTeam();
-		Player leader = t.getLeader();
+		long gid = MineQuest.groupManager.indexOfQuest(MineQuest.questManager.getQuest(getQuestId()));
+		Group g = MineQuest.groupManager.getGroup(gid);
+		Player leader = g.getLeader();
 		PlayerInventory i = leader.getInventory();
 		for (int item : itemids){
 			if (!i.contains(item))

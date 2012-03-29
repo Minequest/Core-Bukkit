@@ -28,6 +28,7 @@ import org.bukkit.entity.Player;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.EventsAPI.QEvent;
+import com.theminequest.MineQuest.Group.Group;
 import com.theminequest.MineQuest.Group.Team;
 
 public class RewardPermEvent extends QEvent {
@@ -59,8 +60,9 @@ public class RewardPermEvent extends QEvent {
 
 	@Override
 	public CompleteStatus action() {
-		Team t = MineQuest.questManager.getQuest(getQuestId()).getTeam();
-		for (Player p : t.getPlayers()){
+		long gid = MineQuest.groupManager.indexOfQuest(MineQuest.questManager.getQuest(getQuestId()));
+		Group g = MineQuest.groupManager.getGroup(gid);
+		for (Player p : g.getPlayers()){
 			for (String s : permissions){
 				MineQuest.permission.playerAdd(Bukkit.getWorlds().get(0),p.getName(), s);
 			}

@@ -13,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import com.theminequest.MineQuest.MineQuest;
+import com.theminequest.MineQuest.Backend.BackendFailedException.Reason;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.BukkitEvents.QuestAvailableEvent;
 import com.theminequest.MineQuest.Group.Team;
@@ -43,11 +44,11 @@ public final class QuestBackend {
 			MineQuest.log(Level.SEVERE, "[QuestBackend] Invoked giveQuestToPlayer by " +
 					p.getName() + " on quest " + quest_name + " threw exception:");
 			MineQuest.log(Level.SEVERE, e.toString());
-			throw new BackendFailedException("Oh no! I couldn't get your list of quests...",e);
+			throw new BackendFailedException(Reason.SQL,e);
 		}
 		for (String s : noncompletedquests){
 			if (quest_name.equalsIgnoreCase(s))
-				throw new BackendFailedException("You already have this quest pending!");
+				throw new BackendFailedException(Reason.ALREADYHAVEQUEST);
 		}
 
 		// if not repeatable, check if already completed
@@ -58,14 +59,14 @@ public final class QuestBackend {
 				MineQuest.log(Level.SEVERE, "[QuestBackend] Invoked giveQuestToPlayer by " +
 						p.getName() + " on quest " + quest_name + " threw exception:");
 				MineQuest.log(Level.SEVERE, e.toString());
-				throw new BackendFailedException("Oh dear. Something seems to have gone wrong.",e);
+				throw new BackendFailedException(Reason.SQL,e);
 			}
 			for (String s : completedquests){
 				if (quest_name.equalsIgnoreCase(s)){
 					if (repeatable)
 						regive = true;
 					else
-						throw new BackendFailedException("This quest is not repeatable!");
+						throw new BackendFailedException(Reason.UNREPEATABLEQUEST);
 				}
 			}
 
@@ -147,7 +148,7 @@ public final class QuestBackend {
 					return;
 				}
 			}
-			throw new BackendFailedException("Player doesn't have this quest!");
+			throw new BackendFailedException(Reason.NOTHAVEQUEST);
 		} catch (SQLException e) {
 			throw new BackendFailedException(e);
 		}
@@ -159,8 +160,9 @@ public final class QuestBackend {
 	 * @param name Quest Name
 	 * @throws BackendFailedException If quest couldn't be started
 	 */
-	public static void startQuest(Player p, String name) throws BackendFailedException {
-		long teamid = MineQuest.playerManager.getPlayerDetails(p).getTeam();
+	/* FIXME NOW DELEGATED TO GROUPBACKEND */
+/*	public static void startQuest(Player p, String name) throws BackendFailedException {
+		long teamid = MineQuest.
 		if (teamid==-1){
 			teamid = MineQuest.groupManager.createTeam(p);
 		}
@@ -179,14 +181,15 @@ public final class QuestBackend {
 		} catch (SQLException e) {
 			throw new BackendFailedException(e);
 		}
-	}
+	}*/
 	
 	/**
 	 * Cancel the active quest (abandon quest)
 	 * @param p <b>LEADER</b> of the team that wants to abandon quest
 	 * @throws BackendFailedException
 	 */
-	public static void cancelActiveQuest(Player p) throws BackendFailedException {
+	/* FIXME NOW DELEGATED TO GROUPBACKEND */
+/*	public static void cancelActiveQuest(Player p) throws BackendFailedException {
 		long teamid = MineQuest.playerManager.getPlayerDetails(p).getTeam();
 		if (teamid==-1){
 			throw new BackendFailedException("You're not on a team!");
@@ -199,6 +202,6 @@ public final class QuestBackend {
 		if (questid==-1)
 			throw new BackendFailedException("Not on a quest!");
 		MineQuest.questManager.getQuest(questid).finishQuest(CompleteStatus.CANCELED);
-	}
+	}*/
 
 }
