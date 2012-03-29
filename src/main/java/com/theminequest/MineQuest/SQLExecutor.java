@@ -27,6 +27,9 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -162,6 +165,30 @@ public class SQLExecutor {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Get a certain column from a ResultSet
+	 * @param rs ResultSet
+	 * @param columnname Column Name
+	 * @return list of <b>Strings</b> containing the contents of the column.
+	 * @throws SQLException If the ResultSet cannot be queried.
+	 */
+	public List<String> getColumn(ResultSet rs, String columnname) throws SQLException {
+		if (rs==null)
+			throw new IllegalArgumentException("ResultSet cannot be null!");
+		List<String> toreturn = new ArrayList<String>();
+		try {
+		if (!rs.first())
+			return toreturn;
+		do {
+			toreturn.add(rs.getString(columnname));
+		}while (rs.next());
+		return toreturn;
+		} catch (SQLException e) {
+			MineQuest.log(Level.SEVERE, "[SQL] SQL exception on ResultSet: " + e);
+			throw e;
+		}
 	}
 
 	private String convertStreamToString(InputStream is) {

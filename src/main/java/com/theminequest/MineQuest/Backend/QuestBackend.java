@@ -96,13 +96,7 @@ public final class QuestBackend {
 		else
 			currentquests = MineQuest.sqlstorage.querySQL(
 					"Quests/getPlayerQuestsAvailable", p.getName());
-		List<String> quests = new ArrayList<String>();
-		if (!currentquests.first())
-			return quests;
-		do {
-			quests.add(currentquests.getString("Q_ID"));
-		}while (currentquests.next());
-		return quests;
+		return MineQuest.sqlstorage.getColumn(currentquests, "Q_ID");
 	}
 
 	/**
