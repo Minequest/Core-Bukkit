@@ -19,6 +19,7 @@
  **/
 package com.theminequest.MineQuest.Editable;
 
+import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -26,7 +27,6 @@ import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
-import org.getspout.commons.ChatColor;
 
 import com.theminequest.MineQuest.MineQuest;
 

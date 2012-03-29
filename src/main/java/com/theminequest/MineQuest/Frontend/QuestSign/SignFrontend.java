@@ -22,6 +22,7 @@ package com.theminequest.MineQuest.Frontend.QuestSign;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -31,7 +32,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.getspout.commons.ChatColor;
 
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.Backend.BackendFailedException;
