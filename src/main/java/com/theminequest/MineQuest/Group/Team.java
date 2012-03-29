@@ -150,6 +150,8 @@ public class Team implements Group {
 
 	@Override
 	public synchronized void add(Player p) throws GroupException {
+		if (MineQuest.groupManager.indexOf(p)!=-1)
+			throw new GroupException(GroupReason.ALREADYINTEAM);
 		if (players.size()>=capacity)
 			throw new GroupException(GroupReason.OVERCAPACITY);
 		if (contains(p))
@@ -163,6 +165,8 @@ public class Team implements Group {
 
 	@Override
 	public synchronized void remove(Player p) throws GroupException{
+		if (MineQuest.groupManager.indexOf(p)==-1)
+			throw new GroupException(GroupReason.NOTONTEAM);
 		if (!contains(p))
 			throw new GroupException(GroupReason.NOTONTEAM);
 		//MineQuest.playerManager.getPlayerDetails(p).setTeam(-1);
