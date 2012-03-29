@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -45,14 +46,14 @@ public class GroupManager implements Listener{
 
 	protected final int TEAM_MAX_CAPACITY;
 	protected final int SUPER_MAX_CAPACITY;
-	private LinkedHashMap<Long,Group> groups;
-	private LinkedHashMap<Player,Group> invitations;
+	private Map<Long, Group> groups;
+	private Map<Player, Group> invitations;
 	private long groupid;
 
 	public GroupManager(){
 		MineQuest.log("[Team] Starting Manager...");
-		groups = (LinkedHashMap<Long,Group>) Collections.synchronizedMap(new LinkedHashMap<Long,Group>());
-		invitations = (LinkedHashMap<Player, Group>) Collections.synchronizedMap(new LinkedHashMap<Player,Group>());
+		groups = Collections.synchronizedMap(new LinkedHashMap<Long,Group>());
+		invitations = Collections.synchronizedMap(new LinkedHashMap<Player,Group>());
 		groupid = 0;
 		TEAM_MAX_CAPACITY = MineQuest.configuration.groupConfig.getInt("team_max_capacity", 8);
 		SUPER_MAX_CAPACITY = MineQuest.configuration.groupConfig.getInt("super_max_capacity", 3);

@@ -39,7 +39,7 @@ import com.theminequest.MineQuest.Quest.Quest;
 public class Team implements Group {
 
 	private long teamid;
-	private ArrayList<Player> players;
+	private List<Player> players;
 	private LinkedHashMap<Player,Location> locations;
 	private int capacity;
 	private Quest quest;
@@ -51,7 +51,7 @@ public class Team implements Group {
 		// ^ never should encounter this unless a third-party tries to, in which
 		// case they get what they deserve.
 		teamid = id;
-		players = (ArrayList<Player>) Collections.synchronizedList(p);
+		players = Collections.synchronizedList(p);
 		locations = null;
 		quest = null;
 		inQuest = false;
