@@ -55,6 +55,7 @@ import com.theminequest.MineQuest.Editable.InsideAreaEdit;
 import com.theminequest.MineQuest.Editable.ItemInHandEdit;
 import com.theminequest.MineQuest.Editable.OutsideAreaEdit;
 import com.theminequest.MineQuest.EventsAPI.QEvent;
+import com.theminequest.MineQuest.Group.Group;
 import com.theminequest.MineQuest.Group.Team;
 import com.theminequest.MineQuest.Target.TargetDetails;
 import com.theminequest.MineQuest.Tasks.Task;
@@ -200,7 +201,8 @@ public class Quest {
 	public void finishQuest(CompleteStatus c){
 		TimeUtils.unlock(Bukkit.getWorld(world));
 		Bukkit.unloadWorld(Bukkit.getWorld(world), false);
-		QuestCompleteEvent event = new QuestCompleteEvent(questid,c);
+		Group g = MineQuest.groupManager.getGroup(MineQuest.groupManager.indexOfQuest(this));
+		QuestCompleteEvent event = new QuestCompleteEvent(questid,c,g);
 		Bukkit.getPluginManager().callEvent(event);
 	}
 	

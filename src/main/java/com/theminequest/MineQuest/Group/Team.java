@@ -28,6 +28,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import com.theminequest.MineQuest.ManagerException;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.BukkitEvents.QuestStartedEvent;
@@ -103,7 +104,12 @@ public class Team implements Group {
 	public synchronized boolean contains(Player p){
 		return players.contains(p);
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.theminequest.MineQuest.Group.Group#startQuest(com.theminequest.MineQuest.Quest.Quest)
+	 * let the backend handle checking valid quests, calling QuestManager, etc...
+	 */
 	@Override
 	public synchronized void startQuest(Quest quest) throws GroupException {
 		if (quest!=null)
@@ -164,6 +170,7 @@ public class Team implements Group {
 		
 		if (players.size()<=0)
 			MineQuest.groupManager.removeEmptyTeam(teamid);
+		// TODO add TeamPlayerQuitEvent
 	}
 
 	@Override
@@ -205,11 +212,23 @@ public class Team implements Group {
 			throw new GroupException(Cause.UNFINISHEDQUEST);
 		moveBackToLocations();
 		inQuest = false;
+		quest = null;
 	}
 
 	@Override
 	public synchronized boolean isInQuest() {
 		return inQuest;
+	}
+
+	// remember that only the leader should be able to invite
+	@Override
+	public void invite(Player p) throws GroupException {
+		MineQuest.groupManager.invitePlayer(p, this);
+	}
+
+	@Override
+	public int compareTo(Group arg0) {
+		return (int) (teamid-arg0.getID());
 	}
 
 }

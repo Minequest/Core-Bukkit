@@ -7,37 +7,41 @@ public class BackendFailedException extends Exception {
 	 */
 	private static final long serialVersionUID = -2873994917728725961L;
 
-	/**
-	 * 
-	 */
-	public BackendFailedException() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
+	private Reason reason;
+	
 	/**
 	 * @param arg0
 	 * @param arg1
 	 */
-	public BackendFailedException(String arg0, Throwable arg1) {
-		super(arg0, arg1);
-		// TODO Auto-generated constructor stub
+	public BackendFailedException(Reason arg0, Throwable arg1) {
+		super(arg0.name(), arg1);
+		reason = arg0;
 	}
 
 	/**
 	 * @param arg0
 	 */
-	public BackendFailedException(String arg0) {
-		super(arg0);
-		// TODO Auto-generated constructor stub
+	public BackendFailedException(Reason arg0) {
+		super(arg0.name());
+		reason = arg0;
 	}
 
 	/**
 	 * @param arg0
 	 */
 	public BackendFailedException(Throwable arg0) {
-		super(arg0);
-		// TODO Auto-generated constructor stub
+		super(Reason.EXTERNALEXCEPTION.name(), arg0);
+		reason = Reason.EXTERNALEXCEPTION;
+	}
+	
+	public Reason getReason(){
+		return reason;
+	}
+	
+	public enum Reason {
+		MANAGEREXCEPTION, NOTIMPLEMENTED, FAILED, INVALIDARGS, EXTERNALEXCEPTION,
+		// Group stuff
+		NOTONTEAM, ALREADYONTEAM;
 	}
 
 }

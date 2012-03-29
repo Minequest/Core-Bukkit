@@ -32,6 +32,7 @@ import org.bukkit.entity.Player;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.EventsAPI.QEvent;
 import com.theminequest.MineQuest.EventsAPI.TargetEvent;
+import com.theminequest.MineQuest.Group.Group;
 import com.theminequest.MineQuest.Group.Team;
 import com.theminequest.MineQuest.Quest.Quest;
 import com.theminequest.MineQuest.Target.TargetDetails.TargetType;
@@ -91,7 +92,7 @@ public class TargetManager {
 	 */
 	private static List<LivingEntity> partyTarget(TargetDetails t) {
 		Quest q = MineQuest.questManager.getQuest(t.getQuest());
-		Team team = q.getTeam();
+		Group team = MineQuest.groupManager.getGroup(MineQuest.groupManager.indexOfQuest(q));
 		List<LivingEntity> list = new ArrayList<LivingEntity>();
 		list.addAll(team.getPlayers());
 		return list;

@@ -33,9 +33,10 @@ import org.bukkit.entity.Player;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.Player.PlayerDetails;
 import com.theminequest.MineQuest.Backend.BackendFailedException;
-import com.theminequest.MineQuest.Backend.TeamBackend;
+import com.theminequest.MineQuest.Backend.GroupBackend;
 import com.theminequest.MineQuest.Backend.QuestAvailability;
 import com.theminequest.MineQuest.Backend.QuestBackend;
+import com.theminequest.MineQuest.Group.Group;
 import com.theminequest.MineQuest.Group.Team;
 
 
@@ -83,10 +84,10 @@ public class CommandListener implements CommandExecutor{
 			 */
 
 			if(command.equalsIgnoreCase("party")){
-				Team t = TeamBackend.getCurrentTeam(Bukkit.getPlayer(sender.getName()));
+				Group t = GroupBackend.getCurrentGroup(Bukkit.getPlayer(sender.getName()));
 				if(args[0].equalsIgnoreCase("create") && (t == null)){
 					try {
-						TeamBackend.createTeam(player);
+						GroupBackend.createTeam(player);
 					} catch (BackendFailedException e) {
 						sender.sendMessage(e.toString());
 					}
@@ -114,14 +115,14 @@ public class CommandListener implements CommandExecutor{
 							return true;
 						}
 
-						else if (TeamBackend.getCurrentTeam(invitee) != null){
+						else if (GroupBackend.getCurrentGroup(invitee) != null){
 							sender.sendMessage("Player is already in a group.");
 							return true;
 						}
 						
-						else if (invitee != null && (TeamBackend.getCurrentTeam(invitee) == null)){
+						else if (invitee != null && (GroupBackend.getCurrentGroup(invitee) == null)){
 							try {
-								TeamBackend.invitePlayer(player, invitee);
+								GroupBackend.invitePlayer(player, invitee);
 							} catch (BackendFailedException e) {
 								sender.sendMessage("Could not invite player: " + e.getMessage());
 							}
@@ -132,14 +133,14 @@ public class CommandListener implements CommandExecutor{
 				}
 				
 				else if(args[0].equalsIgnoreCase("list") == true){
-					Team team = TeamBackend.getCurrentTeam(player); 
+					Group team = GroupBackend.getCurrentGroup(player); 
 					List<Player> players = team.getPlayers();
 					sender.sendMessage(players.toString());
 					return true;
 				}
 				
 				else if(args[0].equalsIgnoreCase("leave")){
-					TeamBackend.removePlayerFromTeam(player);
+					GroupBackend.removePlayerFromTeam(player);
 					sender.sendMessage("Removed from party");
 					return true;
 				}

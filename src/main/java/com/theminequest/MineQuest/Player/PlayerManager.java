@@ -120,10 +120,4 @@ public class PlayerManager implements Listener {
 	public void onQuestCompleteEvent(QuestCompleteEvent e){
 		// TODO
 	}
-	
-	@EventHandler
-	public void onTeamInviteEvent(TeamInviteEvent e){
-		getPlayerDetails(e.getInvited()).invitePlayer(e.getInviterName(), e.getTeamId(), false);
-	}
-
 }

@@ -22,6 +22,7 @@ package com.theminequest.MineQuest.BukkitEvents;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import com.theminequest.MineQuest.Group.Group;
 import com.theminequest.MineQuest.Group.Team;
 
 public class QuestCompleteEvent extends Event {
@@ -34,12 +35,12 @@ public class QuestCompleteEvent extends Event {
 	
 	private long questid;
 	private CompleteStatus status;
-	private Team team;
+	private Group team;
 
-	public QuestCompleteEvent(long questid, CompleteStatus c, Team t) {
+	public QuestCompleteEvent(long questid, CompleteStatus c, Group g) {
 		this.questid = questid;
 		status = c;
-		team = t;
+		team = g;
 	}
 	
 	public long getQuestId(){
@@ -50,7 +51,7 @@ public class QuestCompleteEvent extends Event {
 		return status;
 	}
 	
-	public Team getTeam(){
+	public Group getTeam(){
 		return team;
 	}
 

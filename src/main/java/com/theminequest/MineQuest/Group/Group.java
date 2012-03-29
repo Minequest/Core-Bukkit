@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 
 import com.theminequest.MineQuest.Quest.Quest;
 
-public interface Group {
+public interface Group extends Comparable<Group> {
 	
 	/*
 	 * Basic Group Commands
@@ -18,6 +18,7 @@ public interface Group {
 	void add(Player p) throws GroupException;
 	void remove(Player p) throws GroupException;
 	boolean contains(Player p);
+	void invite(Player p) throws GroupException;
 
 	/*
 	 * Group Configuration Commands

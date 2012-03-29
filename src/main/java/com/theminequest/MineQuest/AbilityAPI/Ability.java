@@ -33,6 +33,7 @@ import org.getspout.commons.ChatColor;
 
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.AbilityRefreshedEvent;
+import com.theminequest.MineQuest.Group.Group;
 import com.theminequest.MineQuest.Player.PlayerDetails;
 import com.theminequest.MineQuest.Player.PlayerManager;
 import com.theminequest.MineQuest.Quest.QuestManager;
@@ -91,12 +92,15 @@ public abstract class Ability {
 	 * @param p Player Name
 	 */
 	public boolean questAllow(Player p){
-		long currentquest = MineQuest.playerManager.getPlayerDetails(p).getQuest();
+		long teamid = MineQuest.groupManager.indexOf(p);
+		if (teamid==-1)
+			return true;
+		Group g = MineQuest.groupManager.getGroup(teamid);
 		// outside the quest, of course you can use abilities
-		if (currentquest==-1)
+		if (g.getQuest()==null)
 			return true;
 		// inside the quest...
-		List<String> abilities = MineQuest.questManager.getQuest(currentquest).getDisallowedAbilities();
+		List<String> abilities = g.getQuest().getDisallowedAbilities();
 		for (String s : abilities){
 			if (s.equalsIgnoreCase(getName()))
 				return false;

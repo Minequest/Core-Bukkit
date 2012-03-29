@@ -164,7 +164,7 @@ public final class QuestBackend {
 		if (teamid==-1){
 			teamid = MineQuest.groupManager.createTeam(p);
 		}
-		Team t = MineQuest.groupManager.getTeam(teamid);
+		Team t = MineQuest.groupManager.getGroup(teamid);
 		Player leader = t.getLeader();
 		if (leader!=p)
 			throw new BackendFailedException("Only leaders can start quests!");
@@ -191,7 +191,7 @@ public final class QuestBackend {
 		if (teamid==-1){
 			throw new BackendFailedException("You're not on a team!");
 		}
-		Team t = MineQuest.groupManager.getTeam(teamid);
+		Team t = MineQuest.groupManager.getGroup(teamid);
 		Player leader = t.getLeader();
 		if (leader!=p)
 			throw new BackendFailedException("Only leaders can cancel the current quest!");

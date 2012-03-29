@@ -53,8 +53,8 @@ public class QuestManager implements Listener {
 				+File.separator+"quests");
 	}
 	
-	public long startQuest(String id, Team t){
-		quests.put(questid,new Quest(questid,id,t));
+	public long startQuest(String id){
+		quests.put(questid,new Quest(questid,id));
 		long thisquestid = questid;
 		questid++;
 		QuestStartedEvent e = new QuestStartedEvent(quests.get(thisquestid));
@@ -75,7 +75,6 @@ public class QuestManager implements Listener {
 	
 	@EventHandler
 	public void onQuestCompletion(QuestCompleteEvent e){
-		e.getTeam().assignQuest(-1);
 		String questname = quests.get(e.getQuestId()).questname;
 		for (Player p : e.getTeam().getPlayers()){
 			MineQuest.sqlstorage.querySQL("Quests/completeQuest", p.getName(), questname);

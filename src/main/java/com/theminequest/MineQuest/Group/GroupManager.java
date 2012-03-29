@@ -25,6 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -35,6 +36,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import com.theminequest.MineQuest.ManagerException;
 import com.theminequest.MineQuest.ManagerException.Reason;
 import com.theminequest.MineQuest.MineQuest;
+import com.theminequest.MineQuest.Group.GroupException.Cause;
 import com.theminequest.MineQuest.Player.PlayerDetails;
 import com.theminequest.MineQuest.Quest.Quest;
 
@@ -43,11 +45,13 @@ public class GroupManager implements Listener{
 	protected final int TEAM_MAX_CAPACITY;
 	protected final int SUPER_MAX_CAPACITY;
 	private LinkedHashMap<Long,Group> groups;
+	private LinkedHashMap<Player,Group> invitations;
 	private long groupid;
 
 	public GroupManager(){
 		MineQuest.log("[Team] Starting Manager...");
 		groups = (LinkedHashMap<Long,Group>) Collections.synchronizedMap(new LinkedHashMap<Long,Group>());
+		invitations = (LinkedHashMap<Player, Group>) Collections.synchronizedMap(new LinkedHashMap<Player,Group>());
 		groupid = 0;
 		TEAM_MAX_CAPACITY = MineQuest.configuration.groupConfig.getInt("team_max_capacity", 8);
 		SUPER_MAX_CAPACITY = MineQuest.configuration.groupConfig.getInt("super_max_capacity", 3);
@@ -79,7 +83,7 @@ public class GroupManager implements Listener{
 		throw new RuntimeException(new ManagerException(Reason.NOTIMPLEMENTED));
 	}
 
-	public synchronized Group getTeam(long id){
+	public synchronized Group getGroup(long id){
 		return groups.get(id);
 	}
 
@@ -109,6 +113,35 @@ public class GroupManager implements Listener{
 				return id;
 		}
 		return -1;
+	}
+	
+	public synchronized void acceptPendingInvite(Player p) throws ManagerException, GroupException{
+		if (!invitations.containsKey(p))
+			throw new ManagerException(Reason.INVALIDARGS);
+		invitations.get(p).add(p);
+		invitations.remove(p);
+	}
+	
+	protected synchronized void invitePlayer(final Player p, Group g) throws GroupException {
+		if (invitations.containsKey(p))
+			throw new GroupException(Cause.ALREADYINTEAM);
+		invitations.put(p, g);
+		// TODO Call TeamInviteEvent (remember, 30 seconds to accept invite)
+		Bukkit.getScheduler().scheduleAsyncDelayedTask(MineQuest.activePlugin, new Runnable(){
+
+			@Override
+			public void run() {
+				disposeInvite(p);
+			}
+			
+		}, 600);
+	}
+	
+	private synchronized void disposeInvite(Player p) {
+		if (!invitations.containsKey(p)) // accepted; just return.
+			return;
+		invitations.remove(p);
+		// TODO Call TeamInviteExpiredEvent
 	}
 
 	/*
