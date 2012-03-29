@@ -47,7 +47,9 @@ public class Team implements Group {
 
 	protected Team(long id, ArrayList<Player> p){
 		if (p.size()<=0 || p.size()>MineQuest.groupManager.TEAM_MAX_CAPACITY)
-			throw new IllegalArgumentException("Invalid team size!");
+			throw new IllegalArgumentException(GroupReason.BADCAPACITY.name());
+		// ^ never should encounter this unless a third-party tries to, in which
+		// case they get what they deserve.
 		teamid = id;
 		players = (ArrayList<Player>) Collections.synchronizedList(p);
 		locations = null;
