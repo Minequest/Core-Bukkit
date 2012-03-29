@@ -67,5 +67,17 @@ public class ChatUtils {
         }
         return string.replaceAll("&([a-z0-9])", "\u00A7$1");
     }
+    
+    /**
+     * Chatify the string. Should be used, especially in cases where
+     * we have localization files and they want different colours.
+     * @param string String to chatify
+     * @return Chatified string
+     */
+    public static String chatify(String string) {
+    	string = colorize(string);
+    	string = replaceTime(string);
+    	return string;
+    }
 
 }
