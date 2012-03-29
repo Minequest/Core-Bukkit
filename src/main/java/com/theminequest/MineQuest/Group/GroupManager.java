@@ -34,9 +34,9 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.theminequest.MineQuest.ManagerException;
-import com.theminequest.MineQuest.ManagerException.Reason;
+import com.theminequest.MineQuest.ManagerException.ManagerReason;
 import com.theminequest.MineQuest.MineQuest;
-import com.theminequest.MineQuest.Group.GroupException.Cause;
+import com.theminequest.MineQuest.Group.GroupException.GroupReason;
 import com.theminequest.MineQuest.Player.PlayerDetails;
 import com.theminequest.MineQuest.Quest.Quest;
 
@@ -75,12 +75,12 @@ public class GroupManager implements Listener{
 	
 	public synchronized long createSuperTeam(ArrayList<Player> p){
 		// to implement
-		throw new RuntimeException(new ManagerException(Reason.NOTIMPLEMENTED));
+		throw new RuntimeException(new ManagerException(ManagerReason.NOTIMPLEMENTED));
 	}
 	
 	public synchronized long createSuperTeam(Player p){
 		// to implement
-		throw new RuntimeException(new ManagerException(Reason.NOTIMPLEMENTED));
+		throw new RuntimeException(new ManagerException(ManagerReason.NOTIMPLEMENTED));
 	}
 
 	public synchronized Group getGroup(long id){
@@ -117,14 +117,14 @@ public class GroupManager implements Listener{
 	
 	public synchronized void acceptPendingInvite(Player p) throws ManagerException, GroupException{
 		if (!invitations.containsKey(p))
-			throw new ManagerException(Reason.INVALIDARGS);
+			throw new ManagerException(ManagerReason.INVALIDARGS);
 		invitations.get(p).add(p);
 		invitations.remove(p);
 	}
 	
 	protected synchronized void invitePlayer(final Player p, Group g) throws GroupException {
 		if (invitations.containsKey(p))
-			throw new GroupException(Cause.ALREADYINTEAM);
+			throw new GroupException(GroupReason.ALREADYINTEAM);
 		invitations.put(p, g);
 		// TODO Call TeamInviteEvent (remember, 30 seconds to accept invite)
 		Bukkit.getScheduler().scheduleAsyncDelayedTask(MineQuest.activePlugin, new Runnable(){

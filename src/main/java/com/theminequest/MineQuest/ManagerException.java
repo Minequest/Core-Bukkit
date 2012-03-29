@@ -6,28 +6,28 @@ public class ManagerException extends Exception {
 	 * 
 	 */
 	private static final long serialVersionUID = -4839674539656984977L;
-	private Reason reason;
+	private ManagerReason managerReason;
 
-	public ManagerException(Reason arg0) {
+	public ManagerException(ManagerReason arg0) {
 		super(arg0.name());
-		reason = arg0;
+		managerReason = arg0;
 	}
 
 	public ManagerException(Throwable arg0) {
 		super(arg0);
-		reason = Reason.EXTERNALEXCEPTION;
+		managerReason = ManagerReason.EXTERNALEXCEPTION;
 	}
 
-	public ManagerException(Reason arg0, Throwable arg1) {
+	public ManagerException(ManagerReason arg0, Throwable arg1) {
 		super(arg0.name(), arg1);
-		reason = arg0;
+		managerReason = arg0;
 	}
 	
-	public Reason getReason(){
-		return reason;
+	public ManagerReason getReason(){
+		return managerReason;
 	}
 	
-	public enum Reason {
+	public enum ManagerReason {
 		NOTIMPLEMENTED, FAILED, INVALIDARGS, EXTERNALEXCEPTION;
 	}
 

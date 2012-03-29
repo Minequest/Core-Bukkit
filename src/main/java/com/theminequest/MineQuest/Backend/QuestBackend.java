@@ -13,7 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import com.theminequest.MineQuest.MineQuest;
-import com.theminequest.MineQuest.Backend.BackendFailedException.Reason;
+import com.theminequest.MineQuest.Backend.BackendFailedException.BackendReason;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.BukkitEvents.QuestAvailableEvent;
 import com.theminequest.MineQuest.Group.Team;
@@ -44,11 +44,11 @@ public final class QuestBackend {
 			MineQuest.log(Level.SEVERE, "[QuestBackend] Invoked giveQuestToPlayer by " +
 					p.getName() + " on quest " + quest_name + " threw exception:");
 			MineQuest.log(Level.SEVERE, e.toString());
-			throw new BackendFailedException(Reason.SQL,e);
+			throw new BackendFailedException(BackendReason.SQL,e);
 		}
 		for (String s : noncompletedquests){
 			if (quest_name.equalsIgnoreCase(s))
-				throw new BackendFailedException(Reason.ALREADYHAVEQUEST);
+				throw new BackendFailedException(BackendReason.ALREADYHAVEQUEST);
 		}
 
 		// if not repeatable, check if already completed
@@ -59,14 +59,14 @@ public final class QuestBackend {
 				MineQuest.log(Level.SEVERE, "[QuestBackend] Invoked giveQuestToPlayer by " +
 						p.getName() + " on quest " + quest_name + " threw exception:");
 				MineQuest.log(Level.SEVERE, e.toString());
-				throw new BackendFailedException(Reason.SQL,e);
+				throw new BackendFailedException(BackendReason.SQL,e);
 			}
 			for (String s : completedquests){
 				if (quest_name.equalsIgnoreCase(s)){
 					if (repeatable)
 						regive = true;
 					else
-						throw new BackendFailedException(Reason.UNREPEATABLEQUEST);
+						throw new BackendFailedException(BackendReason.UNREPEATABLEQUEST);
 				}
 			}
 
@@ -148,7 +148,7 @@ public final class QuestBackend {
 					return;
 				}
 			}
-			throw new BackendFailedException(Reason.NOTHAVEQUEST);
+			throw new BackendFailedException(BackendReason.NOTHAVEQUEST);
 		} catch (SQLException e) {
 			throw new BackendFailedException(e);
 		}

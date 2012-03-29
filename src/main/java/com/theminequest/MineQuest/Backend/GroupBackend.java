@@ -3,7 +3,7 @@ package com.theminequest.MineQuest.Backend;
 import org.bukkit.entity.Player;
 
 import com.theminequest.MineQuest.MineQuest;
-import com.theminequest.MineQuest.Backend.BackendFailedException.Reason;
+import com.theminequest.MineQuest.Backend.BackendFailedException.BackendReason;
 import com.theminequest.MineQuest.Group.Group;
 import com.theminequest.MineQuest.Group.GroupException;
 import com.theminequest.MineQuest.Group.Team;
@@ -13,7 +13,7 @@ public final class GroupBackend {
 	
 	public synchronized static void createTeam(Player p) throws BackendFailedException{
 		if (teamID(p)!=-1)
-			throw new BackendFailedException(Reason.INVALIDARGS);
+			throw new BackendFailedException(BackendReason.INVALIDARGS);
 		MineQuest.groupManager.createTeam(p);
 	}
 
@@ -28,13 +28,13 @@ public final class GroupBackend {
 	public synchronized static void invitePlayer(Player inviter, Player invitee) throws BackendFailedException {
 		long id = teamID(inviter);
 		if (id==-1)
-			throw new BackendFailedException(Reason.INVALIDARGS);
+			throw new BackendFailedException(BackendReason.INVALIDARGS);
 		if (teamID(invitee)!=-1)
-			throw new BackendFailedException(Reason.INVALIDARGS);
+			throw new BackendFailedException(BackendReason.INVALIDARGS);
 		try {
 			MineQuest.groupManager.getGroup(id).invite(invitee);
 		} catch (GroupException e) {
-			throw new BackendFailedException(Reason.MANAGEREXCEPTION,e);
+			throw new BackendFailedException(BackendReason.MANAGEREXCEPTION,e);
 		}
 	}
 
@@ -56,11 +56,11 @@ public final class GroupBackend {
 	public synchronized static void removePlayerFromTeam(Player p) throws BackendFailedException{
 		long teamid = teamID(p);
 		if (teamid==-1)
-			throw new BackendFailedException(Reason.NOTONTEAM);
+			throw new BackendFailedException(BackendReason.NOTONTEAM);
 		try {
 			MineQuest.groupManager.getGroup(teamid).remove(p);
 		} catch (GroupException e) {
-			throw new BackendFailedException(Reason.MANAGEREXCEPTION,e);
+			throw new BackendFailedException(BackendReason.MANAGEREXCEPTION,e);
 		}
 	}
 

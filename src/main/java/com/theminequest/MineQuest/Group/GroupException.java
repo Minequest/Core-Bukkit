@@ -7,30 +7,30 @@ public class GroupException extends Exception {
 	 */
 	private static final long serialVersionUID = -1073787842559540982L;
 	
-	private Cause cause;
+	private GroupReason groupReason;
 
-	public GroupException(Cause c){
+	public GroupException(GroupReason c){
 		super(c.name());
-		cause = c;
+		groupReason = c;
 	}
 
 	public GroupException(Throwable arg0) {
-		super(Cause.EXTERNALEXCEPTION.name(), arg0);
-		cause = Cause.EXTERNALEXCEPTION;
+		super(GroupReason.EXTERNALEXCEPTION.name(), arg0);
+		groupReason = GroupReason.EXTERNALEXCEPTION;
 		// TODO Auto-generated constructor stub
 	}
 
-	public GroupException(Cause c, Throwable arg1) {
+	public GroupException(GroupReason c, Throwable arg1) {
 		super(c.name(), arg1);
-		cause = c;
+		groupReason = c;
 		// TODO Auto-generated constructor stub
 	}
 	
-	public Cause getReason(){
-		return cause;
+	public GroupReason getReason(){
+		return groupReason;
 	}
 	
-	public enum Cause {
+	public enum GroupReason {
 		BADCAPACITY, OVERCAPACITY, ALREADYONQUEST, INSIDEQUEST, NOTINSIDEQUEST, NOQUEST,
 		ALREADYINTEAM, NOTONTEAM, NOLOCATIONS, UNFINISHEDQUEST, EXTERNALEXCEPTION;
 	}

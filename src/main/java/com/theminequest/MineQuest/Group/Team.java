@@ -32,7 +32,7 @@ import com.theminequest.MineQuest.ManagerException;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.BukkitEvents.QuestStartedEvent;
-import com.theminequest.MineQuest.Group.GroupException.Cause;
+import com.theminequest.MineQuest.Group.GroupException.GroupReason;
 import com.theminequest.MineQuest.Player.PlayerManager;
 import com.theminequest.MineQuest.Quest.Quest;
 
@@ -64,7 +64,7 @@ public class Team implements Group {
 	@Override
 	public synchronized void setLeader(Player p) throws GroupException{
 		if (!contains(p))
-			throw new GroupException(Cause.NOTONTEAM);
+			throw new GroupException(GroupReason.NOTONTEAM);
 		players.remove(p);
 		players.add(0, p);
 	}
@@ -86,7 +86,7 @@ public class Team implements Group {
 	@Override
 	public synchronized void setCapacity(int c) throws GroupException{
 		if (c<=0 || c>players.size())
-			throw new GroupException(Cause.BADCAPACITY);
+			throw new GroupException(GroupReason.BADCAPACITY);
 		capacity = c;
 	}
 
@@ -113,7 +113,7 @@ public class Team implements Group {
 	@Override
 	public synchronized void startQuest(Quest quest) throws GroupException {
 		if (quest!=null)
-			throw new GroupException(Cause.ALREADYONQUEST);
+			throw new GroupException(GroupReason.ALREADYONQUEST);
 		this.quest = quest;
 		QuestStartedEvent event = new QuestStartedEvent(quest);
 		Bukkit.getPluginManager().callEvent(event);
@@ -122,7 +122,7 @@ public class Team implements Group {
 	@Override
 	public synchronized void abandonQuest() throws GroupException {
 		if (quest==null)
-			throw new GroupException(Cause.NOQUEST);
+			throw new GroupException(GroupReason.NOQUEST);
 		quest.finishQuest(CompleteStatus.CANCELED);
 		if (inQuest)
 			exitQuest();
@@ -149,11 +149,11 @@ public class Team implements Group {
 	@Override
 	public synchronized void add(Player p) throws GroupException {
 		if (players.size()>=capacity)
-			throw new GroupException(Cause.OVERCAPACITY);
+			throw new GroupException(GroupReason.OVERCAPACITY);
 		if (contains(p))
-			throw new GroupException(Cause.ALREADYINTEAM);
+			throw new GroupException(GroupReason.ALREADYINTEAM);
 		if (inQuest)
-			throw new GroupException(Cause.INSIDEQUEST);
+			throw new GroupException(GroupReason.INSIDEQUEST);
 		//MineQuest.playerManager.getPlayerDetails(p).setTeam(teamid);
 		players.add(p);
 		// TODO add TeamPlayerJoinedEvent
@@ -162,7 +162,7 @@ public class Team implements Group {
 	@Override
 	public synchronized void remove(Player p) throws GroupException{
 		if (!contains(p))
-			throw new GroupException(Cause.NOTONTEAM);
+			throw new GroupException(GroupReason.NOTONTEAM);
 		//MineQuest.playerManager.getPlayerDetails(p).setTeam(-1);
 		players.remove(p);
 		if (locations!=null)
@@ -176,9 +176,9 @@ public class Team implements Group {
 	@Override
 	public synchronized void enterQuest() throws GroupException {
 		if (quest==null)
-			throw new GroupException(Cause.NOQUEST);
+			throw new GroupException(GroupReason.NOQUEST);
 		if (inQuest)
-			throw new GroupException(Cause.INSIDEQUEST);
+			throw new GroupException(GroupReason.INSIDEQUEST);
 		recordCurrentLocations();
 		inQuest = true;
 		teleportPlayers(quest.getSpawnLocation());
@@ -195,7 +195,7 @@ public class Team implements Group {
 	@Override
 	public synchronized void moveBackToLocations() throws GroupException{
 		if (locations==null)
-			throw new GroupException(Cause.NOLOCATIONS);
+			throw new GroupException(GroupReason.NOLOCATIONS);
 		for (Player p : players){
 			p.teleport(locations.get(p));
 		}
@@ -205,11 +205,11 @@ public class Team implements Group {
 	@Override
 	public synchronized void exitQuest() throws GroupException {
 		if (quest==null)
-			throw new GroupException(Cause.NOQUEST);
+			throw new GroupException(GroupReason.NOQUEST);
 		if (!inQuest)
-			throw new GroupException(Cause.NOTINSIDEQUEST);
+			throw new GroupException(GroupReason.NOTINSIDEQUEST);
 		if (quest.isFinished()==null)
-			throw new GroupException(Cause.UNFINISHEDQUEST);
+			throw new GroupException(GroupReason.UNFINISHEDQUEST);
 		moveBackToLocations();
 		inQuest = false;
 		quest = null;
