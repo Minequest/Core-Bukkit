@@ -30,6 +30,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -154,23 +155,15 @@ public class GroupManager implements Listener{
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public synchronized void onPlayerQuit(PlayerQuitEvent e){
-		//PlayerDetails p = MineQuest.playerManager.getPlayerDetails(e.getPlayer());
-		//if (p.getTeam()!=-1){
-		//	MineQuest.groupManager.getTeam(p.getTeam()).remove(e.getPlayer());
-		//}
-		long team = indexOf(e.getPlayer());
-		if (team!=-1){
-			try {
-				groups.get(team).remove(e.getPlayer());
-			} catch (GroupException e1) {
-				MineQuest.log(Level.SEVERE, "Failed to remove player from team: " + e1);
-			}
-		}
-
+		processEvent(e);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public synchronized void onPlayerKick(PlayerKickEvent e){
+		processEvent(e);
+	}
+	
+	private synchronized void processEvent(PlayerEvent e){
 		//PlayerDetails p = MineQuest.playerManager.getPlayerDetails(e.getPlayer());
 		//if (p.getTeam()!=-1){
 		//	MineQuest.groupManager.getTeam(p.getTeam()).remove(e.getPlayer());
@@ -181,6 +174,17 @@ public class GroupManager implements Listener{
 				groups.get(team).remove(e.getPlayer());
 			} catch (GroupException e1) {
 				MineQuest.log(Level.SEVERE, "Failed to remove player from team: " + e1);
+				MineQuest.log(Level.WARNING, "Locking group and kicking all players...");
+				for (Player p : groups.get(team).getPlayers()){
+					p.sendMessage("[ERROR] Something went wrong and we have to disband your group. :(");
+					try {
+						groups.get(team).remove(p);
+					} catch (GroupException e2) {
+						// ignore
+					}
+					removeEmptyTeam(team);
+				}
+				
 			}
 		}
 	}
