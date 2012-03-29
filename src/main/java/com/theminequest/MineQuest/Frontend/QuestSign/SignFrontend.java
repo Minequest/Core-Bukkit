@@ -38,32 +38,30 @@ import com.theminequest.MineQuest.Backend.BackendFailedException;
 import com.theminequest.MineQuest.Backend.QuestBackend;
 
 public class SignFrontend implements Listener {
-	
+
 	public SignFrontend(){
 		MineQuest.log("[SignFrontend] Starting Sign Frontends...");
 	}
-	
+
 	private boolean signCheck(Block block){
 		return block.getState() instanceof Sign;
 	}
-	
+
 	private boolean isQuestSign(Sign sign){
 		String[] line = sign.getLines();
 		if (line[1] != null && line[1].equalsIgnoreCase("[Quest]")){
-			if(line[2] != null && !line[2].equals("")){
-				return true;
-			}
+			return (line[2] != null);
 		}
 		return false;
 	}
-	
+
 	private String questName(Sign sign){
 		return sign.getLines()[2];
 	}
-	
-	
+
+
 	//Listeners For Sign interact and place. 
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerInteract(PlayerInteractEvent event){
 		Action action = event.getAction();
@@ -72,7 +70,7 @@ public class SignFrontend implements Listener {
 		}
 		Block block = event.getClickedBlock();
 		Player player = event.getPlayer();
-		
+
 		if (signCheck(block)){
 			Sign sign = (Sign) block.getState();
 			if (isQuestSign(sign)){
@@ -86,23 +84,29 @@ public class SignFrontend implements Listener {
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent event) {
 		Block block = event.getBlockAgainst();
-	    if (signCheck(block)){
-	    	Sign s = (Sign)block.getState();
-	    	if (isQuestSign(s)){
-	    		try {
-	    			QuestBackend.isRepeatable(s.getLine(2));
-	    		}catch (IllegalArgumentException e){
-	    			event.setCancelled(true);
-	    			event.getPlayer().sendMessage(ChatColor.RED + "No such quest!");
-	    		}
-	    		// oh, prettify it ;D
-	    		s.setLine(1,ChatColor.GREEN+"[Quest]");
-	    	}
-	    }
-	    
+		if (signCheck(block)){
+			Sign s = (Sign)block.getState();
+			if (isQuestSign(s)){
+				if (s.getLine(2).equals("")){
+					event.setCancelled(true);
+					event.getPlayer().sendMessage(ChatColor.RED + "Must specify a quest!");
+					return;
+				}
+				try {
+					QuestBackend.isRepeatable(s.getLine(2));
+				}catch (IllegalArgumentException e){
+					event.setCancelled(true);
+					event.getPlayer().sendMessage(ChatColor.RED + "No such quest!");
+					return;
+				}
+				// oh, prettify it ;D
+				s.setLine(1,ChatColor.GREEN+"[Quest]");
+			}
+		}
+
 	}
 }
