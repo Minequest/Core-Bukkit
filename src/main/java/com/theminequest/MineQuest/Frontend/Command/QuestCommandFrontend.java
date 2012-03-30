@@ -2,6 +2,7 @@ package com.theminequest.MineQuest.Frontend.Command;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
@@ -28,18 +29,22 @@ public class QuestCommandFrontend implements CommandExecutor {
 		}
 		Player player = (Player)arg0;
 		
-		if (arg2.equals(""))
+		if (arg3.length < 2)
 			return help(player,arg3);
 		
+		String cmd = arg3[0];
+		
+		String[] arguments = Arrays.copyOfRange(arg3, 1, arg3.length-1);
+		
 		try {
-			Method m = this.getClass().getMethod(arg2, Player.class, String[].class);
-			return (Boolean)m.invoke(this, player, arg3);
+			Method m = this.getClass().getMethod(cmd, Player.class, String[].class);
+			return (Boolean)m.invoke(this, player, arguments);
 		} catch (Exception e) {
 			return false;
 		}
 	}
 	
-	public boolean help(Player p, String[] args) {
+	public Boolean help(Player p, String[] args) {
 		String[] message = {
 				ChatUtils.formatHeader("Quest Help"),
 				ChatUtils.formatHelp("quest abandon", "Abandon active quest."),
