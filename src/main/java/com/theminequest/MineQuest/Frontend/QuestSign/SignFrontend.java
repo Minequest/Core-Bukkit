@@ -51,7 +51,7 @@ public class SignFrontend implements Listener {
 
 	private boolean isQuestSign(Sign sign){
 		String[] line = sign.getLines();
-		if (line[1] != null && line[1].equalsIgnoreCase("[Quest]")){
+		if (line[1] != null && line[1].contains("[Quest]")){
 			return (line[2] != null);
 		}
 		return false;
@@ -109,6 +109,6 @@ public class SignFrontend implements Listener {
 			return;
 		}
 		// oh, prettify it ;D
-		event.setLine(1,ChatColor.GREEN+"[Quest]");
+		event.setLine(1,ChatColor.DARK_GREEN+"[Quest]");
 	}
 }
