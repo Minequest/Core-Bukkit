@@ -85,9 +85,9 @@ public class SignFrontend implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockPlace(BlockPlaceEvent event) {
-		Block block = event.getBlockAgainst();
+		Block block = event.getBlockPlaced();
 		if (signCheck(block)){
 			Sign s = (Sign)block.getState();
 			if (isQuestSign(s)){
