@@ -34,6 +34,7 @@ import com.theminequest.MineQuest.AbilityAPI.AbilityManager;
 import com.theminequest.MineQuest.Editable.EditableManager;
 import com.theminequest.MineQuest.EventsAPI.EventManager;
 import com.theminequest.MineQuest.Frontend.Command.CommandListener;
+import com.theminequest.MineQuest.Frontend.Command.QuestCommandFrontend;
 import com.theminequest.MineQuest.Frontend.QuestSign.SignFrontend;
 import com.theminequest.MineQuest.Group.GroupManager;
 import com.theminequest.MineQuest.Player.PlayerManager;
@@ -61,9 +62,6 @@ public class MineQuest extends JavaPlugin {
 	public static QuestConfig configuration = null;
 	public static SQLExecutor sqlstorage = null;
 	private static PluginDescriptionFile description = null;
-	
-	public static SignFrontend signFrontend = null;
-	public static CommandListener commandFrontend = null;
 
 	public static void log(String msg) {
 		log(Level.INFO, msg);
@@ -135,16 +133,17 @@ public class MineQuest extends JavaPlugin {
 			log(Level.SEVERE,"Economy could not be setup!");
 		RegisterEvents.registerEvents();
 		
-		// core frontends
-		signFrontend = new SignFrontend();
-		getServer().getPluginManager().registerEvents(signFrontend, this);
-		commandFrontend = new CommandListener();
+		// sign frontend
+		getServer().getPluginManager().registerEvents(new SignFrontend(), this);
+		// command frontend
+		CommandListener commandFrontend = new CommandListener();
 		getCommand("minequest").setExecutor(commandFrontend);
-		getCommand("quest").setExecutor(commandFrontend);
 		getCommand("party").setExecutor(commandFrontend);
 		getCommand("spell").setExecutor(commandFrontend);
 		getCommand("npc").setExecutor(commandFrontend);
 		getCommand("class").setExecutor(commandFrontend);
+		// testing :D
+		getCommand("quest").setExecutor(new QuestCommandFrontend());
 	}
 
 	@Override

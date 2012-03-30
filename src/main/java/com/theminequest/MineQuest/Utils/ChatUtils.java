@@ -21,6 +21,8 @@ package com.theminequest.MineQuest.Utils;
 
 import java.util.Calendar;
 
+import org.bukkit.ChatColor;
+
 public class ChatUtils {
 	
     public static String replaceTime(String message) {
@@ -79,5 +81,22 @@ public class ChatUtils {
     	string = replaceTime(string);
     	return string;
     }
+    
+	public static String formatHeader(String headername) {
+		return ChatColor.GREEN + "==== { " + ChatColor.YELLOW + headername + ChatColor.GREEN + " } ====";
+	}
+	
+	public static String formatHelp(String command, String description) {
+		String toreturn = "";
+		toreturn += ChatColor.GREEN + "/" + command;
+		for (int i=0; i<20-command.length(); i++)
+			toreturn+=" ";
+		for (int i=0; i<10; i++)
+			toreturn+=" ";
+		for (int i=0; i<30-description.length(); i++)
+			toreturn+=" ";
+		toreturn += ChatColor.YELLOW + description;
+		return toreturn;
+	}
 
 }

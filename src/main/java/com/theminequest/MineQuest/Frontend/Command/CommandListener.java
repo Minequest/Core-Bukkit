@@ -158,15 +158,12 @@ public class CommandListener implements CommandExecutor{
 
 		else if(command.equalsIgnoreCase("quest")){
 			if(args[0].equalsIgnoreCase("start")){
-				//Just In case the file was deleted. 
-				File f = new File(MineQuest.activePlugin.getDataFolder()+File.separator+"quests"+File.separator+args[1]+".quest");
-				if (f.exists() != true){
-					try {
-						QuestBackend.acceptQuest(player, args[1]);
-					} catch (BackendFailedException e) {
-						sender.sendMessage(e.getMessage());
-					}
+				try {
+					QuestBackend.isRepeatable(args[1]);
+				} catch (IllegalArgumentException e) {
+					sender.sendMessage("Quest no exist? Ask sysadmin :|");
 				}
+				// FIXME REFACTOR DELEGATED TO GROUPBACKEND :|
 				return true;
 			}
 			else if((args[0].equalsIgnoreCase("start")) && (args.length != 2)){
@@ -231,7 +228,7 @@ public class CommandListener implements CommandExecutor{
 			toreturn+=" ";
 		for (int i=0; i<10; i++)
 			toreturn+=" ";
-		for (int i=0; i<40-description.length(); i++)
+		for (int i=0; i<30-description.length(); i++)
 			toreturn+=" ";
 		toreturn += ChatColor.YELLOW + description;
 		return toreturn;
