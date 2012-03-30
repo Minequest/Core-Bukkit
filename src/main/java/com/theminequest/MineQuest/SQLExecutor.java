@@ -157,6 +157,7 @@ public class SQLExecutor {
 					int paramsposition = 0;
 					while (paramsposition<params.length && line.contains("%s")){
 						line = line.replaceFirst("%s", params[paramsposition]);
+						paramsposition++;
 					}
 				}
 				ResultSet result = db.query(line);
