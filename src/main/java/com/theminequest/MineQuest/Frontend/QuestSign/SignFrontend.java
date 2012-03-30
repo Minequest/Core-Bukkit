@@ -32,6 +32,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.theminequest.MineQuest.MineQuest;
@@ -89,34 +90,23 @@ public class SignFrontend implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
-	public void onBlockPlace(BlockPlaceEvent event) {
-		event.getPlayer().sendMessage("1");
-		Block block = event.getBlockPlaced();
-		if (signCheck(block)){
-			event.getPlayer().sendMessage("2");
-			Sign s = (Sign)block.getState();
-			if (isQuestSign(s)){
-				event.getPlayer().sendMessage("3");
-				if (s.getLine(2).equals("")){
-					event.getPlayer().sendMessage("YIKES");
-					event.setCancelled(true);
-					event.getPlayer().sendMessage(ChatColor.RED + "Must specify a quest!");
-					return;
-				}
-				try {
-					event.getPlayer().sendMessage("4");
-					QuestBackend.isRepeatable(s.getLine(2));
-				}catch (IllegalArgumentException e){
-					MineQuest.log(Level.SEVERE,e.toString());
-					event.setCancelled(true);
-					event.getPlayer().sendMessage(ChatColor.RED + "No such quest!");
-					return;
-				}
-				// oh, prettify it ;D
-				event.getPlayer().sendMessage("5");
-				s.setLine(1,ChatColor.GREEN+"[Quest]");
-			}
+	public void onSignChangeEvent(SignChangeEvent event) {
+		if (!event.getLine(1).equalsIgnoreCase("[Quest]") && !event.getLine(1).equalsIgnoreCase("quest"))
+			return;
+		if (event.getLine(2).equalsIgnoreCase("")){
+			event.setCancelled(true);
+			event.getPlayer().sendMessage(ChatColor.RED + "Must specify a quest!");
 		}
-
+		try {
+			event.getPlayer().sendMessage("4");
+			QuestBackend.isRepeatable(event.getLine(2));
+		}catch (IllegalArgumentException e){
+			MineQuest.log(Level.SEVERE,e.toString());
+			event.setCancelled(true);
+			event.getPlayer().sendMessage(ChatColor.RED + "No such quest!");
+			return;
+		}
+		// oh, prettify it ;D
+		event.setLine(1,ChatColor.GREEN+"[Quest]");
 	}
 }
