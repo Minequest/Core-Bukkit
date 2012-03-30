@@ -27,8 +27,12 @@ public class QuestCommandFrontend implements CommandExecutor {
 			return false;
 		}
 		Player player = (Player)arg0;
+		
+		if (arg2.equals(""))
+			return help(player,arg3);
+		
 		try {
-			Method m = this.getClass().getMethod(arg1.getName().toLowerCase(), Player.class, String[].class);
+			Method m = this.getClass().getMethod(arg2, Player.class, String[].class);
 			return (Boolean)m.invoke(this, player, arg3);
 		} catch (Exception e) {
 			return false;
