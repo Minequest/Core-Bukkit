@@ -286,4 +286,12 @@ public class Quest {
 		return (q.questid==this.questid);
 	}
 
+	public String getName() {
+		return displayname;
+	}
+
+	public String getDescription() {
+		return displaydesc;
+	}
+
 }

@@ -33,7 +33,7 @@ public interface Group extends Comparable<Group> {
 	/*
 	 * Group questing
 	 */
-	void startQuest(Quest quest) throws GroupException;
+	void startQuest(String q) throws GroupException;
 	void enterQuest() throws GroupException;
 	void exitQuest() throws GroupException;
 	void abandonQuest() throws GroupException;

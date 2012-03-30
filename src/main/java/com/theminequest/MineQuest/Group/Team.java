@@ -113,10 +113,11 @@ public class Team implements Group {
 	 * let the backend handle checking valid quests, calling QuestManager, etc...
 	 */
 	@Override
-	public synchronized void startQuest(Quest quest) throws GroupException {
+	public synchronized void startQuest(String q) throws GroupException {
 		if (quest!=null)
 			throw new GroupException(GroupReason.ALREADYONQUEST);
-		this.quest = quest;
+		long id = MineQuest.questManager.startQuest(q);
+		quest = MineQuest.questManager.getQuest(id);
 		QuestStartedEvent event = new QuestStartedEvent(quest);
 		Bukkit.getPluginManager().callEvent(event);
 	}

@@ -99,7 +99,7 @@ public class SuperTeam implements Group {
 	}
 
 	@Override
-	public void startQuest(Quest quest) throws GroupException {
+	public void startQuest(String q) throws GroupException {
 		// TODO Auto-generated method stub
 		
 	}
