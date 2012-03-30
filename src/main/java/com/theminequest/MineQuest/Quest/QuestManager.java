@@ -51,6 +51,11 @@ public class QuestManager implements Listener {
 				.getString("questfolderlocation",
 				MineQuest.activePlugin.getDataFolder().getAbsolutePath()
 				+File.separator+"quests");
+		File f = new File(locationofQuests);
+		if (!f.exists() || !f.isDirectory()){
+			f.delete();
+			f.mkdirs();
+		}
 	}
 	
 	public long startQuest(String id){

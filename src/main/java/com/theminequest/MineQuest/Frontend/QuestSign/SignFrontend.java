@@ -96,14 +96,16 @@ public class SignFrontend implements Listener {
 		if (event.getLine(2).equalsIgnoreCase("")){
 			event.setCancelled(true);
 			event.getPlayer().sendMessage(ChatColor.RED + "Must specify a quest!");
+			event.getBlock().breakNaturally();
+			return;
 		}
 		try {
-			event.getPlayer().sendMessage("4");
 			QuestBackend.isRepeatable(event.getLine(2));
 		}catch (IllegalArgumentException e){
 			MineQuest.log(Level.SEVERE,e.toString());
 			event.setCancelled(true);
 			event.getPlayer().sendMessage(ChatColor.RED + "No such quest!");
+			event.getBlock().breakNaturally();
 			return;
 		}
 		// oh, prettify it ;D
