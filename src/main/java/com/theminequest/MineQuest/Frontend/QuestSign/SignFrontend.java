@@ -21,6 +21,7 @@ package com.theminequest.MineQuest.Frontend.QuestSign;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
@@ -79,6 +80,8 @@ public class SignFrontend implements Listener {
 					QuestBackend.giveQuestToPlayer(player, questName);
 					QuestBackend.acceptQuest(player, questName);
 				} catch (BackendFailedException e) {
+					MineQuest.log(Level.SEVERE, e.toString());
+					e.printStackTrace();
 					player.sendMessage(ChatColor.RED + "Error: " + e.getMessage());
 				} 
 			}
@@ -87,23 +90,30 @@ public class SignFrontend implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockPlace(BlockPlaceEvent event) {
+		event.getPlayer().sendMessage("1");
 		Block block = event.getBlockPlaced();
 		if (signCheck(block)){
+			event.getPlayer().sendMessage("2");
 			Sign s = (Sign)block.getState();
 			if (isQuestSign(s)){
+				event.getPlayer().sendMessage("3");
 				if (s.getLine(2).equals("")){
+					event.getPlayer().sendMessage("YIKES");
 					event.setCancelled(true);
 					event.getPlayer().sendMessage(ChatColor.RED + "Must specify a quest!");
 					return;
 				}
 				try {
+					event.getPlayer().sendMessage("4");
 					QuestBackend.isRepeatable(s.getLine(2));
 				}catch (IllegalArgumentException e){
+					MineQuest.log(Level.SEVERE,e.toString());
 					event.setCancelled(true);
 					event.getPlayer().sendMessage(ChatColor.RED + "No such quest!");
 					return;
 				}
 				// oh, prettify it ;D
+				event.getPlayer().sendMessage("5");
 				s.setLine(1,ChatColor.GREEN+"[Quest]");
 			}
 		}
