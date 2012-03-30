@@ -52,23 +52,23 @@ public final class QuestBackend {
 		}
 
 		// if not repeatable, check if already completed
-			List<String> completedquests;
-			try {
-				completedquests = getQuests(QuestAvailability.COMPLETED,p);
-			} catch (SQLException e) {
-				MineQuest.log(Level.SEVERE, "[QuestBackend] Invoked giveQuestToPlayer by " +
-						p.getName() + " on quest " + quest_name + " threw exception:");
-				MineQuest.log(Level.SEVERE, e.toString());
-				throw new BackendFailedException(BackendReason.SQL,e);
+		List<String> completedquests;
+		try {
+			completedquests = getQuests(QuestAvailability.COMPLETED,p);
+		} catch (SQLException e) {
+			MineQuest.log(Level.SEVERE, "[QuestBackend] Invoked giveQuestToPlayer by " +
+					p.getName() + " on quest " + quest_name + " threw exception:");
+			MineQuest.log(Level.SEVERE, e.toString());
+			throw new BackendFailedException(BackendReason.SQL,e);
+		}
+		for (String s : completedquests){
+			if (quest_name.equalsIgnoreCase(s)){
+				if (repeatable)
+					regive = true;
+				else
+					throw new BackendFailedException(BackendReason.UNREPEATABLEQUEST);
 			}
-			for (String s : completedquests){
-				if (quest_name.equalsIgnoreCase(s)){
-					if (repeatable)
-						regive = true;
-					else
-						throw new BackendFailedException(BackendReason.UNREPEATABLEQUEST);
-				}
-			}
+		}
 
 		if (!regive)
 			MineQuest.sqlstorage.querySQL("Quests/giveQuest", p.getName(), quest_name);
@@ -126,7 +126,7 @@ public final class QuestBackend {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Accept a quest
 	 * @param p Player
@@ -147,7 +147,7 @@ public final class QuestBackend {
 			throw new BackendFailedException(e);
 		}
 	}
-	
+
 	/**
 	 * Start a quest
 	 * @param p <b>LEADER</b> of the team
@@ -155,7 +155,7 @@ public final class QuestBackend {
 	 * @throws BackendFailedException If quest couldn't be started
 	 */
 	/* FIXME NOW DELEGATED TO GROUPBACKEND */
-/*	public static void startQuest(Player p, String name) throws BackendFailedException {
+	/*	public static void startQuest(Player p, String name) throws BackendFailedException {
 		long teamid = MineQuest.
 		if (teamid==-1){
 			teamid = MineQuest.groupManager.createTeam(p);
@@ -176,14 +176,14 @@ public final class QuestBackend {
 			throw new BackendFailedException(e);
 		}
 	}*/
-	
+
 	/**
 	 * Cancel the active quest (abandon quest)
 	 * @param p <b>LEADER</b> of the team that wants to abandon quest
 	 * @throws BackendFailedException
 	 */
 	/* FIXME NOW DELEGATED TO GROUPBACKEND */
-/*	public static void cancelActiveQuest(Player p) throws BackendFailedException {
+	/*	public static void cancelActiveQuest(Player p) throws BackendFailedException {
 		long teamid = MineQuest.playerManager.getPlayerDetails(p).getTeam();
 		if (teamid==-1){
 			throw new BackendFailedException("You're not on a team!");

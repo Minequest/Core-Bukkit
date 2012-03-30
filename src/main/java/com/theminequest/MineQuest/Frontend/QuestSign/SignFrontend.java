@@ -45,10 +45,6 @@ public class SignFrontend implements Listener {
 		MineQuest.log("[SignFrontend] Starting Sign Frontends...");
 	}
 
-	private boolean signCheck(Block block){
-		return block.getState() instanceof Sign;
-	}
-
 	private boolean isQuestSign(Sign sign){
 		String[] line = sign.getLines();
 		if (line[1] != null && line[1].contains("[Quest]")){
@@ -56,11 +52,6 @@ public class SignFrontend implements Listener {
 		}
 		return false;
 	}
-
-	private String questName(Sign sign){
-		return sign.getLines()[2];
-	}
-
 
 	//Listeners For Sign interact and place. 
 
@@ -73,10 +64,10 @@ public class SignFrontend implements Listener {
 		Block block = event.getClickedBlock();
 		Player player = event.getPlayer();
 
-		if (signCheck(block)){
+		if (block.getState() instanceof Sign){
 			Sign sign = (Sign) block.getState();
 			if (isQuestSign(sign)){
-				String questName = questName(sign);
+				String questName = sign.getLine(2);
 				try {
 					QuestBackend.giveQuestToPlayer(player, questName);
 					QuestBackend.acceptQuest(player, questName);
