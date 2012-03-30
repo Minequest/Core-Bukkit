@@ -5,7 +5,7 @@ MineQuest is a full featured MMORPG system. It allows custom quests, classes, an
 **What makes this different than other quest plugins?** It includes leveling capabilities, SpoutPlugin support, and the ability to create instanced dungeons.
 
     This is MineQuest, version 1.
-    If you were looking for MineQuest on MC 1.1 or before, see MineQuest, version 0 (MineQuest-0).
+    If you were looking for MineQuest on MC 1.1-R4 or before, see MineQuest, version 0 (MineQuest-0).
 
 <hr/>
 
@@ -19,7 +19,7 @@ MineQuest is released under the terms of the **GNU General Public License, versi
 See the included _LICENSE.txt_ for details.
 
 <h3>Team</h3>
-MineQuest is developed by Ltan, JMonk, Echobob, TheWaffleGod, and Robxu9.
+MineQuest is developed by Ltan, JMonk, Echobob, cloned, TheWaffleGod, and Robxu9.
 
 <h3>Source</h3>
 MineQuest uses Maven to manage and build its source. To checkout and build this project, use Maven.
