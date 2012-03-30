@@ -44,7 +44,7 @@ public class QuestCommandFrontend implements CommandExecutor {
 		}
 		Player player = (Player)arg0;
 
-		if (arg3.length < 2)
+		if (arg3.length <=1)
 			return help(player,arg3);
 
 		String cmd = arg3[0].toLowerCase();
