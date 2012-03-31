@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -114,12 +115,17 @@ public class Team implements Group {
 	 */
 	@Override
 	public synchronized void startQuest(String q) throws GroupException {
+		MineQuest.log(Level.WARNING, "2");
 		if (quest!=null)
 			throw new GroupException(GroupReason.ALREADYONQUEST);
+		MineQuest.log(Level.WARNING, "3");
 		long id = MineQuest.questManager.startQuest(q);
+		MineQuest.log(Level.WARNING, "23");
 		quest = MineQuest.questManager.getQuest(id);
+		MineQuest.log(Level.WARNING, "24");
 		QuestStartedEvent event = new QuestStartedEvent(quest);
 		Bukkit.getPluginManager().callEvent(event);
+		MineQuest.log(Level.WARNING, "25 DONE");
 	}
 
 	@Override

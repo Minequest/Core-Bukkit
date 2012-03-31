@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -27,18 +28,24 @@ import com.theminequest.MineQuest.Tasks.Task;
 public class QuestParser {
 	
 	protected static void parseDefinition(Quest q) throws FileNotFoundException{
+		MineQuest.log(Level.WARNING, "8");
 		LinkedHashMap<Integer, String> tasks = new LinkedHashMap<Integer, String>();
 		LinkedHashMap<Integer, String> events = new LinkedHashMap<Integer, String>();
 		LinkedHashMap<Integer, TargetDetails> targets = new LinkedHashMap<Integer, TargetDetails>();
 		LinkedHashMap<Integer, Edit> editables = new LinkedHashMap<Integer,Edit>();
+		MineQuest.log(Level.WARNING, "9");
 		File f = new File(MineQuest.questManager.locationofQuests + File.separator + q.questname
 				+ ".quest");
+		MineQuest.log(Level.WARNING, "10");
 		Scanner filereader = new Scanner(f);
+		MineQuest.log(Level.WARNING, "11");
 		while (filereader.hasNextLine()) {
+			MineQuest.log(Level.WARNING, "REPEAT");
 			String nextline = filereader.nextLine();
 			ArrayList<String> ar = (ArrayList<String>) Arrays.asList(nextline
 					.split(":"));
 			String type = ar.get(0).toLowerCase();
+			MineQuest.log(Level.WARNING, "REPEAT-1");
 			if (type.equals("name"))
 				q.displayname = ar.get(1);
 			else if (type.equals("repeatable"))
@@ -138,10 +145,12 @@ public class QuestParser {
 				editables.put(number, e);
 			}
 		}
+		MineQuest.log(Level.WARNING, "12");
 		q.tasks = new TreeMap<Integer, String>(tasks);
 		q.events = new TreeMap<Integer, String>(events);
 		q.targets = new TreeMap<Integer, TargetDetails>(targets);
 		q.editables = new TreeMap<Integer, Edit>(editables);
+		MineQuest.log(Level.WARNING, "13");
 	}
 	
 	public static void parseYAMLDefinition(Quest q){

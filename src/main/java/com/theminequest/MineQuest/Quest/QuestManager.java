@@ -24,6 +24,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -59,11 +60,14 @@ public class QuestManager implements Listener {
 	}
 	
 	public long startQuest(String id){
+		MineQuest.log(Level.WARNING, "4");
 		quests.put(questid,new Quest(questid,id));
 		long thisquestid = questid;
 		questid++;
+		MineQuest.log(Level.WARNING, "21");
 		QuestStartedEvent e = new QuestStartedEvent(quests.get(thisquestid));
 		Bukkit.getPluginManager().callEvent(e);
+		MineQuest.log(Level.WARNING, "22");
 		return thisquestid;
 	}
 
