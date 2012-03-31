@@ -217,10 +217,13 @@ public class Quest {
 	public void finishQuest(CompleteStatus c){
 		finished = c;
 		TimeUtils.unlock(Bukkit.getWorld(world));
-		Bukkit.unloadWorld(Bukkit.getWorld(world), false);
 		Group g = MineQuest.groupManager.getGroup(MineQuest.groupManager.indexOfQuest(this));
 		QuestCompleteEvent event = new QuestCompleteEvent(questid,c,g);
 		Bukkit.getPluginManager().callEvent(event);
+	}
+	
+	public void unloadQuest() throws IOException{
+		QuestWorldManip.removeWorld(Bukkit.getWorld(world));
 	}
 	
 	public CompleteStatus isFinished(){

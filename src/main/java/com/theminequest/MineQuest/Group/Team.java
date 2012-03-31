@@ -19,6 +19,7 @@
  **/
 package com.theminequest.MineQuest.Group;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -129,7 +130,6 @@ public class Team implements Group {
 		quest.finishQuest(CompleteStatus.CANCELED);
 		if (inQuest)
 			exitQuest();
-		quest = null;
 	}
 	
 	/**
@@ -219,6 +219,11 @@ public class Team implements Group {
 			throw new GroupException(GroupReason.UNFINISHEDQUEST);
 		moveBackToLocations();
 		inQuest = false;
+		try {
+			quest.unloadQuest();
+		} catch (IOException e) {
+			throw new GroupException(GroupReason.EXTERNALEXCEPTION,e);
+		}
 		quest = null;
 	}
 
