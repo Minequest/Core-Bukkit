@@ -194,6 +194,8 @@ public class GroupManager implements Listener{
 					removeEmptyTeam(team);
 				}
 				
+			} catch (NullPointerException e1) {
+				// ...
 			}
 		}
 	}
