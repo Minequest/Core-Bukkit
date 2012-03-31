@@ -74,6 +74,14 @@ public class QuestParser {
 				// I say YES to instances.
 				q.loadworld = true;
 				q.world = ar.get(2);
+				if (ar.size()>3)
+					q.nether = true;
+			} else if (type.equals("instance")) {
+				// COMPATIBILITY
+				q.loadworld = true;
+				q.world = ar.get(3);
+				if (ar.size()>4)
+					q.nether = true;
 				// I do NOT care about QuestArea, because
 				// I simply delete the world when done.
 			} else if (type.equals("event")) {

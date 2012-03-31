@@ -38,6 +38,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
+import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -99,6 +100,7 @@ public class Quest {
 	protected String editMessage;
 	protected String world;
 	protected boolean loadworld;
+	protected boolean nether;
 
 	/*
 	 * Constructor will start the quest for the user.
@@ -147,8 +149,12 @@ public class Quest {
 		// because we have absolutely 0 idea if someone would skip numbers...
 
 		// load the world if necessary/move team to team leader
-		if (Bukkit.getWorld(world) == null)
-			Bukkit.createWorld(new WorldCreator(world));
+		if (Bukkit.getWorld(world) == null){
+			WorldCreator w = new WorldCreator(world);
+			if (nether)
+				w = w.environment(Environment.NETHER);
+			Bukkit.createWorld(w);
+		}
 		if (loadworld) {
 			try {
 				world = QuestWorldManip.copyWorld(Bukkit.getWorld(world))
