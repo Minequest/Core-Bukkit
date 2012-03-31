@@ -166,6 +166,7 @@ public class Quest {
 		MineQuest.log(Level.WARNING, "16");
 		QuestStartedEvent event = new QuestStartedEvent(this);
 		Bukkit.getPluginManager().callEvent(event);
+		MineQuest.log(Level.WARNING, "16.5");
 		startTask(tasks.firstKey());
 	}
 
