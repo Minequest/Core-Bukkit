@@ -158,4 +158,10 @@ public class SuperTeam implements Group {
 		
 	}
 
+	@Override
+	public void moveBackToLocations(Player p) throws GroupException {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

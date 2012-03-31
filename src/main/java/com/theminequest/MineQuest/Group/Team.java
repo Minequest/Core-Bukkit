@@ -172,8 +172,10 @@ public class Team implements Group {
 			throw new GroupException(GroupReason.NOTONTEAM);
 		//MineQuest.playerManager.getPlayerDetails(p).setTeam(-1);
 		players.remove(p);
-		if (locations!=null)
+		if (locations!=null){
+			moveBackToLocations(p);
 			locations.remove(p);
+		}
 		
 		if (players.size()<=0){
 			if (quest!=null)
@@ -204,12 +206,18 @@ public class Team implements Group {
 	
 	@Override
 	public synchronized void moveBackToLocations() throws GroupException{
-		if (locations==null)
-			throw new GroupException(GroupReason.NOLOCATIONS);
 		for (Player p : players){
-			p.teleport(locations.get(p));
+			moveBackToLocations(p);
 		}
 		locations = null;
+	}
+	
+	@Override
+	public synchronized void moveBackToLocations(Player p) throws GroupException {
+		if (locations==null)
+			throw new GroupException(GroupReason.NOLOCATIONS);
+		p.teleport(locations.get(p));
+		locations.remove(p);
 	}
 
 	@Override

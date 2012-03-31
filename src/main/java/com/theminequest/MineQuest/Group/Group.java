@@ -42,6 +42,7 @@ public interface Group extends Comparable<Group> {
 	void teleportPlayers(Location l);
 	void recordCurrentLocations();
 	void moveBackToLocations() throws GroupException;
+	void moveBackToLocations(Player p) throws GroupException;
 	
 	/*
 	 * GroupManager usage
