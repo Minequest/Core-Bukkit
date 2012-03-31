@@ -38,6 +38,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import com.theminequest.MineQuest.ManagerException;
 import com.theminequest.MineQuest.ManagerException.ManagerReason;
 import com.theminequest.MineQuest.MineQuest;
+import com.theminequest.MineQuest.BukkitEvents.TeamInviteEvent;
 import com.theminequest.MineQuest.Group.GroupException.GroupReason;
 import com.theminequest.MineQuest.Player.PlayerDetails;
 import com.theminequest.MineQuest.Quest.Quest;
@@ -133,6 +134,8 @@ public class GroupManager implements Listener{
 			throw new GroupException(GroupReason.ALREADYINTEAM);
 		invitations.put(p, g);
 		// TODO Call TeamInviteEvent (remember, 30 seconds to accept invite)
+		TeamInviteEvent event = new TeamInviteEvent(g.getLeader().getName(), p, g.getID());
+		Bukkit.getPluginManager().callEvent(event);
 		Bukkit.getScheduler().scheduleAsyncDelayedTask(MineQuest.activePlugin, new Runnable(){
 
 			@Override
@@ -148,6 +151,7 @@ public class GroupManager implements Listener{
 			return;
 		invitations.remove(p);
 		// TODO Call TeamInviteExpiredEvent
+		p.sendMessage("Invite expired!"); // FIXME
 	}
 
 	/*

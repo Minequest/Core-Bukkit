@@ -86,9 +86,9 @@ public class PartyCommandFrontend extends CommandFrontend {
 
 		List<String> messages = new ArrayList<String>();
 		messages.add(ChatUtils.formatHeader(localization.getString("party_info","Player information: ") + args[0]));
-		messages.add(ChatColor.AQUA + localization.getString("party_info_displayname", "Display Name") + ":" + ChatColor.YELLOW + mate.getDisplayName());
-		messages.add(ChatColor.AQUA + localization.getString("party_info_health", "Health") + ":" + ChatColor.YELLOW + mate.getHealth());
-		messages.add(ChatColor.AQUA + localization.getString("party_info_level", "Level") + ":" + ChatColor.YELLOW + level);
+		messages.add(ChatColor.AQUA + localization.getString("party_info_displayname", "Display Name") + ": " + ChatColor.YELLOW + mate.getDisplayName());
+		messages.add(ChatColor.AQUA + localization.getString("party_info_health", "Health") + ": " + ChatColor.YELLOW + mate.getHealth());
+		messages.add(ChatColor.AQUA + localization.getString("party_info_level", "Level") + ": " + ChatColor.YELLOW + level);
 
 		for (String m : messages)
 			p.sendMessage(m);
@@ -274,24 +274,24 @@ public class PartyCommandFrontend extends CommandFrontend {
 		messages.add(ChatUtils.formatHeader(localization.getString("party_help", "Party Commands")));
 		if (g==null){
 			if (invite)
-				messages.add(ChatUtils.formatHelp("accept", localization.getString("party_help_accept","Accept pending party invite. QUICK.")));
+				messages.add(ChatUtils.formatHelp("party accept", localization.getString("party_help_accept","Accept pending party invite. QUICK.")));
 			else
 				messages.add(ChatColor.GRAY + localization.getString("party_NOINVITE","No pending invites..."));
-			messages.add(ChatUtils.formatHelp("create", localization.getString("party_help_create","Create a party.")));
+			messages.add(ChatUtils.formatHelp("party create", localization.getString("party_help_create","Create a party.")));
 			messages.add(ChatColor.AQUA + localization.getString("party_NOPARTY","You can't use party commands without a party..."));
 		} else {
-			messages.add(ChatUtils.formatHelp("info <name>","Get information on a party member."));
+			messages.add(ChatUtils.formatHelp("party info <name>","Get information on a party member."));
 			if (isLeader){
-				messages.add(ChatUtils.formatHelp("invite <name>", localization.getString("party_help_invite","Invite a player.")));
-				messages.add(ChatUtils.formatHelp("kick <name>", localization.getString("party_help_kick","Kick a player.")));
+				messages.add(ChatUtils.formatHelp("party invite <name>", localization.getString("party_help_invite","Invite a player.")));
+				messages.add(ChatUtils.formatHelp("party kick <name>", localization.getString("party_help_kick","Kick a player.")));
 			} else {
 				messages.add(ChatColor.GRAY + "[party invite] " + localization.getString("party_NOTLEADER","not leader..."));
 				messages.add(ChatColor.GRAY + "[party kick] " + localization.getString("party_NOTLEADER","not leader..."));
 			}
-			messages.add(ChatUtils.formatHelp("leave",localization.getString("party_help_leave","Leave the current party.")));
-			messages.add(ChatUtils.formatHelp("list", localization.getString("party_help_list","List members in your party.")));
+			messages.add(ChatUtils.formatHelp("party leave",localization.getString("party_help_leave","Leave the current party.")));
+			messages.add(ChatUtils.formatHelp("party list", localization.getString("party_help_list","List members in your party.")));
 			if (isLeader)
-				messages.add(ChatUtils.formatHelp("promote <name>", localization.getString("party_help_promote","Promote someone else to leader.")));
+				messages.add(ChatUtils.formatHelp("party promote <name>", localization.getString("party_help_promote","Promote someone else to leader.")));
 			else
 				messages.add(ChatColor.GRAY + "[party promote] " + localization.getString("party_NOTLEADER","not leader..."));
 		}

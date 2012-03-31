@@ -120,4 +120,10 @@ public class PlayerManager implements Listener {
 	public void onQuestCompleteEvent(QuestCompleteEvent e){
 		// TODO
 	}
+	
+	@EventHandler
+	public void onTeamInviteEvent(TeamInviteEvent e){
+		e.getInvited().sendMessage("[INVITE 30 SECS] You've been invited to a group by " + e.getInviterName() + ".");
+		e.getInvited().sendMessage("Accept within 30 seconds with /party accept.");
+	}
 }
