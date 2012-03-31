@@ -167,7 +167,16 @@ public class Quest {
 		QuestStartedEvent event = new QuestStartedEvent(this);
 		Bukkit.getPluginManager().callEvent(event);
 		MineQuest.log(Level.WARNING, "16.5");
-		startTask(tasks.firstKey());
+		startTask(getFirstKey(tasks.keySet()));
+	}
+	
+	private Integer getFirstKey(Set<Integer> s){
+		int first = Integer.MAX_VALUE;
+		for (int i : s){
+			if (i<first)
+				first = i;
+		}
+		return first;
 	}
 
 	/**
