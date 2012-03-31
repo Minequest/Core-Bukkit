@@ -81,7 +81,7 @@ public class Team implements Group {
 	 * This should help Java trigger GC on this object.
 	 */
 	@Override
-	public void lockTeam(){
+	public void lockGroup(){
 		capacity = 0;
 	}
 

@@ -46,6 +46,6 @@ public interface Group extends Comparable<Group> {
 	/*
 	 * GroupManager usage
 	 */
-	void lockTeam();
+	void lockGroup();
 
 }

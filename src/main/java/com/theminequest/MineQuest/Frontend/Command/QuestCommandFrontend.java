@@ -28,6 +28,11 @@ import com.theminequest.MineQuest.Utils.PropertiesFile;
 
 public class QuestCommandFrontend implements CommandExecutor {
 	
+	/*
+	 * TODO list:
+	 * discard quest function?
+	 */
+	
 	private PropertiesFile localization;
 
 	public QuestCommandFrontend(){

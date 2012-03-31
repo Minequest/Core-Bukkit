@@ -153,7 +153,7 @@ public class SuperTeam implements Group {
 	}
 
 	@Override
-	public void lockTeam() {
+	public void lockGroup() {
 		// TODO Auto-generated method stub
 		
 	}
