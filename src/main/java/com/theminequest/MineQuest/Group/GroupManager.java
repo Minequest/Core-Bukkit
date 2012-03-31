@@ -124,6 +124,10 @@ public class GroupManager implements Listener{
 		invitations.remove(p);
 	}
 	
+	public synchronized boolean hasInvite(Player p) {
+		return (invitations.containsKey(p));
+	}
+	
 	protected synchronized void invitePlayer(final Player p, Group g) throws GroupException {
 		if (invitations.containsKey(p))
 			throw new GroupException(GroupReason.ALREADYINTEAM);

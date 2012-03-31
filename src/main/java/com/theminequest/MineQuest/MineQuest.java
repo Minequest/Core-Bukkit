@@ -34,6 +34,7 @@ import com.theminequest.MineQuest.AbilityAPI.AbilityManager;
 import com.theminequest.MineQuest.Editable.EditableManager;
 import com.theminequest.MineQuest.EventsAPI.EventManager;
 import com.theminequest.MineQuest.Frontend.Command.CommandListener;
+import com.theminequest.MineQuest.Frontend.Command.PartyCommandFrontend;
 import com.theminequest.MineQuest.Frontend.Command.QuestCommandFrontend;
 import com.theminequest.MineQuest.Frontend.QuestSign.SignFrontend;
 import com.theminequest.MineQuest.Group.GroupManager;
@@ -144,6 +145,7 @@ public class MineQuest extends JavaPlugin {
 		getCommand("class").setExecutor(commandFrontend);
 		// testing :D
 		getCommand("quest").setExecutor(new QuestCommandFrontend());
+		getCommand("party").setExecutor(new PartyCommandFrontend());
 	}
 
 	@Override

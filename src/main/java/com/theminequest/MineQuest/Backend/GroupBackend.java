@@ -2,6 +2,7 @@ package com.theminequest.MineQuest.Backend;
 
 import org.bukkit.entity.Player;
 
+import com.theminequest.MineQuest.ManagerException;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.Backend.BackendFailedException.BackendReason;
 import com.theminequest.MineQuest.Group.Group;
@@ -37,6 +38,10 @@ public final class GroupBackend {
 			throw new BackendFailedException(BackendReason.MANAGEREXCEPTION,e);
 		}
 	}
+	
+	public synchronized static boolean hasInvite(Player p){
+		return MineQuest.groupManager.hasInvite(p);
+	}
 
 /*	// TODO: HANDLE if team size >= MAX
 	public synchronized static void joinTeam(Player p, long teamid) throws BackendFailedException {
@@ -49,8 +54,14 @@ public final class GroupBackend {
 		MineQuest.playerManager.getPlayerDetails(p).invite("", teamid, true);
 	}*/
 	
-	public synchronized static void acceptInvite(Player p){
-		
+	public synchronized static void acceptInvite(Player p) throws BackendFailedException{
+		try {
+			MineQuest.groupManager.acceptPendingInvite(p);
+		} catch (ManagerException e) {
+			throw new BackendFailedException(BackendReason.NOINVITE);
+		} catch (GroupException e) {
+			throw new BackendFailedException(BackendReason.FULLORINQUEST);
+		}
 	}
 	
 	public synchronized static void removePlayerFromTeam(Player p) throws BackendFailedException{

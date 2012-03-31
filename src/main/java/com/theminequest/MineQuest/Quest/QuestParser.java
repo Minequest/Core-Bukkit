@@ -68,9 +68,11 @@ public class QuestParser {
 					q.areaPreserve[5] = Double.parseDouble(ar.get(6));
 			} else if (type.equals("editmessage"))
 				q.editMessage = ChatColor.GRAY + ar.get(1);
-			else if (type.equals("world"))
+			else if (type.equals("world")){
 				q.world = ar.get(1);
-			else if (type.equals("loadworld")) {
+				if (ar.size()>2)
+					q.nether = true;
+			} else if (type.equals("loadworld")) {
 				// I say YES to instances.
 				q.loadworld = true;
 				q.world = ar.get(2);
