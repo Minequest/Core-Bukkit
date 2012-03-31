@@ -40,6 +40,9 @@ public class QuestWorldManip {
 			newdirectory = new File(newname);
 		}while (newdirectory.exists());
 		FileUtils.copyDirectory(w.getWorldFolder(), newdirectory);
+
+		File uid = new File(newdirectory + File.separator + "uid.dat");
+		if (uid.exists()) uid.delete();
 		
 		WorldCreator tmp = new WorldCreator(newname);
 		tmp.copy(w);
