@@ -49,11 +49,7 @@ public class QuestCommandFrontend implements CommandExecutor {
 
 		String cmd = arg3[0].toLowerCase();
 
-		String[] arguments;
-		if (arg3.length==1)
-			arguments = new String[0];
-		else
-			arguments = Arrays.copyOfRange(arg3, 1, arg3.length-1);
+		String[] arguments = shrinkArray(arg3);
 
 		try {
 			Method m = this.getClass().getMethod(cmd, Player.class, String[].class);
@@ -61,6 +57,15 @@ public class QuestCommandFrontend implements CommandExecutor {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+	
+	private String[] shrinkArray(String[] array){
+		if (array.length<=1)
+			return new String[0];
+		String[] toreturn = new String[array.length-1];
+		for (int i=1; i<array.length; i++)
+			toreturn[i-1] = array[i];
+		return toreturn;
 	}
 	
 	public Boolean accept(Player p, String[] args) {
@@ -284,18 +289,20 @@ public class QuestCommandFrontend implements CommandExecutor {
 			return false;
 		}
 		
-		if (quests.contains(args[0])){
-			try {
-				g.startQuest(args[0]);
-				return true;
-			} catch (GroupException e) {
-				e.printStackTrace();
-				p.sendMessage(ChatColor.GRAY + "ERR: " + e.getMessage());
-				return false;
-			}
+		if (!quests.contains(args[0])){
+			p.sendMessage(ChatUtils.chatify(localization.getString("quest_NOTHAVEQUEST","You don't have this quest available!")));
+			return false;
 		}
-		
-		return false;
+		try {
+			p.sendMessage(ChatUtils.chatify(localization.getString("quest_start_settingup","Setting up quest...")));
+			g.startQuest(args[0]);
+			p.sendMessage(ChatUtils.chatify(localization.getString("quest_start","Quest started!")));
+			return true;
+		} catch (GroupException e) {
+			e.printStackTrace();
+			p.sendMessage(ChatColor.GRAY + "ERR: " + e.getMessage());
+			return false;
+		}
 	}
 
 	public Boolean help(Player p, String[] args) {
