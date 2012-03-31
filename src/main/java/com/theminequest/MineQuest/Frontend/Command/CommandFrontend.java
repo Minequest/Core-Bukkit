@@ -29,7 +29,7 @@ public abstract class CommandFrontend implements CommandExecutor {
 		Player player = null;
 		if (arg0 instanceof Player)
 			player = (Player)arg0;
-		if (!allowConsole()){
+		if ((player==null) && !allowConsole()){
 			MineQuest.log(Level.WARNING,"[CommandFrontend] No console use for \""+cmdname+"\"...");
 			return false;
 		}
