@@ -29,12 +29,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.BukkitEvents.QuestCompleteEvent;
 import com.theminequest.MineQuest.BukkitEvents.QuestStartedEvent;
 import com.theminequest.MineQuest.BukkitEvents.TaskCompleteEvent;
+import com.theminequest.MineQuest.Group.Group;
 import com.theminequest.MineQuest.Group.Team;
 
 
@@ -88,6 +90,16 @@ public class QuestManager implements Listener {
 			}
 		}
 		quests.put(e.getQuestId(), null);
+	}
+	
+	@EventHandler
+	public void onPlayerRespawnEvent(PlayerRespawnEvent e){
+		Player p = e.getPlayer();
+		if (MineQuest.groupManager.indexOf(p)==-1)
+			return;
+		Group g = MineQuest.groupManager.getGroup(MineQuest.groupManager.indexOf(p));
+		if (g.isInQuest())
+			e.setRespawnLocation(g.getQuest().getSpawnLocation());
 	}
 
 }
