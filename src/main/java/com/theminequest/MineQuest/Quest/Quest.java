@@ -223,7 +223,8 @@ public class Quest {
 	}
 	
 	public void unloadQuest() throws IOException{
-		QuestWorldManip.removeWorld(Bukkit.getWorld(world));
+		if (loadworld)
+			QuestWorldManip.removeWorld(Bukkit.getWorld(world));
 	}
 	
 	public CompleteStatus isFinished(){
