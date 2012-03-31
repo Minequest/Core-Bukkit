@@ -26,51 +26,15 @@ import com.theminequest.MineQuest.Quest.Quest;
 import com.theminequest.MineQuest.Utils.ChatUtils;
 import com.theminequest.MineQuest.Utils.PropertiesFile;
 
-public class QuestCommandFrontend implements CommandExecutor {
+public class QuestCommandFrontend extends CommandFrontend {
 	
 	/*
 	 * TODO list:
 	 * discard quest function?
 	 */
-	
-	private PropertiesFile localization;
 
 	public QuestCommandFrontend(){
-		MineQuest.log("[CommandFrontend] Starting Command Frontend for \"quest\"...");
-		localization = MineQuest.configuration.localizationConfig;
-	}
-
-	@Override
-	public boolean onCommand(CommandSender arg0, Command arg1, String arg2,
-			String[] arg3) {
-		if (!(arg0 instanceof Player)){
-			MineQuest.log(Level.WARNING,"[CommandFrontend] No console use for \"quest\"...");
-			return false;
-		}
-		Player player = (Player)arg0;
-		
-		if (arg3.length==0)
-			return help(player,arg3);
-
-		String cmd = arg3[0].toLowerCase();
-
-		String[] arguments = shrinkArray(arg3);
-
-		try {
-			Method m = this.getClass().getMethod(cmd, Player.class, String[].class);
-			return (Boolean)m.invoke(this, player, arguments);
-		} catch (Exception e) {
-			return false;
-		}
-	}
-	
-	private String[] shrinkArray(String[] array){
-		if (array.length<=1)
-			return new String[0];
-		String[] toreturn = new String[array.length-1];
-		for (int i=1; i<array.length; i++)
-			toreturn[i-1] = array[i];
-		return toreturn;
+		super("quest");
 	}
 	
 	public Boolean accept(Player p, String[] args) {
@@ -374,6 +338,11 @@ public class QuestCommandFrontend implements CommandExecutor {
 		}
 
 		return true;
+	}
+
+	@Override
+	public boolean allowConsole() {
+		return false;
 	}
 
 }

@@ -154,7 +154,7 @@ public final class QuestBackend {
 	 * @param name Quest Name
 	 * @throws BackendFailedException If quest couldn't be started
 	 */
-	/* FIXME NOW DELEGATED TO GROUPBACKEND */
+	/* FIXME NOW DELEGATED TO GROUP */
 	/*	public static void startQuest(Player p, String name) throws BackendFailedException {
 		long teamid = MineQuest.
 		if (teamid==-1){
@@ -182,7 +182,7 @@ public final class QuestBackend {
 	 * @param p <b>LEADER</b> of the team that wants to abandon quest
 	 * @throws BackendFailedException
 	 */
-	/* FIXME NOW DELEGATED TO GROUPBACKEND */
+	/* FIXME NOW DELEGATED TO GROUP */
 	/*	public static void cancelActiveQuest(Player p) throws BackendFailedException {
 		long teamid = MineQuest.playerManager.getPlayerDetails(p).getTeam();
 		if (teamid==-1){
