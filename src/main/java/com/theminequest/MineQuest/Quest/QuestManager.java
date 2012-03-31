@@ -31,6 +31,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import com.theminequest.MineQuest.MineQuest;
+import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.BukkitEvents.QuestCompleteEvent;
 import com.theminequest.MineQuest.BukkitEvents.QuestStartedEvent;
 import com.theminequest.MineQuest.BukkitEvents.TaskCompleteEvent;
@@ -42,22 +43,22 @@ public class QuestManager implements Listener {
 	protected final String locationofQuests;
 	private LinkedHashMap<Long,Quest> quests;
 	private long questid;
-	
+
 	public QuestManager(){
 		MineQuest.log("[Quest] Starting Manager...");
 		quests = new LinkedHashMap<Long,Quest>();
 		questid = 0;
 		locationofQuests = MineQuest.configuration.questConfig
 				.getString("questfolderlocation",
-				MineQuest.activePlugin.getDataFolder().getAbsolutePath()
-				+File.separator+"quests");
+						MineQuest.activePlugin.getDataFolder().getAbsolutePath()
+						+File.separator+"quests");
 		File f = new File(locationofQuests);
 		if (!f.exists() || !f.isDirectory()){
 			f.delete();
 			f.mkdirs();
 		}
 	}
-	
+
 	public long startQuest(String id){
 		quests.put(questid,new Quest(questid,id));
 		long thisquestid = questid;
@@ -72,19 +73,21 @@ public class QuestManager implements Listener {
 			return quests.get(currentquest);
 		return null;
 	}
-	
+
 	@EventHandler
 	public void taskCompletion(TaskCompleteEvent e){
 		getQuest(e.getQuestID()).onTaskCompletion(e);
 	}
-	
+
 	@EventHandler
 	public void onQuestCompletion(QuestCompleteEvent e){
-		String questname = quests.get(e.getQuestId()).questname;
-		for (Player p : e.getTeam().getPlayers()){
-			MineQuest.sqlstorage.querySQL("Quests/completeQuest", p.getName(), questname);
+		if (e.getResult()!=CompleteStatus.CANCELED){
+			String questname = quests.get(e.getQuestId()).questname;
+			for (Player p : e.getTeam().getPlayers()){
+				MineQuest.sqlstorage.querySQL("Quests/completeQuest", p.getName(), questname);
+			}
 		}
 		quests.put(e.getQuestId(), null);
 	}
-	
+
 }
