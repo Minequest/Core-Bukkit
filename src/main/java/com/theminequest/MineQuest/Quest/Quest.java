@@ -220,6 +220,7 @@ public class Quest {
 	}
 
 	public void finishQuest(CompleteStatus c){
+		finished = c;
 		TimeUtils.unlock(Bukkit.getWorld(world));
 		Bukkit.unloadWorld(Bukkit.getWorld(world), false);
 		Group g = MineQuest.groupManager.getGroup(MineQuest.groupManager.indexOfQuest(this));
