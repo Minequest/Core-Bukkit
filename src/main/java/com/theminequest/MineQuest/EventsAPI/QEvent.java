@@ -62,7 +62,7 @@ public abstract class QEvent{
 					complete(action());
 				}
 			}
-		}, 20, 100);
+		}, 10, 10);
 	}
 
 	/**
