@@ -42,8 +42,9 @@ public class QuestParser {
 		while (filereader.hasNextLine()) {
 			MineQuest.log(Level.WARNING, "REPEAT");
 			String nextline = filereader.nextLine();
-			ArrayList<String> ar = (ArrayList<String>) Arrays.asList(nextline
-					.split(":"));
+			ArrayList<String> ar = new ArrayList<String>();
+			for (String s : nextline.split(":"))
+				ar.add(s);
 			String type = ar.get(0).toLowerCase();
 			MineQuest.log(Level.WARNING, "REPEAT-1");
 			if (type.equals("name"))
