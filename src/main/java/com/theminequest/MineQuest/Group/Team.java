@@ -175,8 +175,11 @@ public class Team implements Group {
 		if (locations!=null)
 			locations.remove(p);
 		
-		if (players.size()<=0)
+		if (players.size()<=0){
+			if (quest!=null)
+				abandonQuest();
 			MineQuest.groupManager.removeEmptyTeam(teamid);
+		}
 		// TODO add TeamPlayerQuitEvent
 	}
 
