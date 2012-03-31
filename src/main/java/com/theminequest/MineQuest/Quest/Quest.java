@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -105,7 +104,6 @@ public class Quest {
 	 * Constructor will start the quest for the user.
 	 */
 	protected Quest(long questid, String id) {
-		MineQuest.log(Level.WARNING, "5");
 		questname = id;
 		this.questid = questid;
 		started = false;
@@ -133,14 +131,12 @@ public class Quest {
 		areaPreserve[5] = 0;
 
 		editMessage = ChatColor.GRAY + "You cannot edit inside a quest.";
-		MineQuest.log(Level.WARNING, "6");
 		world = Bukkit.getWorlds().get(0).getName();
 		loadworld = false;
 		
 		activeTask = null;
 
 		// DEFAULTS end
-		MineQuest.log(Level.WARNING, "7");
 		try {
 			QuestParser.parseDefinition(this);
 		} catch (FileNotFoundException e) {
@@ -150,12 +146,10 @@ public class Quest {
 		// sort the tasks, events, and targets in order of id.
 		// because we have absolutely 0 idea if someone would skip numbers...
 
-		MineQuest.log(Level.WARNING, "14");
 		// load the world if necessary/move team to team leader
 		if (Bukkit.getWorld(world) == null)
 			Bukkit.createWorld(new WorldCreator(world));
 		if (loadworld) {
-			MineQuest.log(Level.WARNING, "15");
 			try {
 				world = QuestWorldManip.copyWorld(Bukkit.getWorld(world))
 						.getName();
@@ -163,7 +157,6 @@ public class Quest {
 				throw new RuntimeException(e);
 			}
 		}
-		MineQuest.log(Level.WARNING, "16");
 		QuestStartedEvent event = new QuestStartedEvent(this);
 		Bukkit.getPluginManager().callEvent(event);
 		startTask(getFirstKey(tasks.keySet()));
@@ -194,12 +187,10 @@ public class Quest {
 	 * @return true if task was started successfully
 	 */
 	public boolean startTask(int taskid){
-		MineQuest.log(Level.WARNING, "17");
 		if (taskid==-1){
 			finishQuest(CompleteStatus.SUCCESS);
 			return true;
 		}
-		MineQuest.log(Level.WARNING, "18");
 		if (!tasks.containsKey(taskid))
 			return false;
 		currenttask = taskid;
@@ -208,10 +199,8 @@ public class Quest {
 		for (String e : eventnums){
 			eventnum.add(Integer.parseInt(e));
 		}
-		MineQuest.log(Level.WARNING, "19");
 		activeTask = new Task(questid,taskid,eventnum);
 		activeTask.start();
-		MineQuest.log(Level.WARNING, "20");
 		return true;
 	}
 	

@@ -264,7 +264,6 @@ public class QuestCommandFrontend extends CommandFrontend {
 		}
 		try {
 			p.sendMessage(ChatUtils.chatify(localization.getString("quest_start_settingup","Setting up quest...")));
-			MineQuest.log(Level.WARNING, "1");
 			g.startQuest(args[0]);
 			p.sendMessage(ChatUtils.chatify(localization.getString("quest_start","Quest started!")));
 			return true;
