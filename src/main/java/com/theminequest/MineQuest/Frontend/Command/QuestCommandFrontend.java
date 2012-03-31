@@ -49,7 +49,11 @@ public class QuestCommandFrontend implements CommandExecutor {
 
 		String cmd = arg3[0].toLowerCase();
 
-		String[] arguments = Arrays.copyOfRange(arg3, 1, arg3.length-1);
+		String[] arguments;
+		if (arg3.length==1)
+			arguments = new String[0];
+		else
+			arguments = Arrays.copyOfRange(arg3, 1, arg3.length-1);
 
 		try {
 			Method m = this.getClass().getMethod(cmd, Player.class, String[].class);
