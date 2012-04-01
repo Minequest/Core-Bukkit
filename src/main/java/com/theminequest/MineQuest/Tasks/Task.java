@@ -20,8 +20,10 @@
 package com.theminequest.MineQuest.Tasks;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import com.theminequest.MineQuest.MineQuest;
@@ -74,11 +76,14 @@ public class Task {
 		System.out.println("20");
 		started = true;
 		System.out.println("21");
-		for (int eventid : events.keySet()){
+		Set<Integer> keys = events.keySet();
+		Iterator<Integer> iterator = keys.iterator();
+		while (iterator.hasNext()){
+			int eventnum = iterator.next();
 			System.out.println("22 REPEAT");
 			Quest q = MineQuest.questManager.getQuest(questid);
 			System.out.println("23 REPEAT");
-			String[] details = q.getEvent(eventid).split(":");
+			String[] details = q.getEvent(eventnum).split(":");
 			System.out.println("24 REPEAT");
 			String eventname = details[0];
 			System.out.println("25 REPEAT");
@@ -87,11 +92,11 @@ public class Task {
 			for (int i=1; i<details.length; i++)
 				passind+=details[i];
 			System.out.println("27 REPEAT");
-			QEvent e = MineQuest.eventManager.getNewEvent(eventname, questid, eventid, passind);
+			QEvent e = MineQuest.eventManager.getNewEvent(eventname, questid, eventnum, passind);
 			System.out.println("33 REPEAT");
 			if (e==null)
 				// invalid event.
-				events.remove(eventid);
+				events.remove(eventnum);
 			System.out.println("34 REPEAT");
 			e.fireEvent();
 			System.out.println("39 REPEAT");

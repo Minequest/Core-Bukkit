@@ -3,11 +3,22 @@ package com.theminequest.MineQuest.Utils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class MapUtils {
+	
+	@SuppressWarnings({ "unchecked" })
+	public static <E> List<E> convert(Set<E> s){
+		List<E> toreturn = new ArrayList<E>();
+		Iterator<?> i = s.iterator();
+		while (i.hasNext()){
+			toreturn.add((E) i.next());
+		}
+		return toreturn;
+	}
 	
 	public static List<Comparable> sort(Set<? extends Comparable> s){
 		List<Comparable> l = new ArrayList<Comparable>();
