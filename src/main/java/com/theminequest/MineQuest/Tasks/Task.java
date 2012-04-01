@@ -74,13 +74,11 @@ public class Task {
 		System.out.println("20");
 		started = true;
 		System.out.println("21");
-		for (Integer eventid : events.keySet()){
+		for (int eventid : events.keySet()){
 			System.out.println("22 REPEAT");
 			Quest q = MineQuest.questManager.getQuest(questid);
-			System.out.println("22.1 REPEAT");
-			String eventdesc = q.getEventDescription(eventid);
 			System.out.println("23 REPEAT");
-			String[] details = eventdesc.split(":");
+			String[] details = q.getEvent(eventid).split(":");
 			System.out.println("24 REPEAT");
 			String eventname = details[0];
 			System.out.println("25 REPEAT");
