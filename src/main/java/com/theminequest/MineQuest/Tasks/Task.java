@@ -77,6 +77,7 @@ public class Task {
 		for (Integer eventid : events.keySet()){
 			System.out.println("22 REPEAT");
 			Quest q = MineQuest.questManager.getQuest(questid);
+			System.out.println("22.1 REPEAT");
 			String eventdesc = q.getEventDescription(eventid);
 			System.out.println("23 REPEAT");
 			String[] details = eventdesc.split(":");

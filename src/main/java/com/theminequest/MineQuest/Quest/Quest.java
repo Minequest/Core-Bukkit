@@ -272,7 +272,8 @@ public class Quest {
 	 * @param eventid
 	 * @return the string description of the event; null if not found.
 	 */
-	public String getEventDescription(int eventid) {
+	public String getEventDescription(Integer eventid) {
+		System.out.println("22.5 REPEAT");
 		return events.get(eventid);
 	}
 
