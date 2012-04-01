@@ -73,10 +73,6 @@ public class Quest {
 	protected CompleteStatus finished;
 
 	// always <ID #,OBJECT/DETAILS>
-	// TreeMap guarantees key order.
-	// (yes, treemap is RESOURCE intensive D:,
-	// but I have to combine it with LinkedHashMap to ensure there
-	// will be no duplicates)
 	protected LinkedHashMap<Integer, String[]> tasks;
 	protected Task activeTask;
 	protected LinkedHashMap<Integer, String> events;
@@ -183,9 +179,9 @@ public class Quest {
 
 	private ArrayList<Integer> getSortedKeys(Set<Integer> s) {
 		ArrayList<Integer> a = new ArrayList<Integer>();
-		for (Integer i : s) {
-			a.add(i);
-		}
+		Iterator<Integer> i = s.iterator();
+		while (i.hasNext())
+			a.add(i.next());
 		Collections.sort(a);
 		return a;
 	}

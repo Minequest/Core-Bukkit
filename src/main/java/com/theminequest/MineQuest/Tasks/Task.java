@@ -79,9 +79,13 @@ public class Task {
 		started = true;
 		System.out.println("21");
 		Quest quest = MineQuest.questManager.getQuest(questid);
+		System.out.println("22");
 		Iterator<Integer> i = collection.keySet().iterator();
+		System.out.println("23");
 		while (i.hasNext()){
+			System.out.println("24 REPEAT");
 			int event = i.next();
+			System.out.println("Got here.");
 			String[] eventdetails = quest.getEvent(event).split(":");
 			String recombined = "";
 			for (int r=1; r<eventdetails.length; r++){
