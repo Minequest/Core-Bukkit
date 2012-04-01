@@ -76,7 +76,7 @@ public class Quest {
 	// (yes, treemap is RESOURCE intensive D:,
 	// but I have to combine it with LinkedHashMap to ensure there
 	// will be no duplicates)
-	protected TreeMap<Integer, String> tasks;
+	protected TreeMap<Integer, String[]> tasks;
 	protected Task activeTask;
 	protected TreeMap<Integer, String> events;
 	protected TreeMap<Integer, TargetDetails> targets;
@@ -200,7 +200,7 @@ public class Quest {
 		if (!tasks.containsKey(taskid))
 			return false;
 		currenttask = taskid;
-		String[] eventnums = tasks.get(taskid).split(":");
+		String[] eventnums = tasks.get(taskid);
 		List<Integer> eventnum = new ArrayList<Integer>();
 		for (String e : eventnums){
 			eventnum.add(Integer.parseInt(e));
@@ -256,7 +256,7 @@ public class Quest {
 		return currenttask;
 	}
 
-	public String getTaskDetails(int id) {
+	public String[] getTaskDetails(int id) {
 		return tasks.get(id);
 	}
 

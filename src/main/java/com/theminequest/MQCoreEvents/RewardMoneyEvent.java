@@ -55,6 +55,8 @@ public class RewardMoneyEvent extends QEvent {
 	public CompleteStatus action() {
 		long gid = MineQuest.groupManager.indexOfQuest(MineQuest.questManager.getQuest(getQuestId()));
 		Group g = MineQuest.groupManager.getGroup(gid);
+		if (MineQuest.economy==null)
+			return CompleteStatus.WARNING;
 		for (Player p : g.getPlayers())
 			MineQuest.economy.depositPlayer(p.getName(), money);
 		return CompleteStatus.SUCCESS;

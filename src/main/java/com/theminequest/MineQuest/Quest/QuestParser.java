@@ -27,7 +27,7 @@ import com.theminequest.MineQuest.Tasks.Task;
 public class QuestParser {
 	
 	protected static void parseDefinition(Quest q) throws FileNotFoundException{
-		LinkedHashMap<Integer, String> tasks = new LinkedHashMap<Integer, String>();
+		LinkedHashMap<Integer, String[]> tasks = new LinkedHashMap<Integer, String[]>();
 		LinkedHashMap<Integer, String> events = new LinkedHashMap<Integer, String>();
 		LinkedHashMap<Integer, TargetDetails> targets = new LinkedHashMap<Integer, TargetDetails>();
 		LinkedHashMap<Integer, Edit> editables = new LinkedHashMap<Integer,Edit>();
@@ -107,7 +107,9 @@ public class QuestParser {
 				// final result: "eventname:T:details"
 				events.put(number, eventname + ":" + details);
 			} else if (type.equals("task")) {
-				// TODO apparently not implemented D:
+				int id = Integer.parseInt(ar.get(1));
+				String[] e = ar.get(2).split(",");
+				tasks.put(id, e);
 			} else if (type.equals("target")) {
 				int number = Integer.parseInt(ar.get(1));
 				String d = "";
@@ -149,14 +151,14 @@ public class QuestParser {
 				editables.put(number, e);
 			}
 		}
-		q.tasks = new TreeMap<Integer, String>(tasks);
+		q.tasks = new TreeMap<Integer, String[]>(tasks);
 		q.events = new TreeMap<Integer, String>(events);
 		q.targets = new TreeMap<Integer, TargetDetails>(targets);
 		q.editables = new TreeMap<Integer, Edit>(editables);
 	}
 	
 	public static void parseYAMLDefinition(Quest q){
-		LinkedHashMap<Integer, String> tasks = new LinkedHashMap<Integer, String>();
+		LinkedHashMap<Integer, String[]> tasks = new LinkedHashMap<Integer, String[]>();
 		LinkedHashMap<Integer, String> events = new LinkedHashMap<Integer, String>();
 		LinkedHashMap<Integer, TargetDetails> targets = new LinkedHashMap<Integer, TargetDetails>();
 		LinkedHashMap<Integer, Edit> editables = new LinkedHashMap<Integer,Edit>();
@@ -200,10 +202,10 @@ public class QuestParser {
 		
 		ConfigurationSection taskss = definition.getConfigurationSection("tasks");
 		for (int i : definition.getIntegerList("")){
-			tasks.put(i,taskss.getString(String.valueOf(i)));
+			tasks.put(i,taskss.getString(String.valueOf(i)).split(","));
 		}
 		
-		q.tasks = new TreeMap<Integer, String>(tasks);
+		q.tasks = new TreeMap<Integer, String[]>(tasks);
 		
 		ConfigurationSection targetss = definition.getConfigurationSection("targets");
 		for (int i : definition.getIntegerList("")){
