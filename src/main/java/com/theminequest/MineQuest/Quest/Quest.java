@@ -76,11 +76,11 @@ public class Quest {
 	// (yes, treemap is RESOURCE intensive D:,
 	// but I have to combine it with LinkedHashMap to ensure there
 	// will be no duplicates)
-	protected TreeMap<Integer, String[]> tasks;
+	protected LinkedHashMap<Integer, String[]> tasks;
 	protected Task activeTask;
-	protected TreeMap<Integer, String> events;
-	protected TreeMap<Integer, TargetDetails> targets;
-	protected TreeMap<Integer, Edit> editables;
+	protected LinkedHashMap<Integer, String> events;
+	protected LinkedHashMap<Integer, TargetDetails> targets;
+	protected LinkedHashMap<Integer, Edit> editables;
 	// quest configuration
 	protected String displayname;
 	protected String displaydesc;
@@ -177,6 +177,15 @@ public class Quest {
 		return first;
 
 	}
+	
+	private ArrayList<Integer> getSortedKeys(Set<Integer> s){
+		ArrayList<Integer> a = new ArrayList<Integer>();
+		for (Integer i : s) {
+			a.add(i);
+		}
+		Collections.sort(a);
+		return a;
+	}
 
 	/**
 	 * Get all possible events
@@ -223,6 +232,23 @@ public class Quest {
 	public Task getActiveTask(){
 		return activeTask;
 	}
+	
+	// passed in from QuestManager
+	public void onTaskCompletion(TaskCompleteEvent e) {
+		if (e.getQuestID() != questid)
+			return;
+		// TODO this is lovely and all, but tasks should trigger other tasks...
+		// I'll just call the next task, and if the next task isn't available, finish the quest
+		
+		List<Integer> sortedkeys = getSortedKeys(tasks.keySet());
+		int loc = sortedkeys.indexOf(e.getID());
+		if (loc==sortedkeys.size()-1){
+			finishQuest(CompleteStatus.SUCCESS);
+			return;
+		}
+		loc++;
+		startTask(loc);	
+	}
 
 	public void finishQuest(CompleteStatus c){
 		finished = c;
@@ -246,7 +272,7 @@ public class Quest {
 	 * @param eventid
 	 * @return the string description of the event; null if not found.
 	 */
-	public String getEventDesc(int eventid) {
+	public String getEventDescription(int eventid) {
 		return events.get(eventid);
 	}
 
@@ -297,13 +323,6 @@ public class Quest {
 	
 	public Location getSpawnLocation(){
 		return new Location(Bukkit.getWorld(world),spawnPoint[0],spawnPoint[1],spawnPoint[2]);
-	}
-
-	// passed in from QuestManager
-	public void onTaskCompletion(TaskCompleteEvent e) {
-		if (e.getQuestID() != questid)
-			return;
-		// TODO this is lovely and all, but tasks should trigger other tasks...
 	}
 
 	/* (non-Javadoc)

@@ -28,6 +28,7 @@ import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.BukkitEvents.TaskCompleteEvent;
 import com.theminequest.MineQuest.EventsAPI.QEvent;
+import com.theminequest.MineQuest.Quest.Quest;
 import com.theminequest.MineQuest.Quest.QuestManager;
 
 public class Task {
@@ -73,9 +74,10 @@ public class Task {
 		System.out.println("20");
 		started = true;
 		System.out.println("21");
-		for (int eventid : events.keySet()){
+		for (Integer eventid : events.keySet()){
 			System.out.println("22 REPEAT");
-			String eventdesc = MineQuest.questManager.getQuest(questid).getEventDesc(eventid);
+			Quest q = MineQuest.questManager.getQuest(questid);
+			String eventdesc = q.getEventDescription(eventid);
 			System.out.println("23 REPEAT");
 			String[] details = eventdesc.split(":");
 			System.out.println("24 REPEAT");

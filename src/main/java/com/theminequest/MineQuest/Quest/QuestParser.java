@@ -151,10 +151,10 @@ public class QuestParser {
 				editables.put(number, e);
 			}
 		}
-		q.tasks = new TreeMap<Integer, String[]>(tasks);
-		q.events = new TreeMap<Integer, String>(events);
-		q.targets = new TreeMap<Integer, TargetDetails>(targets);
-		q.editables = new TreeMap<Integer, Edit>(editables);
+		q.tasks = tasks;
+		q.events = events;
+		q.targets = targets;
+		q.editables = editables;
 	}
 	
 	public static void parseYAMLDefinition(Quest q){
@@ -198,28 +198,28 @@ public class QuestParser {
 			events.put(i,eventss.getString(String.valueOf(i)));
 		}
 		
-		q.events = new TreeMap<Integer, String>(events);
+		q.events = events;
 		
 		ConfigurationSection taskss = definition.getConfigurationSection("tasks");
 		for (int i : definition.getIntegerList("")){
 			tasks.put(i,taskss.getString(String.valueOf(i)).split(","));
 		}
 		
-		q.tasks = new TreeMap<Integer, String[]>(tasks);
+		q.tasks = tasks;
 		
 		ConfigurationSection targetss = definition.getConfigurationSection("targets");
 		for (int i : definition.getIntegerList("")){
 			targets.put(i,new TargetDetails(q.questid,targetss.getString(String.valueOf(i))));
 		}
 		
-		q.targets = new TreeMap<Integer, TargetDetails>(targets);
+		q.targets = targets;
 		
 		ConfigurationSection editss = definition.getConfigurationSection("edits");
 		for (int i : definition.getIntegerList("")){
 			editables.put(i,processEdit(editss.getString(String.valueOf(i))));
 		}
 		
-		q.editables = new TreeMap<Integer, Edit>(editables);
+		q.editables = editables;
 		
 		/*
 		 * name: <String name>
