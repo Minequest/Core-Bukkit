@@ -20,6 +20,7 @@
 package com.theminequest.MineQuest.Tasks;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -34,21 +35,24 @@ import com.theminequest.MineQuest.Quest.Quest;
 import com.theminequest.MineQuest.Quest.QuestManager;
 
 public class Task {
-	
+
 	private boolean started;
 	private boolean complete;
 	private long questid;
 	private int taskid;
-	private LinkedHashMap<Integer,Boolean> events;
-	private List<QEvent> objects;
-	
+	private LinkedHashMap<Integer,QEvent> collection;
+
 	/**
 	 * Task for a Quest.
-	 * @param questid Associated Quest
-	 * @param taskid Task ID
-	 * @param events Event numbers that must be completed
+	 * 
+	 * @param questid
+	 *            Associated Quest
+	 * @param taskid
+	 *            Task ID
+	 * @param events
+	 *            Event numbers that must be completed
 	 */
-	public Task(long questid, int taskid, List<Integer> events){
+	public Task(long questid, int taskid, List<Integer> events) {
 		System.out.println("9");
 		started = false;
 		System.out.println("10");
@@ -58,102 +62,95 @@ public class Task {
 		System.out.println("12");
 		this.taskid = taskid;
 		System.out.println("13");
-		this.events = new LinkedHashMap<Integer,Boolean>();
+		collection = new LinkedHashMap<Integer,QEvent>();
 		System.out.println("14");
 		for (int e : events){
 			System.out.println("15 REPEAT");
-			this.events.put(e, false);
+			collection.put(e, null);
 		}
-		System.out.println("16");
-		this.objects = new ArrayList<QEvent>();
 		System.out.println("17");
 	}
-	
-	public synchronized void start(){
+
+	public synchronized void start() {
 		System.out.println("19");
 		if (started)
 			return;
 		System.out.println("20");
 		started = true;
 		System.out.println("21");
-		Set<Integer> keys = events.keySet();
-		Iterator<Integer> iterator = keys.iterator();
-		while (iterator.hasNext()){
-			int eventnum = iterator.next();
-			System.out.println("22 REPEAT");
-			Quest q = MineQuest.questManager.getQuest(questid);
-			System.out.println("23 REPEAT");
-			String[] details = q.getEvent(eventnum).split(":");
-			System.out.println("24 REPEAT");
-			String eventname = details[0];
-			System.out.println("25 REPEAT");
-			String passind = "";
-			System.out.println("26 REPEAT");
-			for (int i=1; i<details.length; i++)
-				passind+=details[i];
-			System.out.println("27 REPEAT");
-			QEvent e = MineQuest.eventManager.getNewEvent(eventname, questid, eventnum, passind);
-			System.out.println("33 REPEAT");
-			if (e==null)
-				// invalid event.
-				events.remove(eventnum);
-			System.out.println("34 REPEAT");
-			e.fireEvent();
-			System.out.println("39 REPEAT");
-			objects.add(e);
-			System.out.println("40 REPEAT");
+		Quest quest = MineQuest.questManager.getQuest(questid);
+		Iterator<Integer> i = collection.keySet().iterator();
+		while (i.hasNext()){
+			int event = i.next();
+			String[] eventdetails = quest.getEvent(event).split(":");
+			String recombined = "";
+			for (int r=1; r<eventdetails.length; r++){
+				recombined+=eventdetails[r];
+				if (r!=(eventdetails.length-1));
+					recombined+=":";
+			}
+			QEvent e = MineQuest.eventManager.getNewEvent(eventdetails[0], questid, event, recombined);
+			collection.put(event, e);
+		}
+		
+		i = collection.keySet().iterator();
+		while (i.hasNext()){
+			collection.get(i.next()).fireEvent();
 		}
 	}
-	
-	public synchronized void cancelTask(){
+
+	public synchronized void cancelTask() {
 		if (complete || !started)
 			return;
 		complete = true;
-		for (QEvent e : objects){
+		for (QEvent e : collection.values()) {
 			e.complete(CompleteStatus.CANCELED);
 		}
-		TaskCompleteEvent e = new TaskCompleteEvent(questid, taskid, CompleteStatus.CANCELED);
-		Bukkit.getPluginManager().callEvent(e);
-	}
-	
-	public synchronized void finishEvent(int eventid, CompleteStatus completeStatus ){
-		if (!complete && started && events.containsKey(eventid) && !events.get(eventid)){
-			events.put(eventid, true);
-			if (completeStatus==CompleteStatus.FAILURE){
-				for (QEvent event : objects)
-					event.complete(CompleteStatus.CANCELED);
-				complete = true;
-				TaskCompleteEvent e = new TaskCompleteEvent(questid,taskid,CompleteStatus.FAILURE);
-				Bukkit.getPluginManager().callEvent(e);
-			}else
-				checkCompletion();
-		}
-	}
-	
-	private synchronized void checkCompletion() {
-		for (Integer eventid : events.keySet()){
-			if (!events.get(eventid))
-				return;
-		}
-		complete = true;
-		TaskCompleteEvent e = new TaskCompleteEvent(questid, taskid, CompleteStatus.SUCCESS);
+		TaskCompleteEvent e = new TaskCompleteEvent(questid, taskid,
+				CompleteStatus.CANCELED);
 		Bukkit.getPluginManager().callEvent(e);
 	}
 
-	public boolean isComplete(){
+	public synchronized void finishEvent(int eventid,
+			CompleteStatus completeStatus) {
+		if (!complete && started && collection.containsKey(eventid)) {
+			if (completeStatus == CompleteStatus.FAILURE) {
+				for (QEvent event : collection.values())
+					event.complete(CompleteStatus.CANCELED);
+				complete = true;
+				TaskCompleteEvent e = new TaskCompleteEvent(questid, taskid,
+						CompleteStatus.FAILURE);
+				Bukkit.getPluginManager().callEvent(e);
+			} else
+				checkCompletion();
+		}
+	}
+
+	private synchronized void checkCompletion() {
+		for (Integer eventid : collection.keySet()) {
+			if (collection.get(eventid).isComplete()==null)
+				return;
+		}
+		complete = true;
+		TaskCompleteEvent e = new TaskCompleteEvent(questid, taskid,
+				CompleteStatus.SUCCESS);
+		Bukkit.getPluginManager().callEvent(e);
+	}
+
+	public boolean isComplete() {
 		return complete;
 	}
-	
-	public long getQuestID(){
+
+	public long getQuestID() {
 		return questid;
 	}
-	
-	public int getTaskID(){
+
+	public int getTaskID() {
 		return taskid;
 	}
-	
-	public List<QEvent> getEventsRunning(){
-		return objects;
+
+	public Collection<QEvent> getEvents() {
+		return collection.values();
 	}
 
 }

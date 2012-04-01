@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Scanner;
@@ -135,7 +136,7 @@ public class Quest {
 		editMessage = ChatColor.GRAY + "You cannot edit inside a quest.";
 		world = Bukkit.getWorlds().get(0).getName();
 		loadworld = false;
-		
+
 		activeTask = null;
 
 		// DEFAULTS end
@@ -149,7 +150,7 @@ public class Quest {
 		// because we have absolutely 0 idea if someone would skip numbers...
 
 		// load the world if necessary/move team to team leader
-		if (Bukkit.getWorld(world) == null){
+		if (Bukkit.getWorld(world) == null) {
 			WorldCreator w = new WorldCreator(world);
 			if (nether)
 				w = w.environment(Environment.NETHER);
@@ -167,18 +168,20 @@ public class Quest {
 		Bukkit.getPluginManager().callEvent(event);
 		startTask(getFirstKey(tasks.keySet()));
 	}
-	
-	private Integer getFirstKey(Set<Integer> s){
+
+	private Integer getFirstKey(Set<Integer> s) {
 		int first = Integer.MAX_VALUE;
-		for (int i : s){
-			if (i<first)
+		Iterator<Integer> it = s.iterator();
+		while (it.hasNext()) {
+			int i = it.next();
+			if (i < first)
 				first = i;
 		}
 		return first;
 
 	}
-	
-	private ArrayList<Integer> getSortedKeys(Set<Integer> s){
+
+	private ArrayList<Integer> getSortedKeys(Set<Integer> s) {
 		ArrayList<Integer> a = new ArrayList<Integer>();
 		for (Integer i : s) {
 			a.add(i);
@@ -198,12 +201,14 @@ public class Quest {
 
 	/**
 	 * Start a task of the quest.
-	 * @param taskid task to start
+	 * 
+	 * @param taskid
+	 *            task to start
 	 * @return true if task was started successfully
 	 */
-	public boolean startTask(int taskid){
+	public boolean startTask(int taskid) {
 		System.out.println("1");
-		if (taskid==-1){
+		if (taskid == -1) {
 			finishQuest(CompleteStatus.SUCCESS);
 			return true;
 		}
@@ -217,73 +222,80 @@ public class Quest {
 		System.out.println("5");
 		List<Integer> eventnum = new ArrayList<Integer>();
 		System.out.println("6");
-		for (String e : eventnums){
+		for (String e : eventnums) {
 			System.out.println("7 REPEAT");
 			eventnum.add(Integer.parseInt(e));
 		}
 		System.out.println("8");
-		activeTask = new Task(questid,taskid,eventnum);
+		activeTask = new Task(questid, taskid, eventnum);
 		System.out.println("18");
 		activeTask.start();
 		System.out.println("41 SUCCESS FINISH");
 		return true;
 	}
-	
-	public Task getActiveTask(){
+
+	public Task getActiveTask() {
 		return activeTask;
 	}
-	
+
 	// passed in from QuestManager
 	public void onTaskCompletion(TaskCompleteEvent e) {
 		if (e.getQuestID() != questid)
 			return;
 		// TODO this is lovely and all, but tasks should trigger other tasks...
-		// I'll just call the next task, and if the next task isn't available, finish the quest
-		
+		// I'll just call the next task, and if the next task isn't available,
+		// finish the quest
+
 		List<Integer> sortedkeys = getSortedKeys(tasks.keySet());
 		int loc = sortedkeys.indexOf(e.getID());
-		if (loc==sortedkeys.size()-1){
+		if (loc == sortedkeys.size() - 1) {
 			finishQuest(CompleteStatus.SUCCESS);
 			return;
 		}
 		loc++;
-		startTask(loc);	
+		startTask(loc);
 	}
 
-	public void finishQuest(CompleteStatus c){
+	public void finishQuest(CompleteStatus c) {
 		finished = c;
 		TimeUtils.unlock(Bukkit.getWorld(world));
-		Group g = MineQuest.groupManager.getGroup(MineQuest.groupManager.indexOfQuest(this));
-		QuestCompleteEvent event = new QuestCompleteEvent(questid,c,g);
+		Group g = MineQuest.groupManager.getGroup(MineQuest.groupManager
+				.indexOfQuest(this));
+		QuestCompleteEvent event = new QuestCompleteEvent(questid, c, g);
 		Bukkit.getPluginManager().callEvent(event);
 	}
-	
-	public void unloadQuest() throws IOException{
+
+	public void unloadQuest() throws IOException {
 		if (loadworld)
 			QuestWorldManip.removeWorld(Bukkit.getWorld(world));
 	}
-	
-	public CompleteStatus isFinished(){
+
+	public CompleteStatus isFinished() {
 		return finished;
 	}
-	
-	public String getEvent(int id){
+
+	public String getEvent(int id) {
+		System.out.println("CALLED GETEVENT");
+		if (!events.containsKey(id))
+			throw new IllegalArgumentException("No such event ID!");
 		return events.get(id);
 	}
 
 	/**
 	 * Get the "YOU CAN'T EDIT THIS PLACE" message...
+	 * 
 	 * @return cannot edit message
 	 */
-	public String getEditMessage(){
+	public String getEditMessage() {
 		return editMessage;
 	}
 
 	/**
 	 * Retrieve the current task ID.
+	 * 
 	 * @return Current Task ID.
 	 */
-	public int getCurrentTaskID(){
+	public int getCurrentTaskID() {
 		return currenttask;
 	}
 
@@ -310,25 +322,28 @@ public class Quest {
 	public TargetDetails getTarget(int id) {
 		return targets.get(id);
 	}
-	
+
 	public List<String> getDisallowedAbilities() {
 		// TODO not done yet
 		return new ArrayList<String>();
 	}
-	
-	public Location getSpawnLocation(){
-		return new Location(Bukkit.getWorld(world),spawnPoint[0],spawnPoint[1],spawnPoint[2]);
+
+	public Location getSpawnLocation() {
+		return new Location(Bukkit.getWorld(world), spawnPoint[0],
+				spawnPoint[1], spawnPoint[2]);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object arg0) {
 		if (!(arg0 instanceof Quest))
 			return false;
-		Quest q = (Quest)arg0;
-		return (q.questid==this.questid);
+		Quest q = (Quest) arg0;
+		return (q.questid == this.questid);
 	}
 
 	public String getName() {

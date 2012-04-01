@@ -20,6 +20,7 @@
 package com.theminequest.MineQuest.Target;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
@@ -108,7 +109,7 @@ public class TargetManager {
 			int i = Integer.parseInt(id);
 			Quest q = MineQuest.questManager.getQuest(t.getQuest());
 			Task ts = q.getActiveTask();
-			List<QEvent> running = ts.getEventsRunning();
+			Collection<QEvent> running = ts.getEvents();
 			for (QEvent event : running) {
 				if (event.getEventId() == i) {
 					if (event instanceof TargetEvent) {

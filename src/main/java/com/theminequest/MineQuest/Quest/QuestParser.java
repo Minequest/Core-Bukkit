@@ -27,10 +27,10 @@ import com.theminequest.MineQuest.Tasks.Task;
 public class QuestParser {
 	
 	protected static void parseDefinition(Quest q) throws FileNotFoundException{
-		LinkedHashMap<Integer, String[]> tasks = new LinkedHashMap<Integer, String[]>();
-		LinkedHashMap<Integer, String> events = new LinkedHashMap<Integer, String>();
-		LinkedHashMap<Integer, TargetDetails> targets = new LinkedHashMap<Integer, TargetDetails>();
-		LinkedHashMap<Integer, Edit> editables = new LinkedHashMap<Integer,Edit>();
+		LinkedHashMap<Integer, String[]> tasks = new LinkedHashMap<Integer, String[]>(0);
+		LinkedHashMap<Integer, String> events = new LinkedHashMap<Integer, String>(0);
+		LinkedHashMap<Integer, TargetDetails> targets = new LinkedHashMap<Integer, TargetDetails>(0);
+		LinkedHashMap<Integer, Edit> editables = new LinkedHashMap<Integer,Edit>(0);
 		File f = new File(MineQuest.questManager.locationofQuests + File.separator + q.questname
 				+ ".quest");
 		Scanner filereader = new Scanner(f);
