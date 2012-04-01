@@ -46,34 +46,56 @@ public class Task {
 	 * @param events Event numbers that must be completed
 	 */
 	public Task(long questid, int taskid, List<Integer> events){
+		System.out.println("9");
 		started = false;
+		System.out.println("10");
 		complete = false;
+		System.out.println("11");
 		this.questid = questid;
+		System.out.println("12");
 		this.taskid = taskid;
+		System.out.println("13");
 		this.events = new LinkedHashMap<Integer,Boolean>();
+		System.out.println("14");
 		for (int e : events){
+			System.out.println("15 REPEAT");
 			this.events.put(e, false);
 		}
+		System.out.println("16");
 		this.objects = new ArrayList<QEvent>();
+		System.out.println("17");
 	}
 	
 	public synchronized void start(){
+		System.out.println("19");
 		if (started)
 			return;
+		System.out.println("20");
 		started = true;
+		System.out.println("21");
 		for (int eventid : events.keySet()){
+			System.out.println("22 REPEAT");
 			String eventdesc = MineQuest.questManager.getQuest(questid).getEventDesc(eventid);
+			System.out.println("23 REPEAT");
 			String[] details = eventdesc.split(":");
+			System.out.println("24 REPEAT");
 			String eventname = details[0];
+			System.out.println("25 REPEAT");
 			String passind = "";
+			System.out.println("26 REPEAT");
 			for (int i=1; i<details.length; i++)
 				passind+=details[i];
+			System.out.println("27 REPEAT");
 			QEvent e = MineQuest.eventManager.getNewEvent(eventname, questid, eventid, passind);
+			System.out.println("33 REPEAT");
 			if (e==null)
 				// invalid event.
 				events.remove(eventid);
+			System.out.println("34 REPEAT");
 			e.fireEvent();
+			System.out.println("39 REPEAT");
 			objects.add(e);
+			System.out.println("40 REPEAT");
 		}
 	}
 	

@@ -88,10 +88,14 @@ public class EventManager implements Listener {
 	 * @return new instance of the event requested
 	 */
 	public QEvent getNewEvent(String eventname, long q, int eventnum, String d) {
+		System.out.println("28 REPEAT");
 		if (!classes.containsKey(eventname))
 			return null;
+		System.out.println("29 REPEAT");
 		Class<? extends QEvent> cl = classes.get(eventname);
+		System.out.println("30 REPEAT");
 		Constructor<? extends QEvent> ctor = null;
+		System.out.println("31 REPEAT");
 		try {
 			ctor = cl.getConstructor(long.class, int.class,
 					java.lang.String.class);
@@ -99,6 +103,7 @@ public class EventManager implements Listener {
 			// we have no idea how to handle this method.
 			return null;
 		}
+		System.out.println("32 REPEAT");
 		try {
 			return (QEvent) ctor.newInstance(q, eventnum, d);
 		} catch (Exception e) {
@@ -128,6 +133,7 @@ public class EventManager implements Listener {
 	}
 	
 	public synchronized void addEventListener(QEvent e){
+		System.out.println("36 REPEAT");
 		activeevents.add(e);
 	}
 	

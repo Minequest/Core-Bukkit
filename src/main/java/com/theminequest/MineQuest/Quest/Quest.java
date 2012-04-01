@@ -193,20 +193,30 @@ public class Quest {
 	 * @return true if task was started successfully
 	 */
 	public boolean startTask(int taskid){
+		System.out.println("1");
 		if (taskid==-1){
 			finishQuest(CompleteStatus.SUCCESS);
 			return true;
 		}
+		System.out.println("2");
 		if (!tasks.containsKey(taskid))
 			return false;
+		System.out.println("3");
 		currenttask = taskid;
+		System.out.println("4");
 		String[] eventnums = tasks.get(taskid);
+		System.out.println("5");
 		List<Integer> eventnum = new ArrayList<Integer>();
+		System.out.println("6");
 		for (String e : eventnums){
+			System.out.println("7 REPEAT");
 			eventnum.add(Integer.parseInt(e));
 		}
+		System.out.println("8");
 		activeTask = new Task(questid,taskid,eventnum);
+		System.out.println("18");
 		activeTask.start();
+		System.out.println("41 SUCCESS FINISH");
 		return true;
 	}
 	
