@@ -196,6 +196,7 @@ public class Team implements Group {
 		recordCurrentLocations();
 		inQuest = true;
 		teleportPlayers(quest.getSpawnLocation());
+		quest.startQuest();
 	}
 
 	@Override

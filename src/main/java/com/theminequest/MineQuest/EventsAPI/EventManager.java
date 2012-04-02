@@ -175,13 +175,8 @@ public class EventManager implements Listener {
 
 	public void checkAllEvents(){
 		synchronized(activelock){
-			for (final QEvent e : activeevents){
-				new Thread(new Runnable(){
-					@Override
-					public void run() {
-						e.check();
-					}
-				}).start();
+			for (QEvent e : activeevents){
+				e.check();
 			}
 		}
 	}

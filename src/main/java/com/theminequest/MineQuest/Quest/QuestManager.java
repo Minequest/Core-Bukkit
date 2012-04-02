@@ -65,11 +65,10 @@ public class QuestManager implements Listener {
 
 	public long startQuest(String id){
 		quests.put(questid,new Quest(questid,id));
-		quests.get(questid).startQuest();
+		if (!quests.get(questid).loadworld)
+			quests.get(questid).startQuest();
 		long thisquestid = questid;
 		questid++;
-		QuestStartedEvent e = new QuestStartedEvent(quests.get(thisquestid));
-		Bukkit.getPluginManager().callEvent(e);
 		return thisquestid;
 	}
 
