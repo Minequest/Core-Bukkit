@@ -109,10 +109,10 @@ public class Quest {
 		currenttask = -1;
 		// DEFAULTS start
 		displayname = questname;
-		displaydesc = "This is a quest.";
-		displayaccept = "You have accepted the quest.";
-		displaycancel = "You have canceled the quest.";
-		displayfinish = "You have finished the quest.";
+		displaydesc = MineQuest.configuration.localizationConfig.getString("quest_NODESC", "No description available.");
+		displayaccept = MineQuest.configuration.localizationConfig.getString("quest_ACCEPT", "Quest accepted!");
+		displaycancel = MineQuest.configuration.localizationConfig.getString("quest_CANCEL", "Quest aborted!");
+		displayfinish = MineQuest.configuration.localizationConfig.getString("quest_COMPLETE", "Quest complete!");
 		questRepeatable = false;
 		spawnReset = true;
 
@@ -129,7 +129,7 @@ public class Quest {
 		areaPreserve[4] = 64;
 		areaPreserve[5] = 0;
 
-		editMessage = ChatColor.GRAY + "You cannot edit inside a quest.";
+		editMessage = ChatColor.GRAY + MineQuest.configuration.localizationConfig.getString("quest_DEFEDIT", "You can't edit the world!");;
 		world = Bukkit.getWorlds().get(0).getName();
 		loadworld = false;
 
