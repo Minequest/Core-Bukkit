@@ -45,7 +45,7 @@ public class EventManager implements Listener {
 	private Object activelock;
 	private Runnable activechecker;
 	private Object classlistlock;
-	private boolean stop;
+	private volatile boolean stop;
 
 	public EventManager() {
 		MineQuest.log("[Event] Starting Manager...");
