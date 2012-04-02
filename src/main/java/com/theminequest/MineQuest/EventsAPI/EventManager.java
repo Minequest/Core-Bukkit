@@ -64,7 +64,7 @@ public class EventManager implements Listener {
 			}
 			
 		};
-		activechecker.run();
+		new Thread(activechecker).start();
 	}
 	
 	public void dismantleRunnable(){
@@ -176,12 +176,12 @@ public class EventManager implements Listener {
 	public void checkAllEvents(){
 		synchronized(activelock){
 			for (final QEvent e : activeevents){
-				new Runnable(){
+				new Thread(new Runnable(){
 					@Override
 					public void run() {
 						e.check();
 					}
-				}.run();
+				}).start();
 			}
 		}
 	}

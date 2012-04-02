@@ -154,6 +154,7 @@ public class MineQuest extends JavaPlugin {
 		description = null;
 		activePlugin = null;
 		abilityManager = null;
+		eventManager.dismantleRunnable();
 		eventManager = null;
 		editableManager = null;
 		taskManager = null;
