@@ -151,10 +151,10 @@ public class QuestParser {
 				}
 				q.editables.put(number, e);
 			}
-			
-			System.out.println("TOSTRING");
-			System.out.println(q.events);
 		}
+		
+		System.out.println("TOSTRING");
+		System.out.println(q.events);
 	}
 	
 	public static void parseYAMLDefinition(Quest q){

@@ -141,6 +141,9 @@ public class Quest {
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);
 		}
+		
+		System.out.println("THIS TOSTRING");
+		System.out.println(events);
 
 		// sort the tasks, events, and targets in order of id.
 		// because we have absolutely 0 idea if someone would skip numbers...
