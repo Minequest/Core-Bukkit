@@ -87,7 +87,9 @@ public class Task {
 			Integer event = i.next();
 			System.out.println("Got here.");
 			System.out.println("Event #: " + event);
-			String[] eventdetails = quest.getEvent(event).split(":");
+			String d = quest.getEvent(event);
+			System.out.println("Splitting...");
+			String[] eventdetails = d.split(":");
 			String recombined = "";
 			for (int r=1; r<eventdetails.length; r++){
 				recombined+=eventdetails[r];
