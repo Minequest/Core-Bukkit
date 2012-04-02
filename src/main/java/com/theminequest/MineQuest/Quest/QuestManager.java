@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -102,6 +103,7 @@ public class QuestManager implements Listener {
 		Group g = MineQuest.groupManager.getGroup(MineQuest.groupManager.indexOf(p));
 		if (g.isInQuest()){
 			e.setCancelled(true);
+			p.sendMessage(ChatColor.GRAY + g.getQuest().editMessage);
 		}
 	}
 	
