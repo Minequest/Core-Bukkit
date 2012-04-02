@@ -67,7 +67,10 @@ public class EventManager implements Listener {
 			}
 
 		};
-		new Thread(activechecker).start();
+		Thread t = new Thread(activechecker);
+		t.setDaemon(true);
+		t.setName("MineQuest-EventManager");
+		t.start();
 	}
 
 	public void dismantleRunnable(){
