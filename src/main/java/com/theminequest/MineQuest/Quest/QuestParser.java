@@ -27,10 +27,10 @@ import com.theminequest.MineQuest.Tasks.Task;
 public class QuestParser {
 	
 	protected static void parseDefinition(Quest q) throws FileNotFoundException{
-		LinkedHashMap<Integer, String[]> tasks = new LinkedHashMap<Integer, String[]>(0);
-		LinkedHashMap<Integer, String> events = new LinkedHashMap<Integer, String>(0);
-		LinkedHashMap<Integer, TargetDetails> targets = new LinkedHashMap<Integer, TargetDetails>(0);
-		LinkedHashMap<Integer, Edit> editables = new LinkedHashMap<Integer,Edit>(0);
+		q.tasks = new LinkedHashMap<Integer, String[]>(0);
+		q.events = new LinkedHashMap<Integer, String>(0);
+		q.targets = new LinkedHashMap<Integer, TargetDetails>(0);
+		q.editables = new LinkedHashMap<Integer,Edit>(0);
 		File f = new File(MineQuest.questManager.locationofQuests + File.separator + q.questname
 				+ ".quest");
 		Scanner filereader = new Scanner(f);
@@ -106,11 +106,11 @@ public class QuestParser {
 				}
 				System.out.println(number + " : " + eventname + ":" + details);
 				// final result: "eventname:T:details"
-				events.put(number, new String(eventname + ":" + details));
+				q.events.put(number, new String(eventname + ":" + details));
 			} else if (type.equals("task")) {
 				int id = Integer.parseInt(ar.get(1));
 				String[] e = ar.get(2).split(",");
-				tasks.put(id, e);
+				q.tasks.put(id, e);
 			} else if (type.equals("target")) {
 				int number = Integer.parseInt(ar.get(1));
 				String d = "";
@@ -119,7 +119,7 @@ public class QuestParser {
 					if (i!=ar.size()-1)
 						d+=":";
 				}
-				targets.put(number, new TargetDetails(q.questid,d));
+				q.targets.put(number, new TargetDetails(q.questid,d));
 			} else if (type.equals("edit")) {
 				int number = Integer.parseInt(ar.get(1));
 				String edittype = ar.get(2);
@@ -149,15 +149,12 @@ public class QuestParser {
 					else
 						e = new CertainBlockEdit(q.questid,number,taskid,d);
 				}
-				editables.put(number, e);
+				q.editables.put(number, e);
 			}
+			
+			System.out.println("TOSTRING");
+			System.out.println(q.events);
 		}
-		q.tasks = tasks;
-		q.events = events;
-		System.out.println("TOSTRING");
-		q.events.toString();
-		q.targets = targets;
-		q.editables = editables;
 	}
 	
 	public static void parseYAMLDefinition(Quest q){
