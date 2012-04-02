@@ -31,6 +31,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
@@ -39,6 +40,7 @@ import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.BukkitEvents.QuestCompleteEvent;
 import com.theminequest.MineQuest.BukkitEvents.QuestStartedEvent;
 import com.theminequest.MineQuest.BukkitEvents.TaskCompleteEvent;
+import com.theminequest.MineQuest.Editable.Edit;
 import com.theminequest.MineQuest.Group.Group;
 import com.theminequest.MineQuest.Group.Team;
 
@@ -98,20 +100,29 @@ public class QuestManager implements Listener {
 	
 	@EventHandler
 	public void onBlockPlaceEvent(BlockPlaceEvent e){
-		// TODO HANDLE BLOCK PLACEMENT
-	}
-	
-	@EventHandler
-	public void onBlockBreakEvent(BlockBreakEvent e){
 		Player p = e.getPlayer();
 		if (MineQuest.groupManager.indexOf(p)==-1)
 			return;
 		Group g = MineQuest.groupManager.getGroup(MineQuest.groupManager.indexOf(p));
 		if (g.isInQuest()){
 			Quest q = g.getQuest();
-			// TODO Parse EDITABLES
-			e.setCancelled(true);
-			p.sendMessage(ChatColor.GRAY + g.getQuest().editMessage);
+			for (Edit edit : q.editables.values()){
+				edit.onBlockPlace(e);
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onBlockDamageEvent(BlockDamageEvent e){
+		Player p = e.getPlayer();
+		if (MineQuest.groupManager.indexOf(p)==-1)
+			return;
+		Group g = MineQuest.groupManager.getGroup(MineQuest.groupManager.indexOf(p));
+		if (g.isInQuest()){
+			Quest q = g.getQuest();
+			for (Edit edit : q.editables.values()){
+				edit.onBlockDamage(e);
+			}
 		}
 	}
 	
