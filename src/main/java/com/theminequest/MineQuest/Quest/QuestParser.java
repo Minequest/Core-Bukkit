@@ -104,8 +104,9 @@ public class QuestParser {
 						details += ":";
 					}
 				}
+				System.out.println(number + " : " + details);
 				// final result: "eventname:T:details"
-				events.put(number, eventname + ":" + details);
+				events.put(number, new String(eventname + ":" + details));
 			} else if (type.equals("task")) {
 				int id = Integer.parseInt(ar.get(1));
 				String[] e = ar.get(2).split(",");
@@ -153,6 +154,7 @@ public class QuestParser {
 		}
 		q.tasks = tasks;
 		q.events = events;
+		q.events.toString();
 		q.targets = targets;
 		q.editables = editables;
 	}
