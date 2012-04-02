@@ -104,7 +104,7 @@ public class QuestParser {
 						details += ":";
 					}
 				}
-				System.out.println(number + " : " + details);
+				System.out.println(number + " : " + eventname + ":" + details);
 				// final result: "eventname:T:details"
 				events.put(number, new String(eventname + ":" + details));
 			} else if (type.equals("task")) {
@@ -154,6 +154,7 @@ public class QuestParser {
 		}
 		q.tasks = tasks;
 		q.events = events;
+		System.out.println("TOSTRING");
 		q.events.toString();
 		q.targets = targets;
 		q.editables = editables;
