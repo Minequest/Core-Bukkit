@@ -54,18 +54,15 @@ public abstract class QEvent{
 	 * complete, then fire off more stuff.
 	 */
 	public final void fireEvent(){
-		System.out.println("35 REPEAT");
-		MineQuest.eventManager.addEventListener(this);
 		System.out.println("37 REPEAT");
-		tasknumber = Bukkit.getScheduler().scheduleAsyncRepeatingTask(MineQuest.activePlugin, new Runnable(){
-			@Override
-			public void run() {
-				if (conditions()){
-					complete(action());
-				}
-			}
-		}, 10, 10);
+		MineQuest.eventManager.addEventListener(this);
 		System.out.println("38 REPEAT");
+	}
+	
+	public synchronized void check(){
+		if (conditions()){
+			complete(action());
+		}
 	}
 
 	/**
@@ -115,7 +112,6 @@ public abstract class QEvent{
 	 */
 	public synchronized void complete(CompleteStatus c){
 		if (complete==null){
-			Bukkit.getScheduler().cancelTask(tasknumber);
 			MineQuest.eventManager.rmEventListener(this);
 			complete = c;
 			EventCompleteEvent e = new EventCompleteEvent(this,c);

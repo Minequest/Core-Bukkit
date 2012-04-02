@@ -42,11 +42,33 @@ public class EventManager implements Listener {
 
 	private LinkedHashMap<String, Class<? extends QEvent>> classes;
 	private List<QEvent> activeevents;
+	private Object activelock;
+	private Runnable activechecker;
+	private Object classlistlock;
+	private boolean stop;
 
 	public EventManager() {
 		MineQuest.log("[Event] Starting Manager...");
 		classes = new LinkedHashMap<String, Class<? extends QEvent>>();
 		activeevents = new ArrayList<QEvent>();
+		activelock = new Object();
+		classlistlock = new Object();
+		stop = false;
+		activechecker = new Runnable(){
+
+			@Override
+			public void run() {
+				while(!stop){
+					checkAllEvents();
+				}
+			}
+			
+		};
+		activechecker.run();
+	}
+	
+	public void dismantleRunnable(){
+		stop = true;
 	}
 
 	/**
@@ -63,15 +85,17 @@ public class EventManager implements Listener {
 	 * @param event
 	 *            Class of the event (.class)
 	 */
-	public synchronized void registerEvent(String eventname, Class<? extends QEvent> event) {
-		if (classes.containsKey(eventname) || classes.containsValue(event))
-			throw new IllegalArgumentException("We already have this class!");
-		try {
-			event.getConstructor(long.class, int.class, java.lang.String.class);
-		} catch (Exception e) {
-			throw new IllegalArgumentException("Constructor tampered with!");
+	public void registerEvent(String eventname, Class<? extends QEvent> event) {
+		synchronized(classlistlock){
+			if (classes.containsKey(eventname) || classes.containsValue(event))
+				throw new IllegalArgumentException("We already have this class!");
+			try {
+				event.getConstructor(long.class, int.class, java.lang.String.class);
+			} catch (Exception e) {
+				throw new IllegalArgumentException("Constructor tampered with!");
+			}
+			classes.put(eventname, event);
 		}
-		classes.put(eventname, event);
 	}
 
 	/**
@@ -88,26 +112,28 @@ public class EventManager implements Listener {
 	 * @return new instance of the event requested
 	 */
 	public QEvent getNewEvent(String eventname, long q, int eventnum, String d) {
-		System.out.println("28 REPEAT");
-		if (!classes.containsKey(eventname))
-			return null;
-		System.out.println("29 REPEAT");
-		Class<? extends QEvent> cl = classes.get(eventname);
-		System.out.println("30 REPEAT");
-		Constructor<? extends QEvent> ctor = null;
-		System.out.println("31 REPEAT");
-		try {
-			ctor = cl.getConstructor(long.class, int.class,
-					java.lang.String.class);
-		} catch (NoSuchMethodException e) {
-			// we have no idea how to handle this method.
-			return null;
-		}
-		System.out.println("32 REPEAT");
-		try {
-			return (QEvent) ctor.newInstance(q, eventnum, d);
-		} catch (Exception e) {
-			return null;
+		synchronized(classlistlock){
+			System.out.println("28 REPEAT");
+			if (!classes.containsKey(eventname))
+				return null;
+			System.out.println("29 REPEAT");
+			Class<? extends QEvent> cl = classes.get(eventname);
+			System.out.println("30 REPEAT");
+			Constructor<? extends QEvent> ctor = null;
+			System.out.println("31 REPEAT");
+			try {
+				ctor = cl.getConstructor(long.class, int.class,
+						java.lang.String.class);
+			} catch (NoSuchMethodException e) {
+				// we have no idea how to handle this method.
+				return null;
+			}
+			System.out.println("32 REPEAT");
+			try {
+				return (QEvent) ctor.newInstance(q, eventnum, d);
+			} catch (Exception e) {
+				return null;
+			}
 		}
 	}
 
@@ -121,33 +147,52 @@ public class EventManager implements Listener {
 	 * @return true if this event does implement the specified interface
 	 */
 	public boolean hasInterface(String eventname, String interfaze) {
-		if (!classes.containsKey(eventname))
+		synchronized(classlistlock){
+			if (!classes.containsKey(eventname))
+				return false;
+			Class<? extends QEvent> cl = classes.get(eventname);
+			Class<?>[] interfazes = cl.getInterfaces();
+			for (Class<?> c : interfazes) {
+				if (c.getSimpleName().equals(interfaze))
+					return true;
+			}
 			return false;
-		Class<? extends QEvent> cl = classes.get(eventname);
-		Class<?>[] interfazes = cl.getInterfaces();
-		for (Class<?> c : interfazes) {
-			if (c.getSimpleName().equals(interfaze))
-				return true;
 		}
-		return false;
 	}
-	
-	public synchronized void addEventListener(QEvent e){
+
+	public void addEventListener(QEvent e){
 		System.out.println("36 REPEAT");
-		activeevents.add(e);
+		synchronized(activelock){
+			activeevents.add(e);
+		}
 	}
-	
-	public synchronized void rmEventListener(QEvent e){
-		activeevents.remove(e);
+
+	public void rmEventListener(QEvent e){
+		synchronized(activelock){
+			activeevents.remove(e);
+		}
 	}
-	
+
+	public void checkAllEvents(){
+		synchronized(activelock){
+			for (final QEvent e : activeevents){
+				new Runnable(){
+					@Override
+					public void run() {
+						e.check();
+					}
+				}.run();
+			}
+		}
+	}
+
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent e){
 		for (QEvent a : activeevents){
 			a.onBlockBreak(e);
 		}
 	}
-	
+
 	@EventHandler
 	public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent e){
 		for (QEvent a : activeevents){

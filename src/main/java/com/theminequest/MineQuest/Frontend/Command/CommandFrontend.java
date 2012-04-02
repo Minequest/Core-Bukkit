@@ -1,5 +1,6 @@
 package com.theminequest.MineQuest.Frontend.Command;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
 
@@ -42,12 +43,22 @@ public abstract class CommandFrontend implements CommandExecutor {
 
 		String[] arguments = shrinkArray(arg3);
 
+		Method m;
 		try {
-			Method m = this.getClass().getMethod(cmd, Player.class, String[].class);
+			m = this.getClass().getMethod(cmd, Player.class, String[].class);
 			return (Boolean)m.invoke(this, player, arguments);
-		} catch (Exception e) {
-			return false;
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
 		}
+		return false;
 	}
 	
 	private String[] shrinkArray(String[] array){
