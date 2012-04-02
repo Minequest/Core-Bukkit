@@ -46,20 +46,23 @@ public class EventManager implements Listener {
 	private Runnable activechecker;
 	private Object classlistlock;
 	private volatile boolean stop;
+	private volatile boolean chillout;
 
 	public EventManager() {
 		MineQuest.log("[Event] Starting Manager...");
-		classes = new LinkedHashMap<String, Class<? extends QEvent>>();
-		activeevents = new ArrayList<QEvent>();
+		classes = new LinkedHashMap<String, Class<? extends QEvent>>(0);
+		activeevents = new ArrayList<QEvent>(0);
 		activelock = new Object();
 		classlistlock = new Object();
 		stop = false;
+		chillout = false;
 		activechecker = new Runnable(){
 
 			@Override
 			public void run() {
 				while(!stop){
-					checkAllEvents();
+					if (!chillout)
+						checkAllEvents();
 				}
 			}
 
@@ -175,6 +178,7 @@ public class EventManager implements Listener {
 
 	public void checkAllEvents(){
 		synchronized(activelock){
+			chillout = true;
 			for (final QEvent e : activeevents){
 				new Thread(new Runnable(){
 					@Override
@@ -183,6 +187,7 @@ public class EventManager implements Listener {
 					}
 				}).start();
 			}
+			chillout = false;
 		}
 	}
 
