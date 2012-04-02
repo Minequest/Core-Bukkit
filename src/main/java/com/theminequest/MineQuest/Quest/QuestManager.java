@@ -63,6 +63,7 @@ public class QuestManager implements Listener {
 
 	public long startQuest(String id){
 		quests.put(questid,new Quest(questid,id));
+		quests.get(questid).startQuest();
 		long thisquestid = questid;
 		questid++;
 		QuestStartedEvent e = new QuestStartedEvent(quests.get(thisquestid));

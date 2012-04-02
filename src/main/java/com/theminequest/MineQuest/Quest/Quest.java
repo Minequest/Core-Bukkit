@@ -165,7 +165,6 @@ public class Quest {
 		}
 		QuestStartedEvent event = new QuestStartedEvent(this);
 		Bukkit.getPluginManager().callEvent(event);
-		startTask(getFirstKey(tasks.keySet()));
 	}
 
 	private Integer getFirstKey(Set<Integer> s) {
@@ -196,6 +195,10 @@ public class Quest {
 	 */
 	public Set<Integer> getEventNums() {
 		return events.keySet();
+	}
+	
+	public boolean startQuest(){
+		return startTask(getFirstKey(tasks.keySet()));
 	}
 
 	/**
