@@ -127,7 +127,7 @@ public class MySQL extends DatabaseHandler {
 		try {
 			connection = open();
 		    statement = connection.createStatement();
-		    result = statement.executeQuery("SELECT CURTIME()");
+		    //result = statement.executeQuery("SELECT CURTIME()");
 		    
 		    switch (this.getStatement(query)) {
 			    case SELECT:
