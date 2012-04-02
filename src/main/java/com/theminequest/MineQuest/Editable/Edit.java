@@ -60,19 +60,15 @@ public abstract class Edit {
 	}
 	
 	public void onBlockPlace(BlockPlaceEvent e){
-		if (!allowEdit(e.getBlock(), e.getItemInHand(), e.getPlayer())){
-			e.setCancelled(true);
-			e.getPlayer().sendMessage(ChatColor.YELLOW+"[!] " +MineQuest.questManager.getQuest(questid).getEditMessage());
-			return;
+		if (allowEdit(e.getBlock(), e.getItemInHand(), e.getPlayer())){
+			e.setCancelled(false);
 		}
 		MineQuest.questManager.getQuest(questid).startTask(taskid);
 	}
 	
 	public void onBlockDamage(BlockDamageEvent e){
-		if (!allowEdit(e.getBlock(), e.getItemInHand(), e.getPlayer())){
-			e.setCancelled(true);
-			e.getPlayer().sendMessage(ChatColor.YELLOW+"[!] " +MineQuest.questManager.getQuest(questid).getEditMessage());
-			return;
+		if (allowEdit(e.getBlock(), e.getItemInHand(), e.getPlayer())){
+			e.setCancelled(false);
 		}
 		MineQuest.questManager.getQuest(questid).startTask(taskid);
 	}

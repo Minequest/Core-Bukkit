@@ -107,9 +107,14 @@ public class QuestManager implements Listener {
 		Group g = MineQuest.groupManager.getGroup(MineQuest.groupManager.indexOf(p));
 		if (g.isInQuest()){
 			Quest q = g.getQuest();
+			// by default, I don't allow this to happen.
+			e.setCancelled(true);
 			for (Edit edit : q.editables.values()){
 				edit.onBlockPlace(e);
+				if (!e.isCancelled())
+					return;
 			}
+			e.getPlayer().sendMessage(ChatColor.YELLOW+"[!] " + q.getEditMessage());
 		}
 	}
 	
@@ -121,9 +126,14 @@ public class QuestManager implements Listener {
 		Group g = MineQuest.groupManager.getGroup(MineQuest.groupManager.indexOf(p));
 		if (g.isInQuest()){
 			Quest q = g.getQuest();
+			// by default, I don't allow this to happen.
+			e.setCancelled(true);
 			for (Edit edit : q.editables.values()){
 				edit.onBlockDamage(e);
+				if (!e.isCancelled())
+					return;
 			}
+			e.getPlayer().sendMessage(ChatColor.YELLOW+"[!] " + q.getEditMessage());
 		}
 	}
 	

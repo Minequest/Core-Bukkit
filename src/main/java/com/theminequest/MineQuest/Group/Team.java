@@ -130,6 +130,13 @@ public class Team implements Group {
 		quest.finishQuest(CompleteStatus.CANCELED);
 		if (inQuest)
 			exitQuest();
+		else if (quest.isInstanced())
+			try {
+				quest.unloadQuest();
+			} catch (IOException e) {
+				throw new GroupException(e);
+			}
+		quest = null;
 	}
 	
 	/**
@@ -180,15 +187,6 @@ public class Team implements Group {
 		if (players.size()<=0){
 			if (quest!=null){
 				abandonQuest();
-				if (quest.isInstanced()){
-					try {
-						quest.unloadQuest();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-				quest = null;
 			}
 			MineQuest.groupManager.removeEmptyTeam(teamid);
 		}
