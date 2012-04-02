@@ -178,8 +178,18 @@ public class Team implements Group {
 		}
 		
 		if (players.size()<=0){
-			if (quest!=null)
+			if (quest!=null){
 				abandonQuest();
+				if (quest.isInstanced()){
+					try {
+						quest.unloadQuest();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				quest = null;
+			}
 			MineQuest.groupManager.removeEmptyTeam(teamid);
 		}
 		// TODO add TeamPlayerQuitEvent
