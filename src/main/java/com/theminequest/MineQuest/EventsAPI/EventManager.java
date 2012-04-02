@@ -167,7 +167,7 @@ public class EventManager implements Listener {
 	}
 
 	public void addEventListener(final QEvent e){
-		System.out.println("36 REPEAT");
+		System.out.println("37 REPEAT");
 		synchronized(activelock){
 			activeevents.add(e);
 		}
