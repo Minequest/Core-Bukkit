@@ -62,11 +62,11 @@ public class EventManager implements Listener {
 					checkAllEvents();
 				}
 			}
-			
+
 		};
 		new Thread(activechecker).start();
 	}
-	
+
 	public void dismantleRunnable(){
 		stop = true;
 	}
@@ -175,23 +175,33 @@ public class EventManager implements Listener {
 
 	public void checkAllEvents(){
 		synchronized(activelock){
-			for (QEvent e : activeevents){
-				e.check();
+			for (final QEvent e : activeevents){
+				new Thread(new Runnable(){
+					@Override
+					public void run() {
+						e.check();
+					}
+				}).start();
+				
 			}
 		}
 	}
 
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent e){
-		for (QEvent a : activeevents){
-			a.onBlockBreak(e);
+		synchronized(activelock){
+			for (QEvent a : activeevents){
+				a.onBlockBreak(e);
+			}
 		}
 	}
 
 	@EventHandler
 	public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent e){
-		for (QEvent a : activeevents){
-			a.onEntityDamageByEntityEvent(e);
+		synchronized(activelock){
+			for (QEvent a : activeevents){
+				a.onEntityDamageByEntityEvent(e);
+			}
 		}
 	}
 

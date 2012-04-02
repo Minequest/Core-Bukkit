@@ -58,10 +58,12 @@ public abstract class QEvent{
 		MineQuest.eventManager.addEventListener(this);
 		System.out.println("38 REPEAT");
 	}
-	
+
 	public synchronized void check(){
-		if (conditions()){
-			complete(action());
+		if (complete==null){
+			if (conditions()){
+				complete(action());
+			}
 		}
 	}
 
@@ -118,23 +120,23 @@ public abstract class QEvent{
 			Bukkit.getPluginManager().callEvent(e);
 		}
 	}
-	
+
 	/**
 	 * Optional method that QEvents can override if they want;
 	 * by default, doesn't do anything.
 	 * @param e
 	 */
 	public void onBlockBreak(BlockBreakEvent e){
-		
+
 	}
-	
+
 	/**
 	 * Optional method that QEvents can override if they want;
 	 * by default, doesn't do anything.
 	 * @param e
 	 */
 	public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent e){
-		
+
 	}
 
 }
