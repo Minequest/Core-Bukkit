@@ -159,6 +159,8 @@ public class GroupManager implements Listener{
 	 * Only called by Team objects when everyone leaves the team.
 	 */
 	protected synchronized void removeEmptyTeam(long id){
+		if (groups.get(id)==null)
+			return;
 		groups.get(id).lockGroup();
 		groups.put(id, null);
 	}
