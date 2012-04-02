@@ -41,7 +41,7 @@ import com.theminequest.MineQuest.MineQuest;
 public class EventManager implements Listener {
 
 	private LinkedHashMap<String, Class<? extends QEvent>> classes;
-	private List<QEvent> activeevents;
+	private LinkedHashMap<QEvent,Thread> activeevents;
 	private Object activelock;
 	private Runnable activechecker;
 	private Object classlistlock;
@@ -50,7 +50,7 @@ public class EventManager implements Listener {
 	public EventManager() {
 		MineQuest.log("[Event] Starting Manager...");
 		classes = new LinkedHashMap<String, Class<? extends QEvent>>();
-		activeevents = new ArrayList<QEvent>();
+		activeevents = new LinkedHashMap<QEvent,Thread>();
 		activelock = new Object();
 		classlistlock = new Object();
 		stop = false;
@@ -160,10 +160,15 @@ public class EventManager implements Listener {
 		}
 	}
 
-	public void addEventListener(QEvent e){
+	public void addEventListener(final QEvent e){
 		System.out.println("36 REPEAT");
 		synchronized(activelock){
-			activeevents.add(e);
+			activeevents.put(e,new Thread(new Runnable(){
+				@Override
+				public void run() {
+					e.check();
+				}
+			}));
 		}
 	}
 
@@ -175,14 +180,9 @@ public class EventManager implements Listener {
 
 	public void checkAllEvents(){
 		synchronized(activelock){
-			for (final QEvent e : activeevents){
-				new Thread(new Runnable(){
-					@Override
-					public void run() {
-						e.check();
-					}
-				}).start();
-				
+			for (Thread t : activeevents.values()){
+				if (!t.isAlive())
+					t.start();
 			}
 		}
 	}
@@ -190,7 +190,7 @@ public class EventManager implements Listener {
 	@EventHandler
 	public void onBlockBreak(final BlockBreakEvent e){
 		synchronized(activelock){
-			for (final QEvent a : activeevents){
+			for (final QEvent a : activeevents.keySet()){
 				new Thread(new Runnable(){
 					@Override
 					public void run() {
@@ -204,7 +204,7 @@ public class EventManager implements Listener {
 	@EventHandler
 	public void onEntityDamageByEntityEvent(final EntityDamageByEntityEvent e){
 		synchronized(activelock){
-			for (final QEvent a : activeevents){
+			for (final QEvent a : activeevents.keySet()){
 				new Thread(new Runnable(){
 					@Override
 					public void run() {
