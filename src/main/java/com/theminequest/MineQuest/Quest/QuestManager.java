@@ -89,6 +89,7 @@ public class QuestManager implements Listener {
 		if (e.getResult()!=CompleteStatus.CANCELED){
 			String questname = quests.get(e.getQuestId()).questname;
 			for (Player p : e.getGroup().getPlayers()){
+				p.sendMessage(ChatColor.GREEN + MineQuest.configuration.localizationConfig.getString("quest_COMPLETE", "Quest completed!"));
 				MineQuest.sqlstorage.querySQL("Quests/completeQuest", p.getName(), questname);
 			}
 		}
