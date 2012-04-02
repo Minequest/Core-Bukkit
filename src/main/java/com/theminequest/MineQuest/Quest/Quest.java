@@ -273,7 +273,7 @@ public class Quest {
 		return finished;
 	}
 
-	public String getEvent(int id) {
+	public String getEvent(Integer id) {
 		System.out.println("CALLED GETEVENT");
 		if (!events.containsKey(id))
 			throw new IllegalArgumentException("No such event ID!");

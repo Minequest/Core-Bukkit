@@ -84,7 +84,7 @@ public class Task {
 		System.out.println("23");
 		while (i.hasNext()){
 			System.out.println("24 REPEAT");
-			int event = i.next();
+			Integer event = i.next();
 			System.out.println("Got here.");
 			System.out.println("Event #: " + event);
 			String[] eventdetails = quest.getEvent(event).split(":");
