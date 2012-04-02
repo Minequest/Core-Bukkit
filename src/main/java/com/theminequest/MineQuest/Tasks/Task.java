@@ -97,7 +97,10 @@ public class Task {
 					recombined+=":";
 			}
 			QEvent e = MineQuest.eventManager.getNewEvent(eventdetails[0], questid, event, recombined);
-			collection.put(event, e);
+			if (e!=null)
+				collection.put(event, e);
+			else
+				collection.remove(event);
 		}
 		
 		i = collection.keySet().iterator();
