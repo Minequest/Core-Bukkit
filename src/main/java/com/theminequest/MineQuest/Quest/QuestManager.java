@@ -31,6 +31,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import com.theminequest.MineQuest.MineQuest;
@@ -95,12 +96,19 @@ public class QuestManager implements Listener {
 	}
 	
 	@EventHandler
+	public void onBlockPlaceEvent(BlockPlaceEvent e){
+		// TODO HANDLE BLOCK PLACEMENT
+	}
+	
+	@EventHandler
 	public void onBlockBreakEvent(BlockBreakEvent e){
 		Player p = e.getPlayer();
 		if (MineQuest.groupManager.indexOf(p)==-1)
 			return;
 		Group g = MineQuest.groupManager.getGroup(MineQuest.groupManager.indexOf(p));
 		if (g.isInQuest()){
+			Quest q = g.getQuest();
+			// TODO Parse EDITABLES
 			e.setCancelled(true);
 			p.sendMessage(ChatColor.GRAY + g.getQuest().editMessage);
 		}
