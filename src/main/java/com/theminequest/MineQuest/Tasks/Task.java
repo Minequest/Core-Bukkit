@@ -82,9 +82,11 @@ public class Task {
 		System.out.println("22");
 		Iterator<Integer> i = collection.keySet().iterator();
 		System.out.println("23");
+		List<Integer> list = new ArrayList<Integer>();
 		while (i.hasNext()){
-			System.out.println("24 REPEAT");
-			Integer event = i.next();
+			list.add(i.next());
+		}
+		for (Integer event : list){
 			System.out.println("Got here.");
 			System.out.println("Event #: " + event);
 			String d = quest.getEvent(event);
