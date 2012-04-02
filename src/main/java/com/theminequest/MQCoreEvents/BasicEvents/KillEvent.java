@@ -73,10 +73,10 @@ public class KillEvent extends QEvent {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.theminequest.MineQuest.EventsAPI.QEvent#onEntityDamageByEntityEvent(org.bukkit.event.entity.EntityDamageByEntityEvent)
+	 * @see com.theminequest.MineQuest.EventsAPI.QEvent#entityDamageByEntityCondition(org.bukkit.event.entity.EntityDamageByEntityEvent)
 	 */
 	@Override
-	public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent e) {
+	public boolean entityDamageByEntityCondition(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player){
 			Player p = (Player)e.getDamager();
 			for (EntityType t : typestokill){
@@ -87,11 +87,12 @@ public class KillEvent extends QEvent {
 					if (team.contains(p)){
 						currentkill++;
 						if (currentkill>=totaltokill)
-							complete(action());
+							return true;
 					}
 				}
 			}				
 		}
+		return false;
 	}
 
 }

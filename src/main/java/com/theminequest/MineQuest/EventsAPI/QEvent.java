@@ -59,7 +59,7 @@ public abstract class QEvent{
 		System.out.println("38 REPEAT");
 	}
 
-	public synchronized void check(){
+	public final synchronized void check(){
 		if (complete==null){
 			if (conditions()){
 				complete(action());
@@ -112,7 +112,7 @@ public abstract class QEvent{
 	 * Notify that the event has been completed with the status given.
 	 * @param actionresult Status to pass in.
 	 */
-	public synchronized void complete(CompleteStatus c){
+	public final synchronized void complete(CompleteStatus c){
 		if (complete==null){
 			MineQuest.eventManager.rmEventListener(this);
 			complete = c;
@@ -120,23 +120,41 @@ public abstract class QEvent{
 			Bukkit.getPluginManager().callEvent(e);
 		}
 	}
-
+	
 	/**
 	 * Optional method that QEvents can override if they want;
 	 * by default, doesn't do anything.
 	 * @param e
+	 * @return true if breaking block meets condition for event
 	 */
-	public void onBlockBreak(BlockBreakEvent e){
-
+	public boolean blockBreakCondition(BlockBreakEvent e){
+		return false;
+	}
+	
+	/**
+	 * Optional method that QEvents can override if they want;
+	 * by default, doesn't do anything.
+	 * @param e
+	 * @return true if entity damage meets condition for an event
+	 */
+	public boolean entityDamageByEntityCondition(EntityDamageByEntityEvent e){
+		return false;
 	}
 
-	/**
-	 * Optional method that QEvents can override if they want;
-	 * by default, doesn't do anything.
-	 * @param e
-	 */
-	public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent e){
+	public final synchronized void onBlockBreak(BlockBreakEvent e){
+		if (complete==null){
+			if (blockBreakCondition(e)){
+				complete(action());
+			}
+		}
+	}
 
+	public final synchronized void onEntityDamageByEntityEvent(EntityDamageByEntityEvent e){
+		if (complete==null){
+			if (entityDamageByEntityCondition(e)){
+				complete(action());
+			}
+		}
 	}
 
 }

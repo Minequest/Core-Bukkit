@@ -71,10 +71,10 @@ public class DestroyEvent extends QEvent {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.theminequest.MineQuest.EventsAPI.QEvent#onBlockBreak(org.bukkit.event.block.BlockBreakEvent)
+	 * @see com.theminequest.MineQuest.EventsAPI.QEvent#blockBreakCondition(org.bukkit.event.block.BlockBreakEvent)
 	 */
 	@Override
-	public void onBlockBreak(BlockBreakEvent e) {
+	public boolean blockBreakCondition(BlockBreakEvent e) {
 		long gid = MineQuest.groupManager.indexOfQuest(MineQuest.questManager.getQuest(getQuestId()));
 		Group g = MineQuest.groupManager.getGroup(gid);
 		if (g.getPlayers().contains(e.getPlayer())){
@@ -83,10 +83,11 @@ public class DestroyEvent extends QEvent {
 				if (blockid==t){
 					currentdestroy++;
 					if (currentdestroy>=totaltodestroy)
-						complete(action());
+						return true;
 				}
 			}
 		}
+		return false;
 	}
 	
 }
