@@ -38,6 +38,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import com.theminequest.MineQuest.ManagerException;
 import com.theminequest.MineQuest.ManagerException.ManagerReason;
 import com.theminequest.MineQuest.MineQuest;
+import com.theminequest.MineQuest.BukkitEvents.QuestCompleteEvent;
 import com.theminequest.MineQuest.BukkitEvents.TeamInviteEvent;
 import com.theminequest.MineQuest.Group.GroupException.GroupReason;
 import com.theminequest.MineQuest.Player.PlayerDetails;
@@ -196,6 +197,19 @@ public class GroupManager implements Listener{
 				
 			} catch (NullPointerException e1) {
 				// ...
+			}
+		}
+	}
+	
+	@EventHandler
+	public synchronized void onQuestCompleteEvent(QuestCompleteEvent e){
+		Quest q = MineQuest.questManager.getQuest(e.getQuestId());
+		if (!q.isInstanced()){
+			try {
+				e.getGroup().finishQuest();
+			} catch (GroupException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
 		}
 	}

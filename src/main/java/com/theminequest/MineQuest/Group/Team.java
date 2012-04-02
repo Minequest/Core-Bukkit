@@ -191,6 +191,8 @@ public class Team implements Group {
 			throw new GroupException(GroupReason.NOQUEST);
 		if (inQuest)
 			throw new GroupException(GroupReason.INSIDEQUEST);
+		if (!quest.isInstanced())
+			throw new GroupException(GroupReason.MAINWORLDQUEST);
 		recordCurrentLocations();
 		inQuest = true;
 		teleportPlayers(quest.getSpawnLocation());
@@ -226,6 +228,8 @@ public class Team implements Group {
 			throw new GroupException(GroupReason.NOQUEST);
 		if (!inQuest)
 			throw new GroupException(GroupReason.NOTINSIDEQUEST);
+		if (!quest.isInstanced())
+			throw new GroupException(GroupReason.MAINWORLDQUEST);
 		if (quest.isFinished()==null)
 			throw new GroupException(GroupReason.UNFINISHEDQUEST);
 		moveBackToLocations();
@@ -235,6 +239,17 @@ public class Team implements Group {
 		} catch (IOException e) {
 			throw new GroupException(GroupReason.EXTERNALEXCEPTION,e);
 		}
+		quest = null;
+	}
+	
+	@Override
+	public synchronized void finishQuest() throws GroupException {
+		if (quest==null)
+			throw new GroupException(GroupReason.NOQUEST);
+		if (quest.isInstanced())
+			throw new GroupException(GroupReason.NOTMAINWORLDQUEST);
+		if (quest.isFinished()==null)
+			throw new GroupException(GroupReason.UNFINISHEDQUEST);
 		quest = null;
 	}
 

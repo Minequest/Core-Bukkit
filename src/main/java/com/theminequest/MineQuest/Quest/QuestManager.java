@@ -29,6 +29,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import com.theminequest.MineQuest.MineQuest;
@@ -86,11 +87,22 @@ public class QuestManager implements Listener {
 	public void onQuestCompletion(QuestCompleteEvent e){
 		if (e.getResult()!=CompleteStatus.CANCELED){
 			String questname = quests.get(e.getQuestId()).questname;
-			for (Player p : e.getTeam().getPlayers()){
+			for (Player p : e.getGroup().getPlayers()){
 				MineQuest.sqlstorage.querySQL("Quests/completeQuest", p.getName(), questname);
 			}
 		}
 		quests.put(e.getQuestId(), null);
+	}
+	
+	@EventHandler
+	public void onBlockBreakEvent(BlockBreakEvent e){
+		Player p = e.getPlayer();
+		if (MineQuest.groupManager.indexOf(p)==-1)
+			return;
+		Group g = MineQuest.groupManager.getGroup(MineQuest.groupManager.indexOf(p));
+		if (g.isInQuest()){
+			e.setCancelled(true);
+		}
 	}
 	
 	@EventHandler

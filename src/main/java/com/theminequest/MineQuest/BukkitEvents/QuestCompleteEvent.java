@@ -51,7 +51,7 @@ public class QuestCompleteEvent extends Event {
 		return status;
 	}
 	
-	public Group getTeam(){
+	public Group getGroup(){
 		return team;
 	}
 

@@ -37,6 +37,7 @@ public interface Group extends Comparable<Group> {
 	void enterQuest() throws GroupException;
 	void exitQuest() throws GroupException;
 	void abandonQuest() throws GroupException;
+	void finishQuest() throws GroupException;
 	Quest getQuest();
 	boolean isInQuest();
 	void teleportPlayers(Location l);

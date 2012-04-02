@@ -164,4 +164,10 @@ public class SuperTeam implements Group {
 		
 	}
 
+	@Override
+	public void finishQuest() throws GroupException {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

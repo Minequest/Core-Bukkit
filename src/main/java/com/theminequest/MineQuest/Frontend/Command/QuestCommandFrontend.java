@@ -174,6 +174,10 @@ public class QuestCommandFrontend extends CommandFrontend {
 			p.sendMessage(ChatColor.RED + localization.getString("quest_NOACTIVE", "no active quest!"));
 			return false;
 		}
+		if (!g.getQuest().isInstanced()){
+			p.sendMessage(ChatColor.RED + localization.getString("quest_MAINWORLD", "This is a main world quest!"));
+			return false;
+		}
 		if (!g.getLeader().equals(p)){
 			p.sendMessage(ChatColor.RED + localization.getString("quest_NOTLEADER", "not leader!"));
 			return false;
@@ -205,6 +209,10 @@ public class QuestCommandFrontend extends CommandFrontend {
 		Group g = GroupBackend.getCurrentGroup(p);
 		if (g.getQuest()==null){
 			p.sendMessage(ChatColor.RED + localization.getString("quest_NOACTIVE", "no active quest!"));
+			return false;
+		}
+		if (!g.getQuest().isInstanced()){
+			p.sendMessage(ChatColor.RED + localization.getString("quest_MAINWORLD", "This is a main world quest!"));
 			return false;
 		}
 		if (!g.getLeader().equals(p)){
@@ -316,10 +324,12 @@ public class QuestCommandFrontend extends CommandFrontend {
 				messages.add(ChatUtils.formatHelp("quest active", localization.getString("quest_help_active", "View active quest.")));
 			else
 				messages.add(ChatColor.GRAY + "[quest active] " + localization.getString("quest_NOACTIVE", "no active quest!"));
-			if (active!=null && !inQuest && isLeader)
+			if (active!=null && !inQuest && isLeader && active.isInstanced())
 				messages.add(ChatUtils.formatHelp("quest enter", localization.getString("quest_help_enter", "Enter active quest.")));
-			else if (active!=null && inQuest && isLeader)
+			else if (active!=null && inQuest && isLeader && active.isInstanced())
 				messages.add(ChatUtils.formatHelp("quest exit", localization.getString("quest_help_exit", "Exit active quest.")));
+			else if (active!=null && !active.isInstanced())
+				messages.add(ChatColor.GRAY + "[quest enter/exit] " + localization.getString("quest_MAINWORLD", "This is a main world quest!"));
 			else if (active!=null && !isLeader)
 				messages.add(ChatColor.GRAY + "[quest enter/exit] " + localization.getString("quest_NOTLEADER", "not leader!"));
 			else

@@ -235,6 +235,10 @@ public class Quest {
 		System.out.println("41 SUCCESS FINISH");
 		return true;
 	}
+	
+	public boolean isInstanced(){
+		return loadworld;
+	}
 
 	public Task getActiveTask() {
 		return activeTask;
