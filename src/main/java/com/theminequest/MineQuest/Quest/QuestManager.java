@@ -92,7 +92,7 @@ public class QuestManager implements Listener {
 				MineQuest.sqlstorage.querySQL("Quests/completeQuest", p.getName(), questname);
 			}
 		}
-		quests.put(e.getQuestId(), null);
+		//quests.put(e.getQuestId(), null);
 	}
 	
 	@EventHandler
