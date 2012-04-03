@@ -40,7 +40,7 @@ public class MessageEvent extends QEvent {
 	@Override
 	public void parseDetails(String[] details) {
 		message = "";
-		for (int i=0; i<details.length; i++){
+		for (int i=1; i<details.length; i++){
 			message+=details[i];
 			if (i!=details.length-1)
 				message+=":";

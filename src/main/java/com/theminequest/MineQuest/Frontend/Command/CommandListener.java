@@ -199,7 +199,8 @@ public class CommandListener implements CommandExecutor{
 		String[] message = {
 				formatHeader("MineQuest Help"),
 				formatHelp("quest", "List quest commands."),
-				formatHelp("party", "List party commands.")
+				formatHelp("party", "List party commands."),
+				formatHelp("player", "List player commands."),
 		};
 		sender.sendMessage(message);
 	}
