@@ -129,7 +129,7 @@ public class PlayerDetails {
 		exp+=e;
 		PlayerExperienceEvent event = new PlayerExperienceEvent(player, e);
 		Bukkit.getPluginManager().callEvent(event);
-		if (exp>=(PlayerManager.BASE_EXP*getLevel()))
+		while (exp>=(PlayerManager.BASE_EXP*getLevel()))
 			levelUp();
 	}
 	

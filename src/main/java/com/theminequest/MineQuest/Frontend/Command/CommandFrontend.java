@@ -50,7 +50,7 @@ public abstract class CommandFrontend implements CommandExecutor {
 		} catch (SecurityException e) {
 			e.printStackTrace();
 		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {

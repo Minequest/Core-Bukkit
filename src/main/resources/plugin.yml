@@ -25,11 +25,11 @@ commands:
   party:
     aliases: [mqparty]
     permission: minequest.user
+  player:
+    aliases: [mqplayer]
+    permission: minequest.user
   spell:
     aliases: [mqspell]
-    permission: minequest.user
-  npc:
-    aliases: [mqnpc]
     permission: minequest.user
   char:
     aliases: [mqchar]
