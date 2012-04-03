@@ -111,11 +111,26 @@ public class SQLExecutor {
 				lastv = "initial";
 			}
 			
-			try {
-				querySQL("update/"+lastv,"");
-			} catch (NoSuchElementException e){
-				MineQuest.log(Level.WARNING,"[SQL] No update path from build " + lastv + " to this build; Probably normal.");
+			if (lastv!=null && !lastv.equals("unofficialDev")){
+				int last = Integer.parseInt(lastv);
+				MineQuest.log(Level.INFO, "[SQL] Fast forwarding through builds...");
+				while (last<Integer.parseInt(MineQuest.getVersion())){
+					try {
+						MineQuest.log("[SQL] Fast forwarding through build " + last + "...");
+						querySQL("update/"+last,"");
+					} catch (NoSuchElementException e){
+						// ignore
+					}
+					last++;
+				}
+			} else {
+				try {
+					querySQL("update/"+lastv,"");
+				} catch (NoSuchElementException e){
+					MineQuest.log(Level.WARNING,"[SQL] No update path from build " + lastv + " to this build; Probably normal.");
+				}
 			}
+			
 			Writer out;
 			try {
 				out = new OutputStreamWriter(new FileOutputStream(versionfile));
