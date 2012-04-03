@@ -31,7 +31,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.theminequest.MQCoreEvents.RegisterEvents;
 import com.theminequest.MineQuest.AbilityAPI.AbilityManager;
-import com.theminequest.MineQuest.Editable.EditableManager;
 import com.theminequest.MineQuest.EventsAPI.EventManager;
 import com.theminequest.MineQuest.Frontend.Command.CommandListener;
 import com.theminequest.MineQuest.Frontend.Command.PartyCommandFrontend;
@@ -54,7 +53,6 @@ public class MineQuest extends JavaPlugin {
 	public static MineQuest activePlugin = null;
 	public static AbilityManager abilityManager = null;
 	public static EventManager eventManager = null;
-	public static EditableManager editableManager = null;
 	public static TaskManager taskManager = null;
 	public static QuestManager questManager = null;
 	public static PlayerManager playerManager = null;
@@ -116,8 +114,6 @@ public class MineQuest extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(abilityManager, this);
 		eventManager = new EventManager();
 		getServer().getPluginManager().registerEvents(eventManager, this);
-		editableManager = new EditableManager();
-		getServer().getPluginManager().registerEvents(editableManager, this);
 		taskManager = new TaskManager();
 		getServer().getPluginManager().registerEvents(taskManager, this);
 		questManager = new QuestManager();
@@ -156,7 +152,6 @@ public class MineQuest extends JavaPlugin {
 		abilityManager = null;
 		eventManager.dismantleRunnable();
 		eventManager = null;
-		editableManager = null;
 		taskManager = null;
 		questManager = null;
 		playerManager = null;
