@@ -107,7 +107,7 @@ public class SQLExecutor {
 				if (lastv==null)
 					MineQuest.log(Level.WARNING, "[SQL] No existing DBVERSION file; initializing DB as new.");
 				else
-					MineQuest.log(Level.WARNING, "[SQL] I don't know what your previous build was; attempting to reinitializing.");
+					MineQuest.log(Level.WARNING, "[SQL] I don't know what your previous build was; attempting to reinitialize.");
 				lastv = "initial";
 			}
 			
@@ -116,10 +116,10 @@ public class SQLExecutor {
 				MineQuest.log(Level.INFO, "[SQL] Fast forwarding through builds...");
 				while (last<Integer.parseInt(MineQuest.getVersion())){
 					try {
-						MineQuest.log("[SQL] Fast forwarding through build " + last + "...");
+						MineQuest.log("[SQL] Fast forwarding from build " + last + " to " + (last+1) + "...");
 						querySQL("update/"+last,"");
 					} catch (NoSuchElementException e){
-						MineQuest.log(Level.WARNING,"[SQL] No update path from build " + lastv + " to this build; Probably normal.");
+						MineQuest.log(Level.WARNING,"[SQL] No update path from build " + last + " to " + (last+1) + " build; Probably normal.");
 					}
 					last++;
 				}
@@ -155,7 +155,10 @@ public class SQLExecutor {
 	 * Query an SQL and return a {@link java.sql.ResultSet} of the result.
 	 * If the SQL file contains {@code %s} in the query, the parameters
 	 * specified will replace {@code %s} in the query. Remember that if the query
-	 * is not a {@code SELECT, EXPLAIN, CALL, SCRIPT, SHOW, HELP} query, this will ALWAYS return null.
+	 * is not a {@code SELECT, EXPLAIN, CALL, SCRIPT, SHOW, HELP} query, this will ALWAYS return null.<br>
+	 * In the event that the queries are different per database, prefix
+	 * <code>S:</code> at the beginning of the query followed by the database type and another
+	 * colon.
 	 * @param queryfilename sql filename to use
 	 * @param params parameters for sql file
 	 * @return ResultSet of SQL query (or null... if there really is nothing good.)
@@ -168,6 +171,13 @@ public class SQLExecutor {
 		for (String line : filecontents){
 			// ignore comments
 			if (!line.startsWith("#") && !line.equals("")){
+				if (line.startsWith("S:")){
+					String[] split = line.split(":");
+					if (split[1].equalsIgnoreCase(databasetype.name()))
+						line = split[2];
+					else
+						continue;
+				}
 				if (params!=null && params.length!=0){
 					int paramsposition = 0;
 					while (paramsposition<params.length && line.contains("%s")){
