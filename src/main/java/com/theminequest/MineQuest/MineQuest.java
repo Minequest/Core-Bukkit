@@ -34,6 +34,7 @@ import com.theminequest.MineQuest.AbilityAPI.AbilityManager;
 import com.theminequest.MineQuest.EventsAPI.EventManager;
 import com.theminequest.MineQuest.Frontend.Command.CommandListener;
 import com.theminequest.MineQuest.Frontend.Command.PartyCommandFrontend;
+import com.theminequest.MineQuest.Frontend.Command.PlayerCommandFrontend;
 import com.theminequest.MineQuest.Frontend.Command.QuestCommandFrontend;
 import com.theminequest.MineQuest.Frontend.QuestSign.SignFrontend;
 import com.theminequest.MineQuest.Group.GroupManager;
@@ -135,11 +136,7 @@ public class MineQuest extends JavaPlugin {
 		// command frontend
 		CommandListener commandFrontend = new CommandListener();
 		getCommand("minequest").setExecutor(commandFrontend);
-		getCommand("party").setExecutor(commandFrontend);
-		getCommand("spell").setExecutor(commandFrontend);
-		getCommand("npc").setExecutor(commandFrontend);
-		getCommand("class").setExecutor(commandFrontend);
-		// testing :D
+		getCommand("player").setExecutor(new PlayerCommandFrontend());
 		getCommand("quest").setExecutor(new QuestCommandFrontend());
 		getCommand("party").setExecutor(new PartyCommandFrontend());
 	}
