@@ -314,8 +314,10 @@ public class QuestCommandFrontend extends CommandFrontend {
 		messages.add(ChatUtils.formatHelp("quest available", localization.getString("quest_help_available", "List available quests.")));
 
 		if (inGroup){
-			if (active != null && isLeader)
+			if (active != null && isLeader && active.isFinished()==null)
 				messages.add(ChatUtils.formatHelp("quest abandon", localization.getString("quest_help_abandon", "Abandon active quest.")));
+			else if (active != null && isLeader && active.isFinished()!=null)
+				messages.add(ChatColor.GRAY + "[quest abandon] " + localization.getString("quest_FINISHED","You're finished!"));
 			else if (active != null)
 				messages.add(ChatColor.GRAY + "[quest abandon] " + localization.getString("quest_NOTLEADER", "not leader!"));
 			else
@@ -326,8 +328,10 @@ public class QuestCommandFrontend extends CommandFrontend {
 				messages.add(ChatColor.GRAY + "[quest active] " + localization.getString("quest_NOACTIVE", "no active quest!"));
 			if (active!=null && !inQuest && isLeader && active.isInstanced())
 				messages.add(ChatUtils.formatHelp("quest enter", localization.getString("quest_help_enter", "Enter active quest.")));
-			else if (active!=null && inQuest && isLeader && active.isInstanced())
+			else if (active!=null && inQuest && isLeader && active.isInstanced() && active.isFinished()!=null )
 				messages.add(ChatUtils.formatHelp("quest exit", localization.getString("quest_help_exit", "Exit active quest.")));
+			else if (active!=null && inQuest && isLeader && active.isInstanced() )
+				messages.add(ChatColor.GRAY + "[quest exit] " + localization.getString("quest_NOTFINISHED","You're not finished!"));
 			else if (active!=null && !active.isInstanced())
 				messages.add(ChatColor.GRAY + "[quest enter/exit] " + localization.getString("quest_MAINWORLD", "This is a main world quest!"));
 			else if (active!=null && !isLeader)
