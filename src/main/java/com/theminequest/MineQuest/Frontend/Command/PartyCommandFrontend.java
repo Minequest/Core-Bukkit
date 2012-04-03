@@ -72,11 +72,16 @@ public class PartyCommandFrontend extends CommandFrontend {
 		}
 
 		List<Player> mates = GroupBackend.getCurrentGroup(p).getPlayers();
-		if (!mates.contains(Bukkit.getPlayer(args[0]))){
+		Player lookup = Bukkit.getPlayerExact(args[0]);
+		if (lookup==null){
+			p.sendMessage(ChatColor.RED + localization.getString("party_NOSUCHPLAYER","No such player!"));
+			return false;
+		}
+		if (!mates.contains(lookup)){
 			p.sendMessage(ChatColor.RED + localization.getString("party_NOTINTEAM","Player is not in your team..."));
 			return false;
 		}
-		Player mate = mates.get(mates.indexOf(Bukkit.getPlayer(args[0])));
+		Player mate = mates.get(mates.indexOf(lookup));
 
 		// FIXME ARGHH.
 		PlayerDetails details = MineQuest.playerManager.getPlayerDetails(mate);
@@ -85,7 +90,7 @@ public class PartyCommandFrontend extends CommandFrontend {
 		int level = details.getLevel();
 
 		List<String> messages = new ArrayList<String>();
-		messages.add(ChatUtils.formatHeader(localization.getString("party_info","Player information: ") + args[0]));
+		messages.add(ChatUtils.formatHeader(localization.getString("party_info","Player information: ") + lookup.getName()));
 		messages.add(ChatColor.AQUA + localization.getString("party_info_displayname", "Display Name") + ": " + ChatColor.YELLOW + mate.getDisplayName());
 		messages.add(ChatColor.AQUA + localization.getString("party_info_health", "Health") + ": " + ChatColor.YELLOW + mate.getHealth());
 		messages.add(ChatColor.AQUA + localization.getString("party_info_level", "Level") + ": " + ChatColor.YELLOW + level);
@@ -110,7 +115,11 @@ public class PartyCommandFrontend extends CommandFrontend {
 			return false;
 		}
 
-		Player mate = Bukkit.getPlayer(args[0]);
+		Player mate = Bukkit.getPlayerExact(args[0]);
+		if (mate==null){
+			p.sendMessage(ChatColor.RED + localization.getString("party_NOSUCHPLAYER","No such player!"));
+			return false;
+		}
 		if (GroupBackend.teamID(mate)!=-1){
 			p.sendMessage(ChatColor.RED + localization.getString("party_INVITEEINPARTY","You're trying to invite someone already in a team."));
 			return false;
