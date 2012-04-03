@@ -118,8 +118,9 @@ public class SQLExecutor {
 					try {
 						MineQuest.log("[SQL] Fast forwarding from build " + last + " to " + (last+1) + "...");
 						querySQL("update/"+last,"");
+						MineQuest.log("[SQL] Applied patch for build " + last + " to " + (last+1) + "!");
 					} catch (NoSuchElementException e){
-						MineQuest.log(Level.WARNING,"[SQL] No update path from build " + last + " to " + (last+1) + " build; Probably normal.");
+						//MineQuest.log(Level.WARNING,"[SQL] No update path from build " + last + " to " + (last+1) + " build; Probably normal.");
 					}
 					last++;
 				}
