@@ -127,6 +127,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 		}
 		if (g.getQuest().isFinished()!=null){
 			p.sendMessage(ChatColor.RED + localization.getChatString("quest_FINISH","You're finished!"));
+			return false;
 		}
 		try {
 			g.abandonQuest();
