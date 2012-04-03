@@ -164,6 +164,42 @@ public final class PropertiesFile {
     public boolean keyExists(String key) {
         return containsKey(key);
     }
+    
+    /**
+     * Returns the value of the <code>key</code> given as a <code>String</code>,
+     * however we do not set a string if no <code>key</code> is found.
+     * In addition, we "chatify" the <code>String</code> if there are any codes.
+     *
+     * @see #getString(java.lang.String)
+     * @param key The <code>key</code> we will retrieve the property from, if no <code>key</code> is found default to "" or empty.
+     */
+    public String getChatString(String key) {
+    	if (this.containsKey(key)) {
+            return ChatUtils.chatify(this.getProperty(key));
+        }
+
+        return "";
+    }
+    
+    /**
+     * Returns the value of the <code>key</code> given as a <code>String</code>.
+     * If it is not found, it will invoke saving the default <code>value</code> to the properties file.
+     * In addition, we "chatify" the <code>String</code> if there are any codes.
+     *
+     * @see #setString(java.lang.String, java.lang.String)
+     * @see #getString(java.lang.String)
+     * @param key The key that we will be grabbing the value from, if no value is found set and return <code>value</code>
+     * @param value The default value that we will be setting if no prior <code>key</code> is found.
+     * @return java.lang.String Either we will return the default value or a prior existing value depending on existance.
+     */
+    public String getChatString(String key, String value) {
+        if (this.containsKey(key)) {
+            return ChatUtils.chatify(this.getProperty(key));
+        }
+
+        setString(key, value);
+        return ChatUtils.chatify(value);
+    }
 
     /**
      * Returns the value of the <code>key</code> given as a <code>String</code>,

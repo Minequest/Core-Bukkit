@@ -89,13 +89,8 @@ public class ChatUtils {
 	public static String formatHelp(String command, String description) {
 		String toreturn = "";
 		toreturn += ChatColor.GREEN + "/" + command;
-		for (int i=0; i<20-command.length(); i++)
-			toreturn+=" ";
-		for (int i=0; i<10; i++)
-			toreturn+=" ";
-		for (int i=0; i<30-description.length(); i++)
-			toreturn+=" ";
-		toreturn += ChatColor.YELLOW + description;
+		toreturn += ChatColor.GRAY + " : ";
+		toreturn += ChatColor.YELLOW + chatify(description);
 		return toreturn;
 	}
 
