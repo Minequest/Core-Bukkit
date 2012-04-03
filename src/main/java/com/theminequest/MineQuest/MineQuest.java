@@ -31,12 +31,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.theminequest.MQCoreEvents.RegisterEvents;
 import com.theminequest.MineQuest.AbilityAPI.AbilityManager;
+import com.theminequest.MineQuest.Class.ClassManager;
 import com.theminequest.MineQuest.EventsAPI.EventManager;
 import com.theminequest.MineQuest.Frontend.Command.CommandListener;
 import com.theminequest.MineQuest.Frontend.Command.PartyCommandFrontend;
 import com.theminequest.MineQuest.Frontend.Command.PlayerCommandFrontend;
 import com.theminequest.MineQuest.Frontend.Command.QuestCommandFrontend;
-import com.theminequest.MineQuest.Frontend.QuestSign.SignFrontend;
+import com.theminequest.MineQuest.Frontend.Sign.QuestSign;
 import com.theminequest.MineQuest.Group.GroupManager;
 import com.theminequest.MineQuest.Player.PlayerManager;
 import com.theminequest.MineQuest.Quest.QuestManager;
@@ -53,6 +54,7 @@ public class MineQuest extends JavaPlugin {
 	public static Economy economy = null;
 	public static MineQuest activePlugin = null;
 	public static AbilityManager abilityManager = null;
+	public static ClassManager classManager = null;
 	public static EventManager eventManager = null;
 	public static TaskManager taskManager = null;
 	public static QuestManager questManager = null;
@@ -113,6 +115,7 @@ public class MineQuest extends JavaPlugin {
 		sqlstorage = new SQLExecutor();
 		abilityManager = new AbilityManager();
 		getServer().getPluginManager().registerEvents(abilityManager, this);
+		classManager = new ClassManager();
 		eventManager = new EventManager();
 		getServer().getPluginManager().registerEvents(eventManager, this);
 		taskManager = new TaskManager();
@@ -132,7 +135,7 @@ public class MineQuest extends JavaPlugin {
 		RegisterEvents.registerEvents();
 		
 		// sign frontend
-		getServer().getPluginManager().registerEvents(new SignFrontend(), this);
+		getServer().getPluginManager().registerEvents(new QuestSign(), this);
 		// command frontend
 		CommandListener commandFrontend = new CommandListener();
 		getCommand("minequest").setExecutor(commandFrontend);
@@ -147,6 +150,7 @@ public class MineQuest extends JavaPlugin {
 		description = null;
 		activePlugin = null;
 		abilityManager = null;
+		classManager = null;
 		eventManager.dismantleRunnable();
 		eventManager = null;
 		taskManager = null;

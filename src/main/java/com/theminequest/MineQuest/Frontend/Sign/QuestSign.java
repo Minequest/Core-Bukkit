@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  **/
-package com.theminequest.MineQuest.Frontend.QuestSign;
+package com.theminequest.MineQuest.Frontend.Sign;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -39,10 +39,10 @@ import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.Backend.BackendFailedException;
 import com.theminequest.MineQuest.Backend.QuestBackend;
 
-public class SignFrontend implements Listener {
+public class QuestSign implements Listener {
 
-	public SignFrontend(){
-		MineQuest.log("[SignFrontend] Starting Sign Frontends...");
+	public QuestSign(){
+		MineQuest.log("[QuestSign] Starting Sign Frontends...");
 	}
 
 	private boolean isQuestSign(Sign sign){

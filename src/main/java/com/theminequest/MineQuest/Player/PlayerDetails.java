@@ -55,7 +55,7 @@ public class PlayerDetails {
 	private long mana;
 	private int level;
 	private long exp;
-	private int classid;
+	private String classid;
 
 	public PlayerDetails(Player p) throws SQLException {
 		player = p;
@@ -70,9 +70,12 @@ public class PlayerDetails {
 			MineQuest.sqlstorage.querySQL("Players/addPlayer",p.getName());
 			level = 1;
 			exp = 0;
+			classid = null;
 		}else{
 			level = playerresults.getInt("LEVEL");
-			classid = playerresults.getInt("C_ID");
+			classid = playerresults.getString("C_ID");
+			if (classid.equals(""))
+				classid = null;
 			exp = playerresults.getLong("EXP");
 		}
 		// give the player almost full mana (3/4 full)
@@ -102,8 +105,12 @@ public class PlayerDetails {
 		return exp;
 	}
 	
-	public synchronized int getClassId(){
+	public synchronized String getClassID(){
 		return classid;
+	}
+	
+	public synchronized void setClassID(String classid){
+		this.classid = classid;
 	}
 	
 	public synchronized long getMana(){

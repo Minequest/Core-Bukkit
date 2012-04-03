@@ -1,7 +1,7 @@
 # minequest initial database creation
 
 # MineQuest Player Table (PlayerName, PlayerClass, PlayerLevel, PlayerEXP)
-CREATE TABLE mq_player (P_NAME text, C_ID int, level int, exp bigint);
+CREATE TABLE mq_player (P_NAME text, C_ID text, level int, exp bigint);
 
 # MineQuest isQuestCompleted Table (PlayerName, QuestName, isCompleted)
 CREATE TABLE mq_quest (P_NAME text, Q_ID text, isCompleted smallint(1));

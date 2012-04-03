@@ -33,6 +33,7 @@ import org.bukkit.event.player.PlayerEvent;
 
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.AbilityRefreshedEvent;
+import com.theminequest.MineQuest.Class.ClassDetails;
 import com.theminequest.MineQuest.Group.Group;
 import com.theminequest.MineQuest.Player.PlayerDetails;
 import com.theminequest.MineQuest.Player.PlayerManager;
@@ -122,6 +123,17 @@ public abstract class Ability {
 					return true;
 				}
 			}
+			/*
+			 * FIXME
+			 */
+			if (details.getClassID()!=null){
+				ClassDetails d = MineQuest.classManager.getClassDetail(details.getClassID());
+				if (d==null)
+					return true;
+				if (!d.hasAbility(this.getName()))
+					return true;
+			} else
+				return true;
 			if (details.getAbilitiesEnabled() && questAllow(p)){
 				details.modifyManaBy(-1*getMana());
 				executeEvent(e,result);
