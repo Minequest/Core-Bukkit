@@ -94,6 +94,10 @@ public class PlayerDetails {
 		return level;
 	}
 	
+	public synchronized void setLevel(int i) {
+		level = i;
+	}
+	
 	public synchronized long getExperience(){
 		return exp;
 	}
@@ -122,7 +126,9 @@ public class PlayerDetails {
 		level+=1;
 		PlayerLevelEvent event = new PlayerLevelEvent(player);
 		Bukkit.getPluginManager().callEvent(event);
-		exp = (PlayerManager.BASE_EXP*(level-1))-exp;
+		exp = exp-(PlayerManager.BASE_EXP*(level-1));
+		if (exp<0)
+			exp = 0;
 	}
 	
 	public synchronized void modifyExperienceBy(int e){

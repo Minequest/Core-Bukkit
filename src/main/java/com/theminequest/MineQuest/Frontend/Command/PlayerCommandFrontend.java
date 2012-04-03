@@ -22,6 +22,53 @@ public class PlayerCommandFrontend extends CommandFrontend {
 	
 	// TODO Implement localization fully.
 	
+	public Boolean clear(Player p, String[] args){
+		if (p!=null)
+			return false;
+		
+		ConsoleCommandSender c = Bukkit.getConsoleSender();
+		
+		if (args.length!=1){
+			c.sendMessage("Invalid number of arguments.");
+			return false;
+		}
+		
+		Player player = Bukkit.getPlayerExact(args[0]);
+		if (player==null){
+			c.sendMessage("No such player. :(");
+			return false;
+		}
+		
+		PlayerDetails details = MineQuest.playerManager.getPlayerDetails(player);
+		details.modifyExperienceBy((int) -(details.getExperience()));
+		details.setLevel(1);
+		c.sendMessage("Cleared.");
+		return true;
+	}
+	
+	public Boolean setlevel(Player p, String[] args){
+		if (p!=null)
+			return false;
+		
+		ConsoleCommandSender c = Bukkit.getConsoleSender();
+		
+		if (args.length!=2){
+			c.sendMessage("Invalid number of arguments.");
+			return false;
+		}
+		
+		Player player = Bukkit.getPlayerExact(args[0]);
+		if (player==null){
+			c.sendMessage("No such player. :(");
+			return false;
+		}
+		
+		PlayerDetails details = MineQuest.playerManager.getPlayerDetails(player);
+		details.setLevel(Integer.parseInt(args[1]));
+		c.sendMessage("Modified.");
+		return true;
+	}
+	
 	public Boolean giveexp(Player p, String[] args){
 		if (p!=null)
 			return false;
@@ -41,6 +88,7 @@ public class PlayerCommandFrontend extends CommandFrontend {
 		
 		PlayerDetails details = MineQuest.playerManager.getPlayerDetails(player);
 		details.modifyExperienceBy((int)Double.parseDouble(args[1]));
+		c.sendMessage("Modified.");
 		return true;
 	}
 	
@@ -63,6 +111,7 @@ public class PlayerCommandFrontend extends CommandFrontend {
 		
 		PlayerDetails details = MineQuest.playerManager.getPlayerDetails(player);
 		details.levelUp();
+		c.sendMessage("Leveled.");
 		return true;
 	}
 	
@@ -116,11 +165,13 @@ public class PlayerCommandFrontend extends CommandFrontend {
 		// CONSOLE COMMANDS
 		if (p==null){
 			messages.add(ChatUtils.formatHeader(localization.getString("player_help_CONSOLE","Console Commands")));
+			messages.add(ChatUtils.formatHelp("player clear [name]",localization.getString("player_help_clear","Clear a user's stats.")));
 			messages.add(ChatUtils.formatHelp("player giveexp [name] [amt]", localization.getString("player_help_giveexp", "Give player exp.")));
 			messages.add(ChatUtils.formatHelp("player levelup [name]", localization.getString("player_help_levelup","Level up player by 1.")));
+			messages.add(ChatUtils.formatHelp("player setlevel [name] [lvl]", localization.getString("player_help_setlevel", "Set player level.")));
 		}
 		messages.add(ChatUtils.formatHeader(localization.getString("player_help","Player Commands")));
-		messages.add(ChatUtils.formatHelp("player info <name>", localization.getString("player_help_info","Retrieve player information (or your own if you omit name).")));		
+		messages.add(ChatUtils.formatHelp("player info <name>", localization.getString("player_help_info","Get player info (omit name for your own).")));		
 		if (p==null){
 			CommandSender c = Bukkit.getConsoleSender();
 			for (String s : messages){
