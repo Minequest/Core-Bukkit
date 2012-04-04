@@ -4,7 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class TeamInviteEvent extends Event {
+public class GroupInviteEvent extends Event {
 	
 	private static final HandlerList handlers = new HandlerList();
 	
@@ -16,7 +16,7 @@ public class TeamInviteEvent extends Event {
 	private Player invited;
 	private long teamid;
 	
-	public TeamInviteEvent(String inviter, Player invited, long teamid){
+	public GroupInviteEvent(String inviter, Player invited, long teamid){
 		invitername = inviter;
 		this.invited = invited;
 		this.teamid = teamid;

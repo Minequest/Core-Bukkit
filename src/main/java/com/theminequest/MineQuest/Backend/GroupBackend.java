@@ -8,7 +8,6 @@ import com.theminequest.MineQuest.Backend.BackendFailedException.BackendReason;
 import com.theminequest.MineQuest.Group.Group;
 import com.theminequest.MineQuest.Group.GroupException;
 import com.theminequest.MineQuest.Group.Team;
-import com.theminequest.MineQuest.Player.PlayerDetails;
 
 public final class GroupBackend {
 	

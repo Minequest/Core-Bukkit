@@ -16,7 +16,6 @@ public final class RegisterEvents {
 		e.registerEvent("PartyHealthEvent", PartyHealthEvent.class);
 		e.registerEvent("QuestAvailableEvent",QuestAvailableEvent.class);
 		e.registerEvent("QuestEvent", QuestEvent.class);
-		e.registerEvent("RewardExpEvent",RewardExpEvent.class);
 		e.registerEvent("RewardMoneyEvent",RewardMoneyEvent.class);
 		e.registerEvent("RewardPermEvent",RewardPermEvent.class);
 		

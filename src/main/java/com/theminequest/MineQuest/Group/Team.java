@@ -34,7 +34,6 @@ import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.BukkitEvents.QuestStartedEvent;
 import com.theminequest.MineQuest.Group.GroupException.GroupReason;
-import com.theminequest.MineQuest.Player.PlayerManager;
 import com.theminequest.MineQuest.Quest.Quest;
 
 public class Team implements Group {

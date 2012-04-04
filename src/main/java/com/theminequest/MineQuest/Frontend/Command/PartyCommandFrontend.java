@@ -13,7 +13,6 @@ import com.theminequest.MineQuest.Backend.GroupBackend;
 import com.theminequest.MineQuest.Group.Group;
 import com.theminequest.MineQuest.Group.GroupException;
 import com.theminequest.MineQuest.Group.GroupException.GroupReason;
-import com.theminequest.MineQuest.Player.PlayerDetails;
 import com.theminequest.MineQuest.Utils.ChatUtils;
 
 public class PartyCommandFrontend extends CommandFrontend {
@@ -83,17 +82,10 @@ public class PartyCommandFrontend extends CommandFrontend {
 		}
 		Player mate = mates.get(mates.indexOf(lookup));
 
-		// FIXME ARGHH.
-		PlayerDetails details = MineQuest.playerManager.getPlayerDetails(mate);
-
-		// TODO fill as more stuff comes in.
-		int level = details.getLevel();
-
 		List<String> messages = new ArrayList<String>();
 		messages.add(ChatUtils.formatHeader(localization.getChatString("party_info","Player information: ") + lookup.getName()));
 		messages.add(ChatColor.AQUA + localization.getChatString("party_info_displayname", "Display Name") + ": " + ChatColor.YELLOW + mate.getDisplayName());
 		messages.add(ChatColor.AQUA + localization.getChatString("party_info_health", "Health") + ": " + ChatColor.YELLOW + mate.getHealth());
-		messages.add(ChatColor.AQUA + localization.getChatString("party_info_level", "Level") + ": " + ChatColor.YELLOW + level);
 
 		for (String m : messages)
 			p.sendMessage(m);

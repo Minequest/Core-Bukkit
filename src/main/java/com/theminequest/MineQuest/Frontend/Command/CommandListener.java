@@ -32,7 +32,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.theminequest.MineQuest.MineQuest;
-import com.theminequest.MineQuest.Player.PlayerDetails;
 import com.theminequest.MineQuest.Backend.BackendFailedException;
 import com.theminequest.MineQuest.Backend.GroupBackend;
 import com.theminequest.MineQuest.Backend.QuestAvailability;

@@ -37,6 +37,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
+import com.theminequest.MineQuest.BukkitEvents.QuestAvailableEvent;
 import com.theminequest.MineQuest.BukkitEvents.QuestCompleteEvent;
 import com.theminequest.MineQuest.BukkitEvents.QuestStartedEvent;
 import com.theminequest.MineQuest.BukkitEvents.TaskCompleteEvent;
@@ -145,6 +146,11 @@ public class QuestManager implements Listener {
 		Group g = MineQuest.groupManager.getGroup(MineQuest.groupManager.indexOf(p));
 		if (g.isInQuest())
 			e.setRespawnLocation(g.getQuest().getSpawnLocation());
+	}
+	
+	@EventHandler
+	public void onQuestAvailableEvent(QuestAvailableEvent e){
+		e.getPlayer().sendMessage(ChatColor.YELLOW + "[Quest] You have a new quest, " + e.getQuestAvailableName() + ", available!");
 	}
 
 }

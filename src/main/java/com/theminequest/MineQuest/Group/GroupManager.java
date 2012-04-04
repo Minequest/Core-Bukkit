@@ -39,9 +39,8 @@ import com.theminequest.MineQuest.ManagerException;
 import com.theminequest.MineQuest.ManagerException.ManagerReason;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.QuestCompleteEvent;
-import com.theminequest.MineQuest.BukkitEvents.TeamInviteEvent;
+import com.theminequest.MineQuest.BukkitEvents.GroupInviteEvent;
 import com.theminequest.MineQuest.Group.GroupException.GroupReason;
-import com.theminequest.MineQuest.Player.PlayerDetails;
 import com.theminequest.MineQuest.Quest.Quest;
 
 public class GroupManager implements Listener{
@@ -134,8 +133,8 @@ public class GroupManager implements Listener{
 		if (invitations.containsKey(p))
 			throw new GroupException(GroupReason.ALREADYINTEAM);
 		invitations.put(p, g);
-		// TODO Call TeamInviteEvent (remember, 30 seconds to accept invite)
-		TeamInviteEvent event = new TeamInviteEvent(g.getLeader().getName(), p, g.getID());
+		// TODO Call GroupInviteEvent (remember, 30 seconds to accept invite)
+		GroupInviteEvent event = new GroupInviteEvent(g.getLeader().getName(), p, g.getID());
 		Bukkit.getPluginManager().callEvent(event);
 		Bukkit.getScheduler().scheduleAsyncDelayedTask(MineQuest.activePlugin, new Runnable(){
 
@@ -201,6 +200,12 @@ public class GroupManager implements Listener{
 				// ...
 			}
 		}
+	}
+
+	@EventHandler
+	public void onGroupInviteEvent(GroupInviteEvent e){
+		e.getInvited().sendMessage("[INVITE 30 SECS] You've been invited to a group by " + e.getInviterName() + ".");
+		e.getInvited().sendMessage("Accept within 30 seconds with /party accept.");
 	}
 	
 	@EventHandler
