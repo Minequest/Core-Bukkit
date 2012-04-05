@@ -111,7 +111,7 @@ public class SQLExecutor {
 				lastv = "initial";
 			}
 			
-			if (lastv!=null && !lastv.equals("unofficialDev") && !lastv.equals("latest")){
+			if (lastv!=null && !lastv.equals("unofficialDev") && !lastv.equals("initial")){
 				int last = Integer.parseInt(lastv);
 				MineQuest.log(Level.INFO, "[SQL] Fast forwarding through builds...");
 				while (last<Integer.parseInt(MineQuest.getVersion())){
