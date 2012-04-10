@@ -19,6 +19,7 @@
  **/
 package com.theminequest.MineQuest;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,6 +39,7 @@ import com.theminequest.MineQuest.Frontend.Sign.QuestSign;
 import com.theminequest.MineQuest.Group.GroupManager;
 import com.theminequest.MineQuest.Quest.QuestManager;
 import com.theminequest.MineQuest.Tasks.TaskManager;
+import com.theminequest.MineQuest.Utils.GriefcraftMetrics;
 import com.theminequest.MineQuest.Utils.UtilManager;
 
 public class MineQuest extends JavaPlugin {
@@ -56,6 +58,7 @@ public class MineQuest extends JavaPlugin {
 	public static UtilManager utilManager = null;
 	public static QuestConfig configuration = null;
 	public static SQLExecutor sqlstorage = null;
+	public static GriefcraftMetrics gcMetrics = null;
 	private static PluginDescriptionFile description = null;
 
 	public static void log(String msg) {
@@ -116,10 +119,16 @@ public class MineQuest extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(groupManager, this);
 		utilManager = new UtilManager();
 		getServer().getPluginManager().registerEvents(utilManager, this);
+		try {
+			gcMetrics = new GriefcraftMetrics(this);
+			gcMetrics.start();
+		} catch (IOException e) {
+			log(Level.WARNING, "[Metrics] Could not attach to Hidendra Metrics.");
+		}
 		if (!setupPermissions())
-			log(Level.SEVERE,"Permissions could not be setup!");
+			log(Level.SEVERE,"[Vault] Permissions could not be setup!");
 		if (!setupEconomy())
-			log(Level.SEVERE,"Economy could not be setup!");
+			log(Level.SEVERE,"[Vault] Economy could not be setup!");
 		RegisterEvents.registerEvents();
 		
 		// sign frontend
