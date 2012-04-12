@@ -44,6 +44,22 @@ import com.theminequest.MineQuest.BukkitEvents.TaskCompleteEvent;
 import com.theminequest.MineQuest.Editable.Edit;
 import com.theminequest.MineQuest.Group.Group;
 import com.theminequest.MineQuest.Group.Team;
+import com.theminequest.MineQuest.Quest.Parser.AcceptTextHandler;
+import com.theminequest.MineQuest.Quest.Parser.AreaPreserveHandler;
+import com.theminequest.MineQuest.Quest.Parser.CancelTextHandler;
+import com.theminequest.MineQuest.Quest.Parser.DescriptionHandler;
+import com.theminequest.MineQuest.Quest.Parser.EditHandler;
+import com.theminequest.MineQuest.Quest.Parser.EditMessageHandler;
+import com.theminequest.MineQuest.Quest.Parser.FinishTextHandler;
+import com.theminequest.MineQuest.Quest.Parser.InstanceHandler;
+import com.theminequest.MineQuest.Quest.Parser.LoadWorldHandler;
+import com.theminequest.MineQuest.Quest.Parser.NameHandler;
+import com.theminequest.MineQuest.Quest.Parser.RepeatableHandler;
+import com.theminequest.MineQuest.Quest.Parser.ResetHandler;
+import com.theminequest.MineQuest.Quest.Parser.SpawnHandler;
+import com.theminequest.MineQuest.Quest.Parser.TargetHandler;
+import com.theminequest.MineQuest.Quest.Parser.TaskHandler;
+import com.theminequest.MineQuest.Quest.Parser.WorldHandler;
 
 
 public class QuestManager implements Listener {
@@ -67,6 +83,23 @@ public class QuestManager implements Listener {
 			f.mkdirs();
 		}
 		parser = new QuestParser();
+		parser.addClassHandler("accepttext", AcceptTextHandler.class);
+		parser.addClassHandler("areapreserve", AreaPreserveHandler.class);
+		parser.addClassHandler("canceltext", CancelTextHandler.class);
+		parser.addClassHandler("description", DescriptionHandler.class);
+		parser.addClassHandler("edit", EditHandler.class);
+		parser.addClassHandler("editmessage", EditMessageHandler.class);
+		parser.addClassHandler("event", com.theminequest.MineQuest.Quest.Parser.EventHandler.class);
+		parser.addClassHandler("finishtext", FinishTextHandler.class);
+		parser.addClassHandler("instance", InstanceHandler.class);
+		parser.addClassHandler("loadworld", LoadWorldHandler.class);
+		parser.addClassHandler("name", NameHandler.class);
+		parser.addClassHandler("repeatable", RepeatableHandler.class);
+		parser.addClassHandler("reset", ResetHandler.class);
+		parser.addClassHandler("spawn", SpawnHandler.class);
+		parser.addClassHandler("target", TargetHandler.class);
+		parser.addClassHandler("task", TaskHandler.class);
+		parser.addClassHandler("world", WorldHandler.class);
 	}
 
 	public long startQuest(String id){
