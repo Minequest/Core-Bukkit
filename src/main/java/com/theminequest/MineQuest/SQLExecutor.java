@@ -79,6 +79,12 @@ public class SQLExecutor {
 		checkInitialization();
 	}
 
+	/**
+	 * Check for initialization. What this does is take the build number
+	 * and uses a fast forward mechanism from the previous build to see
+	 * if any changes should be merged.<br>
+	 * It acts similarly to SVN.
+	 */
 	private void checkInitialization() {
 		if (!datafolder.exists()){
 			datafolder.mkdir();
@@ -148,6 +154,10 @@ public class SQLExecutor {
 
 	}
 
+	/**
+	 * Retrieve the Database Connection
+	 * @return database connection
+	 */
 	public DatabaseHandler getDB(){
 		return db;
 	}
@@ -218,6 +228,11 @@ public class SQLExecutor {
 		}
 	}
 
+	/**
+	 * Convert an InputStream to a String.
+	 * @param is InputStream
+	 * @return String converted InputStream
+	 */
 	private String convertStreamToString(InputStream is) {
 		try {
 			return IOUtils.toString(is);
