@@ -2,8 +2,11 @@ package com.theminequest.MineQuest.Quest;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +29,46 @@ import com.theminequest.MineQuest.Tasks.Task;
 
 public class QuestParser {
 	
-	protected static void parseDefinition(Quest q) throws FileNotFoundException{
+	/**
+	 * Indicate that this class can handle Quest file details.
+	 * @author Robert Xu <robxu9@gmail.com>
+	 *
+	 */
+	public interface QHandler {
+		
+		/**
+		 * Parse the details from this line of the quest file.<br>
+		 * If a line contains:<br>
+		 * <code>ID:tas1,tas2,tas3:444</code><br>
+		 * Then the line is split by <code>:</code>. This line
+		 * does NOT contain detail type.
+		 * @param q Quest file to manipulate
+		 * @param line Details
+		 */
+		void parseDetails(Quest q, List<String> line);
+		
+	}
+
+	private Map<String,Class<? extends QHandler>> methods = Collections.synchronizedMap(new LinkedHashMap<String,Class<? extends QHandler>>());
+	
+	/**
+	 * Register a QHandler for use in parsing Quests.
+	 * @param name Name to associate with
+	 * @param c Class that implements QHandler
+	 */
+	public void addClassHandler(String name, Class<? extends QHandler> c){
+		methods.put(name.toLowerCase(), c);
+	}
+	
+	/**
+	 * Deregisters a QHandler for use in parsing Quests.
+	 * @param name Name to remove.
+	 */
+	public void rmClassHandler(String name){
+		methods.remove(name.toLowerCase());
+	}
+	
+	protected void parseDefinition(Quest q) throws FileNotFoundException{
 		q.tasks = new LinkedHashMap<Integer, String[]>(0);
 		q.events = new LinkedHashMap<Integer, String>(0);
 		q.targets = new LinkedHashMap<Integer, TargetDetails>(0);
@@ -40,209 +82,40 @@ public class QuestParser {
 			for (String s : nextline.split(":"))
 				ar.add(s);
 			String type = ar.get(0).toLowerCase();
-			if (type.equals("name"))
-				q.displayname = ar.get(1);
-			else if (type.equals("repeatable"))
-				q.questRepeatable = (ar.get(1).equals("true"));
-			else if (type.equals("reset"))
-				q.spawnReset = (ar.get(1).equals("true"));
-			else if (type.equals("spawn")) {
-				if (!ar.get(1).equals(""))
-					q.spawnPoint[0] = Double.parseDouble(ar.get(1));
-				if (!ar.get(2).equals(""))
-					q.spawnPoint[1] = Double.parseDouble(ar.get(2));
-				if (!ar.get(3).equals(""))
-					q.spawnPoint[2] = Double.parseDouble(ar.get(3));
-			} else if (type.equals("areapreserve")) {
-				if (!ar.get(1).equals(""))
-					q.areaPreserve[0] = Double.parseDouble(ar.get(1));
-				if (!ar.get(2).equals(""))
-					q.areaPreserve[1] = Double.parseDouble(ar.get(2));
-				if (!ar.get(3).equals(""))
-					q.areaPreserve[2] = Double.parseDouble(ar.get(3));
-				if (!ar.get(4).equals(""))
-					q.areaPreserve[3] = Double.parseDouble(ar.get(4));
-				if (!ar.get(5).equals(""))
-					q.areaPreserve[4] = Double.parseDouble(ar.get(5));
-				if (!ar.get(6).equals(""))
-					q.areaPreserve[5] = Double.parseDouble(ar.get(6));
-			} else if (type.equals("editmessage"))
-				q.editMessage = ChatColor.GRAY + ar.get(1);
-			else if (type.equals("world")){
-				q.world = ar.get(1);
-				if (ar.size()>2)
-					q.nether = true;
-			} else if (type.equals("loadworld")) {
-				// I say YES to instances.
-				q.loadworld = true;
-				q.world = ar.get(2);
-				if (ar.size()>3)
-					q.nether = true;
-			} else if (type.equals("instance")) {
-				// COMPATIBILITY
-				q.loadworld = true;
-				q.world = ar.get(3);
-				if (ar.size()>4)
-					q.nether = true;
-				// I do NOT care about QuestArea, because
-				// I simply delete the world when done.
-			} else if (type.equals("event")) {
-				int number = Integer.parseInt(ar.get(1));
-				// T = targeted event
-				boolean targetedevent = false;
-				if (ar.get(2).equals("T")) {
-					ar.remove(2);
-					targetedevent = true;
-				}
-				String eventname = ar.get(2);
-				String details = "";
-				if (targetedevent)
-					details += "T:";
-				for (int i = 3; i < ar.size(); i++) {
-					details += ar.get(i);
-					if (i < ar.size() - 1) {
-						details += ":";
-					}
-				}
-				System.out.println(number + " : " + eventname + ":" + details);
-				// final result: "eventname:T:details"
-				q.events.put(number, new String(eventname + ":" + details));
-			} else if (type.equals("task")) {
-				int id = Integer.parseInt(ar.get(1));
-				String[] e = ar.get(2).split(",");
-				q.tasks.put(id, e);
-			} else if (type.equals("target")) {
-				int number = Integer.parseInt(ar.get(1));
-				String d = "";
-				for (int i=2; i<ar.size(); i++){
-					d += ar.get(i);
-					if (i!=ar.size()-1)
-						d+=":";
-				}
-				q.targets.put(number, new TargetDetails(q.questid,d));
-			} else if (type.equals("edit")) {
-				int number = Integer.parseInt(ar.get(1));
-				String edittype = ar.get(2);
-				String d = "";
-				for (int i=3; i<ar.size(); i++){
-					d += ar.get(i);
-					if (i!=ar.size()-1)
-						d+=":";
-				}
-				Edit e;
-				if (edittype.equalsIgnoreCase("CanEdit"))
-					e = new CoordinateEdit(q.questid,number,Integer.parseInt(d.split(":")[3]),d);
-				else if (edittype.equalsIgnoreCase("CanEditArea"))
-					e = new InsideAreaEdit(q.questid,number,Integer.parseInt(d.split(":")[6]),d);
-				else if (edittype.equalsIgnoreCase("CanEditOutsideArea"))
-					e = new OutsideAreaEdit(q.questid,number,Integer.parseInt(d.split(":")[6]),d);
-				else {
-					int taskid = Integer.parseInt(ar.get(3));
-					d = "";
-					for (int i=4; i<ar.size(); i++){
-						d += ar.get(i);
-						if (i!=ar.size()-1)
-							d+=":";
-					}
-					if (edittype.equalsIgnoreCase("CanEditTypesInHand"))
-						e = new ItemInHandEdit(q.questid,number,taskid,d);
-					else
-						e = new CertainBlockEdit(q.questid,number,taskid,d);
-				}
-				q.editables.put(number, e);
+			Class<? extends QHandler> c = methods.get(type);
+			if (c==null)
+				continue;
+			Method m;
+			try {
+				m = c.getMethod("parseDetails", Quest.class, List.class);
+			} catch (SecurityException e1) {
+				e1.printStackTrace();
+				continue;
+			} catch (NoSuchMethodException e1) {
+				e1.printStackTrace();
+				continue;
+			}
+			/*
+			 * We don't need the type in the array we pass,
+			 * so we remove it.
+			 */
+			ar.remove(0);
+			try {
+				m.invoke(c.newInstance(), q, ar);
+			} catch (IllegalArgumentException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (IllegalAccessException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (InvocationTargetException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (InstantiationException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
 		}
-		
-		System.out.println("TOSTRING");
-		System.out.println(q.events);
 	}
 	
-	public static void parseYAMLDefinition(Quest q){
-		LinkedHashMap<Integer, String[]> tasks = new LinkedHashMap<Integer, String[]>();
-		LinkedHashMap<Integer, String> events = new LinkedHashMap<Integer, String>();
-		LinkedHashMap<Integer, TargetDetails> targets = new LinkedHashMap<Integer, TargetDetails>();
-		LinkedHashMap<Integer, Edit> editables = new LinkedHashMap<Integer,Edit>();
-		File f = new File(MineQuest.questManager.locationofQuests + File.separator + q.questname
-				+ ".yml");
-		if (!f.exists())
-			throw new RuntimeException(new FileNotFoundException("NO SUCH FILE " + f));
-		YamlConfiguration definition = YamlConfiguration.loadConfiguration(f);
-		
-		q.displayname = definition.getString("name","Quest");
-		q.displaydesc = definition.getString("description","This is a quest.");
-		q.displayaccept = definition.getString("accepttext","You have accepted the quest.");
-		q.displaycancel = definition.getString("canceltext","You have canceled the quest.");
-		q.displayfinish = definition.getString("finishtext","You have finished the quest.");
-		q.questRepeatable = definition.getBoolean("isRepeatable", false);
-		q.spawnReset = definition.getBoolean("resetSpawn",true);
-		
-		String[] setSpawn = definition.getString("setSpawn","0:64:0").split(":");
-		q.spawnPoint[0] = Double.parseDouble(setSpawn[0]);
-		q.spawnPoint[1] = Double.parseDouble(setSpawn[1]);
-		q.spawnPoint[2] = Double.parseDouble(setSpawn[2]);
-		
-		String[] areaPreserve = definition.getString("areaPreserve","0:64:0:0:64:0").split(":");
-		q.areaPreserve[0] = Double.parseDouble(areaPreserve[0]);
-		q.areaPreserve[1] = Double.parseDouble(areaPreserve[1]);
-		q.areaPreserve[2] = Double.parseDouble(areaPreserve[2]);
-		q.areaPreserve[3] = Double.parseDouble(areaPreserve[3]);
-		q.areaPreserve[4] = Double.parseDouble(areaPreserve[4]);
-		q.areaPreserve[5] = Double.parseDouble(areaPreserve[5]);
-		
-		q.editMessage = definition.getString("doNotEditMessage",ChatColor.GRAY+"You cannot edit while in the quest.");
-		q.world = definition.getString("world","world");
-		q.loadworld = definition.getBoolean("loadWorld",false);
-		
-		ConfigurationSection eventss = definition.getConfigurationSection("events");
-		for (int i : definition.getIntegerList("")){
-			events.put(i,eventss.getString(String.valueOf(i)));
-		}
-		
-		q.events = events;
-		
-		ConfigurationSection taskss = definition.getConfigurationSection("tasks");
-		for (int i : definition.getIntegerList("")){
-			tasks.put(i,taskss.getString(String.valueOf(i)).split(","));
-		}
-		
-		q.tasks = tasks;
-		
-		ConfigurationSection targetss = definition.getConfigurationSection("targets");
-		for (int i : definition.getIntegerList("")){
-			targets.put(i,new TargetDetails(q.questid,targetss.getString(String.valueOf(i))));
-		}
-		
-		q.targets = targets;
-		
-		ConfigurationSection editss = definition.getConfigurationSection("edits");
-		for (int i : definition.getIntegerList("")){
-			editables.put(i,processEdit(editss.getString(String.valueOf(i))));
-		}
-		
-		q.editables = editables;
-		
-		/*
-		 * name: <String name>
-		 * description: <description of quest>
-		 * accepttext: <upon accepting quest>
-		 * canceltext: <upon canceling quest>
-		 * finishtext: <upon finishing quest>
-		 * isRepeatable: boolean
-		 * resetSpawn: boolean
-		 * setSpawn: String
-		 * areaPreserve: String
-		 * doNotEditMessage: String
-		 * world: String
-		 * loadWorld: boolean (is this dungeoned?)
-		 * events: Map<Integer,String>
-		 * tasks: Map<Integer,String>
-		 * targets: Map<Integer,String>
-		 * edits: Map<Integer,String>
-		 */
-	}
-	
-	private static Edit processEdit(String details){
-		return null;
-	}
-
 }

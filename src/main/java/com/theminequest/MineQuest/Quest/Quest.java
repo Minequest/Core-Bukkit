@@ -65,39 +65,39 @@ import com.theminequest.MineQuest.Utils.TimeUtils;
 
 public class Quest {
 
-	protected String questname;
-	protected long questid;
-	protected boolean started;
-	protected int currenttask;
+	public String questname;
+	public long questid;
+	public boolean started;
+	public int currenttask;
 
-	protected CompleteStatus finished;
+	public CompleteStatus finished;
 
 	// always <ID #,OBJECT/DETAILS>
-	protected LinkedHashMap<Integer, String[]> tasks;
-	protected Task activeTask;
-	protected LinkedHashMap<Integer, String> events;
-	protected LinkedHashMap<Integer, TargetDetails> targets;
-	protected LinkedHashMap<Integer, Edit> editables;
+	public LinkedHashMap<Integer, String[]> tasks;
+	public Task activeTask;
+	public LinkedHashMap<Integer, String> events;
+	public LinkedHashMap<Integer, TargetDetails> targets;
+	public LinkedHashMap<Integer, Edit> editables;
 	// quest configuration
-	protected String displayname;
-	protected String displaydesc;
-	protected String displayaccept;
-	protected String displaycancel;
-	protected String displayfinish;
-	protected boolean questRepeatable;
-	protected boolean spawnReset;
+	public String displayname;
+	public String displaydesc;
+	public String displayaccept;
+	public String displaycancel;
+	public String displayfinish;
+	public boolean questRepeatable;
+	public boolean spawnReset;
 	/**
 	 * Controls the Spawn Point for the Quest (x,y,z)
 	 */
-	protected double[] spawnPoint;
+	public double[] spawnPoint;
 	/**
 	 * Controls the area to preserve (uneditable) (x,y,z,x,y,z)
 	 */
-	protected double[] areaPreserve;
-	protected String editMessage;
-	protected String world;
-	protected boolean loadworld;
-	protected boolean nether;
+	public double[] areaPreserve;
+	public String editMessage;
+	public String world;
+	public boolean loadworld;
+	public boolean nether;
 
 	/*
 	 * Constructor will start the quest for the user.
@@ -112,7 +112,7 @@ public class Quest {
 		displaydesc = MineQuest.configuration.localizationConfig.getString("quest_NODESC", "No description available.");
 		displayaccept = MineQuest.configuration.localizationConfig.getString("quest_ACCEPT", "Quest accepted!");
 		displaycancel = MineQuest.configuration.localizationConfig.getString("quest_CANCEL", "Quest aborted!");
-		displayfinish = MineQuest.configuration.localizationConfig.getString("quest_COMPLETE", "Quest complete!");
+		displayfinish = MineQuest.configuration.localizationConfig.getString("quest_COMPLETE", "You've just completed this quest. Did you enjoy it?");
 		questRepeatable = false;
 		spawnReset = true;
 
@@ -137,7 +137,7 @@ public class Quest {
 
 		// DEFAULTS end
 		try {
-			QuestParser.parseDefinition(this);
+			MineQuest.questManager.parser.parseDefinition(this);
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);
 		}

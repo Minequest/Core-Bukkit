@@ -51,6 +51,7 @@ public class QuestManager implements Listener {
 	protected final String locationofQuests;
 	private LinkedHashMap<Long,Quest> quests;
 	private long questid;
+	protected final QuestParser parser;
 
 	public QuestManager(){
 		MineQuest.log("[Quest] Starting Manager...");
@@ -65,6 +66,7 @@ public class QuestManager implements Listener {
 			f.delete();
 			f.mkdirs();
 		}
+		parser = new QuestParser();
 	}
 
 	public long startQuest(String id){
