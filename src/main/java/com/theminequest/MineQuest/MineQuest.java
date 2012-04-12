@@ -42,37 +42,90 @@ import com.theminequest.MineQuest.Tasks.TaskManager;
 import com.theminequest.MineQuest.Utils.GriefcraftMetrics;
 import com.theminequest.MineQuest.Utils.UtilManager;
 
+/**
+ * MineQuest Plugin Class for Bukkit
+ * @author The MineQuest Team
+ *
+ */
 public class MineQuest extends JavaPlugin {
 
-	/*
-	 * I NEED IT >_< But we could use
-	 * Bukkit.getPluginManager().getPlugin("MineQuest")...
+	/**
+	 * Access Permissions via Vault
 	 */
 	public static Permission permission = null;
+	/**
+	 * Access Economy via Vault
+	 */
 	public static Economy economy = null;
+	/**
+	 * Access MineQuest Plugin Methods
+	 */
 	public static MineQuest activePlugin = null;
+	/**
+	 * Access MineQuest eventManager
+	 */
 	public static EventManager eventManager = null;
+	/**
+	 * Access MineQuest taskManager
+	 */
 	public static TaskManager taskManager = null;
+	/**
+	 * Access MineQuest questManager
+	 */
 	public static QuestManager questManager = null;
+	/**
+	 * Access MineQuest groupManager
+	 */
 	public static GroupManager groupManager = null;
+	/**
+	 * Access MineQuest utilities
+	 */
 	public static UtilManager utilManager = null;
+	/**
+	 * Access MineQuest configuration
+	 */
 	public static QuestConfig configuration = null;
+	/**
+	 * Access MineQuest SQL database
+	 */
 	public static SQLExecutor sqlstorage = null;
+	/**
+	 * Access Hidendra's Metrics
+	 */
 	public static GriefcraftMetrics gcMetrics = null;
 	private static PluginDescriptionFile description = null;
 
+	/**
+	 * Log using the central MineQuest logger.
+	 * (Prefixed with <code>[MineQuest]</code>; to add on component, add prefix to message.)
+	 * @param msg Message to log with level <code>INFO</code>.
+	 */
 	public static void log(String msg) {
 		log(Level.INFO, msg);
 	}
 
+	/**
+	 * Log using the central MineQuest logger.
+	 * (Prefixed with <code>[MineQuest]</code>; to add on component, add prefix to message.)
+	 * @param level Level to log with.
+	 * @param msg Message to log.
+	 */
 	public static void log(Level level, String msg) {
 		Logger.getLogger("Minecraft").log(level, "[MineQuest] " + msg);
 	}
 
+	/**
+	 * Get this build version of MineQuest.
+	 * @return Build version.
+	 */
 	public static String getVersion() {
 		return description.getVersion();
 	}
 
+	/**
+	 * Get this central plugin name.
+	 * @return Name.
+	 */
 	public static String getPluginName() {
 		return description.getName();
 	}
@@ -130,7 +183,7 @@ public class MineQuest extends JavaPlugin {
 		if (!setupEconomy())
 			log(Level.SEVERE,"[Vault] Economy could not be setup!");
 		RegisterEvents.registerEvents();
-		
+
 		// sign frontend
 		getServer().getPluginManager().registerEvents(new QuestSign(), this);
 		// command frontend
