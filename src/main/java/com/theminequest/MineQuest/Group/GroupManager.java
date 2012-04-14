@@ -161,7 +161,7 @@ public class GroupManager implements Listener{
 		if (groups.get(id)==null)
 			return;
 		groups.get(id).lockGroup();
-		groups.put(id, null);
+		groups.remove(id);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -193,7 +193,7 @@ public class GroupManager implements Listener{
 					} catch (GroupException e2) {
 						// ignore
 					}
-					removeEmptyTeam(team);
+					//removeEmptyTeam(team);
 				}
 				
 			} catch (NullPointerException e1) {
