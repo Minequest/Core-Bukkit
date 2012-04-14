@@ -129,12 +129,13 @@ public class Team implements Group {
 		quest.finishQuest(CompleteStatus.CANCELED);
 		if (inQuest)
 			exitQuest();
-		else if (quest.isInstanced())
+		else if (quest.isInstanced()){
 			try {
 				quest.unloadQuest();
 			} catch (IOException e) {
 				throw new GroupException(e);
 			}
+		}
 		quest = null;
 	}
 	
