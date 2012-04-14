@@ -53,44 +53,28 @@ public class Task {
 	 *            Event numbers that must be completed
 	 */
 	public Task(long questid, int taskid, List<Integer> events) {
-		System.out.println("9");
 		started = false;
-		System.out.println("10");
 		complete = false;
-		System.out.println("11");
 		this.questid = questid;
-		System.out.println("12");
 		this.taskid = taskid;
-		System.out.println("13");
 		collection = new LinkedHashMap<Integer,QEvent>();
-		System.out.println("14");
 		for (int e : events){
-			System.out.println("15 REPEAT");
 			collection.put(e, null);
 		}
-		System.out.println("17");
 	}
 
 	public synchronized void start() {
-		System.out.println("19");
 		if (started)
 			return;
-		System.out.println("20");
 		started = true;
-		System.out.println("21");
 		Quest quest = MineQuest.questManager.getQuest(questid);
-		System.out.println("22");
 		Iterator<Integer> i = collection.keySet().iterator();
-		System.out.println("23");
 		List<Integer> list = new ArrayList<Integer>();
 		while (i.hasNext()){
 			list.add(i.next());
 		}
 		for (Integer event : list){
-			System.out.println("Got here.");
-			System.out.println("Event #: " + event);
 			String d = quest.getEvent(event);
-			System.out.println("Splitting...");
 			String[] eventdetails = d.split(":");
 			String recombined = "";
 			for (int r=1; r<eventdetails.length; r++){
