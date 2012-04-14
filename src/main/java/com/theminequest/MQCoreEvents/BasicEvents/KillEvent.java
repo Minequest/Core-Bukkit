@@ -19,6 +19,7 @@
  **/
 package com.theminequest.MQCoreEvents.BasicEvents;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.entity.EntityType;
@@ -54,6 +55,7 @@ public class KillEvent extends QEvent {
 	public void parseDetails(String[] details) {
 		taskid = Integer.parseInt(details[1]);
 		String[] entity = details[2].split(",");
+		typestokill = new ArrayList<EntityType>();
 		for (String e : entity){
 			typestokill.add(EntityType.fromName(e));
 		}

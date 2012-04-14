@@ -19,6 +19,7 @@
  **/
 package com.theminequest.MQCoreEvents.BasicEvents;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.entity.EntityType;
@@ -52,6 +53,7 @@ public class DestroyEvent extends QEvent {
 	public void parseDetails(String[] details) {
 		taskid = Integer.parseInt(details[1]);
 		String[] block = details[2].split(",");
+		typestodestroy = new ArrayList<Integer>();
 		for (String b : block){
 			typestodestroy.add(Integer.parseInt(b));
 		}
