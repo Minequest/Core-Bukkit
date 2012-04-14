@@ -49,7 +49,7 @@ public class QuestEvent extends QEvent {
 
 	@Override
 	public boolean conditions() {
-		if ((System.currentTimeMillis()-initialmilliseconds)<milliseconds)
+		if ((System.currentTimeMillis()-initialmilliseconds)>=milliseconds)
 			return false;
 		return true;
 	}

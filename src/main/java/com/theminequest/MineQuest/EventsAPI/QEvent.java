@@ -22,6 +22,7 @@ package com.theminequest.MineQuest.EventsAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
@@ -124,8 +125,8 @@ public abstract class QEvent{
 	public final synchronized void complete(CompleteStatus c){
 		if (complete==null){
 			MineQuest.eventManager.rmEventListener(this);
-			cleanUpEvent();
 			complete = c;
+			cleanUpEvent();
 			EventCompleteEvent e = new EventCompleteEvent(this,c);
 			Bukkit.getPluginManager().callEvent(e);
 		}
@@ -150,6 +151,16 @@ public abstract class QEvent{
 	public boolean entityDamageByEntityCondition(EntityDamageByEntityEvent e){
 		return false;
 	}
+	
+	/**
+	 * Optional method that QEvents can override if they want;
+	 * by default, doesn't do anything.
+	 * @param e
+	 * @return true if entity death meets condition for an event
+	 */
+	public boolean entityDeathCondition(EntityDeathEvent e){
+		return false;
+	}
 
 	public final synchronized void onBlockBreak(BlockBreakEvent e){
 		if (complete==null){
@@ -162,6 +173,14 @@ public abstract class QEvent{
 	public final synchronized void onEntityDamageByEntityEvent(EntityDamageByEntityEvent e){
 		if (complete==null){
 			if (entityDamageByEntityCondition(e)){
+				complete(action());
+			}
+		}
+	}
+	
+	public final synchronized void onEntityDeath(EntityDeathEvent e){
+		if (complete==null){
+			if (entityDeathCondition(e)){
 				complete(action());
 			}
 		}
