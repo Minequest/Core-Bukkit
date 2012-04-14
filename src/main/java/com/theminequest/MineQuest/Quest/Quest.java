@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeMap;
@@ -98,6 +99,11 @@ public class Quest {
 	public String world;
 	public boolean loadworld;
 	public boolean nether;
+	
+	/**
+	 * For addons to store their data
+	 */
+	public Map<String,Object> database;
 
 	/*
 	 * Constructor will start the quest for the user.
@@ -134,6 +140,8 @@ public class Quest {
 		loadworld = false;
 
 		activeTask = null;
+		
+		database = Collections.synchronizedMap(new LinkedHashMap<String,Object>());
 
 		// DEFAULTS end
 		try {
@@ -141,9 +149,6 @@ public class Quest {
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);
 		}
-		
-		System.out.println("THIS TOSTRING");
-		System.out.println(events);
 
 		// sort the tasks, events, and targets in order of id.
 		// because we have absolutely 0 idea if someone would skip numbers...
@@ -317,11 +322,6 @@ public class Quest {
 	 */
 	public TargetDetails getTarget(int id) {
 		return targets.get(id);
-	}
-
-	public List<String> getDisallowedAbilities() {
-		// TODO not done yet
-		return new ArrayList<String>();
 	}
 
 	public Location getSpawnLocation() {

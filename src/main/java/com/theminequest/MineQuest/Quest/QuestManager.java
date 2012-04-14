@@ -67,7 +67,7 @@ public class QuestManager implements Listener {
 	protected final String locationofQuests;
 	private LinkedHashMap<Long,Quest> quests;
 	private long questid;
-	protected final QuestParser parser;
+	public final QuestParser parser;
 
 	public QuestManager(){
 		MineQuest.log("[Quest] Starting Manager...");
