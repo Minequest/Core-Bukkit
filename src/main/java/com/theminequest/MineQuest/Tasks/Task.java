@@ -87,7 +87,7 @@ public class Task {
 			if (e!=null)
 				collection.put(event, e);
 			else{
-				MineQuest.log(Level.WARNING, "[Task] Missing event " + eventdetails[0] + " JFYI.");
+				MineQuest.log(Level.WARNING, "[Task] Missing event " + eventdetails[0] + "; Ignoring.");
 				collection.remove(event);
 			}
 		}

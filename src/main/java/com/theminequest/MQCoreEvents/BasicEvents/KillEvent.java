@@ -88,7 +88,10 @@ public class KillEvent extends QEvent {
 						currentkill++;
 						if (currentkill>=totaltokill)
 							return true;
-					}
+						else
+							return false;
+					} else
+						return false;
 				}
 			}				
 		}

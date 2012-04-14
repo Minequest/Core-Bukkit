@@ -23,6 +23,7 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -139,6 +140,8 @@ public class EventManager implements Listener {
 			try {
 				return (QEvent) ctor.newInstance(q, eventnum, d);
 			} catch (Exception e) {
+				MineQuest.log(Level.SEVERE, "In retrieving event " + eventname + " from Quest ID " + q + ":");
+				MineQuest.log(Level.SEVERE, e.toString());
 				return null;
 			}
 		}

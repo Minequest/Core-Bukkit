@@ -84,6 +84,8 @@ public class DestroyEvent extends QEvent {
 					currentdestroy++;
 					if (currentdestroy>=totaltodestroy)
 						return true;
+					else
+						return false;
 				}
 			}
 		}
