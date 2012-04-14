@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import com.theminequest.MineQuest.MineQuest;
@@ -85,8 +86,10 @@ public class Task {
 			QEvent e = MineQuest.eventManager.getNewEvent(eventdetails[0], questid, event, recombined);
 			if (e!=null)
 				collection.put(event, e);
-			else
+			else{
+				MineQuest.log(Level.WARNING, "[Task] Missing event " + eventdetails[0] + " JFYI.");
 				collection.remove(event);
+			}
 		}
 		
 		i = collection.keySet().iterator();
