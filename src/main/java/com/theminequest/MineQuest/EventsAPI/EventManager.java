@@ -140,8 +140,9 @@ public class EventManager implements Listener {
 			try {
 				return (QEvent) ctor.newInstance(q, eventnum, d);
 			} catch (Exception e) {
-				MineQuest.log(Level.SEVERE, "In retrieving event " + eventname + " from Quest ID " + q + ":");
-				MineQuest.log(Level.SEVERE, e.toString());
+				MineQuest.log(Level.SEVERE, "[Event] In retrieving event " + eventname + " from Quest ID " + q + ":");
+				e.fillInStackTrace();
+				e.printStackTrace();
 				return null;
 			}
 		}
