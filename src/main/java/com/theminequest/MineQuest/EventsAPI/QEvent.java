@@ -107,6 +107,15 @@ public abstract class QEvent{
 	public final int getTaskId(){
 		return tasknumber;
 	}
+	
+	/**
+	 * Optional event implementation: After the event has executed successfully,
+	 * you have the option of cleaning up your event. (For example,
+	 * kill entities that you are tracking, stop a process, etc...)
+	 */
+	public void cleanUpEvent(){
+		
+	}
 
 	/**
 	 * Notify that the event has been completed with the status given.
@@ -115,6 +124,7 @@ public abstract class QEvent{
 	public final synchronized void complete(CompleteStatus c){
 		if (complete==null){
 			MineQuest.eventManager.rmEventListener(this);
+			cleanUpEvent();
 			complete = c;
 			EventCompleteEvent e = new EventCompleteEvent(this,c);
 			Bukkit.getPluginManager().callEvent(e);
