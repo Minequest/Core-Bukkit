@@ -43,19 +43,19 @@ public class DestroyEvent extends QEvent {
 	/*
 	 * (non-Javadoc)
 	 * @see com.theminequest.MineQuest.EventsAPI.QEvent#parseDetails(java.lang.String[])
-	 * delay ms DEPRECIATED
-	 * [0]: task id to trigger
-	 * [1]: block ids
-	 * [2]: total # to kill
+	 * delay ms DEPRECATED
+	 * [1]: task id to trigger
+	 * [2]: block ids
+	 * [3]: total # to kill
 	 */
 	@Override
 	public void parseDetails(String[] details) {
-		taskid = Integer.parseInt(details[0]);
-		String[] block = details[1].split(",");
+		taskid = Integer.parseInt(details[1]);
+		String[] block = details[2].split(",");
 		for (String b : block){
 			typestodestroy.add(Integer.parseInt(b));
 		}
-		totaltodestroy = Integer.parseInt(details[2]);
+		totaltodestroy = Integer.parseInt(details[3]);
 		currentdestroy = 0;
 	}
 
