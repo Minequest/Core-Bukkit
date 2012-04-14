@@ -125,6 +125,7 @@ public class TargetManager {
 	 * editid1,editid2,editid3...
 	 * TODO: actually implement this... even though this doesn't make any sense.
 	 */
+	@Deprecated
 	private static List<LivingEntity> targetteredit(TargetDetails t) {
 		String[] ids = t.getDetails().split(",");
 		List<LivingEntity> toreturn = new ArrayList<LivingEntity>();
