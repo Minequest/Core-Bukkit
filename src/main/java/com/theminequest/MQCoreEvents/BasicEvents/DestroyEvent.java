@@ -76,13 +76,17 @@ public class DestroyEvent extends QEvent {
 	 */
 	@Override
 	public boolean blockBreakCondition(BlockBreakEvent e) {
+		System.out.println("DEBUG: DestroyEventBlockBreakEvent");
 		long gid = MineQuest.groupManager.indexOfQuest(MineQuest.questManager.getQuest(getQuestId()));
 		Group g = MineQuest.groupManager.getGroup(gid);
+		System.out.println("DEBUG: Got 1");
 		if (g.getPlayers().contains(e.getPlayer())){
 			int blockid = e.getBlock().getTypeId();
+			System.out.println("DEBUG: Got 2: " + blockid);
 			for (int t : typestodestroy){
 				if (blockid==t){
 					currentdestroy++;
+					System.out.println("DEBUG: Got 3: " + currentdestroy + "," + totaltodestroy);
 					if (currentdestroy>=totaltodestroy)
 						return true;
 					else
