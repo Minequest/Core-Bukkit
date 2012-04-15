@@ -45,8 +45,8 @@ import com.theminequest.MineQuest.Quest.Quest;
 
 public class GroupManager implements Listener{
 
-	protected final int TEAM_MAX_CAPACITY;
-	protected final int SUPER_MAX_CAPACITY;
+	public final int TEAM_MAX_CAPACITY;
+	public final int SUPER_MAX_CAPACITY;
 	private Map<Long, Group> groups;
 	private Map<Player, Group> invitations;
 	private long groupid;

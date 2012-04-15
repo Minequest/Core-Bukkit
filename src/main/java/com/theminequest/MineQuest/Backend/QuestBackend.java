@@ -126,6 +126,31 @@ public final class QuestBackend {
 		}
 		return true;
 	}
+	
+	public static String retrieveDetail(String quest_name, String detail){
+		File qfile = new File(MineQuest.activePlugin.getDataFolder()
+				+ File.separator + "quests" + File.separator + quest_name
+				+ ".quest");
+		Scanner qfs;
+		try {
+			qfs = new Scanner(qfile);
+		} catch (FileNotFoundException e) {
+			throw new IllegalArgumentException("[QuestBackend] No such quest!",e);
+		}
+		while(qfs.hasNextLine()){
+			String[] examine = qfs.nextLine().split(":");
+			if (examine[0].equalsIgnoreCase(detail)){
+				String d = "";
+				for (int i = 1; i<examine.length; i++){
+					d+=examine[i];
+					if (i<examine.length-1)
+						d+=":";
+				}
+				return d;
+			}
+		}
+		return null;
+	}
 
 	/**
 	 * Accept a quest

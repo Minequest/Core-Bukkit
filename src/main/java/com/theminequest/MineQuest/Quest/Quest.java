@@ -104,6 +104,11 @@ public class Quest {
 	 * For addons to store their data
 	 */
 	public Map<String,Object> database;
+	
+	/*
+	 * Feature Req: Trottimus
+	 */
+	public int groupLimit;
 
 	/*
 	 * Constructor will start the quest for the user.
@@ -142,6 +147,8 @@ public class Quest {
 		activeTask = null;
 		
 		database = Collections.synchronizedMap(new LinkedHashMap<String,Object>());
+		
+		groupLimit = MineQuest.groupManager.TEAM_MAX_CAPACITY;
 
 		// DEFAULTS end
 		try {

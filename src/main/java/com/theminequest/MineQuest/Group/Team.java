@@ -31,6 +31,7 @@ import org.bukkit.entity.Player;
 
 import com.theminequest.MineQuest.ManagerException;
 import com.theminequest.MineQuest.MineQuest;
+import com.theminequest.MineQuest.Backend.QuestBackend;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.BukkitEvents.QuestStartedEvent;
 import com.theminequest.MineQuest.Group.GroupException.GroupReason;
@@ -87,7 +88,7 @@ public class Team implements Group {
 
 	@Override
 	public synchronized void setCapacity(int c) throws GroupException{
-		if (c<=0 || c>players.size())
+		if (c<players.size())
 			throw new GroupException(GroupReason.BADCAPACITY);
 		capacity = c;
 	}
@@ -118,6 +119,11 @@ public class Team implements Group {
 			throw new GroupException(GroupReason.ALREADYONQUEST);
 		long id = MineQuest.questManager.startQuest(q);
 		quest = MineQuest.questManager.getQuest(id);
+		if (quest.groupLimit<players.size()){
+			// FIXME should this go to backends?
+			abandonQuest();
+			throw new GroupException(GroupReason.BADCAPACITY);
+		}
 		QuestStartedEvent event = new QuestStartedEvent(quest);
 		Bukkit.getPluginManager().callEvent(event);
 	}

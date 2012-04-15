@@ -51,6 +51,7 @@ import com.theminequest.MineQuest.Quest.Parser.DescriptionHandler;
 import com.theminequest.MineQuest.Quest.Parser.EditHandler;
 import com.theminequest.MineQuest.Quest.Parser.EditMessageHandler;
 import com.theminequest.MineQuest.Quest.Parser.FinishTextHandler;
+import com.theminequest.MineQuest.Quest.Parser.GroupLimitHandler;
 import com.theminequest.MineQuest.Quest.Parser.InstanceHandler;
 import com.theminequest.MineQuest.Quest.Parser.LoadWorldHandler;
 import com.theminequest.MineQuest.Quest.Parser.NameHandler;
@@ -91,6 +92,7 @@ public class QuestManager implements Listener {
 		parser.addClassHandler("editmessage", EditMessageHandler.class);
 		parser.addClassHandler("event", com.theminequest.MineQuest.Quest.Parser.EventHandler.class);
 		parser.addClassHandler("finishtext", FinishTextHandler.class);
+		parser.addClassHandler("grouplimit", GroupLimitHandler.class);
 		parser.addClassHandler("instance", InstanceHandler.class);
 		parser.addClassHandler("loadworld", LoadWorldHandler.class);
 		parser.addClassHandler("name", NameHandler.class);
