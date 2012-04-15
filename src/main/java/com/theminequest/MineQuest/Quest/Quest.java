@@ -220,6 +220,8 @@ public class Quest {
 		}
 		if (!tasks.containsKey(taskid))
 			return false;
+		if (!activeTask.isComplete())
+			activeTask.cancelTask();
 		currenttask = taskid;
 		String[] eventnums = tasks.get(taskid);
 		List<Integer> eventnum = new ArrayList<Integer>();
@@ -243,6 +245,12 @@ public class Quest {
 	public void onTaskCompletion(TaskCompleteEvent e) {
 		if (e.getQuestID() != questid)
 			return;
+		if (e.getResult()==CompleteStatus.CANCELED)
+			return;
+		else if (e.getResult()==CompleteStatus.FAILURE){
+			finishQuest(CompleteStatus.FAILURE);
+			return;
+		}
 		// TODO this is lovely and all, but tasks should trigger other tasks...
 		// I'll just call the next task, and if the next task isn't available,
 		// finish the quest
