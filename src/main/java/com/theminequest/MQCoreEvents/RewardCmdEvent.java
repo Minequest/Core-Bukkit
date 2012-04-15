@@ -15,7 +15,6 @@ public class RewardCmdEvent extends QEvent {
 
 	public RewardCmdEvent(long q, int e, String details) {
 		super(q, e, details);
-		// TODO Auto-generated constructor stub
 	}
 
 	/*
@@ -45,6 +44,11 @@ public class RewardCmdEvent extends QEvent {
 			}
 		}
 		return CompleteStatus.SUCCESS;
+	}
+
+	@Override
+	public Integer switchTask() {
+		return null;
 	}
 
 }

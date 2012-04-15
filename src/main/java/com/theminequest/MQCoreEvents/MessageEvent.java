@@ -58,8 +58,13 @@ public class MessageEvent extends QEvent {
 		long gid = MineQuest.groupManager.indexOfQuest(MineQuest.questManager.getQuest(getQuestId()));
 		Group g = MineQuest.groupManager.getGroup(gid);
 		for (Player p : g.getPlayers())
-			p.sendMessage(ChatColor.YELLOW + "[QUEST] " + ChatColor.WHITE + message);
+			p.sendMessage(ChatColor.YELLOW + "[QUEST] " + ChatColor.WHITE + ChatUtils.chatify(message));
 		return CompleteStatus.SUCCESS;
+	}
+
+	@Override
+	public Integer switchTask() {
+		return null;
 	}
 	
 	

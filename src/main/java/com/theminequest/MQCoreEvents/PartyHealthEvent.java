@@ -68,4 +68,9 @@ public class PartyHealthEvent extends QEvent {
 		return CompleteStatus.SUCCESS;
 	}
 
+	@Override
+	public Integer switchTask() {
+		return null;
+	}
+
 }

@@ -56,9 +56,12 @@ public class QuestEvent extends QEvent {
 
 	@Override
 	public CompleteStatus action() {
-		if (!MineQuest.questManager.getQuest(this.getQuestId()).startTask(tasktotrigger))
-			return CompleteStatus.FAILURE;
 		return CompleteStatus.SUCCESS;
+	}
+
+	@Override
+	public Integer switchTask() {
+		return tasktotrigger;
 	}
 
 }

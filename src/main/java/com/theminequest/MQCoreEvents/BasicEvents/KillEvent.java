@@ -70,7 +70,6 @@ public class KillEvent extends QEvent {
 
 	@Override
 	public CompleteStatus action() {
-		MineQuest.questManager.getQuest(getQuestId()).startTask(taskid);
 		return CompleteStatus.SUCCESS;
 	}
 
@@ -98,6 +97,11 @@ public class KillEvent extends QEvent {
 			}				
 		}
 		return false;
+	}
+
+	@Override
+	public Integer switchTask() {
+		return taskid;
 	}
 
 }

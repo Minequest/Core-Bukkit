@@ -77,8 +77,12 @@ public class CollectEvent extends QEvent {
 
 	@Override
 	public CompleteStatus action() {
-		MineQuest.questManager.getQuest(getQuestId()).startTask(taskid);
 		return CompleteStatus.SUCCESS;
+	}
+
+	@Override
+	public Integer switchTask() {
+		return taskid;
 	}
 
 }

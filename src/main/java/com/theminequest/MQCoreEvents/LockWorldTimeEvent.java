@@ -62,4 +62,9 @@ public class LockWorldTimeEvent extends QEvent {
 		return CompleteStatus.SUCCESS;
 	}
 
+	@Override
+	public Integer switchTask() {
+		return null;
+	}
+
 }

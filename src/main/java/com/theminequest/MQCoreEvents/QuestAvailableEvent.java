@@ -78,4 +78,9 @@ public class QuestAvailableEvent extends QEvent {
 		return toreturn;
 	}
 
+	@Override
+	public Integer switchTask() {
+		return null;
+	}
+
 }

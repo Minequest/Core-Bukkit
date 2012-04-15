@@ -57,4 +57,9 @@ public class CompleteQuestEvent extends QEvent {
 		return CompleteStatus.SUCCESS;
 	}
 
+	@Override
+	public Integer switchTask() {
+		return null;
+	}
+
 }

@@ -32,7 +32,7 @@ public abstract class QEvent{
 
 	private long questid;
 	private int eventid;
-	private CompleteStatus complete;
+	private volatile CompleteStatus complete;
 	private int tasknumber;
 
 	/**
@@ -120,15 +120,35 @@ public abstract class QEvent{
 	 * Notify that the event has been completed with the status given.
 	 * @param actionresult Status to pass in.
 	 */
-	public final synchronized void complete(CompleteStatus c){
+	public final void complete(CompleteStatus c){
 		if (complete==null){
 			MineQuest.eventManager.rmEventListener(this);
 			complete = c;
 			cleanUpEvent();
+			if (switchTask()!=null)
+				MineQuest.questManager.getQuest(getQuestId()).startTask(switchTask());
 			EventCompleteEvent e = new EventCompleteEvent(this,c);
 			Bukkit.getPluginManager().callEvent(e);
 		}
 	}
+	
+	/**
+	 * Some events want to switch to a new task when it completes.
+	 * For instance, {@link com.theminequest.MQCoreEvents.QuestEvent}
+	 * switches to a new task after a preset delay. This method is here
+	 * such that events that complete execution can specify a different
+	 * task to switch to. In the case that events do not want to switch
+	 * tasks, they may return <code>null</code> as we are asking for an
+	 * {@link java.lang.Integer} object to be returned.<br>
+	 * <h4>Why did we decide to abstract this method instead of returning
+	 * <code>null</code> by default?</h4><br>
+	 * The most potent of this reason would be that most developers would
+	 * ignore the fact that this method is available and manually attempt
+	 * to switch tasks by calling the Quest directly. This will trigger
+	 * a deadlock and should not be attempted.
+	 * @return Task Number to switch Quest to, or NULL to not switch.
+	 */
+	public abstract Integer switchTask();
 	
 	/**
 	 * Optional method that QEvents can override if they want;

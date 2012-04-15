@@ -62,4 +62,9 @@ public class RewardMoneyEvent extends QEvent {
 		return CompleteStatus.SUCCESS;
 	}
 
+	@Override
+	public Integer switchTask() {
+		return null;
+	}
+
 }
