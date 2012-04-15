@@ -21,6 +21,7 @@ package com.theminequest.MineQuest.EventsAPI;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -43,28 +44,23 @@ import com.theminequest.MineQuest.MineQuest;
 public class EventManager implements Listener {
 
 	private LinkedHashMap<String, Class<? extends QEvent>> classes;
-	private ArrayList<QEvent> activeevents;
-	private Object activelock;
+	private List<QEvent> activeevents;
 	private Runnable activechecker;
 	private Object classlistlock;
 	private volatile boolean stop;
-	private volatile boolean chillout;
 
 	public EventManager() {
 		MineQuest.log("[Event] Starting Manager...");
 		classes = new LinkedHashMap<String, Class<? extends QEvent>>(0);
-		activeevents = new ArrayList<QEvent>(0);
-		activelock = new Object();
+		activeevents = Collections.synchronizedList(new ArrayList<QEvent>(0));
 		classlistlock = new Object();
 		stop = false;
-		chillout = false;
 		activechecker = new Runnable(){
 
 			@Override
 			public void run() {
 				while(!stop){
-					if (!chillout)
-						checkAllEvents();
+					checkAllEvents();
 					try {
 						Thread.sleep(50);
 					} catch (InterruptedException e) {
@@ -172,71 +168,57 @@ public class EventManager implements Listener {
 	}
 
 	public void addEventListener(final QEvent e){
-		synchronized(activelock){
-			activeevents.add(e);
-		}
+		activeevents.add(e);
 	}
 
 	public void rmEventListener(QEvent e){
-		synchronized(activelock){
-			activeevents.remove(e);
-		}
+		activeevents.remove(e);
 	}
 
 	public void checkAllEvents(){
-		synchronized(activelock){
-			chillout = true;
-			for (final QEvent e : activeevents){
-				new Thread(new Runnable(){
-					@Override
-					public void run() {
-						e.check();
-					}
-				}).start();
-			}
-			chillout = false;
+		for (final QEvent e : activeevents){
+			new Thread(new Runnable(){
+				@Override
+				public void run() {
+					e.check();
+				}
+			}).start();
 		}
 	}
 
 	@EventHandler
 	public void onBlockBreak(final BlockBreakEvent e){
-		synchronized(activelock){
-			for (final QEvent a : activeevents){
-				new Thread(new Runnable(){
-					@Override
-					public void run() {
-						a.onBlockBreak(e);
-					}
-				}).start();
-			}
+		for (final QEvent a : activeevents){
+			new Thread(new Runnable(){
+				@Override
+				public void run() {
+					a.onBlockBreak(e);
+				}
+			}).start();
 		}
 	}
 
 	@EventHandler
 	public void onEntityDamageByEntityEvent(final EntityDamageByEntityEvent e){
-		synchronized(activelock){
-			for (final QEvent a : activeevents){
-				new Thread(new Runnable(){
-					@Override
-					public void run() {
-						a.onEntityDamageByEntityEvent(e);
-					}
-				}).start();
-			}
+		for (final QEvent a : activeevents){
+			new Thread(new Runnable(){
+				@Override
+				public void run() {
+					a.onEntityDamageByEntityEvent(e);
+				}
+			}).start();
 		}
 	}
-	
+
 	@EventHandler
 	public void onEntityDeathEvent(final EntityDeathEvent e){
-		synchronized(activelock){
-			for (final QEvent a : activeevents){
-				new Thread(new Runnable(){
-					@Override
-					public void run() {
-						a.onEntityDeath(e);
-					}
-				}).start();
-			}
+		for (final QEvent a : activeevents){
+			new Thread(new Runnable(){
+				@Override
+				public void run() {
+					a.onEntityDeath(e);
+				}
+			}).start();
 		}
 	}
 
