@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
@@ -78,7 +79,10 @@ public class KillEvent extends QEvent {
 	 */
 	@Override
 	public boolean entityDamageByEntityCondition(EntityDamageByEntityEvent e) {
-		if (!e.getEntity().isDead())
+		if (!(e instanceof LivingEntity))
+			return false;
+		LivingEntity el = (LivingEntity) e;
+		if (el.getHealth()-e.getDamage()>0)
 			return false;
 		if (e.getDamager() instanceof Player){
 			Player p = (Player)e.getDamager();
