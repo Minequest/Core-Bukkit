@@ -61,6 +61,11 @@ public class EventManagerTest {
 		public CompleteStatus action() {
 			return CompleteStatus.SUCCESS;
 		}
+
+		@Override
+		public Integer switchTask() {
+			return null;
+		}
 		
 	}
 
