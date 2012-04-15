@@ -78,6 +78,8 @@ public class KillEvent extends QEvent {
 	 */
 	@Override
 	public boolean entityDamageByEntityCondition(EntityDamageByEntityEvent e) {
+		if (!e.getEntity().isDead())
+			return false;
 		if (e.getDamager() instanceof Player){
 			Player p = (Player)e.getDamager();
 			for (EntityType t : typestokill){
