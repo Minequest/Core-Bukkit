@@ -220,7 +220,7 @@ public class Quest {
 		}
 		if (!tasks.containsKey(taskid))
 			return false;
-		if (!activeTask.isComplete())
+		if (activeTask!=null && !activeTask.isComplete())
 			activeTask.cancelTask();
 		currenttask = taskid;
 		String[] eventnums = tasks.get(taskid);
