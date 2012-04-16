@@ -274,6 +274,8 @@ public class Quest {
 
 	public void finishQuest(CompleteStatus c) {
 		finished = c;
+		if (!activeTask.isComplete())
+			activeTask.cancelTask();
 		TimeUtils.unlock(Bukkit.getWorld(world));
 		Group g = MineQuest.groupManager.getGroup(MineQuest.groupManager
 				.indexOfQuest(this));
