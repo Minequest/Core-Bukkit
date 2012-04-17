@@ -14,13 +14,11 @@ import com.theminequest.MineQuest.Utils.PropertiesFile;
 
 public abstract class CommandFrontend implements CommandExecutor {
 	
-	public PropertiesFile localization;
 	public String cmdname;
 	
 	public CommandFrontend(String name){
 		cmdname = name;
 		MineQuest.log("[CommandFrontend] Starting Command Frontend for \""+cmdname+"\"...");
-		localization = MineQuest.configuration.localizationConfig;
 	}
 
 	@Override

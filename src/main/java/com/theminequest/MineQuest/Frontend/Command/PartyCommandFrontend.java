@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import com.theminequest.MineQuest.I18NMessage;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.Backend.BackendFailedException;
 import com.theminequest.MineQuest.Backend.GroupBackend;
@@ -23,16 +24,16 @@ public class PartyCommandFrontend extends CommandFrontend {
 
 	public Boolean accept(Player p, String[] args) {
 		if (GroupBackend.teamID(p)!=-1){
-			p.sendMessage(ChatColor.RED + localization.getChatString("party_INPARTY","You're already in a party..."));
+			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Party_INPARTY.getDescription());
 			return false;
 		}
 		if (!GroupBackend.hasInvite(p)){
-			p.sendMessage(ChatColor.RED + localization.getChatString("party_NOINVITE","No pending invites..."));
+			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Party_NOINVITE.getDescription());
 			return false;
 		}
 		try {
 			GroupBackend.acceptInvite(p);
-			p.sendMessage(localization.getChatString("party_accept","Joined the team!"));
+			p.sendMessage(I18NMessage.Cmd_Party_ACCEPT.getDescription());
 			return true;
 		} catch (BackendFailedException e) {
 			e.printStackTrace();
@@ -43,15 +44,15 @@ public class PartyCommandFrontend extends CommandFrontend {
 
 	public Boolean create(Player p, String[] args) {
 		if (GroupBackend.teamID(p)!=-1){
-			p.sendMessage(ChatColor.RED + localization.getChatString("party_INPARTY","You're already in a party..."));
+			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Party_INPARTY.getDescription());
 			return false;
 		}
 		if (GroupBackend.hasInvite(p)){
-			p.sendMessage(ChatColor.GRAY + localization.getChatString("party_create_discardinvite","Discarding pending invite..."));
+			p.sendMessage(ChatColor.GRAY + I18NMessage.Cmd_Party_DISCARD.getDescription());
 		}
 		try {
 			GroupBackend.createTeam(p);
-			p.sendMessage(localization.getChatString("party_create","Created and joined the team!"));
+			p.sendMessage(I18NMessage.Cmd_Party_CREATE.getDescription());
 			return true;
 		} catch (BackendFailedException e) {
 			e.printStackTrace();
@@ -60,69 +61,37 @@ public class PartyCommandFrontend extends CommandFrontend {
 		}
 	}
 
-	public Boolean info(Player p, String[] args) {
-		if (GroupBackend.teamID(p)==-1){
-			p.sendMessage(ChatColor.RED + localization.getChatString("party_NOPARTY","You can't use party commands without a party..."));
-			return false;
-		}
-		if (args.length!=1){
-			p.sendMessage(ChatColor.RED + localization.getChatString("party_INVALIDARGS","Wrong number of arguments."));
-			return false;
-		}
-
-		List<Player> mates = GroupBackend.getCurrentGroup(p).getPlayers();
-		Player lookup = Bukkit.getPlayerExact(args[0]);
-		if (lookup==null){
-			p.sendMessage(ChatColor.RED + localization.getChatString("party_NOSUCHPLAYER","No such player!"));
-			return false;
-		}
-		if (!mates.contains(lookup)){
-			p.sendMessage(ChatColor.RED + localization.getChatString("party_NOTINTEAM","Player is not in your team..."));
-			return false;
-		}
-		Player mate = mates.get(mates.indexOf(lookup));
-
-		List<String> messages = new ArrayList<String>();
-		messages.add(ChatUtils.formatHeader(localization.getChatString("party_info","Player information: ") + lookup.getName()));
-		messages.add(ChatColor.AQUA + localization.getChatString("party_info_displayname", "Display Name") + ": " + ChatColor.YELLOW + mate.getDisplayName());
-		messages.add(ChatColor.AQUA + localization.getChatString("party_info_health", "Health") + ": " + ChatColor.YELLOW + mate.getHealth());
-
-		for (String m : messages)
-			p.sendMessage(m);
-		return true;
-	}
-
 	public Boolean invite(Player p, String[] args) {
 		if (GroupBackend.teamID(p)==-1){
-			p.sendMessage(ChatColor.RED + localization.getChatString("party_NOPARTY","You can't use party commands without a party..."));
+			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Party_NOPARTY.getDescription());
 			return false;
 		}
 		if (args.length!=1){
-			p.sendMessage(ChatColor.RED + localization.getChatString("party_INVALIDARGS","Wrong number of arguments."));
+			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_INVALIDARGS.getDescription());
 			return false;
 		}
 		Group g = GroupBackend.getCurrentGroup(p);
 		if (!g.getLeader().equals(p)){
-			p.sendMessage(ChatColor.RED + localization.getChatString("party_NOTLEADER","not leader..."));
+			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOTLEADER.getDescription());
 			return false;
 		}
 
 		Player mate = Bukkit.getPlayerExact(args[0]);
 		if (mate==null){
-			p.sendMessage(ChatColor.RED + localization.getChatString("party_NOSUCHPLAYER","No such player!"));
+			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOSUCHPLAYER.getDescription());
 			return false;
 		}
 		if (GroupBackend.teamID(mate)!=-1){
-			p.sendMessage(ChatColor.RED + localization.getChatString("party_INVITEEINPARTY","You're trying to invite someone already in a team."));
+			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Party_TARGETINPARTY.getDescription());
 			return false;
 		}
 		try {
 			g.invite(mate);
-			p.sendMessage(localization.getChatString("party_invite","Invited player!"));
+			p.sendMessage(I18NMessage.Cmd_Party_TARGETINVITESENT.getDescription());
 			return true;
 		} catch (GroupException e) {
 			if (e.getReason()==GroupReason.ALREADYINTEAM){
-				p.sendMessage(ChatColor.RED + localization.getChatString("party_INVITEEWAITING","Your invitee is waiting on another invite. Try again in a few seconds..."));
+				p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Party_TARGETPENDING.getDescription());
 				return false;
 			}
 			p.sendMessage(ChatColor.GRAY + "ERR: " + e.getMessage());
@@ -133,28 +102,28 @@ public class PartyCommandFrontend extends CommandFrontend {
 
 	public Boolean kick(Player p, String[] args) {
 		if (GroupBackend.teamID(p)==-1){
-			p.sendMessage(ChatColor.RED + localization.getChatString("party_NOPARTY","You can't use party commands without a party..."));
+			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Party_NOPARTY.getDescription());
 			return false;
 		}
 		if (args.length!=1){
-			p.sendMessage(ChatColor.RED + localization.getChatString("party_INVALIDARGS","Wrong number of arguments."));
+			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_INVALIDARGS.getDescription());
 			return false;
 		}
 		Group g = GroupBackend.getCurrentGroup(p);
 		if (!g.getLeader().equals(p)){
-			p.sendMessage(ChatColor.RED + localization.getChatString("party_NOTLEADER","not leader..."));
+			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOTLEADER.getDescription());
 			return false;
 		}
 		Player mate = Bukkit.getPlayer(args[0]);
 		if (!g.contains(mate)){
-			p.sendMessage(ChatColor.RED + localization.getChatString("party_NOTINPARTY","Player isn't in the party..."));
+			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Party_TARGETNOPARTY.getDescription());
 			return false;
 		}
 
 		try {
 			g.remove(mate);
-			p.sendMessage(localization.getChatString("party_kick","Kicked player!"));
-			mate.sendMessage(localization.getChatString("party_kick_mate","You were kicked out of the team by ")+p.getName());
+			p.sendMessage(I18NMessage.Cmd_Party_KICK + mate.getDisplayName());
+			mate.sendMessage(I18NMessage.Cmd_Party_KICKTARGET + " (" + p.getDisplayName() + ")");
 			return true;
 		} catch (GroupException e) {
 			p.sendMessage(ChatColor.GRAY + "ERR: " + e.getMessage());
@@ -166,11 +135,11 @@ public class PartyCommandFrontend extends CommandFrontend {
 
 	public Boolean leave(Player p, String[] args) {
 		if (GroupBackend.teamID(p)==-1){
-			p.sendMessage(ChatColor.RED + localization.getChatString("party_NOPARTY","You can't use party commands without a party..."));
+			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Party_NOPARTY.getDescription());
 			return false;
 		}
 		if (args.length!=0){
-			p.sendMessage(ChatColor.RED + localization.getChatString("party_INVALIDARGS","Wrong number of arguments."));
+			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_INVALIDARGS.getDescription());
 			return false;
 		}
 		Group g = GroupBackend.getCurrentGroup(p);
@@ -180,7 +149,7 @@ public class PartyCommandFrontend extends CommandFrontend {
 			if (leader && g.getPlayers().size()!=1)
 				g.setLeader(g.getPlayers().get(1));
 			g.remove(p);
-			p.sendMessage(localization.getChatString("party_leave","Left the team."));
+			p.sendMessage(I18NMessage.Cmd_Party_LEAVE.getDescription());
 			return true;
 		} catch (GroupException e) {
 			p.sendMessage(ChatColor.GRAY + "ERR: " + e.getMessage());
@@ -192,22 +161,22 @@ public class PartyCommandFrontend extends CommandFrontend {
 	
 	public Boolean list(Player p, String[] args) {
 		if (GroupBackend.teamID(p)==-1){
-			p.sendMessage(ChatColor.RED + localization.getChatString("party_NOPARTY","You can't use party commands without a party..."));
+			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Party_NOPARTY.getDescription());
 			return false;
 		}
 		if (args.length!=0){
-			p.sendMessage(ChatColor.RED + localization.getChatString("party_INVALIDARGS","Wrong number of arguments."));
+			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_INVALIDARGS.getDescription());
 			return false;
 		}
 		Group g = GroupBackend.getCurrentGroup(p);
 		List<Player> members = g.getPlayers();
 		List<String> messages = new ArrayList<String>();
-		messages.add(ChatUtils.formatHeader(localization.getChatString("party_list","Party List") + " " + members.size() + "/" + g.getCapacity()));
+		messages.add(ChatUtils.formatHeader(I18NMessage.Cmd_Party_LIST.getDescription() + " " + members.size() + "/" + g.getCapacity()));
 		for (Player m : members) {
 			if (g.getLeader().equals(m))
-				messages.add(ChatColor.RED + m.getName());
+				messages.add(ChatColor.RED + m.getName() + ChatColor.GRAY + " : Lvl " + m.getLevel() + ", Health " + m.getHealth() + "/" + m.getMaxHealth());
 			else
-				messages.add(ChatColor.AQUA + m.getName());
+				messages.add(ChatColor.AQUA + m.getName() + ChatColor.GRAY + " : Lvl " + m.getLevel() + ", Health " + m.getHealth() + "/" + m.getMaxHealth());
 		}
 		
 		for (String m : messages) {
@@ -219,28 +188,28 @@ public class PartyCommandFrontend extends CommandFrontend {
 	
 	public Boolean promote(Player p, String[] args) {
 		if (GroupBackend.teamID(p)==-1){
-			p.sendMessage(ChatColor.RED + localization.getChatString("party_NOPARTY","You can't use party commands without a party..."));
+			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Party_NOPARTY.getDescription());
 			return false;
 		}
 		if (args.length!=1){
-			p.sendMessage(ChatColor.RED + localization.getChatString("party_INVALIDARGS","Wrong number of arguments."));
+			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_INVALIDARGS.getDescription());
 			return false;
 		}
 		Group g = GroupBackend.getCurrentGroup(p);
 		if (!g.getLeader().equals(p)){
-			p.sendMessage(ChatColor.RED + localization.getChatString("party_NOTLEADER","not leader..."));
+			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOTLEADER.getDescription());
 			return false;
 		}
 		Player mate = Bukkit.getPlayer(args[0]);
 		if (!g.contains(mate)){
-			p.sendMessage(ChatColor.RED + localization.getChatString("party_NOTINPARTY","Player isn't in the party..."));
+			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Party_TARGETNOPARTY.getDescription());
 			return false;
 		}
 		
 		try {
 			g.setLeader(mate);
-			mate.sendMessage(localization.getChatString("party_promote_mate","You've been promoted to leader!"));
-			p.sendMessage(localization.getChatString("party_promote","Promoted player; depromoted yourself."));
+			mate.sendMessage(I18NMessage.Cmd_Party_PROMOTETARGET.getDescription());
+			p.sendMessage(I18NMessage.Cmd_Party_PROMOTE.getDescription());
 			return true;
 		} catch (GroupException e) {
 			p.sendMessage(ChatColor.GRAY + "ERR: " + e.getMessage());
@@ -272,29 +241,28 @@ public class PartyCommandFrontend extends CommandFrontend {
 			isLeader = g.getLeader().equals(p);
 		}
 
-		messages.add(ChatUtils.formatHeader(localization.getChatString("party_help", "Party Commands")));
+		messages.add(ChatUtils.formatHeader(I18NMessage.Cmd_Party_HELP.getDescription()));
 		if (g==null){
 			if (invite)
-				messages.add(ChatUtils.formatHelp("party accept", localization.getChatString("party_help_accept","Accept pending party invite. QUICK.")));
+				messages.add(ChatUtils.formatHelp("party accept", I18NMessage.Cmd_Party_HELPINVITE.getDescription()));
 			else
-				messages.add(ChatColor.GRAY + localization.getChatString("party_NOINVITE","No pending invites..."));
-			messages.add(ChatUtils.formatHelp("party create", localization.getChatString("party_help_create","Create a party.")));
-			messages.add(ChatColor.AQUA + localization.getChatString("party_NOPARTY","You can't use party commands without a party..."));
+				messages.add(ChatColor.GRAY + I18NMessage.Cmd_Party_NOINVITE.getDescription());
+			messages.add(ChatUtils.formatHelp("party create", I18NMessage.Cmd_Party_HELPCREATE.getDescription()));
+			messages.add(ChatColor.AQUA + I18NMessage.Cmd_Party_NOPARTY.getDescription());
 		} else {
-			messages.add(ChatUtils.formatHelp("party info <name>","Get information on a party member."));
 			if (isLeader){
-				messages.add(ChatUtils.formatHelp("party invite <name>", localization.getChatString("party_help_invite","Invite a player.")));
-				messages.add(ChatUtils.formatHelp("party kick <name>", localization.getChatString("party_help_kick","Kick a player.")));
+				messages.add(ChatUtils.formatHelp("party invite <name>", I18NMessage.Cmd_Party_HELPINVITETARGET.getDescription()));
+				messages.add(ChatUtils.formatHelp("party kick <name>", I18NMessage.Cmd_Party_HELPKICK.getDescription()));
 			} else {
-				messages.add(ChatColor.GRAY + "[party invite] " + localization.getChatString("party_NOTLEADER","not leader..."));
-				messages.add(ChatColor.GRAY + "[party kick] " + localization.getChatString("party_NOTLEADER","not leader..."));
+				messages.add(ChatColor.GRAY + "[party invite] " + I18NMessage.Cmd_NOTLEADER.getDescription());
+				messages.add(ChatColor.GRAY + "[party kick] " + I18NMessage.Cmd_NOTLEADER.getDescription());
 			}
-			messages.add(ChatUtils.formatHelp("party leave",localization.getChatString("party_help_leave","Leave the current party.")));
-			messages.add(ChatUtils.formatHelp("party list", localization.getChatString("party_help_list","List members in your party.")));
+			messages.add(ChatUtils.formatHelp("party leave", I18NMessage.Cmd_Party_HELPLEAVE.getDescription()));
+			messages.add(ChatUtils.formatHelp("party list", I18NMessage.Cmd_Party_HELPLIST.getDescription()));
 			if (isLeader)
-				messages.add(ChatUtils.formatHelp("party promote <name>", localization.getChatString("party_help_promote","Promote someone else to leader.")));
+				messages.add(ChatUtils.formatHelp("party promote <name>", I18NMessage.Cmd_Party_HELPPROMOTE.getDescription()));
 			else
-				messages.add(ChatColor.GRAY + "[party promote] " + localization.getChatString("party_NOTLEADER","not leader..."));
+				messages.add(ChatColor.GRAY + "[party promote] " + I18NMessage.Cmd_NOTLEADER.getDescription());
 		}
 
 		for (String s : messages)

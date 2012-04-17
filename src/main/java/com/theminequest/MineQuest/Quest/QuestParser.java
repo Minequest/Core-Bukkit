@@ -34,7 +34,7 @@ public class QuestParser {
 	 * @author Robert Xu <robxu9@gmail.com>
 	 *
 	 */
-	public interface QHandler {
+	public static interface QHandler {
 		
 		/**
 		 * Parse the details from this line of the quest file.<br>
@@ -42,10 +42,10 @@ public class QuestParser {
 		 * <code>ID:tas1,tas2,tas3:444</code><br>
 		 * Then the line is split by <code>:</code>. This line
 		 * does NOT contain detail type.
-		 * @param q Quest file to manipulate
+		 * @param q QuestDescription to manipulate
 		 * @param line Details
 		 */
-		void parseDetails(Quest q, List<String> line);
+		void parseDetails(QuestDescription q, List<String> line);
 		
 	}
 
@@ -68,12 +68,12 @@ public class QuestParser {
 		methods.remove(name.toLowerCase());
 	}
 	
-	protected void parseDefinition(Quest q) throws FileNotFoundException{
-		q.tasks = new LinkedHashMap<Integer, String[]>(0);
-		q.events = new LinkedHashMap<Integer, String>(0);
-		q.targets = new LinkedHashMap<Integer, TargetDetails>(0);
-		q.editables = new LinkedHashMap<Integer,Edit>(0);
-		File f = new File(MineQuest.questManager.locationofQuests + File.separator + q.questname
+	protected void parseDefinition(QuestDescription questDescription) throws FileNotFoundException{
+		questDescription.tasks = new LinkedHashMap<Integer, String[]>(0);
+		questDescription.events = new LinkedHashMap<Integer, String>(0);
+		questDescription.targets = new LinkedHashMap<Integer, TargetDetails>(0);
+		questDescription.editables = new LinkedHashMap<Integer,Edit>(0);
+		File f = new File(MineQuest.questManager.locationofQuests + File.separator + questDescription.questname
 				+ ".quest");
 		Scanner filereader = new Scanner(f);
 		while (filereader.hasNextLine()) {
@@ -87,7 +87,7 @@ public class QuestParser {
 				continue;
 			Method m;
 			try {
-				m = c.getMethod("parseDetails", Quest.class, List.class);
+				m = c.getMethod("parseDetails", QuestDescription.class, List.class);
 			} catch (SecurityException e1) {
 				e1.printStackTrace();
 				continue;
@@ -101,7 +101,7 @@ public class QuestParser {
 			 */
 			ar.remove(0);
 			try {
-				m.invoke(c.newInstance(), q, ar);
+				m.invoke(c.newInstance(), questDescription, ar);
 			} catch (IllegalArgumentException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();

@@ -26,6 +26,10 @@ import org.bukkit.inventory.ItemStack;
 
 public abstract class AreaEdit extends Edit {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1333653703301827692L;
 	private int oneX;
 	private int oneY;
 	private int oneZ;

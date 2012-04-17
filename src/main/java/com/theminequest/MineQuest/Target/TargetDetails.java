@@ -19,9 +19,16 @@
  **/
 package com.theminequest.MineQuest.Target;
 
-public class TargetDetails {
+import java.io.Serializable;
 
-	public enum TargetType {
+public class TargetDetails implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7523749925764167755L;
+
+	public enum TargetType implements Serializable {
 		AREATARGET,AREATARGETQUESTER,TEAMTARGET,TARGETTER,TARGETTEREDIT,RANDOMTARGET;
 	}
 	

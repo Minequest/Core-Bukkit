@@ -25,6 +25,10 @@ import org.bukkit.inventory.ItemStack;
 
 public class CoordinateEdit extends Edit {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4153261092499281453L;
 	private int coordX;
 	private int coordY;
 	private int coordZ;

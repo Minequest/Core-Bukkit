@@ -20,10 +20,13 @@
 package com.theminequest.MineQuest.Quest;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -67,6 +70,7 @@ public class QuestManager implements Listener {
 
 	protected final String locationofQuests;
 	private LinkedHashMap<Long,Quest> quests;
+	private List<QuestDescription> descriptions;
 	private long questid;
 	public final QuestParser parser;
 
@@ -102,11 +106,39 @@ public class QuestManager implements Listener {
 		parser.addClassHandler("target", TargetHandler.class);
 		parser.addClassHandler("task", TaskHandler.class);
 		parser.addClassHandler("world", WorldHandler.class);
+		reloadQuests();
+	}
+	
+	public void reloadQuests(){
+		descriptions = new ArrayList<QuestDescription>();
+		File file = new File(locationofQuests);
+		for (File f : file.listFiles()){
+			try {
+				descriptions.add(new QuestDescription(f));
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public QuestDescription getQuest(String name){
+		for (QuestDescription d : descriptions)
+			if (d.questname.equals(name))
+				return d;
+		return null;
 	}
 
 	public long startQuest(String id){
-		quests.put(questid,new Quest(questid,id));
-		if (!quests.get(questid).loadworld)
+		QuestDescription d = getQuest(id);
+		if (d==null)
+			throw new IllegalArgumentException(new NullPointerException(id));
+		try {
+			d = d.getCopy();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		quests.put(questid,new Quest(questid,d));
+		if (!quests.get(questid).details.loadworld)
 			quests.get(questid).startQuest();
 		long thisquestid = questid;
 		questid++;
@@ -128,9 +160,9 @@ public class QuestManager implements Listener {
 	public void onQuestCompletion(QuestCompleteEvent e){
 		if (e.getResult()!=CompleteStatus.CANCELED){
 			Quest q = quests.get(e.getQuestId());
-			String questname = q.questname;
+			String questname = q.details.questname;
 			for (Player p : e.getGroup().getPlayers()){
-				p.sendMessage(ChatColor.GREEN + q.displayfinish);
+				p.sendMessage(ChatColor.GREEN + q.details.displayfinish);
 				MineQuest.sqlstorage.querySQL("Quests/completeQuest", p.getName(), questname);
 			}
 		}
@@ -147,7 +179,7 @@ public class QuestManager implements Listener {
 			Quest q = g.getQuest();
 			// by default, I don't allow this to happen.
 			e.setCancelled(true);
-			for (Edit edit : q.editables.values()){
+			for (Edit edit : q.details.editables.values()){
 				edit.onBlockPlace(e);
 				if (!e.isCancelled())
 					return;
@@ -166,7 +198,7 @@ public class QuestManager implements Listener {
 			Quest q = g.getQuest();
 			// by default, I don't allow this to happen.
 			e.setCancelled(true);
-			for (Edit edit : q.editables.values()){
+			for (Edit edit : q.details.editables.values()){
 				edit.onBlockDamage(e);
 				if (!e.isCancelled())
 					return;

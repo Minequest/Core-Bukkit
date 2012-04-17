@@ -66,110 +66,37 @@ import com.theminequest.MineQuest.Utils.TimeUtils;
 
 public class Quest {
 
-	public String questname;
-	public long questid;
-	public boolean started;
-	public int currenttask;
-
-	public CompleteStatus finished;
-
-	// always <ID #,OBJECT/DETAILS>
-	public LinkedHashMap<Integer, String[]> tasks;
-	public Task activeTask;
-	public LinkedHashMap<Integer, String> events;
-	public LinkedHashMap<Integer, TargetDetails> targets;
-	public LinkedHashMap<Integer, Edit> editables;
-	// quest configuration
-	public String displayname;
-	public String displaydesc;
-	public String displayaccept;
-	public String displaycancel;
-	public String displayfinish;
-	public boolean questRepeatable;
-	public boolean spawnReset;
-	/**
-	 * Controls the Spawn Point for the Quest (x,y,z)
-	 */
-	public double[] spawnPoint;
-	/**
-	 * Controls the area to preserve (uneditable) (x,y,z,x,y,z)
-	 */
-	public double[] areaPreserve;
-	public String editMessage;
-	public String world;
-	public boolean loadworld;
-	public boolean nether;
+	public final QuestDescription details;
 	
-	/**
-	 * For addons to store their data
-	 */
-	public Map<String,Object> database;
-	
-	/*
-	 * Feature Req: Trottimus
-	 */
-	public int groupLimit;
+	public final long questid;
+	private int currenttask;
+
+	private CompleteStatus finished;
+	private Task activeTask;
+
 
 	/*
 	 * Constructor will start the quest for the user.
 	 */
-	protected Quest(long questid, String id) {
-		questname = id;
+	protected Quest(long questid, QuestDescription id) {
+		details = id;
 		this.questid = questid;
-		started = false;
 		currenttask = -1;
-		// DEFAULTS start
-		displayname = questname;
-		displaydesc = MineQuest.configuration.localizationConfig.getString("quest_NODESC", "No description available.");
-		displayaccept = MineQuest.configuration.localizationConfig.getString("quest_ACCEPT", "Quest accepted!");
-		displaycancel = MineQuest.configuration.localizationConfig.getString("quest_CANCEL", "Quest aborted!");
-		displayfinish = MineQuest.configuration.localizationConfig.getString("quest_COMPLETE", "You've just completed this quest. Did you enjoy it?");
-		questRepeatable = false;
-		spawnReset = true;
-
-		spawnPoint = new double[3];
-		spawnPoint[0] = 0;
-		spawnPoint[1] = 64;
-		spawnPoint[2] = 0;
-
-		areaPreserve = new double[6];
-		areaPreserve[0] = 0;
-		areaPreserve[1] = 64;
-		areaPreserve[2] = 0;
-		areaPreserve[3] = 0;
-		areaPreserve[4] = 64;
-		areaPreserve[5] = 0;
-
-		editMessage = ChatColor.GRAY + MineQuest.configuration.localizationConfig.getString("quest_DEFEDIT", "You can't edit the world!");;
-		world = Bukkit.getWorlds().get(0).getName();
-		loadworld = false;
-
 		activeTask = null;
-		
-		database = Collections.synchronizedMap(new LinkedHashMap<String,Object>());
-		
-		groupLimit = MineQuest.groupManager.TEAM_MAX_CAPACITY;
-
-		// DEFAULTS end
-		try {
-			MineQuest.questManager.parser.parseDefinition(this);
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException(e);
-		}
 
 		// sort the tasks, events, and targets in order of id.
 		// because we have absolutely 0 idea if someone would skip numbers...
 
 		// load the world if necessary/move team to team leader
-		if (Bukkit.getWorld(world) == null) {
-			WorldCreator w = new WorldCreator(world);
-			if (nether)
+		if (Bukkit.getWorld(details.world) == null) {
+			WorldCreator w = new WorldCreator(details.world);
+			if (details.nether)
 				w = w.environment(Environment.NETHER);
 			Bukkit.createWorld(w);
 		}
-		if (loadworld) {
+		if (details.loadworld) {
 			try {
-				world = QuestWorldManip.copyWorld(Bukkit.getWorld(world))
+				details.world = QuestWorldManip.copyWorld(Bukkit.getWorld(details.world))
 						.getName();
 			} catch (IOException e) {
 				throw new RuntimeException(e);
@@ -206,11 +133,11 @@ public class Quest {
 	 * @return all possible events (# association)
 	 */
 	public Set<Integer> getEventNums() {
-		return events.keySet();
+		return details.events.keySet();
 	}
 	
 	public boolean startQuest(){
-		return startTask(getFirstKey(tasks.keySet()));
+		return startTask(getFirstKey(details.tasks.keySet()));
 	}
 
 	/**
@@ -225,12 +152,12 @@ public class Quest {
 			finishQuest(CompleteStatus.SUCCESS);
 			return true;
 		}
-		if (!tasks.containsKey(taskid))
+		if (!details.tasks.containsKey(taskid))
 			return false;
 		if (activeTask!=null && !activeTask.isComplete())
 			activeTask.cancelTask();
 		currenttask = taskid;
-		String[] eventnums = tasks.get(taskid);
+		String[] eventnums = details.tasks.get(taskid);
 		List<Integer> eventnum = new ArrayList<Integer>();
 		for (String e : eventnums) {
 			eventnum.add(Integer.parseInt(e));
@@ -241,7 +168,7 @@ public class Quest {
 	}
 	
 	public boolean isInstanced(){
-		return loadworld;
+		return details.loadworld;
 	}
 
 	public Task getActiveTask() {
@@ -262,7 +189,7 @@ public class Quest {
 		// I'll just call the next task, and if the next task isn't available,
 		// finish the quest
 
-		List<Integer> sortedkeys = getSortedKeys(tasks.keySet());
+		List<Integer> sortedkeys = getSortedKeys(details.tasks.keySet());
 		int loc = sortedkeys.indexOf(e.getID());
 		if (loc == sortedkeys.size() - 1) {
 			finishQuest(CompleteStatus.SUCCESS);
@@ -276,7 +203,7 @@ public class Quest {
 		finished = c;
 		if (!activeTask.isComplete())
 			activeTask.cancelTask();
-		TimeUtils.unlock(Bukkit.getWorld(world));
+		TimeUtils.unlock(Bukkit.getWorld(details.world));
 		Group g = MineQuest.groupManager.getGroup(MineQuest.groupManager
 				.indexOfQuest(this));
 		QuestCompleteEvent event = new QuestCompleteEvent(questid, c, g);
@@ -284,8 +211,8 @@ public class Quest {
 	}
 
 	public void unloadQuest() throws IOException {
-		if (loadworld)
-			QuestWorldManip.removeWorld(Bukkit.getWorld(world));
+		if (details.loadworld)
+			QuestWorldManip.removeWorld(Bukkit.getWorld(details.world));
 	}
 
 	public CompleteStatus isFinished() {
@@ -293,9 +220,9 @@ public class Quest {
 	}
 
 	public String getEvent(Integer id) {
-		if (!events.containsKey(id))
+		if (!details.events.containsKey(id))
 			throw new IllegalArgumentException("No such event ID!");
-		return events.get(id);
+		return details.events.get(id);
 	}
 
 	/**
@@ -304,7 +231,7 @@ public class Quest {
 	 * @return cannot edit message
 	 */
 	public String getEditMessage() {
-		return editMessage;
+		return details.editMessage;
 	}
 
 	/**
@@ -317,7 +244,7 @@ public class Quest {
 	}
 
 	public String[] getTaskDetails(int id) {
-		return tasks.get(id);
+		return details.tasks.get(id);
 	}
 
 	public long getID() {
@@ -325,7 +252,7 @@ public class Quest {
 	}
 
 	public String getWorld() {
-		return world;
+		return details.world;
 	}
 
 	/**
@@ -337,12 +264,12 @@ public class Quest {
 	 *         id.
 	 */
 	public TargetDetails getTarget(int id) {
-		return targets.get(id);
+		return details.targets.get(id);
 	}
 
 	public Location getSpawnLocation() {
-		return new Location(Bukkit.getWorld(world), spawnPoint[0],
-				spawnPoint[1], spawnPoint[2]);
+		return new Location(Bukkit.getWorld(details.world), details.spawnPoint[0],
+				details.spawnPoint[1], details.spawnPoint[2]);
 	}
 
 	/*
@@ -359,11 +286,11 @@ public class Quest {
 	}
 
 	public String getName() {
-		return displayname;
+		return details.displayname;
 	}
 
 	public String getDescription() {
-		return displaydesc;
+		return details.displaydesc;
 	}
 
 }

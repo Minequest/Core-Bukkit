@@ -21,6 +21,11 @@ package com.theminequest.MineQuest.Editable;
 
 public class InsideAreaEdit extends AreaEdit {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2170504313888455702L;
+
 	public InsideAreaEdit(long qid, int eid, int tid, String d) {
 		super(qid, eid, tid, d);
 	}

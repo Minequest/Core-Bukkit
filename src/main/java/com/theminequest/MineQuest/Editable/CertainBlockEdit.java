@@ -25,6 +25,10 @@ import org.bukkit.inventory.ItemStack;
 
 public class CertainBlockEdit extends Edit {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2586999166842874789L;
 	private String[] blockIDs;
 	
 	public CertainBlockEdit(long qid, int eid, int tid, String d) {

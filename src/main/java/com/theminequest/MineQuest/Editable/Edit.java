@@ -19,6 +19,8 @@
  **/
 package com.theminequest.MineQuest.Editable;
 
+import java.io.Serializable;
+
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -30,8 +32,12 @@ import org.bukkit.inventory.ItemStack;
 
 import com.theminequest.MineQuest.MineQuest;
 
-public abstract class Edit {
+public abstract class Edit implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5510249479621079410L;
 	private String details;
 	private long questid;
 	private int editid;

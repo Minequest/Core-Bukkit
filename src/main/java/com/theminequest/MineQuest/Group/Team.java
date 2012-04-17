@@ -119,7 +119,7 @@ public class Team implements Group {
 			throw new GroupException(GroupReason.ALREADYONQUEST);
 		long id = MineQuest.questManager.startQuest(q);
 		quest = MineQuest.questManager.getQuest(id);
-		if (quest.groupLimit<players.size()){
+		if (quest.details.groupLimit<players.size()){
 			// FIXME should this go to backends?
 			abandonQuest();
 			throw new GroupException(GroupReason.BADCAPACITY);
