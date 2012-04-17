@@ -1,5 +1,6 @@
 package com.theminequest.MineQuest.Frontend.Command;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
@@ -32,9 +33,13 @@ public class QuestCommandFrontend extends CommandFrontend {
 	 * TODO list:
 	 * discard quest function?
 	 */
+	
+	private PropertiesFile localization;
 
 	public QuestCommandFrontend(){
 		super("quest");
+		// FIXME
+		localization = new PropertiesFile(MineQuest.activePlugin.getDataFolder().getAbsolutePath()+File.separator+"tmp.properties");
 	}
 	
 	public Boolean accept(Player p, String[] args) {
