@@ -185,6 +185,12 @@ public class MineQuest extends JavaPlugin {
 		} catch (IOException e) {
 			log(Level.WARNING, "[Metrics] Could not attach to Hidendra Metrics.");
 		}
+		
+		//Check If Vault is active. This may prevent some of the dumb questions we get with people trying to use our plugin. 
+		if (!getServer().getPluginManager().isPluginEnabled("Vault")){
+			MineQuest.log(Level.SEVERE, "[Core] You Require Vault Vault to run this plugin. Minequest will now shut down.");
+			onDisable();
+		}
 		if (!setupPermissions())
 			log(Level.SEVERE,"[Vault] Permissions could not be setup!");
 		if (!setupEconomy())
