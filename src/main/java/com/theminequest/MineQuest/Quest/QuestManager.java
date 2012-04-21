@@ -110,6 +110,7 @@ public class QuestManager implements Listener {
 	}
 	
 	public void reloadQuests(){
+		MineQuest.log("[Quest] Reload Triggered. Starting reload...");
 		descriptions = new ArrayList<QuestDescription>();
 		File file = new File(locationofQuests);
 		for (File f : file.listFiles()){

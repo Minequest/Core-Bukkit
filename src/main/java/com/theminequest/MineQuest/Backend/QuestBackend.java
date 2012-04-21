@@ -17,6 +17,8 @@ import com.theminequest.MineQuest.Backend.BackendFailedException.BackendReason;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.BukkitEvents.QuestAvailableEvent;
 import com.theminequest.MineQuest.Group.Team;
+import com.theminequest.MineQuest.Quest.QuestDescription;
+import com.theminequest.MineQuest.Utils.ChatUtils;
 
 public final class QuestBackend {
 
@@ -107,49 +109,19 @@ public final class QuestBackend {
 	 * @return true if repeatable
 	 */
 	public static boolean isRepeatable(String quest_name){
-		File qfile = new File(MineQuest.activePlugin.getDataFolder()
-				+ File.separator + "quests" + File.separator + quest_name
-				+ ".quest");
-		Scanner qfs;
-		try {
-			qfs = new Scanner(qfile);
-		} catch (FileNotFoundException e) {
-			throw new IllegalArgumentException("[QuestBackend] No such quest!",e);
-		}
-		while(qfs.hasNextLine()){
-			String[] examine = qfs.nextLine().split(":");
-			if (examine.length!=2)
-				continue;
-			if (examine[0].equalsIgnoreCase("Repeatable")){
-				return Boolean.parseBoolean(examine[1]);
-			}
-		}
-		return true;
+		QuestDescription d = getQuestDesc(quest_name);
+		if (d==null)
+			throw new IllegalArgumentException("No such Quest!");
+		return d.questRepeatable;
 	}
-	
-	public static String retrieveDetail(String quest_name, String detail){
-		File qfile = new File(MineQuest.activePlugin.getDataFolder()
-				+ File.separator + "quests" + File.separator + quest_name
-				+ ".quest");
-		Scanner qfs;
-		try {
-			qfs = new Scanner(qfile);
-		} catch (FileNotFoundException e) {
-			throw new IllegalArgumentException("[QuestBackend] No such quest!",e);
-		}
-		while(qfs.hasNextLine()){
-			String[] examine = qfs.nextLine().split(":");
-			if (examine[0].equalsIgnoreCase(detail)){
-				String d = "";
-				for (int i = 1; i<examine.length; i++){
-					d+=examine[i];
-					if (i<examine.length-1)
-						d+=":";
-				}
-				return d;
-			}
-		}
-		return null;
+
+	/**
+	 * Retrieve details about a particular quest.
+	 * @param quest_name Quest to retrieve
+	 * @return Details or <code>null</code> if there was no such quest.
+	 */
+	public static QuestDescription getQuestDesc(String quest_name){
+		return MineQuest.questManager.getQuest(quest_name);
 	}
 
 	/**
@@ -159,11 +131,15 @@ public final class QuestBackend {
 	 * @throws BackendFailedException if the player doesn't have the quest
 	 */
 	public static void acceptQuest(Player p, String quest_name) throws BackendFailedException{
+		QuestDescription d = getQuestDesc(quest_name);
+		if (d==null)
+			throw new BackendFailedException(BackendReason.FILEDISAPPEARED);
 		try {
 			List<String> nonacceptedquests = getQuests(QuestAvailability.AVAILABLE, p);
 			for (String s : nonacceptedquests){
 				if (s.equalsIgnoreCase(quest_name)){
 					MineQuest.sqlstorage.querySQL("Quests/acceptQuest", p.getName(), quest_name);
+					p.sendMessage(ChatUtils.chatify(d.displayaccept));
 					return;
 				}
 			}

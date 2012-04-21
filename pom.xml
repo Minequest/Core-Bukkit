@@ -9,7 +9,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<build.Number>unofficialDev</build.Number>
+		<build.number>unofficialDev</build.number>
 	</properties>
 
 	<scm>

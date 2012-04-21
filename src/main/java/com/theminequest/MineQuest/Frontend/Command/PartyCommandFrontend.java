@@ -63,7 +63,7 @@ public class PartyCommandFrontend extends CommandFrontend {
 
 	public Boolean invite(Player p, String[] args) {
 		if (GroupBackend.teamID(p)==-1){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Party_NOPARTY.getDescription());
+			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOPARTY.getDescription());
 			return false;
 		}
 		if (args.length!=1){
@@ -102,7 +102,7 @@ public class PartyCommandFrontend extends CommandFrontend {
 
 	public Boolean kick(Player p, String[] args) {
 		if (GroupBackend.teamID(p)==-1){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Party_NOPARTY.getDescription());
+			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOPARTY.getDescription());
 			return false;
 		}
 		if (args.length!=1){
@@ -135,7 +135,7 @@ public class PartyCommandFrontend extends CommandFrontend {
 
 	public Boolean leave(Player p, String[] args) {
 		if (GroupBackend.teamID(p)==-1){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Party_NOPARTY.getDescription());
+			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOPARTY.getDescription());
 			return false;
 		}
 		if (args.length!=0){
@@ -161,7 +161,7 @@ public class PartyCommandFrontend extends CommandFrontend {
 	
 	public Boolean list(Player p, String[] args) {
 		if (GroupBackend.teamID(p)==-1){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Party_NOPARTY.getDescription());
+			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOPARTY.getDescription());
 			return false;
 		}
 		if (args.length!=0){
@@ -188,7 +188,7 @@ public class PartyCommandFrontend extends CommandFrontend {
 	
 	public Boolean promote(Player p, String[] args) {
 		if (GroupBackend.teamID(p)==-1){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Party_NOPARTY.getDescription());
+			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOPARTY.getDescription());
 			return false;
 		}
 		if (args.length!=1){
@@ -248,7 +248,7 @@ public class PartyCommandFrontend extends CommandFrontend {
 			else
 				messages.add(ChatColor.GRAY + I18NMessage.Cmd_Party_NOINVITE.getDescription());
 			messages.add(ChatUtils.formatHelp("party create", I18NMessage.Cmd_Party_HELPCREATE.getDescription()));
-			messages.add(ChatColor.AQUA + I18NMessage.Cmd_Party_NOPARTY.getDescription());
+			messages.add(ChatColor.AQUA + I18NMessage.Cmd_NOPARTY.getDescription());
 		} else {
 			if (isLeader){
 				messages.add(ChatUtils.formatHelp("party invite <name>", I18NMessage.Cmd_Party_HELPINVITETARGET.getDescription()));

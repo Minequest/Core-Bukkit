@@ -21,6 +21,7 @@ import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.Editable.Edit;
 import com.theminequest.MineQuest.Target.TargetDetails;
 import com.theminequest.MineQuest.Tasks.Task;
+import com.theminequest.MineQuest.Utils.ChatUtils;
 import com.theminequest.MineQuest.Utils.FastByteArrayOutputStream;
 
 /**
@@ -38,8 +39,6 @@ public class QuestDescription implements Comparable<QuestDescription>, Serializa
 	public File file;
 
 	public String questname;
-	public long questid;
-
 	// always <ID #,OBJECT/DETAILS>
 	public LinkedHashMap<Integer, String[]> tasks;
 	public LinkedHashMap<Integer, String> events;
@@ -182,5 +181,16 @@ public class QuestDescription implements Comparable<QuestDescription>, Serializa
 		return questname.compareTo(arg0.questname);
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		String tr = "";
+		tr+=ChatUtils.formatHeader(displayname)+"\n";
+		tr+=ChatUtils.chatify(displaydesc)+"\n";
+		return tr;
+	}
+
 
 }
