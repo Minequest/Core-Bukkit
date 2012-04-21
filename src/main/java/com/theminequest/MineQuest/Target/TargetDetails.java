@@ -32,12 +32,10 @@ public class TargetDetails implements Serializable {
 		AREATARGET,AREATARGETQUESTER,TEAMTARGET,TARGETTER,TARGETTEREDIT,RANDOMTARGET;
 	}
 	
-	private long quest;
 	private TargetType type;
 	private String details;
 	
-	public TargetDetails(long questid, String details){
-		quest = questid;
+	public TargetDetails(String details){
 		String[] info = details.split(":");
 		String type = info[0].toLowerCase();
 		if (type.equals("areatarget"))
@@ -52,10 +50,6 @@ public class TargetDetails implements Serializable {
 			this.type = TargetType.TARGETTEREDIT;
 		else if (type.equals("randomtarget"))
 			this.type = TargetType.RANDOMTARGET;
-	}
-	
-	public long getQuest(){
-		return quest;
 	}
 	
 	public TargetType getType(){

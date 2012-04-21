@@ -38,15 +38,8 @@ public abstract class AreaEdit extends Edit {
 	private int twoY;
 	private int twoZ;
 
-	public AreaEdit(long qid, int eid, int tid, String d) {
-		super(qid, eid, tid, d);
-		String[] s = d.split(":");
-		oneX = Integer.parseInt(s[0]);
-		oneY = Integer.parseInt(s[1]);
-		oneZ = Integer.parseInt(s[2]);
-		twoX = Integer.parseInt(s[3]);
-		twoY = Integer.parseInt(s[4]);
-		twoZ = Integer.parseInt(s[5]);
+	public AreaEdit(int eid, int tid, String d) {
+		super(eid, tid, d);
 	}
 
 	public boolean isInArea(Location l){
@@ -73,6 +66,17 @@ public abstract class AreaEdit extends Edit {
 	@Override
 	public boolean allowEdit(Block b, ItemStack i, Player p) {
 		return (isInArea(b.getLocation())==isInside());
+	}
+	
+	@Override
+	public void parseDetails(String d){
+		String[] s = d.split(":");
+		oneX = Integer.parseInt(s[0]);
+		oneY = Integer.parseInt(s[1]);
+		oneZ = Integer.parseInt(s[2]);
+		twoX = Integer.parseInt(s[3]);
+		twoY = Integer.parseInt(s[4]);
+		twoZ = Integer.parseInt(s[5]);
 	}
 
 	/**

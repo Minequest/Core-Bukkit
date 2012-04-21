@@ -102,6 +102,10 @@ public class Quest {
 				throw new RuntimeException(e);
 			}
 		}
+		// enable edits
+		for (Edit e : details.editables.values())
+			e.startEdit(questid);
+		
 		QuestStartedEvent event = new QuestStartedEvent(this);
 		Bukkit.getPluginManager().callEvent(event);
 	}
@@ -203,6 +207,8 @@ public class Quest {
 		finished = c;
 		if (!activeTask.isComplete())
 			activeTask.cancelTask();
+		for (Edit e : details.editables.values())
+			e.dismantle();
 		TimeUtils.unlock(Bukkit.getWorld(details.world));
 		Group g = MineQuest.groupManager.getGroup(MineQuest.groupManager
 				.indexOfQuest(this));

@@ -31,9 +31,8 @@ public class ItemInHandEdit extends Edit {
 	private static final long serialVersionUID = 8325582887415696504L;
 	private String[] materialsID;
 
-	public ItemInHandEdit(long qid, int eid, int tid, String d) {
-		super(qid, eid, tid, d);
-		materialsID = d.split(",");
+	public ItemInHandEdit(int eid, int tid, String d) {
+		super(eid, tid, d);
 	}
 
 	@Override
@@ -43,6 +42,11 @@ public class ItemInHandEdit extends Edit {
 				return true;
 		}
 		return false;
+	}
+
+	@Override
+	public void parseDetails(String d) {
+		materialsID = d.split(",");
 	}
 
 	

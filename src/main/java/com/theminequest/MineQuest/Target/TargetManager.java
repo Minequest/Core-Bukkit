@@ -41,32 +41,32 @@ import com.theminequest.MineQuest.Tasks.Task;
 
 public class TargetManager {
 
-	public static List<LivingEntity> getTarget(TargetDetails t) {
+	public static List<LivingEntity> getTarget(Quest questid, TargetDetails t) {
 		if (t.getType() == TargetType.AREATARGET)
-			return areaTarget(t);
+			return areaTarget(questid,t);
 		else if (t.getType() == TargetType.AREATARGETQUESTER)
-			return areaTargetQuester(t);
+			return areaTargetQuester(questid,t);
 		else if (t.getType() == TargetType.TEAMTARGET)
-			return partyTarget(t);
+			return partyTarget(questid,t);
 		else if (t.getType() == TargetType.TARGETTER)
-			return targetter(t);
+			return targetter(questid,t);
 		else if (t.getType() == TargetType.TARGETTEREDIT)
-			return targetteredit(t);
+			return targetteredit(questid,t);
 		else if (t.getType() == TargetType.RANDOMTARGET)
-			return randomtarget(t);
+			return randomtarget(questid,t);
 		return null;
 	}
 
 	/*
 	 * Details: x:y:z:radius
 	 */
-	private static List<LivingEntity> areaTarget(TargetDetails t) {
+	private static List<LivingEntity> areaTarget(Quest q, TargetDetails t) {
 		String[] details = t.getDetails().split(":");
 		double x = Double.parseDouble(details[0]);
 		double y = Double.parseDouble(details[1]);
 		double z = Double.parseDouble(details[2]);
 		double r = Double.parseDouble(details[3]);
-		World w = Bukkit.getWorld(MineQuest.questManager.getQuest(t.getQuest())
+		World w = Bukkit.getWorld(q
 				.getWorld());
 		Location l = new Location(w, x, y, z);
 		return getEntitiesAroundRadius(l, r);
@@ -75,12 +75,11 @@ public class TargetManager {
 	/*
 	 * Quester = PLAYER targetID:radius
 	 */
-	private static List<LivingEntity> areaTargetQuester(TargetDetails t) {
+	private static List<LivingEntity> areaTargetQuester(Quest q, TargetDetails t) {
 		String[] details = t.getDetails().split(":");
 		int targetID = Integer.parseInt(details[0]);
 		double r = Double.parseDouble(details[1]);
-		List<LivingEntity> es = getTarget(MineQuest.questManager.getQuest(
-				t.getQuest()).getTarget(targetID));
+		List<LivingEntity> es = getTarget(q,q.getTarget(targetID));
 		for (LivingEntity en : es) {
 			if (en instanceof Player)
 				return getEntitiesAroundRadius(en.getLocation(), r);
@@ -91,8 +90,7 @@ public class TargetManager {
 	/*
 	 * this does NOT specify any details (details = "")
 	 */
-	private static List<LivingEntity> partyTarget(TargetDetails t) {
-		Quest q = MineQuest.questManager.getQuest(t.getQuest());
+	private static List<LivingEntity> partyTarget(Quest q, TargetDetails t) {
 		Group team = MineQuest.groupManager.getGroup(MineQuest.groupManager.indexOfQuest(q));
 		List<LivingEntity> list = new ArrayList<LivingEntity>();
 		list.addAll(team.getPlayers());
@@ -102,12 +100,11 @@ public class TargetManager {
 	/*
 	 * eventid1,eventid2,etc...
 	 */
-	private static List<LivingEntity> targetter(TargetDetails t) {
+	private static List<LivingEntity> targetter(Quest q, TargetDetails t) {
 		String[] ids = t.getDetails().split(",");
 		List<LivingEntity> toreturn = new ArrayList<LivingEntity>();
 		for (String id : ids) {
 			int i = Integer.parseInt(id);
-			Quest q = MineQuest.questManager.getQuest(t.getQuest());
 			Task ts = q.getActiveTask();
 			Collection<QEvent> running = ts.getEvents();
 			for (QEvent event : running) {
@@ -126,16 +123,16 @@ public class TargetManager {
 	 * TODO: actually implement this... even though this doesn't make any sense.
 	 */
 	@Deprecated
-	private static List<LivingEntity> targetteredit(TargetDetails t) {
+	private static List<LivingEntity> targetteredit(Quest q, TargetDetails t) {
 		String[] ids = t.getDetails().split(",");
 		List<LivingEntity> toreturn = new ArrayList<LivingEntity>();
 		return toreturn;
 	}
 	
-	private static List<LivingEntity> randomtarget(TargetDetails t){
+	private static List<LivingEntity> randomtarget(Quest q, TargetDetails t){
 		String targetid = t.getDetails();
 		List<LivingEntity> toreturn = new ArrayList<LivingEntity>();
-		List<LivingEntity> randomchoosing = TargetManager.getTarget(MineQuest.questManager.getQuest(t.getQuest()).getTarget(Integer.parseInt(targetid)));
+		List<LivingEntity> randomchoosing = TargetManager.getTarget(q,q.getTarget(Integer.parseInt(targetid)));
 		toreturn.add(randomchoosing.get(new Random().nextInt(randomchoosing.size())));
 		return toreturn;
 	}

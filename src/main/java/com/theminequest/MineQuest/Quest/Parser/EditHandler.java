@@ -26,11 +26,11 @@ public class EditHandler implements QHandler {
 		}
 		Edit e;
 		if (edittype.equalsIgnoreCase("CanEdit"))
-			e = new CoordinateEdit(q.questid,number,Integer.parseInt(d.split(":")[3]),d);
+			e = new CoordinateEdit(number,Integer.parseInt(d.split(":")[3]),d);
 		else if (edittype.equalsIgnoreCase("CanEditArea"))
-			e = new InsideAreaEdit(q.questid,number,Integer.parseInt(d.split(":")[6]),d);
+			e = new InsideAreaEdit(number,Integer.parseInt(d.split(":")[6]),d);
 		else if (edittype.equalsIgnoreCase("CanEditOutsideArea"))
-			e = new OutsideAreaEdit(q.questid,number,Integer.parseInt(d.split(":")[6]),d);
+			e = new OutsideAreaEdit(number,Integer.parseInt(d.split(":")[6]),d);
 		else {
 			int taskid = Integer.parseInt(line.get(2));
 			d = "";
@@ -40,9 +40,9 @@ public class EditHandler implements QHandler {
 					d+=":";
 			}
 			if (edittype.equalsIgnoreCase("CanEditTypesInHand"))
-				e = new ItemInHandEdit(q.questid,number,taskid,d);
+				e = new ItemInHandEdit(number,taskid,d);
 			else
-				e = new CertainBlockEdit(q.questid,number,taskid,d);
+				e = new CertainBlockEdit(number,taskid,d);
 		}
 		q.editables.put(number, e);
 	}

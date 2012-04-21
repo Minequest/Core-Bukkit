@@ -31,9 +31,8 @@ public class CertainBlockEdit extends Edit {
 	private static final long serialVersionUID = -2586999166842874789L;
 	private String[] blockIDs;
 	
-	public CertainBlockEdit(long qid, int eid, int tid, String d) {
-		super(qid, eid, tid, d);
-		blockIDs = d.split(",");
+	public CertainBlockEdit(int eid, int tid, String d) {
+		super(eid, tid, d);
 	}
 
 	@Override
@@ -43,6 +42,11 @@ public class CertainBlockEdit extends Edit {
 				return true;
 		}
 		return false;
+	}
+
+	@Override
+	public void parseDetails(String d) {
+		blockIDs = d.split(",");
 	}
 
 }

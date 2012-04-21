@@ -38,17 +38,31 @@ public abstract class Edit implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -5510249479621079410L;
-	private String details;
 	private long questid;
 	private int editid;
 	private int taskid;
 	
-	public Edit(long qid, int eid, int tid, String d){
-		questid = qid;
+	public Edit(int eid, int tid, String d){
+		questid = -1;
 		editid = eid;
 		taskid = tid;
-		details = d;
+		parseDetails(d);
 	}
+	
+	public void startEdit(long qid){
+		questid = qid;
+		MineQuest.editManager.addEditTracking(this);
+	}
+	
+	public void dismantle() {
+		MineQuest.editManager.rmEditTracking(this);
+	}
+	
+	/**
+	 * Retrieve details about this edit.
+	 * @param d Edit details
+	 */
+	public abstract void parseDetails(String d);
 	
 	/**
 	 * Check to see if editing is allowed with the given block
@@ -78,5 +92,6 @@ public abstract class Edit implements Serializable {
 		}
 		MineQuest.questManager.getQuest(questid).startTask(taskid);
 	}
+
 
 }

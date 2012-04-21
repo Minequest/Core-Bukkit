@@ -18,7 +18,7 @@ public class TargetHandler implements QHandler {
 			if (i!=line.size()-1)
 				d+=":";
 		}
-		q.targets.put(number, new TargetDetails(q.questid,d));
+		q.targets.put(number, new TargetDetails(d));
 	}
 
 }

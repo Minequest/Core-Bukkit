@@ -33,12 +33,8 @@ public class CoordinateEdit extends Edit {
 	private int coordY;
 	private int coordZ;
 
-	public CoordinateEdit(long qid, int eid, int tid, String d) {
-		super(qid, eid, tid, d);
-		String[] coords = d.split(":");
-		coordX = Integer.parseInt(coords[0]);
-		coordY = Integer.parseInt(coords[1]);
-		coordZ = Integer.parseInt(coords[2]);
+	public CoordinateEdit(int eid, int tid, String d) {
+		super(eid, tid, d);
 	}
 
 	@Override
@@ -46,6 +42,14 @@ public class CoordinateEdit extends Edit {
 		if (b.getX()==coordX && b.getY()==coordY && b.getZ()==coordZ)
 			return true;
 		return false;
+	}
+
+	@Override
+	public void parseDetails(String d) {
+		String[] coords = d.split(":");
+		coordX = Integer.parseInt(coords[0]);
+		coordY = Integer.parseInt(coords[1]);
+		coordZ = Integer.parseInt(coords[2]);
 	}
 
 }
