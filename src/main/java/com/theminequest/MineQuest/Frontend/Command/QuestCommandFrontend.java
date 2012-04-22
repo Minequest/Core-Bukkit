@@ -156,7 +156,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 			return false;
 		}
 		p.sendMessage(ChatUtils.formatHeader("Active: " + g.getQuest().getName()));
-		p.sendMessage(g.getQuest().details.toString());
+		p.sendMessage(g.getQuest().details.toString().split("\n"));
 		return true;
 	}
 
