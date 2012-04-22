@@ -82,6 +82,7 @@ public class QuestDescription implements Comparable<QuestDescription>, Serializa
 	 */
 	protected QuestDescription(File f) throws FileNotFoundException{
 		String id = f.getName();
+		file = f;
 		setDefaults(id);
 		readInFile();
 	}
