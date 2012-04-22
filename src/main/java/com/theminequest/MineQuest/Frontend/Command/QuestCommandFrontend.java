@@ -246,7 +246,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 			p.sendMessage(I18NMessage.Cmd_NOSUCHQUEST.getDescription());
 			return false;
 		}
-		p.sendMessage(qd.toString());
+		p.sendMessage(qd.toString().split("\n"));
 		return true;
 	}
 
