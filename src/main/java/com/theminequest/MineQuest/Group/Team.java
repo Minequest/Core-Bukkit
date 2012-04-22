@@ -33,6 +33,8 @@ import com.theminequest.MineQuest.ManagerException;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.Backend.QuestBackend;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
+import com.theminequest.MineQuest.BukkitEvents.GroupPlayerJoinedEvent;
+import com.theminequest.MineQuest.BukkitEvents.GroupPlayerQuitEvent;
 import com.theminequest.MineQuest.BukkitEvents.QuestStartedEvent;
 import com.theminequest.MineQuest.Group.GroupException.GroupReason;
 import com.theminequest.MineQuest.Quest.Quest;
@@ -174,7 +176,8 @@ public class Team implements Group {
 			throw new GroupException(GroupReason.INSIDEQUEST);
 		//MineQuest.playerManager.getPlayerDetails(p).setTeam(teamid);
 		players.add(p);
-		// TODO add TeamPlayerJoinedEvent
+		GroupPlayerJoinedEvent e = new GroupPlayerJoinedEvent(this,p);
+		Bukkit.getPluginManager().callEvent(e);
 	}
 
 	@Override
@@ -196,7 +199,8 @@ public class Team implements Group {
 			}
 			MineQuest.groupManager.removeEmptyTeam(teamid);
 		}
-		// TODO add TeamPlayerQuitEvent
+		GroupPlayerQuitEvent e = new GroupPlayerQuitEvent(this,p);
+		Bukkit.getPluginManager().callEvent(e);
 	}
 
 	@Override

@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -38,6 +39,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import com.theminequest.MineQuest.ManagerException;
 import com.theminequest.MineQuest.ManagerException.ManagerReason;
 import com.theminequest.MineQuest.MineQuest;
+import com.theminequest.MineQuest.BukkitEvents.GroupPlayerJoinedEvent;
+import com.theminequest.MineQuest.BukkitEvents.GroupPlayerQuitEvent;
 import com.theminequest.MineQuest.BukkitEvents.QuestCompleteEvent;
 import com.theminequest.MineQuest.BukkitEvents.GroupInviteEvent;
 import com.theminequest.MineQuest.Group.GroupException.GroupReason;
@@ -162,6 +165,18 @@ public class GroupManager implements Listener{
 			return;
 		groups.get(id).lockGroup();
 		groups.remove(id);
+	}
+	
+	@EventHandler
+	public synchronized void onGroupPlayerJoinedEvent(GroupPlayerJoinedEvent e){
+		for (Player p : e.getGroup().getPlayers())
+			p.sendMessage(ChatColor.GOLD + e.getPlayer().getDisplayName() + " has joined the party.");
+	}
+	
+	@EventHandler
+	public synchronized void onGroupPlayerQuitEvent(GroupPlayerQuitEvent e){
+		for (Player p : e.getGroup().getPlayers())
+			p.sendMessage(ChatColor.GOLD + e.getPlayer().getDisplayName() + " has left the party.");
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
