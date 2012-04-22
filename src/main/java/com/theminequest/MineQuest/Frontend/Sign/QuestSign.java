@@ -72,8 +72,6 @@ public class QuestSign implements Listener {
 					QuestBackend.giveQuestToPlayer(player, questName);
 					QuestBackend.acceptQuest(player, questName);
 				} catch (BackendFailedException e) {
-					MineQuest.log(Level.SEVERE, e.toString());
-					e.printStackTrace();
 					player.sendMessage(ChatColor.RED + "Error: " + e.getMessage());
 				} 
 			}
