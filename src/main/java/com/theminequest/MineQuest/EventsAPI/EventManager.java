@@ -188,37 +188,43 @@ public class EventManager implements Listener {
 
 	@EventHandler
 	public void onBlockBreak(final BlockBreakEvent e){
-		for (final QEvent a : activeevents){
-			new Thread(new Runnable(){
-				@Override
-				public void run() {
-					a.onBlockBreak(e);
-				}
-			}).start();
+		synchronized(activeevents){
+			for (final QEvent a : activeevents){
+				new Thread(new Runnable(){
+					@Override
+					public void run() {
+						a.onBlockBreak(e);
+					}
+				}).start();
+			}
 		}
 	}
 
 	@EventHandler
 	public void onEntityDamageByEntityEvent(final EntityDamageByEntityEvent e){
-		for (final QEvent a : activeevents){
-			new Thread(new Runnable(){
-				@Override
-				public void run() {
-					a.onEntityDamageByEntityEvent(e);
-				}
-			}).start();
+		synchronized(activeevents){
+			for (final QEvent a : activeevents){
+				new Thread(new Runnable(){
+					@Override
+					public void run() {
+						a.onEntityDamageByEntityEvent(e);
+					}
+				}).start();
+			}
 		}
 	}
 
 	@EventHandler
 	public void onEntityDeathEvent(final EntityDeathEvent e){
-		for (final QEvent a : activeevents){
-			new Thread(new Runnable(){
-				@Override
-				public void run() {
-					a.onEntityDeath(e);
-				}
-			}).start();
+		synchronized(activeevents){
+			for (final QEvent a : activeevents){
+				new Thread(new Runnable(){
+					@Override
+					public void run() {
+						a.onEntityDeath(e);
+					}
+				}).start();
+			}
 		}
 	}
 
