@@ -80,10 +80,10 @@ public class QuestDescription implements Comparable<QuestDescription>, Serializa
 	 * @param f Valid quest file to read
 	 * @throws FileNotFoundException If file was suddenly disappears
 	 */
-	protected QuestDescription(File f) throws FileNotFoundException{
+	protected QuestDescription(QuestParser p, File f) throws FileNotFoundException{
 		String id = f.getName();
 		setDefaults(id);
-		readInFile();
+		readInFile(p);
 	}
 	
 	/**
@@ -128,10 +128,11 @@ public class QuestDescription implements Comparable<QuestDescription>, Serializa
 	
 	/**
 	 * Reads in the file description from the quest folder.
+	 * @param p 
 	 * @throws FileNotFoundException If the file mysteriously disappeared.
 	 */
-	private void readInFile() throws FileNotFoundException{
-		MineQuest.questManager.parser.parseDefinition(this);
+	private void readInFile(QuestParser p) throws FileNotFoundException{
+		p.parseDefinition(this);
 	}
 	
 	/**

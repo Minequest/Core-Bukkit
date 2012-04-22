@@ -115,7 +115,7 @@ public class QuestManager implements Listener {
 		File file = new File(locationofQuests);
 		for (File f : file.listFiles()){
 			try {
-				descriptions.add(new QuestDescription(f));
+				descriptions.add(new QuestDescription(parser,f));
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
