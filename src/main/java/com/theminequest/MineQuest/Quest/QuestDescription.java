@@ -81,7 +81,7 @@ public class QuestDescription implements Comparable<QuestDescription>, Serializa
 	 * @throws FileNotFoundException If file was suddenly disappears
 	 */
 	protected QuestDescription(File f) throws FileNotFoundException{
-		String id = f.getName();
+		String id = f.getName().substring(0, f.getName().indexOf(".quest"));
 		file = f;
 		setDefaults(id);
 		readInFile();

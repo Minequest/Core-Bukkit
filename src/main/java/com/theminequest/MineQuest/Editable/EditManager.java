@@ -36,7 +36,10 @@ public class EditManager implements Listener {
 	
 	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent e){
-		if (!MineQuest.groupManager.getGroup(MineQuest.groupManager.indexOf(e.getPlayer())).isInQuest())
+		long id = MineQuest.groupManager.indexOf(e.getPlayer());
+		if (id==-1)
+			return;
+		if (!MineQuest.groupManager.getGroup(id).isInQuest())
 			return;
 		e.setCancelled(true);
 		for (Edit ed : edits){
@@ -48,7 +51,10 @@ public class EditManager implements Listener {
 	
 	@EventHandler
 	public void onBlockDamage(BlockDamageEvent e){
-		if (!MineQuest.groupManager.getGroup(MineQuest.groupManager.indexOf(e.getPlayer())).isInQuest())
+		long id = MineQuest.groupManager.indexOf(e.getPlayer());
+		if (id==-1)
+			return;
+		if (!MineQuest.groupManager.getGroup(id).isInQuest())
 			return;
 		e.setCancelled(true);
 		for (Edit ed : edits){
