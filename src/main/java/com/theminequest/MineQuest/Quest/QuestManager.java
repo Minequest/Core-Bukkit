@@ -21,6 +21,7 @@ package com.theminequest.MineQuest.Quest;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -113,14 +114,21 @@ public class QuestManager implements Listener {
 		MineQuest.log("[Quest] Reload Triggered. Starting reload...");
 		descriptions = new ArrayList<QuestDescription>();
 		File file = new File(locationofQuests);
-		for (File f : file.listFiles()){
+		for (File f : file.listFiles(new FilenameFilter(){
+
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.endsWith(".quest");
+			}
+			
+		})){
 			try {
 				QuestDescription d = new QuestDescription(f);
 				descriptions.add(d);
 				MineQuest.log("[Quest] Loaded " + d.questname+".");
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
-				MineQuest.log(Level.SEVERE + "[Quest] Failed to load "+f.getName()+"!");
+				MineQuest.log(Level.SEVERE, "[Quest] Failed to load "+f.getName()+"!");
 			}
 		}
 	}

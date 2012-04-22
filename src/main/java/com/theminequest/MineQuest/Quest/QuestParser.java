@@ -73,8 +73,7 @@ public class QuestParser {
 		questDescription.events = new LinkedHashMap<Integer, String>(0);
 		questDescription.targets = new LinkedHashMap<Integer, TargetDetails>(0);
 		questDescription.editables = new LinkedHashMap<Integer,Edit>(0);
-		File f = new File(MineQuest.questManager.locationofQuests + File.separator + questDescription.questname
-				+ ".quest");
+		File f = new File(MineQuest.questManager.locationofQuests + File.separator + questDescription.questname);
 		Scanner filereader = new Scanner(f);
 		while (filereader.hasNextLine()) {
 			String nextline = filereader.nextLine();
