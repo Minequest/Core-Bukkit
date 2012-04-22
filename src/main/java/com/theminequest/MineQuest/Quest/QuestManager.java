@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -106,7 +107,6 @@ public class QuestManager implements Listener {
 		parser.addClassHandler("target", TargetHandler.class);
 		parser.addClassHandler("task", TaskHandler.class);
 		parser.addClassHandler("world", WorldHandler.class);
-		reloadQuests();
 	}
 	
 	public void reloadQuests(){
@@ -115,9 +115,12 @@ public class QuestManager implements Listener {
 		File file = new File(locationofQuests);
 		for (File f : file.listFiles()){
 			try {
-				descriptions.add(new QuestDescription(parser,f));
+				QuestDescription d = new QuestDescription(f);
+				descriptions.add(d);
+				MineQuest.log("[Quest] Loaded " + d.questname+".");
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
+				MineQuest.log(Level.SEVERE + "[Quest] Failed to load "+f.getName()+"!");
 			}
 		}
 	}

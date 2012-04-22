@@ -199,6 +199,7 @@ public class MineQuest extends JavaPlugin {
 		getCommand("minequest").setExecutor(commandFrontend);
 		getCommand("quest").setExecutor(new QuestCommandFrontend());
 		getCommand("party").setExecutor(new PartyCommandFrontend());
+		questManager.reloadQuests();
 	}
 
 	@Override
