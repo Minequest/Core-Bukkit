@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -199,7 +200,14 @@ public class MineQuest extends JavaPlugin {
 		getCommand("minequest").setExecutor(commandFrontend);
 		getCommand("quest").setExecutor(new QuestCommandFrontend());
 		getCommand("party").setExecutor(new PartyCommandFrontend());
-		questManager.reloadQuests();
+		
+		Bukkit.getScheduler().scheduleAsyncDelayedTask(this, new Runnable(){
+			@Override
+			public void run() {
+				questManager.reloadQuests();
+			}
+		}, 500L);
+
 	}
 
 	@Override

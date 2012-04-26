@@ -21,7 +21,11 @@ package com.theminequest.MineQuest.Frontend.Command;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -42,39 +46,41 @@ import com.theminequest.MineQuest.Group.Team;
 
 public class CommandListener implements CommandExecutor{
 
+	public Map<String,String> helpmenu;
+
 	public CommandListener(){
 		MineQuest.log("[CommandFrontend] Starting Command Frontend...");
+		helpmenu = new LinkedHashMap<String,String>();
+		helpmenu.put("quest", "List Quest Commands.");
+		helpmenu.put("party", "List Party Commands.");
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String command, String[] args) {
-		Player player = null;
-		if (sender instanceof Player)
-			player = (Player) sender;
-
-		if (args.length == 0){
-			if(cmd.getName().equalsIgnoreCase("minequest")){
-				showMineQuestHelp(sender);
-				return true;
-			}
+		if(cmd.getName().equalsIgnoreCase("minequest")){
+			showMineQuestHelp(sender);
+			return true;
 		}
 
 		return false;
 	}
 
 	public void showMineQuestHelp(CommandSender sender){
-		String[] message = {
-				formatHeader("MineQuest Help"),
-				formatHelp("quest", "List quest commands."),
-				formatHelp("party", "List party commands."),
-				formatHelp("player", "List player commands (RPG)."),
-		};
-		sender.sendMessage(message);
+		String[] msg = new String[helpmenu.size()+1];
+		msg[0] = formatHeader("MineQuest Help");
+		Iterator<String> entries = helpmenu.keySet().iterator();
+		int counter = 1;
+		while (entries.hasNext()){
+			String entry = entries.next();
+			msg[counter] = formatHelp(entry,helpmenu.get(entry));
+			counter++;
+		}
+		sender.sendMessage(msg);
 	}
 
 	private String formatHeader(String headername) {
 		return ChatColor.GREEN + "==== { " + ChatColor.YELLOW + headername + ChatColor.GREEN + " } ====";
 	}
-	
+
 	private String formatHelp(String command, String description) {
 		String toreturn = "";
 		toreturn += ChatColor.GREEN + "/" + command;

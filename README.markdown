@@ -27,7 +27,13 @@ MineQuest uses Maven to manage and build its source. To checkout and build this 
 Eclipse has some handy guides to using m2e - Google is your friend.
 
 <h3>Forking/Pulling</h3>
-Please follow the general Java coding standards.
+* Please follow the general Java coding standards.
+* Creating a new event? See the **QEvent** class.
+* Implementing a new command? See the **CommandFrontend** class.
+* Want to add a command to the _/minequest_ menu? Checkout the **CommandListener** class.
+* Frontends should always use methods found in com.theminequest.MineQuest.Backend, and should **NEVER** call managers directly.
+* Have a new attribute for the quest file? The **QuestParser.QHandler** interface can help with that.
+* Feel free to use any of the utilities in com.theminequest.MineQuest.Utils.
 
 Feel free to fork and submit pull requests to this repository. Please remember that by submitting your code you hereby release it under the project's license.
 
