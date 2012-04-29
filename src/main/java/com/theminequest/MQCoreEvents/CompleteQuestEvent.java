@@ -21,12 +21,12 @@ package com.theminequest.MQCoreEvents;
 
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
+import com.theminequest.MineQuest.EventsAPI.DelayedQEvent;
 import com.theminequest.MineQuest.EventsAPI.QEvent;
 
-public class CompleteQuestEvent extends QEvent {
+public class CompleteQuestEvent extends DelayedQEvent {
 
 	private long delay;
-	private long time;
 	
 	public CompleteQuestEvent(long q, int e, String details) {
 		super(q, e, details);
@@ -41,13 +41,15 @@ public class CompleteQuestEvent extends QEvent {
 	@Override
 	public void parseDetails(String[] details) {
 		delay = Long.parseLong(details[0]);
-		time = System.currentTimeMillis();
+	}
+	
+	@Override
+	public long getDelay() {
+		return delay;
 	}
 
 	@Override
-	public boolean conditions() {
-		if (System.currentTimeMillis()-time<delay)
-			return false;
+	public boolean delayedConditions() {
 		return true;
 	}
 
@@ -61,5 +63,4 @@ public class CompleteQuestEvent extends QEvent {
 	public Integer switchTask() {
 		return null;
 	}
-
 }

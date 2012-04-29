@@ -23,15 +23,15 @@ import org.bukkit.entity.Player;
 
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
+import com.theminequest.MineQuest.EventsAPI.DelayedQEvent;
 import com.theminequest.MineQuest.EventsAPI.QEvent;
 import com.theminequest.MineQuest.Group.Group;
 import com.theminequest.MineQuest.Group.Team;
 
-public class PartyHealthEvent extends QEvent {
+public class PartyHealthEvent extends DelayedQEvent {
 
 	private long delay;
 	private double percentile;
-	private long time;
 	
 	public PartyHealthEvent(long q, int e, String details) {
 		super(q, e, details);
@@ -49,13 +49,15 @@ public class PartyHealthEvent extends QEvent {
 	public void parseDetails(String[] details) {
 		delay = Long.parseLong(details[0]);
 		percentile = Double.parseDouble(details[1]);
-		time = System.currentTimeMillis();
+	}
+	
+	@Override
+	public long getDelay() {
+		return delay;
 	}
 
 	@Override
-	public boolean conditions() {
-		if (System.currentTimeMillis()-time<delay)
-			return false;
+	public boolean delayedConditions() {
 		return true;
 	}
 

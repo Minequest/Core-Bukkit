@@ -21,13 +21,13 @@ package com.theminequest.MQCoreEvents;
 
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
+import com.theminequest.MineQuest.EventsAPI.DelayedQEvent;
 import com.theminequest.MineQuest.EventsAPI.QEvent;
 
-public class QuestEvent extends QEvent {
+public class QuestEvent extends DelayedQEvent {
 
 	private long milliseconds;
 	private int tasktotrigger;
-	private long initialmilliseconds;
 	
 	public QuestEvent(long q, int e, String details) {
 		super(q, e, details);
@@ -44,13 +44,15 @@ public class QuestEvent extends QEvent {
 	public void parseDetails(String[] details) {
 		milliseconds = Long.parseLong(details[0]);
 		tasktotrigger = Integer.parseInt(details[1]);
-		initialmilliseconds = System.currentTimeMillis();
 	}
 
 	@Override
-	public boolean conditions() {
-		if ((System.currentTimeMillis()-initialmilliseconds)>=milliseconds)
-			return false;
+	public long getDelay() {
+		return milliseconds;
+	}
+
+	@Override
+	public boolean delayedConditions() {
 		return true;
 	}
 

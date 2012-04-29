@@ -42,7 +42,7 @@ public class LockWorldTimeEvent extends QEvent {
 	 * Details:
 	 * [0] Check delay
 	 * [1] Time
-	 * [2] Second Bound Time - IGNORED, DEPRECIATED
+	 * [2] Second Bound Time - IGNORED, DEPRECATED
 	 */
 	@Override
 	public void parseDetails(String[] details) {

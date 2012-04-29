@@ -26,14 +26,14 @@ import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.Backend.BackendFailedException;
 import com.theminequest.MineQuest.Backend.QuestBackend;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
+import com.theminequest.MineQuest.EventsAPI.DelayedQEvent;
 import com.theminequest.MineQuest.EventsAPI.QEvent;
 import com.theminequest.MineQuest.Group.Group;
 import com.theminequest.MineQuest.Group.Team;
 
-public class QuestAvailableEvent extends QEvent {
+public class QuestAvailableEvent extends DelayedQEvent {
 
 	private long delay;
-	private long time;
 	private String questavailable;
 
 	public QuestAvailableEvent(long q, int e, String details) {
@@ -51,13 +51,15 @@ public class QuestAvailableEvent extends QEvent {
 	public void parseDetails(String[] details) {
 		delay = Long.parseLong(details[0]);
 		questavailable = details[1];
-		time = System.currentTimeMillis();
+	}
+	
+	@Override
+	public long getDelay() {
+		return delay;
 	}
 
 	@Override
-	public boolean conditions() {
-		if (System.currentTimeMillis()-time<delay)
-			return false;
+	public boolean delayedConditions() {
 		return true;
 	}
 

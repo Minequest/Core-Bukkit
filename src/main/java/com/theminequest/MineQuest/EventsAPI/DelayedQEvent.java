@@ -2,12 +2,10 @@ package com.theminequest.MineQuest.EventsAPI;
 
 public abstract class DelayedQEvent extends QEvent {
 	
-	private long delay;
 	private long starttime;
 
 	public DelayedQEvent(long q, int e, String details) {
 		super(q, e, details);
-		delay = getDelay();
 		starttime = System.currentTimeMillis();
 	}
 	
@@ -25,7 +23,7 @@ public abstract class DelayedQEvent extends QEvent {
 	
 	@Override
 	public final boolean conditions() {
-		if (starttime+delay>System.currentTimeMillis())
+		if (starttime+getDelay()>System.currentTimeMillis())
 			return false;
 		return delayedConditions();
 	}

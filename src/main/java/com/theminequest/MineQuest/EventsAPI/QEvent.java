@@ -125,8 +125,10 @@ public abstract class QEvent{
 			MineQuest.eventManager.rmEventListener(this);
 			complete = c;
 			cleanUpEvent();
-			if (switchTask()!=null)
-				MineQuest.questManager.getQuest(getQuestId()).startTask(switchTask());
+			if (c!=CompleteStatus.CANCELED && c!=CompleteStatus.IGNORE){
+				if (switchTask()!=null)
+					MineQuest.questManager.getQuest(getQuestId()).startTask(switchTask());
+			}
 			EventCompleteEvent e = new EventCompleteEvent(this,c);
 			Bukkit.getPluginManager().callEvent(e);
 		}
