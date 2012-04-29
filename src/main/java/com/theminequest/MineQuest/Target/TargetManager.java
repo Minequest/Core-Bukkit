@@ -32,7 +32,7 @@ import org.bukkit.entity.Player;
 
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.EventsAPI.QEvent;
-import com.theminequest.MineQuest.EventsAPI.TargetEvent;
+import com.theminequest.MineQuest.EventsAPI.TargetedQEvent;
 import com.theminequest.MineQuest.Group.Group;
 import com.theminequest.MineQuest.Group.Team;
 import com.theminequest.MineQuest.Quest.Quest;
@@ -109,8 +109,8 @@ public class TargetManager {
 			Collection<QEvent> running = ts.getEvents();
 			for (QEvent event : running) {
 				if (event.getEventId() == i) {
-					if (event instanceof TargetEvent) {
-						toreturn.addAll(((TargetEvent) event).getTargets());
+					if (event instanceof TargetedQEvent) {
+						toreturn.addAll(((TargetedQEvent) event).getTargets());
 					}
 				}
 			}
