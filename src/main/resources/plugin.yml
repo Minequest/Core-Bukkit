@@ -15,11 +15,14 @@ depend: [Vault]
 
 commands:
   minequest:
+    description: View MineQuest commands.
     permission: minequest.user
   quest:
+    description: View Quest commands.
     aliases: [mqquest]
     permission: minequest.user
   party:
+    description: View Party commands.
     aliases: [mqparty]
     permission: minequest.user
     
