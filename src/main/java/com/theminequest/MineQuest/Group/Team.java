@@ -175,9 +175,11 @@ public class Team implements Group {
 		if (inQuest)
 			throw new GroupException(GroupReason.INSIDEQUEST);
 		//MineQuest.playerManager.getPlayerDetails(p).setTeam(teamid);
-		players.add(p);
 		GroupPlayerJoinedEvent e = new GroupPlayerJoinedEvent(this,p);
 		Bukkit.getPluginManager().callEvent(e);
+		if (e.isCancelled())
+			throw new GroupException(GroupReason.EXTERNALEXCEPTION);
+		players.add(p);
 	}
 
 	@Override
@@ -186,6 +188,12 @@ public class Team implements Group {
 			throw new GroupException(GroupReason.NOTONTEAM);
 		if (!contains(p))
 			throw new GroupException(GroupReason.NOTONTEAM);
+		GroupPlayerQuitEvent e = new GroupPlayerQuitEvent(this,p);
+		Bukkit.getPluginManager().callEvent(e);
+		if (e.isCancelled()){
+			if (e.getPlayer().isOnline())
+				throw new GroupException(GroupReason.EXTERNALEXCEPTION);
+		}
 		//MineQuest.playerManager.getPlayerDetails(p).setTeam(-1);
 		players.remove(p);
 		if (locations!=null){
@@ -199,8 +207,6 @@ public class Team implements Group {
 			}
 			MineQuest.groupManager.removeEmptyTeam(teamid);
 		}
-		GroupPlayerQuitEvent e = new GroupPlayerQuitEvent(this,p);
-		Bukkit.getPluginManager().callEvent(e);
 	}
 
 	@Override

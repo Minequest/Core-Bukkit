@@ -100,6 +100,11 @@ public class MineQuest extends JavaPlugin {
 	 */
 	public static GriefcraftMetrics gcMetrics = null;
 	private static PluginDescriptionFile description = null;
+	
+	/**
+	 * Access main /minequest help menu modifier
+	 */
+	public static CommandListener commandListener = null;
 
 	/**
 	 * Log using the central MineQuest logger.
@@ -196,8 +201,8 @@ public class MineQuest extends JavaPlugin {
 		// sign frontend
 		getServer().getPluginManager().registerEvents(new QuestSign(), this);
 		// command frontend
-		CommandListener commandFrontend = new CommandListener();
-		getCommand("minequest").setExecutor(commandFrontend);
+		commandListener = new CommandListener();
+		getCommand("minequest").setExecutor(commandListener);
 		getCommand("quest").setExecutor(new QuestCommandFrontend());
 		getCommand("party").setExecutor(new PartyCommandFrontend());
 		
@@ -216,6 +221,7 @@ public class MineQuest extends JavaPlugin {
 		activePlugin = null;
 		eventManager.dismantleRunnable();
 		eventManager = null;
+		commandListener = null;
 		editManager = null;
 		taskManager = null;
 		questManager = null;

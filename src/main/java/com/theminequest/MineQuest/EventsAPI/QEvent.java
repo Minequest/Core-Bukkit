@@ -27,10 +27,11 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.BukkitEvents.EventCompleteEvent;
+import com.theminequest.MineQuest.Quest.Quest;
 
 public abstract class QEvent{
 
-	private long questid;
+	private Quest quest;
 	private int eventid;
 	private volatile CompleteStatus complete;
 	private int tasknumber;
@@ -44,7 +45,7 @@ public abstract class QEvent{
 	 * @param details Details to parse
 	 */
 	public QEvent(long q, int e, String details){
-		questid = q;
+		quest = MineQuest.questManager.getQuest(q);
 		eventid = e;
 		complete = null;
 		parseDetails(details.split(":"));
@@ -95,8 +96,13 @@ public abstract class QEvent{
 	 */
 	public abstract CompleteStatus action();
 
+	@Deprecated
 	public final long getQuestId(){
-		return questid;
+		return quest.getID();
+	}
+	
+	public final Quest getQuest(){
+		return quest;
 	}
 
 	public final int getEventId(){
