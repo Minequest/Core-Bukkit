@@ -126,6 +126,8 @@ public class Team implements Group {
 			abandonQuest();
 			throw new GroupException(GroupReason.BADCAPACITY);
 		}
+		if (!quest.details.loadworld)
+			quest.startQuest();
 		QuestStartedEvent event = new QuestStartedEvent(quest);
 		Bukkit.getPluginManager().callEvent(event);
 	}

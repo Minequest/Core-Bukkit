@@ -150,8 +150,6 @@ public class QuestManager implements Listener {
 			throw new RuntimeException(e);
 		}
 		quests.put(questid,new Quest(questid,d));
-		if (!quests.get(questid).details.loadworld)
-			quests.get(questid).startQuest();
 		long thisquestid = questid;
 		questid++;
 		return thisquestid;
