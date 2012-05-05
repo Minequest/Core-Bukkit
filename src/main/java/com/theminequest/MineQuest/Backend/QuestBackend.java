@@ -18,6 +18,7 @@ import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.BukkitEvents.QuestAvailableEvent;
 import com.theminequest.MineQuest.Group.Team;
 import com.theminequest.MineQuest.Quest.QuestDescription;
+import com.theminequest.MineQuest.Quest.QuestManager;
 import com.theminequest.MineQuest.Utils.ChatUtils;
 
 public final class QuestBackend {
@@ -146,6 +147,24 @@ public final class QuestBackend {
 			throw new BackendFailedException(BackendReason.NOTHAVEQUEST);
 		} catch (SQLException e) {
 			throw new BackendFailedException(e);
+		}
+	}
+
+	/**
+	 * Reload a Quest
+	 * @param name Name of Quest to reload, or NULL for all of them
+	 * @throws BackendFailedException If there is no such Quest
+	 */
+	public static void reloadQuest(String name) throws BackendFailedException {
+		QuestManager q = MineQuest.questManager;
+		if (name==null)
+			q.reloadQuests();
+		else{
+			try {
+				q.reloadQuest(name);
+			} catch (IllegalArgumentException e){
+				throw new BackendFailedException(e);
+			}
 		}
 	}
 

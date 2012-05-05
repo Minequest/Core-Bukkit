@@ -301,6 +301,32 @@ public class QuestCommandFrontend extends CommandFrontend {
 		}).start();
 		return true;
 	}
+	
+	public Boolean reload(Player p, String[] args) {
+		if (args.length>1){
+			p.sendMessage(I18NMessage.Cmd_INVALIDARGS.getDescription());
+			return false;
+		}
+		if (!p.isOp()){
+			p.sendMessage(I18NMessage.Cmd_NOTOP.getDescription());
+			return false;
+		}
+		if (args.length==0)
+			try {
+				QuestBackend.reloadQuest(null);
+			} catch (BackendFailedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		else
+			try {
+				QuestBackend.reloadQuest(args[0]);
+			} catch (BackendFailedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		return true;
+	}
 
 	public Boolean help(Player p, String[] args) {
 
@@ -318,9 +344,11 @@ public class QuestCommandFrontend extends CommandFrontend {
 		}
 
 		/*
+		 * OP: reload <name>
 		 * accept <name>
 		 * accepted
 		 * available
+		 * info
 		 * 
 		 * abandon
 		 * active
@@ -328,6 +356,8 @@ public class QuestCommandFrontend extends CommandFrontend {
 		 * exit
 		 * start <name>
 		 */
+		if (p.isOp())
+			messages.add(ChatUtils.formatHelp("quest reload [name]", "Reload quest into memory (or all)"));
 		messages.add(ChatUtils.formatHeader(I18NMessage.Cmd_Quest_HELP.getDescription()));
 		messages.add(ChatUtils.formatHelp("quest accept <name>", I18NMessage.Cmd_Quest_HELPACCEPT.getDescription()));
 		messages.add(ChatUtils.formatHelp("quest accepted", I18NMessage.Cmd_Quest_HELPACCEPTED.getDescription()));

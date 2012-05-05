@@ -5,6 +5,7 @@ public enum I18NMessage {
 	Cmd_INVALIDARGS ("Invalid arguments. See the help menu for arguments."),
 	Cmd_NOSUCHPLAYER ("No such player!"),
 	Cmd_NOSUCHQUEST ("No such quest!"),
+	Cmd_NOTOP ("Not op!"),
 	Cmd_NOTLEADER ("Not leader!"),
 	Cmd_NOPARTY ("Not in party!"),
 	Cmd_SQLException ("An internal server error occured; blame the admins..."),

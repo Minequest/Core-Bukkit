@@ -25,6 +25,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -110,7 +111,7 @@ public class QuestManager implements Listener {
 		parser.addClassHandler("world", WorldHandler.class);
 	}
 	
-	public void reloadQuests(){
+	public synchronized void reloadQuests(){
 		MineQuest.log("[Quest] Reload Triggered. Starting reload...");
 		descriptions = new ArrayList<QuestDescription>();
 		File file = new File(locationofQuests);
@@ -122,14 +123,40 @@ public class QuestManager implements Listener {
 			}
 			
 		})){
-			try {
-				QuestDescription d = new QuestDescription(f);
-				descriptions.add(d);
-				MineQuest.log("[Quest] Loaded " + d.questname+".");
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-				MineQuest.log(Level.SEVERE, "[Quest] Failed to load "+f.getName()+"!");
+			loadQuest(f);
+		}
+	}
+	
+	public synchronized void reloadQuest(String name){
+		MineQuest.log("[Quest] Reload Triggered for Quest " + name + ". Attempting reload...");
+		String newname = name + ".quest";
+		File f = new File(locationofQuests);
+		File[] sorted = f.listFiles(new FilenameFilter(){
+
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.endsWith(".quest");
 			}
+			
+		});
+		Arrays.sort(sorted);
+		File lookfor = new File(locationofQuests + File.separator + newname);
+		int loc = Arrays.binarySearch(sorted, lookfor);
+		if (loc>=sorted.length || loc<0)
+			throw new IllegalArgumentException("Can't find this quest!");
+		if (getQuest(name)!=null)
+			descriptions.remove(getQuest(name));
+		loadQuest(sorted[loc]);
+	}
+	
+	private synchronized void loadQuest(File f){
+		try {
+			QuestDescription d = new QuestDescription(f);
+			descriptions.add(d);
+			MineQuest.log("[Quest] Loaded " + d.questname+".");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			MineQuest.log(Level.SEVERE, "[Quest] Failed to load "+f.getName()+"!");
 		}
 	}
 	
