@@ -45,7 +45,10 @@ public abstract class QEvent{
 	 * @param details Details to parse
 	 */
 	public QEvent(long q, int e, String details){
-		quest = MineQuest.questManager.getQuest(q);
+		if (q>=0)
+			quest = MineQuest.questManager.getQuest(q);
+		else
+			quest = null;
 		eventid = e;
 		complete = null;
 		parseDetails(details.split(":"));
@@ -98,9 +101,11 @@ public abstract class QEvent{
 
 	@Deprecated
 	public final long getQuestId(){
+		if (quest==null)
+			return -1;
 		return quest.getID();
 	}
-	
+
 	public final Quest getQuest(){
 		return quest;
 	}
@@ -112,14 +117,14 @@ public abstract class QEvent{
 	public final int getTaskId(){
 		return tasknumber;
 	}
-	
+
 	/**
 	 * Optional event implementation: After the event has executed successfully,
 	 * you have the option of cleaning up your event. (For example,
 	 * kill entities that you are tracking, stop a process, etc...)
 	 */
 	public void cleanUpEvent(){
-		
+
 	}
 
 	/**
@@ -131,15 +136,17 @@ public abstract class QEvent{
 			MineQuest.eventManager.rmEventListener(this);
 			complete = c;
 			cleanUpEvent();
-			if (c!=CompleteStatus.CANCELED && c!=CompleteStatus.IGNORE){
-				if (switchTask()!=null)
-					MineQuest.questManager.getQuest(getQuestId()).startTask(switchTask());
+			if (quest!=null){
+				if (c!=CompleteStatus.CANCELED && c!=CompleteStatus.IGNORE){
+					if (switchTask()!=null)
+						quest.startTask(switchTask());
+				}
 			}
 			EventCompleteEvent e = new EventCompleteEvent(this,c);
 			Bukkit.getPluginManager().callEvent(e);
 		}
 	}
-	
+
 	/**
 	 * Some events want to switch to a new task when it completes.
 	 * For instance, {@link com.theminequest.MQCoreEvents.QuestEvent}
@@ -157,7 +164,7 @@ public abstract class QEvent{
 	 * @return Task Number to switch Quest to, or NULL to not switch.
 	 */
 	public abstract Integer switchTask();
-	
+
 	/**
 	 * Optional method that QEvents can override if they want;
 	 * by default, doesn't do anything.
@@ -167,7 +174,7 @@ public abstract class QEvent{
 	public boolean blockBreakCondition(BlockBreakEvent e){
 		return false;
 	}
-	
+
 	/**
 	 * Optional method that QEvents can override if they want;
 	 * by default, doesn't do anything.
@@ -177,7 +184,7 @@ public abstract class QEvent{
 	public boolean entityDamageByEntityCondition(EntityDamageByEntityEvent e){
 		return false;
 	}
-	
+
 	/**
 	 * Optional method that QEvents can override if they want;
 	 * by default, doesn't do anything.
@@ -203,7 +210,7 @@ public abstract class QEvent{
 			}
 		}
 	}
-	
+
 	public final synchronized void onEntityDeath(EntityDeathEvent e){
 		if (complete==null){
 			if (entityDeathCondition(e)){
