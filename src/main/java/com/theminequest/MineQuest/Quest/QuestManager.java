@@ -257,6 +257,7 @@ public class QuestManager implements Listener {
 	@EventHandler
 	public void onQuestAvailableEvent(QuestAvailableEvent e){
 		e.getPlayer().sendMessage(ChatColor.YELLOW + "[Quest] You have a new quest, " + e.getQuestAvailableName() + ", available!");
+		e.getPlayer().sendMessage(ChatColor.YELLOW + "You can accept the quest by using \"/quest accept " + e.getQuestAvailableName() + "\"!");
 	}
 
 }
