@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -188,7 +189,7 @@ public class EventManager implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockBreak(final BlockBreakEvent e){
 		synchronized(activeevents){
 			for (final QEvent a : activeevents){
@@ -202,7 +203,7 @@ public class EventManager implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDamageByEntityEvent(final EntityDamageByEntityEvent e){
 		synchronized(activeevents){
 			for (final QEvent a : activeevents){
@@ -216,7 +217,7 @@ public class EventManager implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDeathEvent(final EntityDeathEvent e){
 		synchronized(activeevents){
 			for (final QEvent a : activeevents){
