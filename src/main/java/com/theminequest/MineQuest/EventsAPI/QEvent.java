@@ -23,6 +23,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
@@ -193,6 +194,24 @@ public abstract class QEvent{
 	 */
 	public boolean entityDeathCondition(EntityDeathEvent e){
 		return false;
+	}
+	
+	/**
+	 * Optional method that QEvents can override if they want;
+	 * by default, doesn't do anything.
+	 * @param e
+	 * @return true if player interact meets condition for an event
+	 */
+	public boolean playerInteractCondition(PlayerInteractEvent e){
+		return false;
+	}
+	
+	public final synchronized void onPlayerInteract(PlayerInteractEvent e){
+		if (complete==null){
+			if (playerInteractCondition(e)){
+				complete(action());
+			}
+		}
 	}
 
 	public final synchronized void onBlockBreak(BlockBreakEvent e){

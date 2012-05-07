@@ -32,6 +32,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.theminequest.MineQuest.MineQuest;
 
@@ -183,6 +184,20 @@ public class EventManager implements Listener {
 					@Override
 					public void run() {
 						e.check();
+					}
+				}).start();
+			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerInteract(final PlayerInteractEvent e){
+		synchronized(activeevents){
+			for (final QEvent a : activeevents){
+				new Thread(new Runnable(){
+					@Override
+					public void run() {
+						a.onPlayerInteract(e);
 					}
 				}).start();
 			}
