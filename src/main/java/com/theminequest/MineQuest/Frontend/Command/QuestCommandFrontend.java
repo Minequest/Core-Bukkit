@@ -142,6 +142,25 @@ public class QuestCommandFrontend extends CommandFrontend {
 			return false;
 		}
 	}
+	
+	public Boolean decline(Player p, String[] args) {
+		if (args.length!=1){
+			p.sendMessage(I18NMessage.Cmd_INVALIDARGS.getDescription());
+			return false;
+		}
+		try {
+			QuestBackend.declineQuest(p, args[0]);
+			return true;
+		} catch (BackendFailedException e) {
+			if (e.getReason()==BackendReason.NOTHAVEQUEST)
+				p.sendMessage(I18NMessage.Cmd_Quest_NOTHAVEQUEST.getDescription());
+			else {
+				e.printStackTrace();
+				p.sendMessage(I18NMessage.Cmd_SQLException.getDescription());
+			}
+			return false;
+		}
+	}
 
 	public Boolean active(Player p, String[] args) {
 		if (args.length!=0){
@@ -250,6 +269,32 @@ public class QuestCommandFrontend extends CommandFrontend {
 		p.sendMessage(qd.toString().split("\n"));
 		return true;
 	}
+	
+	public Boolean reload(Player p, String[] args) {
+		if (args.length>1){
+			p.sendMessage(I18NMessage.Cmd_INVALIDARGS.getDescription());
+			return false;
+		}
+		if (!p.isOp()){
+			p.sendMessage(I18NMessage.Cmd_NOTOP.getDescription());
+			return false;
+		}
+		if (args.length==0)
+			try {
+				QuestBackend.reloadQuest(null);
+			} catch (BackendFailedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		else
+			try {
+				QuestBackend.reloadQuest(args[0]);
+			} catch (BackendFailedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		return true;
+	}
 
 	public Boolean start(final Player p, final String[] args) {
 		if (args.length!=1){
@@ -302,32 +347,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 		}).start();
 		return true;
 	}
-	
-	public Boolean reload(Player p, String[] args) {
-		if (args.length>1){
-			p.sendMessage(I18NMessage.Cmd_INVALIDARGS.getDescription());
-			return false;
-		}
-		if (!p.isOp()){
-			p.sendMessage(I18NMessage.Cmd_NOTOP.getDescription());
-			return false;
-		}
-		if (args.length==0)
-			try {
-				QuestBackend.reloadQuest(null);
-			} catch (BackendFailedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		else
-			try {
-				QuestBackend.reloadQuest(args[0]);
-			} catch (BackendFailedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		return true;
-	}
+
 
 	public Boolean help(Player p, String[] args) {
 
@@ -361,6 +381,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 			messages.add(ChatUtils.formatHelp("quest reload [name]", "Reload quest into memory (or all)"));
 		messages.add(ChatUtils.formatHeader(I18NMessage.Cmd_Quest_HELP.getDescription()));
 		messages.add(ChatUtils.formatHelp("quest accept <name>", I18NMessage.Cmd_Quest_HELPACCEPT.getDescription()));
+		messages.add(ChatUtils.formatHelp("quest decline <name>", I18NMessage.Cmd_Quest_HELPDECLINE.getDescription()));
 		messages.add(ChatUtils.formatHelp("quest accepted", I18NMessage.Cmd_Quest_HELPACCEPTED.getDescription()));
 		messages.add(ChatUtils.formatHelp("quest available", I18NMessage.Cmd_Quest_HELPAVAILABLE.getDescription()));
 		messages.add(ChatUtils.formatHelp("quest info <name>", I18NMessage.Cmd_Quest_HELPINFO.getDescription()));

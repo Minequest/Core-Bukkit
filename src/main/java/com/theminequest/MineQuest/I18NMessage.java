@@ -45,6 +45,7 @@ public enum I18NMessage {
 	Cmd_Quest_JOINPARTY ("Join a party to see all available options!"),
 	Cmd_Quest_HELP ("Quest Help"),
 	Cmd_Quest_HELPACCEPT ("Accept a Quest."),
+	Cmd_Quest_HELPDECLINE ("Decline a Quest."),
 	Cmd_Quest_HELPACCEPTED ("View Accepted (Pending) Quests."),
 	Cmd_Quest_HELPAVAILABLE ("View Available Quests."),
 	Cmd_Quest_HELPACTIVE ("View Active Quest."),

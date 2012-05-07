@@ -149,6 +149,31 @@ public final class QuestBackend {
 			throw new BackendFailedException(e);
 		}
 	}
+	
+	/**
+	 * Decline a quest
+	 * @param p Player
+	 * @param quest_name Quest Name
+	 * @throws BackendFailedException if the player doesn't have the quest or has already accepted it
+	 */
+	public static void declineQuest(Player p, String quest_name) throws BackendFailedException {
+		QuestDescription d = getQuestDesc(quest_name);
+		if (d==null)
+			throw new BackendFailedException(BackendReason.FILEDISAPPEARED);
+		try {
+			List<String> nonacceptedquests = getQuests(QuestAvailability.AVAILABLE, p);
+			for (String s : nonacceptedquests){
+				if (s.equalsIgnoreCase(quest_name)){
+					MineQuest.sqlstorage.querySQL("Quests/declineQuest", p.getName(), quest_name);
+					p.sendMessage(ChatUtils.chatify(d.displayaccept));
+					return;
+				}
+			}
+			throw new BackendFailedException(BackendReason.NOTHAVEQUEST);
+		} catch (SQLException e) {
+			throw new BackendFailedException(e);
+		}
+	}
 
 	/**
 	 * Reload a Quest
