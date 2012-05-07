@@ -57,17 +57,19 @@ import com.theminequest.MineQuest.Editable.Edit;
 import com.theminequest.MineQuest.Editable.InsideAreaEdit;
 import com.theminequest.MineQuest.Editable.ItemInHandEdit;
 import com.theminequest.MineQuest.Editable.OutsideAreaEdit;
+import com.theminequest.MineQuest.EventsAPI.NamedQEvent;
 import com.theminequest.MineQuest.EventsAPI.QEvent;
 import com.theminequest.MineQuest.Group.Group;
 import com.theminequest.MineQuest.Group.Team;
 import com.theminequest.MineQuest.Target.TargetDetails;
 import com.theminequest.MineQuest.Tasks.Task;
+import com.theminequest.MineQuest.Utils.ChatUtils;
 import com.theminequest.MineQuest.Utils.TimeUtils;
 
 public class Quest {
 
 	public final QuestDescription details;
-	
+
 	public final long questid;
 	private int currenttask;
 
@@ -105,7 +107,7 @@ public class Quest {
 		// enable edits
 		for (Edit e : details.editables.values())
 			e.startEdit(questid);
-		
+
 		QuestStartedEvent event = new QuestStartedEvent(this);
 		Bukkit.getPluginManager().callEvent(event);
 	}
@@ -139,7 +141,7 @@ public class Quest {
 	public Set<Integer> getEventNums() {
 		return details.events.keySet();
 	}
-	
+
 	public boolean startQuest(){
 		return startTask(getFirstKey(details.tasks.keySet()));
 	}
@@ -170,7 +172,7 @@ public class Quest {
 		activeTask.start();
 		return true;
 	}
-	
+
 	public boolean isInstanced(){
 		return details.loadworld;
 	}
@@ -289,6 +291,24 @@ public class Quest {
 			return false;
 		Quest q = (Quest) arg0;
 		return (q.questid == this.questid);
+	}
+
+	@Override
+	public String toString() {
+		String tr = details.toString() + "\n";
+		tr += ChatUtils.formatHeader("Current Tasks") + "\n";
+		if (activeTask!=null){
+			for (QEvent e : activeTask.getEvents()){
+				if (e instanceof NamedQEvent){
+					String description = ((NamedQEvent)e).getDescription();
+					if (e.isComplete()==null)
+						tr += ChatColor.GREEN + "- " + description + "\n";
+					else
+						tr += ChatColor.GRAY + "- " + description + "\n";
+				}
+			}
+		}
+		return tr;
 	}
 
 	public String getName() {

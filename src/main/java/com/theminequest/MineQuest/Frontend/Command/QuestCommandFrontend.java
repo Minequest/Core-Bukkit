@@ -22,6 +22,8 @@ import com.theminequest.MineQuest.Backend.GroupBackend;
 import com.theminequest.MineQuest.Backend.QuestAvailability;
 import com.theminequest.MineQuest.Backend.QuestBackend;
 import com.theminequest.MineQuest.Backend.BackendFailedException.BackendReason;
+import com.theminequest.MineQuest.EventsAPI.QEvent;
+import com.theminequest.MineQuest.EventsAPI.NamedQEvent;
 import com.theminequest.MineQuest.Group.Group;
 import com.theminequest.MineQuest.Group.GroupException;
 import com.theminequest.MineQuest.Quest.Quest;
@@ -155,8 +157,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Quest_NOACTIVE.getDescription());
 			return false;
 		}
-		p.sendMessage(ChatUtils.formatHeader("Active: " + g.getQuest().getName()));
-		p.sendMessage(g.getQuest().details.toString().split("\n"));
+		p.sendMessage(g.getQuest().toString().split("\n"));
 		return true;
 	}
 

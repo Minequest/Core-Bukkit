@@ -22,6 +22,7 @@ package com.theminequest.MQCoreEvents.BasicEvents;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -29,11 +30,12 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
+import com.theminequest.MineQuest.EventsAPI.NamedQEvent;
 import com.theminequest.MineQuest.EventsAPI.QEvent;
 import com.theminequest.MineQuest.Group.Group;
 import com.theminequest.MineQuest.Group.Team;
 
-public class KillEvent extends QEvent {
+public class KillEvent extends QEvent implements NamedQEvent {
 	
 	private List<EntityType> typestokill;
 	private int totaltokill;
@@ -108,6 +110,20 @@ public class KillEvent extends QEvent {
 	@Override
 	public Integer switchTask() {
 		return taskid;
+	}
+
+	@Override
+	public String getDescription() {
+		String tr = "Kill " + (totaltokill-currentkill) + " ";
+		for (int i=0; i<typestokill.size(); i++){
+			tr+=typestokill.get(i).getName();
+			if (i<typestokill.size()-1)
+				tr+="(s), ";
+			else
+				tr+=", and ";
+		}
+		tr+="(s)!";
+		return tr;
 	}
 
 }

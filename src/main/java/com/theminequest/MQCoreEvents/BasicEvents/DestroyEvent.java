@@ -22,15 +22,17 @@ package com.theminequest.MQCoreEvents.BasicEvents;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
+import com.theminequest.MineQuest.EventsAPI.NamedQEvent;
 import com.theminequest.MineQuest.EventsAPI.QEvent;
 import com.theminequest.MineQuest.Group.Group;
 
-public class DestroyEvent extends QEvent {
+public class DestroyEvent extends QEvent implements NamedQEvent {
 	
 	private List<Integer> typestodestroy;
 	private int totaltodestroy;
@@ -101,6 +103,20 @@ public class DestroyEvent extends QEvent {
 	@Override
 	public Integer switchTask() {
 		return taskid;
+	}
+
+	@Override
+	public String getDescription() {
+		String tr = "Destroy " + (totaltodestroy-currentdestroy) + " of ";
+		for (int i=0; i<typestodestroy.size(); i++){
+			tr+=Material.getMaterial(typestodestroy.get(i)).toString();
+			if (i<typestodestroy.size()-1)
+				tr+=", ";
+			else
+				tr+=", and ";
+		}
+		tr+="!";
+		return tr;
 	}
 	
 }

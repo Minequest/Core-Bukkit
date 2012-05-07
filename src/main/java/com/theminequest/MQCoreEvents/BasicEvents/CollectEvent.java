@@ -22,16 +22,18 @@ package com.theminequest.MQCoreEvents.BasicEvents;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
 
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
+import com.theminequest.MineQuest.EventsAPI.NamedQEvent;
 import com.theminequest.MineQuest.EventsAPI.QEvent;
 import com.theminequest.MineQuest.Group.Group;
 import com.theminequest.MineQuest.Group.Team;
 
-public class CollectEvent extends QEvent {
+public class CollectEvent extends QEvent implements NamedQEvent {
 	
 	private int taskid;
 	private List<Integer> itemids;
@@ -46,6 +48,7 @@ public class CollectEvent extends QEvent {
 	 * Details:
 	 * [0]: task to incur upon completion
 	 * [1]: itemids;
+	 * [2]: totaltocollect
 	 */
 	@Override
 	public void parseDetails(String[] details) {
@@ -83,6 +86,20 @@ public class CollectEvent extends QEvent {
 	@Override
 	public Integer switchTask() {
 		return taskid;
+	}
+
+	@Override
+	public String getDescription() {
+		String tr = "Collect some ";
+		for (int i=0; i<itemids.size(); i++){
+			tr+=Material.getMaterial(itemids.get(i)).toString();
+			if (i<itemids.size()-1)
+				tr+=", ";
+			else
+				tr+=", and ";
+		}
+		tr+="!";
+		return tr;
 	}
 
 }
