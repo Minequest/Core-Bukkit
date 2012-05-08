@@ -70,7 +70,6 @@ public class QuestSign implements Listener {
 				String questName = sign.getLine(2);
 				try {
 					QuestBackend.giveQuestToPlayer(player, questName);
-					player.sendMessage(QuestBackend.getQuestDesc(questName).toString().split("\n"));
 				} catch (BackendFailedException e) {
 					player.sendMessage(ChatColor.RED + "Error: " + e.getMessage());
 				} 

@@ -28,6 +28,8 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+
+import com.theminequest.MQCoreEvents.NameEvent;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.BukkitEvents.TaskCompleteEvent;
@@ -127,7 +129,11 @@ public class Task {
 
 	private synchronized void checkCompletion() {
 		for (Integer eventid : collection.keySet()) {
-			if (collection.get(eventid).isComplete()==null)
+			QEvent e = collection.get(eventid);
+			// ignore NameEvents
+			if (e instanceof NameEvent)
+				continue;
+			if (e.isComplete()==null)
 				return;
 		}
 		complete = true;

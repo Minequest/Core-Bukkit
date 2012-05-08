@@ -165,7 +165,7 @@ public final class QuestBackend {
 			for (String s : nonacceptedquests){
 				if (s.equalsIgnoreCase(quest_name)){
 					MineQuest.sqlstorage.querySQL("Quests/declineQuest", p.getName(), quest_name);
-					p.sendMessage(ChatUtils.chatify(d.displayaccept));
+					p.sendMessage(ChatUtils.chatify("Quest declined!"));
 					return;
 				}
 			}

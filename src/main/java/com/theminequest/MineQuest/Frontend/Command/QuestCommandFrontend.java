@@ -78,7 +78,11 @@ public class QuestCommandFrontend extends CommandFrontend {
 		List<String> message = new ArrayList<String>();
 		message.add(ChatUtils.formatHeader(I18NMessage.Cmd_Quest_ACCEPTED.getDescription()));
 		for (String q : quests){
-			message.add(ChatColor.AQUA + q);
+			QuestDescription qd = QuestBackend.getQuestDesc(q);
+			if (qd!=null)
+				message.add(ChatColor.AQUA + q + " : " + qd.displayname);
+			else
+				message.add(ChatColor.AQUA + q + " : " + ChatColor.GRAY + "<unavailable>");
 		}
 
 		for (String m : message)
@@ -103,7 +107,11 @@ public class QuestCommandFrontend extends CommandFrontend {
 		List<String> message = new ArrayList<String>();
 		message.add(ChatUtils.formatHeader(I18NMessage.Cmd_Quest_AVAILABLE.getDescription()));
 		for (String q : quests){
-			message.add(ChatColor.AQUA + q);
+			QuestDescription qd = QuestBackend.getQuestDesc(q);
+			if (qd!=null)
+				message.add(ChatColor.AQUA + q + " : " + qd.displayname);
+			else
+				message.add(ChatColor.AQUA + q + " : " + ChatColor.GRAY + "<unavailable>");
 		}
 
 		for (String m : message)
