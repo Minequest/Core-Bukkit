@@ -296,8 +296,8 @@ public class Quest {
 	@Override
 	public String toString() {
 		String tr = details.toString() + "\n";
-		tr += ChatUtils.formatHeader("Current Tasks") + "\n";
 		if (activeTask!=null){
+			tr += ChatUtils.formatHeader("Current Tasks") + "\n";
 			for (QEvent e : activeTask.getEvents()){
 				if (e instanceof NamedQEvent){
 					String description = ((NamedQEvent)e).getDescription();
