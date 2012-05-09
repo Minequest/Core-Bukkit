@@ -49,20 +49,19 @@ public class KillEvent extends QEvent implements NamedQEvent {
 	/*
 	 * (non-Javadoc)
 	 * @see com.theminequest.MineQuest.EventsAPI.QEvent#parseDetails(java.lang.String[])
-	 * delay ms DEPRECATED.
-	 * [1]: task id to trigger
-	 * [2]: entities
-	 * [3]: total # to kill
+	 * [0]: task id to trigger
+	 * [1]: entities
+	 * [2]: total # to kill
 	 */
 	@Override
 	public void parseDetails(String[] details) {
-		taskid = Integer.parseInt(details[1]);
-		String[] entity = details[2].split(",");
+		taskid = Integer.parseInt(details[0]);
+		String[] entity = details[1].split(",");
 		typestokill = new ArrayList<EntityType>();
 		for (String e : entity){
 			typestokill.add(EntityType.fromName(e));
 		}
-		totaltokill = Integer.parseInt(details[3]);
+		totaltokill = Integer.parseInt(details[2]);
 		currentkill = 0;
 	}
 

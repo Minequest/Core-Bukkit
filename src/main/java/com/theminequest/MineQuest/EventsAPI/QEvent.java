@@ -61,6 +61,7 @@ public abstract class QEvent{
 	 */
 	public final void fireEvent(){
 		MineQuest.eventManager.addEventListener(this);
+		setUpEvent();
 	}
 
 	public final synchronized void check(){
@@ -117,6 +118,14 @@ public abstract class QEvent{
 
 	public final int getTaskId(){
 		return tasknumber;
+	}
+	
+	/**
+	 * Optional event implementation: After the event is fired,
+	 * do anything else to set it up?
+	 */
+	public void setUpEvent(){
+		
 	}
 
 	/**
