@@ -194,12 +194,8 @@ public class EventManager implements Listener {
 	public void onPlayerInteract(final PlayerInteractEvent e){
 		synchronized(activeevents){
 			for (final QEvent a : activeevents){
-				new Thread(new Runnable(){
-					@Override
-					public void run() {
-						a.onPlayerInteract(e);
-					}
-				}).start();
+				if (!e.isCancelled())
+					a.onPlayerInteract(e);
 			}
 		}
 	}
@@ -208,12 +204,8 @@ public class EventManager implements Listener {
 	public void onBlockBreak(final BlockBreakEvent e){
 		synchronized(activeevents){
 			for (final QEvent a : activeevents){
-				new Thread(new Runnable(){
-					@Override
-					public void run() {
-						a.onBlockBreak(e);
-					}
-				}).start();
+				if (!e.isCancelled())
+					a.onBlockBreak(e);
 			}
 		}
 	}
@@ -222,12 +214,8 @@ public class EventManager implements Listener {
 	public void onEntityDamageByEntityEvent(final EntityDamageByEntityEvent e){
 		synchronized(activeevents){
 			for (final QEvent a : activeevents){
-				new Thread(new Runnable(){
-					@Override
-					public void run() {
-						a.onEntityDamageByEntityEvent(e);
-					}
-				}).start();
+				if (!e.isCancelled())
+					a.onEntityDamageByEntityEvent(e);
 			}
 		}
 	}
@@ -236,12 +224,7 @@ public class EventManager implements Listener {
 	public void onEntityDeathEvent(final EntityDeathEvent e){
 		synchronized(activeevents){
 			for (final QEvent a : activeevents){
-				new Thread(new Runnable(){
-					@Override
-					public void run() {
-						a.onEntityDeath(e);
-					}
-				}).start();
+				a.onEntityDeath(e);
 			}
 		}
 	}

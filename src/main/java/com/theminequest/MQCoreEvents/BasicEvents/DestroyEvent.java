@@ -82,7 +82,7 @@ public class DestroyEvent extends QEvent implements NamedQEvent {
 		Group g = MineQuest.groupManager.getGroup(gid);
 		System.out.println("DEBUG: Got 1");
 		if (g.getPlayers().contains(e.getPlayer())){
-			int blockid = e.getBlock().getType().getId();
+			int blockid = e.getBlock().getState().getTypeId();
 			System.out.println("DEBUG: Got 2: " + blockid);
 			for (int t : typestodestroy){
 				System.out.println("DEBUG: Got 2.3: " + t);
@@ -111,6 +111,8 @@ public class DestroyEvent extends QEvent implements NamedQEvent {
 			tr+=Material.getMaterial(typestodestroy.get(i)).toString();
 			if (i<typestodestroy.size()-1)
 				tr+=", ";
+			else if (typestodestroy.size()==1)
+				tr+="";
 			else
 				tr+=", and ";
 		}
