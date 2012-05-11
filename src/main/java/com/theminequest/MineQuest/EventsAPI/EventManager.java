@@ -193,9 +193,12 @@ public class EventManager implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerInteract(final PlayerInteractEvent e){
 		synchronized(activeevents){
-			for (final QEvent a : activeevents){
+			for (int i=0; i<activeevents.size(); i++){
+				final QEvent a = activeevents.get(i);
 				if (!e.isCancelled())
 					a.onPlayerInteract(e);
+				if (a.isComplete()!=null)
+					i--;
 			}
 		}
 	}
@@ -203,9 +206,12 @@ public class EventManager implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockBreak(final BlockBreakEvent e){
 		synchronized(activeevents){
-			for (final QEvent a : activeevents){
+			for (int i=0; i<activeevents.size(); i++){
+				final QEvent a = activeevents.get(i);
 				if (!e.isCancelled())
 					a.onBlockBreak(e);
+				if (a.isComplete()!=null)
+					i--;
 			}
 		}
 	}
@@ -213,9 +219,12 @@ public class EventManager implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDamageByEntityEvent(final EntityDamageByEntityEvent e){
 		synchronized(activeevents){
-			for (final QEvent a : activeevents){
+			for (int i=0; i<activeevents.size(); i++){
+				final QEvent a = activeevents.get(i);
 				if (!e.isCancelled())
-					a.onEntityDamageByEntityEvent(e);
+					a.onEntityDamageByEntity(e);
+				if (a.isComplete()!=null)
+					i--;
 			}
 		}
 	}
@@ -223,8 +232,11 @@ public class EventManager implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDeathEvent(final EntityDeathEvent e){
 		synchronized(activeevents){
-			for (final QEvent a : activeevents){
+			for (int i=0; i<activeevents.size(); i++){
+				final QEvent a = activeevents.get(i);
 				a.onEntityDeath(e);
+				if (a.isComplete()!=null)
+					i--;
 			}
 		}
 	}

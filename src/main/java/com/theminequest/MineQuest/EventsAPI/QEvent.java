@@ -231,7 +231,7 @@ public abstract class QEvent{
 		}
 	}
 
-	public final synchronized void onEntityDamageByEntityEvent(EntityDamageByEntityEvent e){
+	public final synchronized void onEntityDamageByEntity(EntityDamageByEntityEvent e){
 		if (complete==null){
 			if (entityDamageByEntityCondition(e)){
 				complete(action());

@@ -29,11 +29,6 @@
 			<layout>default</layout>
 		</repository>
 		<repository>
-			<id>buildlincom-artifactory-remote</id>
-			<url>http://build.lincomlinux.org/artifactory/remote-repos/</url>
-			<layout>default</layout>
-		</repository>
-		<repository>
 			<id>milkbowl-repo</id>
 			<url>http://ci.milkbowl.net/plugin/repository/everything/</url>
 		</repository>
@@ -123,7 +118,7 @@
 		<dependency>
 			<groupId>net.milkbowl.vault</groupId>
 			<artifactId>Vault</artifactId>
-			<version>1.2.16-SNAPSHOT</version>
+			<version>1.2.17-SNAPSHOT</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
