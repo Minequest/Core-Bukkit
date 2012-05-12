@@ -202,7 +202,7 @@ public class Quest {
 			return;
 		}
 		loc++;
-		startTask(loc);
+		startTask(sortedkeys.get(loc));
 	}
 
 	public void finishQuest(CompleteStatus c) {
