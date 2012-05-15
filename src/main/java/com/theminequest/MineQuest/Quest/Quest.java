@@ -108,6 +108,8 @@ public class Quest {
 		for (Edit e : details.editables.values())
 			e.startEdit(questid);
 
+		// plugins should use QuestStartedEvent to setup their properties
+		// inside the quest.
 		QuestStartedEvent event = new QuestStartedEvent(this);
 		Bukkit.getPluginManager().callEvent(event);
 	}
