@@ -1,6 +1,6 @@
 package com.theminequest.MQCoreEvents;
 
-import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
+import com.theminequest.MineQuest.CompleteStatus;
 import com.theminequest.MineQuest.EventsAPI.NamedQEvent;
 import com.theminequest.MineQuest.EventsAPI.QEvent;
 

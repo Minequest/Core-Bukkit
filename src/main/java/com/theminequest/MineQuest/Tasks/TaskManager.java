@@ -22,8 +22,8 @@ package com.theminequest.MineQuest.Tasks;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import com.theminequest.MineQuest.CompleteStatus;
 import com.theminequest.MineQuest.MineQuest;
-import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.BukkitEvents.EventCompleteEvent;
 import com.theminequest.MineQuest.Quest.Quest;
 import com.theminequest.MineQuest.Quest.QuestManager;

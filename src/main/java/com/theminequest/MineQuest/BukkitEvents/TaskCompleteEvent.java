@@ -22,6 +22,8 @@ package com.theminequest.MineQuest.BukkitEvents;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import com.theminequest.MineQuest.CompleteStatus;
+
 public class TaskCompleteEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();

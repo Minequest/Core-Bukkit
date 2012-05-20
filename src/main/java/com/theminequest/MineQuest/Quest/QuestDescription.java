@@ -15,9 +15,9 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
+import com.theminequest.MineQuest.CompleteStatus;
 import com.theminequest.MineQuest.I18NMessage;
 import com.theminequest.MineQuest.MineQuest;
-import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.Editable.Edit;
 import com.theminequest.MineQuest.Target.TargetDetails;
 import com.theminequest.MineQuest.Tasks.Task;

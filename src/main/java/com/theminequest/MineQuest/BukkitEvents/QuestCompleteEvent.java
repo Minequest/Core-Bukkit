@@ -22,6 +22,7 @@ package com.theminequest.MineQuest.BukkitEvents;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import com.theminequest.MineQuest.CompleteStatus;
 import com.theminequest.MineQuest.Group.Group;
 import com.theminequest.MineQuest.Group.Team;
 

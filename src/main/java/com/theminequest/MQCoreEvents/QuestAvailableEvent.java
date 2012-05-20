@@ -22,10 +22,10 @@ package com.theminequest.MQCoreEvents;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import com.theminequest.MineQuest.CompleteStatus;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.Backend.BackendFailedException;
 import com.theminequest.MineQuest.Backend.QuestBackend;
-import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.EventsAPI.DelayedQEvent;
 import com.theminequest.MineQuest.EventsAPI.QEvent;
 import com.theminequest.MineQuest.Group.Group;

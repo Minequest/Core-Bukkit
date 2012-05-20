@@ -29,10 +29,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import com.theminequest.MineQuest.CompleteStatus;
 import com.theminequest.MineQuest.ManagerException;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.Backend.QuestBackend;
-import com.theminequest.MineQuest.BukkitEvents.CompleteStatus;
 import com.theminequest.MineQuest.BukkitEvents.GroupPlayerJoinedEvent;
 import com.theminequest.MineQuest.BukkitEvents.GroupPlayerQuitEvent;
 import com.theminequest.MineQuest.BukkitEvents.QuestStartedEvent;
