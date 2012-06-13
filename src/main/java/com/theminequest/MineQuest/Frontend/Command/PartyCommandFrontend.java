@@ -9,12 +9,12 @@ import org.bukkit.entity.Player;
 
 import com.theminequest.MineQuest.I18NMessage;
 import com.theminequest.MineQuest.MineQuest;
-import com.theminequest.MineQuest.Backend.BackendFailedException;
-import com.theminequest.MineQuest.Backend.GroupBackend;
-import com.theminequest.MineQuest.Group.Group;
-import com.theminequest.MineQuest.Group.GroupException;
-import com.theminequest.MineQuest.Group.GroupException.GroupReason;
-import com.theminequest.MineQuest.Utils.ChatUtils;
+import com.theminequest.MineQuest.API.ManagerException;
+import com.theminequest.MineQuest.API.Managers;
+import com.theminequest.MineQuest.API.Group.Group;
+import com.theminequest.MineQuest.API.Group.GroupException;
+import com.theminequest.MineQuest.API.Group.GroupException.GroupReason;
+import com.theminequest.MineQuest.API.Utils.ChatUtils;
 
 public class PartyCommandFrontend extends CommandFrontend {
 
@@ -23,46 +23,40 @@ public class PartyCommandFrontend extends CommandFrontend {
 	}
 
 	public Boolean accept(Player p, String[] args) {
-		if (GroupBackend.teamID(p)!=-1){
+		if (Managers.getGroupManager().indexOf(p)!=-1){
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Party_INPARTY.getDescription());
 			return false;
 		}
-		if (!GroupBackend.hasInvite(p)){
+		if (!Managers.getGroupManager().hasInvite(p)){
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Party_NOINVITE.getDescription());
 			return false;
 		}
 		try {
-			GroupBackend.acceptInvite(p);
+			Managers.getGroupManager().acceptInvite(p);
 			p.sendMessage(I18NMessage.Cmd_Party_ACCEPT.getDescription());
 			return true;
-		} catch (BackendFailedException e) {
+		} catch (ManagerException e) {
 			e.printStackTrace();
-			p.sendMessage(ChatColor.GRAY + "ERR: " + e.getMessage());
+			p.sendMessage("Exception occured: " + e.toString());
 			return false;
 		}
 	}
 
 	public Boolean create(Player p, String[] args) {
-		if (GroupBackend.teamID(p)!=-1){
+		if (Managers.getGroupManager().indexOf(p)!=-1){
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Party_INPARTY.getDescription());
 			return false;
 		}
-		if (GroupBackend.hasInvite(p)){
+		if (Managers.getGroupManager().hasInvite(p)){
 			p.sendMessage(ChatColor.GRAY + I18NMessage.Cmd_Party_DISCARD.getDescription());
 		}
-		try {
-			GroupBackend.createTeam(p);
-			p.sendMessage(I18NMessage.Cmd_Party_CREATE.getDescription());
-			return true;
-		} catch (BackendFailedException e) {
-			e.printStackTrace();
-			p.sendMessage(ChatColor.GRAY + "ERR: " + e.getMessage());
-			return false;
-		}
+		Managers.getGroupManager().createNewGroup(p);
+		p.sendMessage(I18NMessage.Cmd_Party_CREATE.getDescription());
+		return true;
 	}
 
 	public Boolean invite(Player p, String[] args) {
-		if (GroupBackend.teamID(p)==-1){
+		if (Managers.getGroupManager().indexOf(p)==-1){
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOPARTY.getDescription());
 			return false;
 		}
@@ -70,7 +64,7 @@ public class PartyCommandFrontend extends CommandFrontend {
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_INVALIDARGS.getDescription());
 			return false;
 		}
-		Group g = GroupBackend.getCurrentGroup(p);
+		Group g = Managers.getGroupManager().get(p);
 		if (!g.getLeader().equals(p)){
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOTLEADER.getDescription());
 			return false;
@@ -81,27 +75,23 @@ public class PartyCommandFrontend extends CommandFrontend {
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOSUCHPLAYER.getDescription());
 			return false;
 		}
-		if (GroupBackend.teamID(mate)!=-1){
+		if (Managers.getGroupManager().indexOf(mate)!=-1){
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Party_TARGETINPARTY.getDescription());
 			return false;
 		}
 		try {
-			g.invite(mate);
+			Managers.getGroupManager().invite(mate,g);
 			p.sendMessage(I18NMessage.Cmd_Party_TARGETINVITESENT.getDescription());
 			return true;
-		} catch (GroupException e) {
-			if (e.getReason()==GroupReason.ALREADYINTEAM){
-				p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Party_TARGETPENDING.getDescription());
-				return false;
-			}
-			p.sendMessage(ChatColor.GRAY + "ERR: " + e.getMessage());
+		} catch (ManagerException e) {
 			e.printStackTrace();
+			p.sendMessage("Error occurred trying to send message: " + e.getMessage());
 			return false;
 		}
 	}
 
 	public Boolean kick(Player p, String[] args) {
-		if (GroupBackend.teamID(p)==-1){
+		if (Managers.getGroupManager().indexOf(p)==-1){
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOPARTY.getDescription());
 			return false;
 		}
@@ -109,7 +99,7 @@ public class PartyCommandFrontend extends CommandFrontend {
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_INVALIDARGS.getDescription());
 			return false;
 		}
-		Group g = GroupBackend.getCurrentGroup(p);
+		Group g = Managers.getGroupManager().get(p);
 		if (!g.getLeader().equals(p)){
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOTLEADER.getDescription());
 			return false;
@@ -134,7 +124,7 @@ public class PartyCommandFrontend extends CommandFrontend {
 	}
 
 	public Boolean leave(Player p, String[] args) {
-		if (GroupBackend.teamID(p)==-1){
+		if (Managers.getGroupManager().indexOf(p)==-1){
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOPARTY.getDescription());
 			return false;
 		}
@@ -142,12 +132,12 @@ public class PartyCommandFrontend extends CommandFrontend {
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_INVALIDARGS.getDescription());
 			return false;
 		}
-		Group g = GroupBackend.getCurrentGroup(p);
+		Group g = Managers.getGroupManager().get(p);
 		boolean leader = g.getLeader().equals(p);
 
 		try {
-			if (leader && g.getPlayers().size()!=1)
-				g.setLeader(g.getPlayers().get(1));
+			if (leader && g.getMembers().size()!=1)
+				g.setLeader(g.getMembers().get(1));
 			g.remove(p);
 			p.sendMessage(I18NMessage.Cmd_Party_LEAVE.getDescription());
 			return true;
@@ -158,9 +148,9 @@ public class PartyCommandFrontend extends CommandFrontend {
 		}
 
 	}
-	
+
 	public Boolean list(Player p, String[] args) {
-		if (GroupBackend.teamID(p)==-1){
+		if (Managers.getGroupManager().indexOf(p)==-1){
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOPARTY.getDescription());
 			return false;
 		}
@@ -168,8 +158,8 @@ public class PartyCommandFrontend extends CommandFrontend {
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_INVALIDARGS.getDescription());
 			return false;
 		}
-		Group g = GroupBackend.getCurrentGroup(p);
-		List<Player> members = g.getPlayers();
+		Group g = Managers.getGroupManager().get(p);
+		List<Player> members = g.getMembers();
 		List<String> messages = new ArrayList<String>();
 		messages.add(ChatUtils.formatHeader(I18NMessage.Cmd_Party_LIST.getDescription() + " " + members.size() + "/" + g.getCapacity()));
 		for (Player m : members) {
@@ -178,16 +168,16 @@ public class PartyCommandFrontend extends CommandFrontend {
 			else
 				messages.add(ChatColor.AQUA + m.getName() + ChatColor.GRAY + " : Lvl " + m.getLevel() + ", Health " + m.getHealth() + "/" + m.getMaxHealth());
 		}
-		
+
 		for (String m : messages) {
 			p.sendMessage(m);
 		}
-		
+
 		return true;
 	}
-	
+
 	public Boolean promote(Player p, String[] args) {
-		if (GroupBackend.teamID(p)==-1){
+		if (Managers.getGroupManager().indexOf(p)==-1){
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOPARTY.getDescription());
 			return false;
 		}
@@ -195,7 +185,7 @@ public class PartyCommandFrontend extends CommandFrontend {
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_INVALIDARGS.getDescription());
 			return false;
 		}
-		Group g = GroupBackend.getCurrentGroup(p);
+		Group g = Managers.getGroupManager().get(p);
 		if (!g.getLeader().equals(p)){
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOTLEADER.getDescription());
 			return false;
@@ -205,7 +195,7 @@ public class PartyCommandFrontend extends CommandFrontend {
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Party_TARGETNOPARTY.getDescription());
 			return false;
 		}
-		
+
 		try {
 			g.setLeader(mate);
 			mate.sendMessage(I18NMessage.Cmd_Party_PROMOTETARGET.getDescription());
@@ -234,10 +224,10 @@ public class PartyCommandFrontend extends CommandFrontend {
 
 		List<String> messages = new ArrayList<String>();
 		Group g = null;
-		boolean invite = GroupBackend.hasInvite(p);
+		boolean invite = Managers.getGroupManager().hasInvite(p);
 		boolean isLeader = false;
-		if (GroupBackend.teamID(p)!=-1){
-			g = GroupBackend.getCurrentGroup(p);
+		if (Managers.getGroupManager().indexOf(p)!=-1){
+			g = Managers.getGroupManager().get(p);
 			isLeader = g.getLeader().equals(p);
 		}
 

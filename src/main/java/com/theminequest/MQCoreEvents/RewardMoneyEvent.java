@@ -1,7 +1,7 @@
 /*
  * This file, RewardMoneyEvent.java, is part of MineQuest:
  * A full featured and customizable quest/mission system.
- * Copyright (C) 2012 The MineQuest Team
+ * Copyright (C) 2012 The MineQuest Party
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,23 +21,21 @@ package com.theminequest.MQCoreEvents;
 
 import org.bukkit.entity.Player;
 
-import com.theminequest.MineQuest.CompleteStatus;
 import com.theminequest.MineQuest.MineQuest;
-import com.theminequest.MineQuest.EventsAPI.QEvent;
-import com.theminequest.MineQuest.Group.Group;
-import com.theminequest.MineQuest.Group.Team;
+import com.theminequest.MineQuest.API.CompleteStatus;
+import com.theminequest.MineQuest.API.Managers;
+import com.theminequest.MineQuest.API.Events.QuestEvent;
+import com.theminequest.MineQuest.API.Group.Group;
+import com.theminequest.MineQuest.API.Group.QuestGroup;
+import com.theminequest.MineQuest.Group.Party;
 
-public class RewardMoneyEvent extends QEvent {
+public class RewardMoneyEvent extends QuestEvent {
 	
 	private double money;
 
-	public RewardMoneyEvent(long q, int e, String details) {
-		super(q, e, details);
-	}
-
 	/*
 	 * (non-Javadoc)
-	 * @see com.theminequest.MineQuest.EventsAPI.QEvent#parseDetails(java.lang.String[])
+	 * @see com.theminequest.MineQuest.Events.QEvent#parseDetails(java.lang.String[])
 	 * Details:
 	 * [0] Amount of money to give
 	 */
@@ -53,11 +51,10 @@ public class RewardMoneyEvent extends QEvent {
 
 	@Override
 	public CompleteStatus action() {
-		long gid = MineQuest.groupManager.indexOfQuest(MineQuest.questManager.getQuest(getQuestId()));
-		Group g = MineQuest.groupManager.getGroup(gid);
+		QuestGroup g = Managers.getQuestGroupManager().get(getQuest());
 		if (MineQuest.economy==null)
 			return CompleteStatus.WARNING;
-		for (Player p : g.getPlayers())
+		for (Player p : g.getMembers())
 			MineQuest.economy.depositPlayer(p.getName(), money);
 		return CompleteStatus.SUCCESS;
 	}

@@ -8,23 +8,20 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.theminequest.MineQuest.CompleteStatus;
 import com.theminequest.MineQuest.MineQuest;
-import com.theminequest.MineQuest.EventsAPI.QEvent;
-import com.theminequest.MineQuest.Group.Group;
+import com.theminequest.MineQuest.API.CompleteStatus;
+import com.theminequest.MineQuest.API.Managers;
+import com.theminequest.MineQuest.API.Events.QuestEvent;
+import com.theminequest.MineQuest.API.Group.Group;
+import com.theminequest.MineQuest.API.Group.QuestGroup;
 
-public class RewardItemEvent extends QEvent {
+public class RewardItemEvent extends QuestEvent {
 	
 	private LinkedHashMap<Integer,Integer> items;
 
-	public RewardItemEvent(long q, int e, String details) {
-		super(q, e, details);
-		// TODO Auto-generated constructor stub
-	}
-
 	/*
 	 * (non-Javadoc)
-	 * @see com.theminequest.MineQuest.EventsAPI.QEvent#parseDetails(java.lang.String[])
+	 * @see com.theminequest.MineQuest.Events.QEvent#parseDetails(java.lang.String[])
 	 * [n] itemid,qty
 	 */
 	@Override
@@ -43,9 +40,8 @@ public class RewardItemEvent extends QEvent {
 
 	@Override
 	public CompleteStatus action() {
-		long gid = MineQuest.groupManager.indexOfQuest(MineQuest.questManager.getQuest(getQuestId()));
-		Group g = MineQuest.groupManager.getGroup(gid);
-		for (Player p : g.getPlayers()){
+		QuestGroup g = Managers.getQuestGroupManager().get(getQuest());
+		for (Player p : g.getMembers()){
 			for (int i : items.keySet()){
 				p.getInventory().addItem(new ItemStack(i,items.get(i)));
 			}

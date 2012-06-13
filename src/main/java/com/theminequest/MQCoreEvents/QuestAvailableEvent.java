@@ -1,7 +1,7 @@
 /*
- * This file, QuestAvailableEvent.java, is part of MineQuest:
+ * This file, QuestGivenEvent.java, is part of MineQuest:
  * A full featured and customizable quest/mission system.
- * Copyright (C) 2012 The MineQuest Team
+ * Copyright (C) 2012 The MineQuest Party
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,27 +22,25 @@ package com.theminequest.MQCoreEvents;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import com.theminequest.MineQuest.CompleteStatus;
 import com.theminequest.MineQuest.MineQuest;
-import com.theminequest.MineQuest.Backend.BackendFailedException;
-import com.theminequest.MineQuest.Backend.QuestBackend;
-import com.theminequest.MineQuest.EventsAPI.DelayedQEvent;
-import com.theminequest.MineQuest.EventsAPI.QEvent;
-import com.theminequest.MineQuest.Group.Group;
-import com.theminequest.MineQuest.Group.Team;
+import com.theminequest.MineQuest.API.CompleteStatus;
+import com.theminequest.MineQuest.API.Managers;
+import com.theminequest.MineQuest.API.Events.DelayedQuestEvent;
+import com.theminequest.MineQuest.API.Events.QuestEvent;
+import com.theminequest.MineQuest.API.Group.Group;
+import com.theminequest.MineQuest.API.Group.QuestGroup;
+import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils;
+import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils.QSException;
+import com.theminequest.MineQuest.Group.Party;
 
-public class QuestAvailableEvent extends DelayedQEvent {
+public class QuestAvailableEvent extends DelayedQuestEvent {
 
 	private long delay;
 	private String questavailable;
 
-	public QuestAvailableEvent(long q, int e, String details) {
-		super(q, e, details);
-	}
-
 	/*
 	 * (non-Javadoc)
-	 * @see com.theminequest.MineQuest.EventsAPI.QEvent#parseDetails(java.lang.String[])
+	 * @see com.theminequest.MineQuest.Events.QEvent#parseDetails(java.lang.String[])
 	 * Details:
 	 * [0] DELAY in MS
 	 * [1] questname available
@@ -65,15 +63,12 @@ public class QuestAvailableEvent extends DelayedQEvent {
 
 	@Override
 	public CompleteStatus action() {
-		long gid = MineQuest.groupManager.indexOfQuest(MineQuest.questManager.getQuest(getQuestId()));
-		Group g = MineQuest.groupManager.getGroup(gid);
+		QuestGroup g = Managers.getQuestGroupManager().get(getQuest());
 		CompleteStatus toreturn = CompleteStatus.SUCCESS;
-		for (Player p : g.getPlayers()){
+		for (Player p : g.getMembers()){
 			try {
-				QuestBackend.giveQuestToPlayer(p,questavailable);
-			} catch (IllegalArgumentException e) {
-				toreturn = CompleteStatus.WARNING;
-			} catch (BackendFailedException e) {
+				QuestStatisticUtils.giveQuest(p, questavailable);
+			} catch (QSException e) {
 				toreturn = CompleteStatus.WARNING;
 			}
 		}

@@ -1,7 +1,7 @@
 /*
  * This file, PartyHealthEvent.java, is part of MineQuest:
  * A full featured and customizable quest/mission system.
- * Copyright (C) 2012 The MineQuest Team
+ * Copyright (C) 2012 The MineQuest Party
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,26 +21,23 @@ package com.theminequest.MQCoreEvents;
 
 import org.bukkit.entity.Player;
 
-import com.theminequest.MineQuest.CompleteStatus;
 import com.theminequest.MineQuest.MineQuest;
-import com.theminequest.MineQuest.EventsAPI.DelayedQEvent;
-import com.theminequest.MineQuest.EventsAPI.QEvent;
-import com.theminequest.MineQuest.Group.Group;
-import com.theminequest.MineQuest.Group.Team;
+import com.theminequest.MineQuest.API.CompleteStatus;
+import com.theminequest.MineQuest.API.Managers;
+import com.theminequest.MineQuest.API.Events.DelayedQuestEvent;
+import com.theminequest.MineQuest.API.Events.QuestEvent;
+import com.theminequest.MineQuest.API.Group.Group;
+import com.theminequest.MineQuest.API.Group.QuestGroup;
+import com.theminequest.MineQuest.Group.Party;
 
-public class PartyHealthEvent extends DelayedQEvent {
+public class PartyHealthEvent extends DelayedQuestEvent {
 
 	private long delay;
 	private double percentile;
 	
-	public PartyHealthEvent(long q, int e, String details) {
-		super(q, e, details);
-		// TODO Auto-generated constructor stub
-	}
-
 	/*
 	 * (non-Javadoc)
-	 * @see com.theminequest.MineQuest.EventsAPI.QEvent#parseDetails(java.lang.String[])
+	 * @see com.theminequest.MineQuest.Events.QEvent#parseDetails(java.lang.String[])
 	 * Details:
 	 * [0] DELAY in MS
 	 * [1] Percentile of max health
@@ -63,9 +60,8 @@ public class PartyHealthEvent extends DelayedQEvent {
 
 	@Override
 	public CompleteStatus action() {
-		long gid = MineQuest.groupManager.indexOfQuest(MineQuest.questManager.getQuest(getQuestId()));
-		Group g = MineQuest.groupManager.getGroup(gid);
-		for (Player p : g.getPlayers())
+		QuestGroup g = Managers.getQuestGroupManager().get(getQuest());
+		for (Player p : g.getMembers())
 			p.setHealth((int)(p.getMaxHealth()*percentile));
 		return CompleteStatus.SUCCESS;
 	}

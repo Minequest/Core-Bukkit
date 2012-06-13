@@ -1,7 +1,7 @@
 /**
- * This file, GroupManager.java, is part of MineQuest:
+ * This file, MQQuestGroupManager.java, is part of MineQuest:
  * A full featured and customizable quest/mission system.
- * Copyright (C) 2012 The MineQuest Team
+ * Copyright (C) 2012 The MineQuest Party
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -36,71 +36,70 @@ import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import com.theminequest.MineQuest.ManagerException;
-import com.theminequest.MineQuest.ManagerException.ManagerReason;
 import com.theminequest.MineQuest.MineQuest;
-import com.theminequest.MineQuest.BukkitEvents.GroupPlayerJoinedEvent;
-import com.theminequest.MineQuest.BukkitEvents.GroupPlayerQuitEvent;
-import com.theminequest.MineQuest.BukkitEvents.QuestCompleteEvent;
-import com.theminequest.MineQuest.BukkitEvents.GroupInviteEvent;
-import com.theminequest.MineQuest.Group.GroupException.GroupReason;
-import com.theminequest.MineQuest.Quest.Quest;
+import com.theminequest.MineQuest.API.ManagerException;
+import com.theminequest.MineQuest.API.Managers;
+import com.theminequest.MineQuest.API.BukkitEvents.GroupInviteEvent;
+import com.theminequest.MineQuest.API.BukkitEvents.GroupPlayerJoinedEvent;
+import com.theminequest.MineQuest.API.BukkitEvents.GroupPlayerQuitEvent;
+import com.theminequest.MineQuest.API.BukkitEvents.QuestCompleteEvent;
+import com.theminequest.MineQuest.API.Group.Group;
+import com.theminequest.MineQuest.API.Group.QuestGroup;
+import com.theminequest.MineQuest.API.Group.GroupException;
+import com.theminequest.MineQuest.API.Group.GroupException.GroupReason;
+import com.theminequest.MineQuest.API.Group.QuestGroupManager;
+import com.theminequest.MineQuest.API.Quest.Quest;
+import com.theminequest.MineQuest.API.ManagerException.ManagerReason;
 
-public class GroupManager implements Listener{
+public class MQQuestGroupManager implements Listener, QuestGroupManager {
 
 	public final int TEAM_MAX_CAPACITY;
 	public final int SUPER_MAX_CAPACITY;
-	private Map<Long, Group> groups;
-	private Map<Player, Group> invitations;
+	private Map<Long, QuestGroup> groups;
+	private Map<Player, QuestGroup> invitations;
 	private long groupid;
 
-	public GroupManager(){
-		MineQuest.log("[Team] Starting Manager...");
-		groups = Collections.synchronizedMap(new LinkedHashMap<Long,Group>());
-		invitations = Collections.synchronizedMap(new LinkedHashMap<Player,Group>());
+	public MQQuestGroupManager(){
+		Managers.log("[Party] Starting Manager...");
+		groups = Collections.synchronizedMap(new LinkedHashMap<Long,QuestGroup>());
+		invitations = Collections.synchronizedMap(new LinkedHashMap<Player,QuestGroup>());
 		groupid = 0;
 		TEAM_MAX_CAPACITY = MineQuest.configuration.groupConfig.getInt("team_max_capacity", 8);
 		SUPER_MAX_CAPACITY = MineQuest.configuration.groupConfig.getInt("super_max_capacity", 3);
 	}
 
-	public synchronized long createTeam(ArrayList<Player> p){
+	public synchronized QuestGroup createNewGroup(List<Player> p){
 		long id = groupid;
 		groupid++;
-		groups.put(id, new Team(groupid,p));
-		//for (Player player : p){
-		//	MineQuest.playerManager.getPlayerDetails(player).setTeam(id);
-		//}
-		return id;
+		Party party = new Party(groupid,p);
+		groups.put(id, party);
+		return party;
 	}
 
-	public synchronized long createTeam(Player p){
-		ArrayList<Player> group = new ArrayList<Player>();
+	public synchronized QuestGroup createNewGroup(Player p){
+		List<Player> group = new ArrayList<Player>();
 		group.add(p);
-		return createTeam(group);
+		return createNewGroup(group);
 	}
 	
-	public synchronized long createSuperTeam(ArrayList<Player> p){
-		// to implement
-		throw new RuntimeException(new ManagerException(ManagerReason.NOTIMPLEMENTED));
-	}
-	
-	public synchronized long createSuperTeam(Player p){
-		// to implement
-		throw new RuntimeException(new ManagerException(ManagerReason.NOTIMPLEMENTED));
-	}
-
-	public synchronized Group getGroup(long id){
+	public synchronized QuestGroup get(long id){
 		return groups.get(id);
+	}
+	
+
+	@Override
+	public synchronized QuestGroup get(Quest activeQuest) {
+		return get(activeQuest.getQuestID());
 	}
 
 	/**
 	 * Determine if a player is on a team.
 	 * @param p Player to check for.
-	 * @return Team ID, or -1 if not on team.
+	 * @return Party ID, or -1 if not on team.
 	 */
 	public synchronized long indexOf(Player p){
 		for (long id : groups.keySet()){
-			Group t = groups.get(id);
+			QuestGroup t = groups.get(id);
 			if (t!=null && t.contains(p))
 				return id;
 		}
@@ -110,21 +109,25 @@ public class GroupManager implements Listener{
 	/**
 	 * Determine if a quest is being played by a team
 	 * @param q Quest
-	 * @return Team ID, or -1 if not on a team.
+	 * @return Party ID, or -1 if not on a team.
 	 */
-	public synchronized long indexOfQuest(Quest q){
+	public synchronized long indexOf(Quest q){
 		for (long id : groups.keySet()){
-			Group t = groups.get(id);
+			QuestGroup t = groups.get(id);
 			if (t!=null && t.getQuest()!=null && t.getQuest().equals(q))
 				return id;
 		}
 		return -1;
 	}
 	
-	public synchronized void acceptPendingInvite(Player p) throws ManagerException, GroupException{
+	public synchronized void acceptInvite(Player p) throws ManagerException{
 		if (!invitations.containsKey(p))
 			throw new ManagerException(ManagerReason.INVALIDARGS);
-		invitations.get(p).add(p);
+		try {
+			invitations.get(p).add(p);
+		} catch (GroupException e) {
+			throw new ManagerException(e);
+		}
 		invitations.remove(p);
 	}
 	
@@ -132,52 +135,62 @@ public class GroupManager implements Listener{
 		return (invitations.containsKey(p));
 	}
 	
-	protected synchronized void invitePlayer(final Player p, Group g) throws GroupException {
+	public synchronized void invite(final Player p, Group g) throws ManagerException {
 		if (invitations.containsKey(p))
-			throw new GroupException(GroupReason.ALREADYINTEAM);
-		invitations.put(p, g);
+			throw new ManagerException(ManagerReason.INVALIDARGS);
+		if (!(g instanceof QuestGroup))
+			throw new ManagerException(ManagerReason.INTERNAL);
+		invitations.put(p, (QuestGroup) g);
 		// TODO Call GroupInviteEvent (remember, 30 seconds to accept invite)
 		GroupInviteEvent event = new GroupInviteEvent(g.getLeader().getName(), p, g.getID());
 		Bukkit.getPluginManager().callEvent(event);
-		Bukkit.getScheduler().scheduleAsyncDelayedTask(MineQuest.activePlugin, new Runnable(){
+		Bukkit.getScheduler().scheduleAsyncDelayedTask(Managers.getActivePlugin(), new Runnable(){
 
 			@Override
 			public void run() {
-				disposeInvite(p);
+				denyInvite(p);
 			}
 			
 		}, 600);
 	}
 	
-	private synchronized void disposeInvite(Player p) {
+	public synchronized void denyInvite(Player p) {
 		if (!invitations.containsKey(p)) // accepted; just return.
 			return;
 		invitations.remove(p);
 		// TODO Call TeamInviteExpiredEvent
-		p.sendMessage("Invite expired!"); // FIXME
+		p.sendMessage("Invite deleted!"); // FIXME
 	}
 
 	/*
-	 * Only called by Team objects when everyone leaves the team.
+	 * Only called by Party objects when everyone leaves the team.
 	 */
-	protected synchronized void removeEmptyTeam(long id){
+	protected synchronized void removeEmptyQuestGroup(long id){
 		if (groups.get(id)==null)
 			return;
-		groups.get(id).lockGroup();
+		if (groups.get(id).getMembers().size()>0)
+			throw new IllegalArgumentException("Party is still full!");
+		try {
+			groups.get(id).setCapacity(0);
+		} catch (GroupException e) {
+			e.printStackTrace();
+		}
 		groups.remove(id);
 	}
 	
+	// FIXME extract this out into GroupManager (Not QuestGroupManager)
 	@EventHandler
 	public synchronized void onGroupPlayerJoinedEvent(GroupPlayerJoinedEvent e){
-		for (Player p : e.getGroup().getPlayers())
+		for (Player p : e.getGroup().getMembers())
 			p.sendMessage(ChatColor.GOLD + e.getPlayer().getDisplayName() + " has joined the party.");
 	}
 	
 	@EventHandler
 	public synchronized void onGroupPlayerQuitEvent(GroupPlayerQuitEvent e){
-		for (Player p : e.getGroup().getPlayers())
+		for (Player p : e.getGroup().getMembers())
 			p.sendMessage(ChatColor.GOLD + e.getPlayer().getDisplayName() + " has left the party.");
 	}
+	// end FIXME
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public synchronized void onPlayerQuit(PlayerQuitEvent e){
@@ -199,9 +212,9 @@ public class GroupManager implements Listener{
 			try {
 				groups.get(team).remove(e.getPlayer());
 			} catch (GroupException e1) {
-				MineQuest.log(Level.SEVERE, "Failed to remove player from team: " + e1);
-				MineQuest.log(Level.WARNING, "Locking group and kicking all players...");
-				for (Player p : groups.get(team).getPlayers()){
+				Managers.log(Level.SEVERE, "Failed to remove player from team: " + e1);
+				Managers.log(Level.WARNING, "Locking group and kicking all players...");
+				for (Player p : groups.get(team).getMembers()){
 					p.sendMessage("[ERROR] Something went wrong and we have to disband your group. :(");
 					try {
 						groups.get(team).remove(p);
@@ -225,7 +238,7 @@ public class GroupManager implements Listener{
 	
 	@EventHandler
 	public synchronized void onQuestCompleteEvent(QuestCompleteEvent e){
-		Quest q = MineQuest.questManager.getQuest(e.getQuestId());
+		Quest q = e.getQuest();
 		if (!q.isInstanced()){
 			try {
 				e.getGroup().finishQuest();
@@ -236,4 +249,21 @@ public class GroupManager implements Listener{
 		}
 	}
 
+	@Override
+	public void disposeGroup(Group group) {
+		for (Player p : group.getMembers()){
+			p.sendMessage(ChatColor.GRAY + "Group is being disposed of!");
+			try {
+				group.remove(p);
+			} catch (GroupException e) {
+				e.printStackTrace();
+			}
+		}
+		groups.remove(group);
+	}
+
+	@Override
+	public QuestGroup get(Player p) {
+		return get(indexOf(p));
+	}
 }

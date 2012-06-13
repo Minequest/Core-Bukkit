@@ -1,7 +1,7 @@
 /**
- * This file, Team.java, is part of MineQuest:
+ * This file, Party.java, is part of MineQuest:
  * A full featured and customizable quest/mission system.
- * Copyright (C) 2012 The MineQuest Team
+ * Copyright (C) 2012 The MineQuest Party
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,27 +29,36 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import com.theminequest.MineQuest.CompleteStatus;
-import com.theminequest.MineQuest.ManagerException;
 import com.theminequest.MineQuest.MineQuest;
-import com.theminequest.MineQuest.Backend.QuestBackend;
-import com.theminequest.MineQuest.BukkitEvents.GroupPlayerJoinedEvent;
-import com.theminequest.MineQuest.BukkitEvents.GroupPlayerQuitEvent;
-import com.theminequest.MineQuest.BukkitEvents.QuestStartedEvent;
-import com.theminequest.MineQuest.Group.GroupException.GroupReason;
-import com.theminequest.MineQuest.Quest.Quest;
+import com.theminequest.MineQuest.API.CompleteStatus;
+import com.theminequest.MineQuest.API.ManagerException;
+import com.theminequest.MineQuest.API.Managers;
+import com.theminequest.MineQuest.API.BukkitEvents.GroupPlayerJoinedEvent;
+import com.theminequest.MineQuest.API.BukkitEvents.GroupPlayerQuitEvent;
+import com.theminequest.MineQuest.API.BukkitEvents.QuestStartedEvent;
+import com.theminequest.MineQuest.API.Group.Group;
+import com.theminequest.MineQuest.API.Group.GroupException;
+import com.theminequest.MineQuest.API.Group.GroupException.GroupReason;
+import com.theminequest.MineQuest.API.Group.QuestGroup;
+import com.theminequest.MineQuest.API.Quest.Quest;
+import com.theminequest.MineQuest.API.Quest.QuestDetails;
+import com.theminequest.MineQuest.API.Quest.QuestRequirement;
+import com.theminequest.MineQuest.API.Quest.QuestUtils;
 
-public class Team implements Group {
+public class Party implements QuestGroup {
+	
+	public static final String CONFIG_CAPACITY = "party.maxCapacity";
 
 	private long teamid;
 	private List<Player> players;
 	private LinkedHashMap<Player,Location> locations;
 	private int capacity;
 	private Quest quest;
-	private boolean inQuest;
+	private QuestStatus status;
+	private boolean pvp;
 
-	protected Team(long id, ArrayList<Player> p){
-		if (p.size()<=0 || p.size()>MineQuest.groupManager.TEAM_MAX_CAPACITY)
+	protected Party(long id, List<Player> p){
+		if (p.size()<=0)
 			throw new IllegalArgumentException(GroupReason.BADCAPACITY.name());
 		// ^ never should encounter this unless a third-party tries to, in which
 		// case they get what they deserve.
@@ -57,8 +66,8 @@ public class Team implements Group {
 		players = Collections.synchronizedList(p);
 		locations = null;
 		quest = null;
-		inQuest = false;
-		capacity = MineQuest.groupManager.TEAM_MAX_CAPACITY;
+		status = QuestStatus.NOQUEST;
+		capacity = MineQuest.configuration.groupConfig.getInt(CONFIG_CAPACITY, 8);
 	}
 
 	@Override
@@ -75,17 +84,8 @@ public class Team implements Group {
 	}
 
 	@Override
-	public synchronized List<Player> getPlayers(){
+	public synchronized List<Player> getMembers(){
 		return players;
-	}
-	
-	/*
-	 * Mark team in a way such that nobody can get on the team anymore.
-	 * This should help Java trigger GC on this object.
-	 */
-	@Override
-	public void lockGroup(){
-		capacity = 0;
 	}
 
 	@Override
@@ -116,20 +116,20 @@ public class Team implements Group {
 	 * let the backend handle checking valid quests, calling QuestManager, etc...
 	 */
 	@Override
-	public synchronized void startQuest(String q) throws GroupException {
+	public synchronized void startQuest(QuestDetails d) throws GroupException {
 		if (quest!=null)
 			throw new GroupException(GroupReason.ALREADYONQUEST);
-		long id = MineQuest.questManager.startQuest(q);
-		quest = MineQuest.questManager.getQuest(id);
-		if (quest.details.groupLimit<players.size()){
-			// FIXME should this go to backends?
-			abandonQuest();
-			throw new GroupException(GroupReason.BADCAPACITY);
+		// check requirements
+		List<QuestRequirement> requirements = d.getProperty(QuestDetails.QUEST_REQUIREMENTS);
+		for (QuestRequirement r : requirements){
+			if (!r.isSatisfied(getLeader()))
+				throw new GroupException(GroupReason.REQUIREMENTSNOTFULFILLED);
 		}
-		if (!quest.details.loadworld)
+		quest = Managers.getQuestManager().getQuest(Managers.getQuestManager().startQuest(d));
+
+		boolean loadworld = quest.getDetails().getProperty(QuestDetails.QUEST_LOADWORLD);
+		if (!loadworld)
 			quest.startQuest();
-		QuestStartedEvent event = new QuestStartedEvent(quest);
-		Bukkit.getPluginManager().callEvent(event);
 	}
 
 	@Override
@@ -137,14 +137,10 @@ public class Team implements Group {
 		if (quest==null)
 			throw new GroupException(GroupReason.NOQUEST);
 		quest.finishQuest(CompleteStatus.CANCELED);
-		if (inQuest)
+		if (status==QuestStatus.INQUEST)
 			exitQuest();
 		else if (quest!=null && quest.isInstanced()){
-			try {
-				quest.unloadQuest();
-			} catch (IOException e) {
-				throw new GroupException(e);
-			}
+			quest.cleanupQuest();
 		}
 		quest = null;
 	}
@@ -168,13 +164,13 @@ public class Team implements Group {
 
 	@Override
 	public synchronized void add(Player p) throws GroupException {
-		if (MineQuest.groupManager.indexOf(p)!=-1)
+		if (Managers.getGroupManager().indexOf(p)!=-1)
 			throw new GroupException(GroupReason.ALREADYINTEAM);
 		if (players.size()>=capacity)
-			throw new GroupException(GroupReason.OVERCAPACITY);
+			throw new GroupException(GroupReason.BADCAPACITY);
 		if (contains(p))
 			throw new GroupException(GroupReason.ALREADYINTEAM);
-		if (inQuest)
+		if (status==QuestStatus.INQUEST)
 			throw new GroupException(GroupReason.INSIDEQUEST);
 		//MineQuest.playerManager.getPlayerDetails(p).setTeam(teamid);
 		GroupPlayerJoinedEvent e = new GroupPlayerJoinedEvent(this,p);
@@ -186,8 +182,6 @@ public class Team implements Group {
 
 	@Override
 	public synchronized void remove(Player p) throws GroupException{
-		if (MineQuest.groupManager.indexOf(p)==-1)
-			throw new GroupException(GroupReason.NOTONTEAM);
 		if (!contains(p))
 			throw new GroupException(GroupReason.NOTONTEAM);
 		GroupPlayerQuitEvent e = new GroupPlayerQuitEvent(this,p);
@@ -207,7 +201,7 @@ public class Team implements Group {
 			if (quest!=null){
 				abandonQuest();
 			}
-			MineQuest.groupManager.removeEmptyTeam(teamid);
+			Managers.getGroupManager().disposeGroup(this);
 		}
 	}
 
@@ -215,17 +209,16 @@ public class Team implements Group {
 	public synchronized void enterQuest() throws GroupException {
 		if (quest==null)
 			throw new GroupException(GroupReason.NOQUEST);
-		if (inQuest)
+		if (status==QuestStatus.INQUEST)
 			throw new GroupException(GroupReason.INSIDEQUEST);
 		if (!quest.isInstanced())
 			throw new GroupException(GroupReason.MAINWORLDQUEST);
 		recordCurrentLocations();
-		inQuest = true;
-		teleportPlayers(quest.getSpawnLocation());
+		status = QuestStatus.INQUEST;
+		teleportPlayers(QuestUtils.getSpawnLocation(quest));
 		quest.startQuest();
 	}
 
-	@Override
 	public synchronized void recordCurrentLocations() {
 		locations = new LinkedHashMap<Player,Location>();
 		for (Player p : players){
@@ -233,7 +226,6 @@ public class Team implements Group {
 		}
 	}
 	
-	@Override
 	public synchronized void moveBackToLocations() throws GroupException{
 		for (Player p : players){
 			moveBackToLocations(p);
@@ -241,7 +233,6 @@ public class Team implements Group {
 		locations = null;
 	}
 	
-	@Override
 	public synchronized void moveBackToLocations(Player p) throws GroupException {
 		if (locations==null)
 			throw new GroupException(GroupReason.NOLOCATIONS);
@@ -249,23 +240,18 @@ public class Team implements Group {
 		locations.remove(p);
 	}
 
-	@Override
 	public synchronized void exitQuest() throws GroupException {
 		if (quest==null)
 			throw new GroupException(GroupReason.NOQUEST);
-		if (!inQuest)
+		if (status!=QuestStatus.INQUEST)
 			throw new GroupException(GroupReason.NOTINSIDEQUEST);
 		if (!quest.isInstanced())
 			throw new GroupException(GroupReason.MAINWORLDQUEST);
 		if (quest.isFinished()==null)
 			throw new GroupException(GroupReason.UNFINISHEDQUEST);
 		moveBackToLocations();
-		inQuest = false;
-		try {
-			quest.unloadQuest();
-		} catch (IOException e) {
-			throw new GroupException(GroupReason.EXTERNALEXCEPTION,e);
-		}
+		status = QuestStatus.NOQUEST;
+		quest.cleanupQuest();
 		quest = null;
 	}
 	
@@ -281,19 +267,23 @@ public class Team implements Group {
 	}
 
 	@Override
-	public synchronized boolean isInQuest() {
-		return inQuest;
-	}
-
-	// remember that only the leader should be able to invite
-	@Override
-	public void invite(Player p) throws GroupException {
-		MineQuest.groupManager.invitePlayer(p, this);
-	}
-
-	@Override
 	public int compareTo(Group arg0) {
 		return (int) (teamid-arg0.getID());
+	}
+
+	@Override
+	public boolean isPVP() {
+		return pvp;
+	}
+
+	@Override
+	public void setPVP(boolean on) {
+		pvp = on;
+	}
+
+	@Override
+	public QuestStatus getQuestStatus() {
+		return status;
 	}
 
 }

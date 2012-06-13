@@ -1,7 +1,7 @@
 /**
  * This file, KillEvent.java, is part of MineQuest:
  * A full featured and customizable quest/mission system.
- * Copyright (C) 2012 The MineQuest Team
+ * Copyright (C) 2012 The MineQuest Party
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -28,27 +28,25 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
-import com.theminequest.MineQuest.CompleteStatus;
 import com.theminequest.MineQuest.MineQuest;
-import com.theminequest.MineQuest.EventsAPI.NamedQEvent;
-import com.theminequest.MineQuest.EventsAPI.QEvent;
-import com.theminequest.MineQuest.Group.Group;
-import com.theminequest.MineQuest.Group.Team;
+import com.theminequest.MineQuest.API.CompleteStatus;
+import com.theminequest.MineQuest.API.Managers;
+import com.theminequest.MineQuest.API.Events.UserQuestEvent;
+import com.theminequest.MineQuest.API.Events.QuestEvent;
+import com.theminequest.MineQuest.API.Group.Group;
+import com.theminequest.MineQuest.API.Group.QuestGroup;
+import com.theminequest.MineQuest.Group.Party;
 
-public class KillEvent extends QEvent implements NamedQEvent {
+public class KillEvent extends QuestEvent implements UserQuestEvent {
 	
 	private List<EntityType> typestokill;
 	private int totaltokill;
 	private int currentkill;
 	private int taskid;
 
-	public KillEvent(long q, int e, String details) {
-		super(q, e, details);
-	}
-
 	/*
 	 * (non-Javadoc)
-	 * @see com.theminequest.MineQuest.EventsAPI.QEvent#parseDetails(java.lang.String[])
+	 * @see com.theminequest.MineQuest.Events.QEvent#parseDetails(java.lang.String[])
 	 * [0]: task id to trigger
 	 * [1]: entities
 	 * [2]: total # to kill
@@ -76,7 +74,7 @@ public class KillEvent extends QEvent implements NamedQEvent {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.theminequest.MineQuest.EventsAPI.QEvent#entityDamageByEntityCondition(org.bukkit.event.entity.EntityDamageByEntityEvent)
+	 * @see com.theminequest.MineQuest.Events.QEvent#entityDamageByEntityCondition(org.bukkit.event.entity.EntityDamageByEntityEvent)
 	 */
 	@Override
 	public boolean entityDamageByEntityCondition(EntityDamageByEntityEvent e) {
@@ -89,9 +87,8 @@ public class KillEvent extends QEvent implements NamedQEvent {
 			Player p = (Player)e.getDamager();
 			for (EntityType t : typestokill){
 				if (e.getEntityType()==t){
-					long gid = MineQuest.groupManager.indexOfQuest(MineQuest.questManager.getQuest(getQuestId()));
-					Group g = MineQuest.groupManager.getGroup(gid);
-					List<Player> team = g.getPlayers();
+					QuestGroup g = Managers.getQuestGroupManager().get(getQuest());
+					List<Player> team = g.getMembers();
 					if (team.contains(p)){
 						currentkill++;
 						if (currentkill>=totaltokill)

@@ -1,7 +1,7 @@
 /*
  * This file, LockWorldTimeEvent.java, is part of MineQuest:
  * A full featured and customizable quest/mission system.
- * Copyright (C) 2012 The MineQuest Team
+ * Copyright (C) 2012 The MineQuest Party
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,23 +22,22 @@ package com.theminequest.MQCoreEvents;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
-import com.theminequest.MineQuest.CompleteStatus;
 import com.theminequest.MineQuest.MineQuest;
-import com.theminequest.MineQuest.EventsAPI.QEvent;
-import com.theminequest.MineQuest.Utils.TimeUtils;
+import com.theminequest.MineQuest.API.CompleteStatus;
+import com.theminequest.MineQuest.API.Managers;
+import com.theminequest.MineQuest.API.Events.QuestEvent;
+import com.theminequest.MineQuest.API.Quest.QuestDetails;
+import com.theminequest.MineQuest.API.Quest.QuestDetailsUtils;
+import com.theminequest.MineQuest.API.Utils.TimeUtils;
 
-public class LockWorldTimeEvent extends QEvent {
+public class LockWorldTimeEvent extends QuestEvent {
 	
 	private long delay;
 	private long time;
 
-	public LockWorldTimeEvent(long q, int e, String details) {
-		super(q, e, details);
-	}
-
 	/*
 	 * (non-Javadoc)
-	 * @see com.theminequest.MineQuest.EventsAPI.QEvent#parseDetails(java.lang.String[])
+	 * @see com.theminequest.MineQuest.Events.QEvent#parseDetails(java.lang.String[])
 	 * Details:
 	 * [0] Check delay
 	 * [1] Time
@@ -57,7 +56,8 @@ public class LockWorldTimeEvent extends QEvent {
 
 	@Override
 	public CompleteStatus action() {
-		World questWorld = Bukkit.getWorld(MineQuest.questManager.getQuest(getQuestId()).getWorld());
+		String world = getQuest().getDetails().getProperty(QuestDetails.QUEST_WORLD);
+		World questWorld = Bukkit.getWorld(world);
 		TimeUtils.lock(questWorld, time, delay);
 		return CompleteStatus.SUCCESS;
 	}

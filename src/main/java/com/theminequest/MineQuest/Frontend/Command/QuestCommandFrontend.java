@@ -1,86 +1,44 @@
 package com.theminequest.MineQuest.Frontend.Command;
 
-import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.theminequest.MineQuest.I18NMessage;
-import com.theminequest.MineQuest.MineQuest;
-import com.theminequest.MineQuest.Backend.BackendFailedException;
-import com.theminequest.MineQuest.Backend.GroupBackend;
-import com.theminequest.MineQuest.Backend.QuestAvailability;
-import com.theminequest.MineQuest.Backend.QuestBackend;
-import com.theminequest.MineQuest.Backend.BackendFailedException.BackendReason;
-import com.theminequest.MineQuest.EventsAPI.QEvent;
-import com.theminequest.MineQuest.EventsAPI.NamedQEvent;
-import com.theminequest.MineQuest.Group.Group;
-import com.theminequest.MineQuest.Group.GroupException;
-import com.theminequest.MineQuest.Quest.Quest;
-import com.theminequest.MineQuest.Quest.QuestDescription;
-import com.theminequest.MineQuest.Utils.ChatUtils;
-import com.theminequest.MineQuest.Utils.PropertiesFile;
+import com.theminequest.MineQuest.API.Managers;
+import com.theminequest.MineQuest.API.Group.GroupException;
+import com.theminequest.MineQuest.API.Group.QuestGroup;
+import com.theminequest.MineQuest.API.Group.QuestGroup.QuestStatus;
+import com.theminequest.MineQuest.API.Quest.Quest;
+import com.theminequest.MineQuest.API.Quest.QuestDetails;
+import com.theminequest.MineQuest.API.Quest.QuestDetailsUtils;
+import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils;
+import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils.QSException;
+import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils.Status;
+import com.theminequest.MineQuest.API.Utils.ChatUtils;
 
 public class QuestCommandFrontend extends CommandFrontend {
-
-	/*
-	 * TODO list:
-	 * discard quest function?
-	 */
 
 	public QuestCommandFrontend(){
 		super("quest");
 	}
 
-	public Boolean accept(Player p, String[] args) {
-		if (args.length!=1){
-			p.sendMessage(I18NMessage.Cmd_INVALIDARGS.getDescription());
-			return false;
-		}
-		try {
-			QuestBackend.acceptQuest(p, args[0]);
-			return true;
-		} catch (BackendFailedException e) {
-			if (e.getReason()==BackendReason.NOTHAVEQUEST)
-				p.sendMessage(I18NMessage.Cmd_Quest_NOTHAVEQUEST.getDescription());
-			else {
-				e.printStackTrace();
-				p.sendMessage(I18NMessage.Cmd_SQLException.getDescription());
-			}
-			return false;
-		}
-	}
-
-	public Boolean accepted(Player p, String[] args) {
+	public Boolean given(Player p, String[] args) {
 		if (args.length!=0){
 			p.sendMessage(I18NMessage.Cmd_INVALIDARGS.getDescription());
 			return false;
 		}
-		List<String> quests;
-		try {
-			quests = QuestBackend.getQuests(QuestAvailability.ACCEPTED, p);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			p.sendMessage(I18NMessage.Cmd_SQLException.getDescription());
-			return false;
-		}
+		String[] quests = QuestStatisticUtils.getQuests(p,Status.GIVEN);
 
 		List<String> message = new ArrayList<String>();
 		message.add(ChatUtils.formatHeader(I18NMessage.Cmd_Quest_ACCEPTED.getDescription()));
 		for (String q : quests){
-			QuestDescription qd = QuestBackend.getQuestDesc(q);
+			QuestDetails qd = Managers.getQuestManager().getDetails(q);
 			if (qd!=null)
-				message.add(ChatColor.AQUA + q + " : " + qd.displayname);
+				message.add(ChatColor.AQUA + q + " : " + ChatColor.GOLD + qd.getProperty(QuestDetails.QUEST_NAME));
 			else
 				message.add(ChatColor.AQUA + q + " : " + ChatColor.GRAY + "<unavailable>");
 		}
@@ -90,32 +48,17 @@ public class QuestCommandFrontend extends CommandFrontend {
 		return true;
 	}
 
-	public Boolean available(Player p, String[] args){
-		if (args.length!=0){
+	public Boolean drop(Player p, String[] args) {
+		if (args.length!=1){
 			p.sendMessage(I18NMessage.Cmd_INVALIDARGS.getDescription());
 			return false;
 		}
-		List<String> quests;
 		try {
-			quests = QuestBackend.getQuests(QuestAvailability.AVAILABLE, p);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			p.sendMessage(I18NMessage.Cmd_SQLException.getDescription());
+			QuestStatisticUtils.degiveQuest(p, args[0]);
+		} catch (QSException e) {
+			p.sendMessage(I18NMessage.Cmd_Quest_NOTHAVEQUEST.getDescription());
 			return false;
 		}
-
-		List<String> message = new ArrayList<String>();
-		message.add(ChatUtils.formatHeader(I18NMessage.Cmd_Quest_AVAILABLE.getDescription()));
-		for (String q : quests){
-			QuestDescription qd = QuestBackend.getQuestDesc(q);
-			if (qd!=null)
-				message.add(ChatColor.AQUA + q + " : " + qd.displayname);
-			else
-				message.add(ChatColor.AQUA + q + " : " + ChatColor.GRAY + "<unavailable>");
-		}
-
-		for (String m : message)
-			p.sendMessage(m);
 		return true;
 	}
 
@@ -124,11 +67,11 @@ public class QuestCommandFrontend extends CommandFrontend {
 			p.sendMessage(I18NMessage.Cmd_INVALIDARGS.getDescription());
 			return false;
 		}
-		if (GroupBackend.teamID(p)==-1){
+		if (Managers.getQuestGroupManager().indexOf(p)==-1){
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOPARTY.getDescription());
 			return false;
 		}
-		Group g = GroupBackend.getCurrentGroup(p);
+		QuestGroup g = Managers.getQuestGroupManager().get(p);
 		if (!g.getLeader().equals(p)){
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOTLEADER.getDescription());
 			return false;
@@ -151,35 +94,16 @@ public class QuestCommandFrontend extends CommandFrontend {
 		}
 	}
 	
-	public Boolean decline(Player p, String[] args) {
-		if (args.length!=1){
-			p.sendMessage(I18NMessage.Cmd_INVALIDARGS.getDescription());
-			return false;
-		}
-		try {
-			QuestBackend.declineQuest(p, args[0]);
-			return true;
-		} catch (BackendFailedException e) {
-			if (e.getReason()==BackendReason.NOTHAVEQUEST)
-				p.sendMessage(I18NMessage.Cmd_Quest_NOTHAVEQUEST.getDescription());
-			else {
-				e.printStackTrace();
-				p.sendMessage(I18NMessage.Cmd_SQLException.getDescription());
-			}
-			return false;
-		}
-	}
-
 	public Boolean active(Player p, String[] args) {
 		if (args.length!=0){
 			p.sendMessage(I18NMessage.Cmd_INVALIDARGS.getDescription());
 			return false;
 		}
-		if (GroupBackend.teamID(p)==-1){
+		if (Managers.getQuestGroupManager().indexOf(p)==-1){
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOPARTY.getDescription());
 			return false;
 		}
-		Group g = GroupBackend.getCurrentGroup(p);
+		QuestGroup g = Managers.getQuestGroupManager().get(p);
 		if (g.getQuest()==null){
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Quest_NOACTIVE.getDescription());
 			return false;
@@ -193,11 +117,11 @@ public class QuestCommandFrontend extends CommandFrontend {
 			p.sendMessage(I18NMessage.Cmd_INVALIDARGS.getDescription());
 			return false;
 		}
-		if (GroupBackend.teamID(p)==-1){
+		if (Managers.getQuestGroupManager().indexOf(p)==-1){
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOPARTY.getDescription());
 			return false;
 		}
-		Group g = GroupBackend.getCurrentGroup(p);
+		QuestGroup g = Managers.getQuestGroupManager().get(p);
 		if (g.getQuest()==null){
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Quest_NOACTIVE.getDescription());
 			return false;
@@ -210,7 +134,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOTLEADER.getDescription());
 			return false;
 		}
-		if (g.isInQuest()){
+		if (g.getQuestStatus()==QuestStatus.INQUEST){
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Quest_INQUEST.getDescription());
 			return false;
 		}
@@ -229,11 +153,11 @@ public class QuestCommandFrontend extends CommandFrontend {
 			p.sendMessage(I18NMessage.Cmd_INVALIDARGS.getDescription());
 			return false;
 		}
-		if (GroupBackend.teamID(p)==-1){
+		if (Managers.getQuestGroupManager().indexOf(p)==-1){
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOPARTY.getDescription());
 			return false;
 		}
-		Group g = GroupBackend.getCurrentGroup(p);
+		QuestGroup g = Managers.getQuestGroupManager().get(p);
 		if (g.getQuest()==null){
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Quest_NOACTIVE.getDescription());
 			return false;
@@ -246,7 +170,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOTLEADER.getDescription());
 			return false;
 		}
-		if (!g.isInQuest()){
+		if (g.getQuestStatus()!=QuestStatus.INQUEST){
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Quest_NOTINQUEST.getDescription());
 			return false;
 		}
@@ -269,12 +193,12 @@ public class QuestCommandFrontend extends CommandFrontend {
 			p.sendMessage(I18NMessage.Cmd_INVALIDARGS.getDescription());
 			return false;
 		}
-		QuestDescription qd = QuestBackend.getQuestDesc(args[0]);
+		QuestDetails qd = Managers.getQuestManager().getDetails(args[0]);
 		if (qd==null){
 			p.sendMessage(I18NMessage.Cmd_NOSUCHQUEST.getDescription());
 			return false;
 		}
-		p.sendMessage(qd.toString().split("\n"));
+		p.sendMessage(QuestDetailsUtils.getOverviewString(qd).split("\n"));
 		return true;
 	}
 	
@@ -288,19 +212,9 @@ public class QuestCommandFrontend extends CommandFrontend {
 			return false;
 		}
 		if (args.length==0)
-			try {
-				QuestBackend.reloadQuest(null);
-			} catch (BackendFailedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			Managers.getQuestManager().reloadQuests();
 		else
-			try {
-				QuestBackend.reloadQuest(args[0]);
-			} catch (BackendFailedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			Managers.getQuestManager().reloadQuest(args[0]);
 		return true;
 	}
 
@@ -309,11 +223,11 @@ public class QuestCommandFrontend extends CommandFrontend {
 			p.sendMessage(I18NMessage.Cmd_INVALIDARGS.getDescription());
 			return false;
 		}
-		if (GroupBackend.teamID(p)==-1){
+		if (Managers.getQuestGroupManager().indexOf(p)==-1){
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOPARTY.getDescription());
 			return false;
 		}
-		final Group g = GroupBackend.getCurrentGroup(p);
+		final QuestGroup g = Managers.getQuestGroupManager().get(p);
 		if (!g.getLeader().equals(p)){
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOTLEADER.getDescription());
 			return false;
@@ -323,33 +237,33 @@ public class QuestCommandFrontend extends CommandFrontend {
 			return false;
 		}
 
-		List<String> quests;
-		try {
-			quests = QuestBackend.getQuests(QuestAvailability.ACCEPTED, p);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			p.sendMessage(I18NMessage.Cmd_SQLException.getDescription());
-			return false;
-		}
+		List<String> quests = Arrays.asList(QuestStatisticUtils.getQuests(p, Status.GIVEN));
 
 		if (!quests.contains(args[0])){
 			p.sendMessage(I18NMessage.Cmd_Quest_NOTHAVEQUEST.getDescription());
 			return false;
 		}
+		
+		final QuestDetails qd = Managers.getQuestManager().getDetails(args[0]);
+		if (qd==null){
+			p.sendMessage(I18NMessage.Cmd_Quest_UNAVAILABLE.getDescription());
+			return false;
+		}
+		
 		// TEST new multithreading
 		new Thread(new Runnable(){
 
 			@Override
 			public void run() {
-				p.sendMessage("Starting up...");
+				p.sendMessage(ChatColor.YELLOW + "[Quest] Starting up. May take a few minutes.");
 				try {
-					g.startQuest(args[0]);
+					g.startQuest(qd);
 				} catch (GroupException e) {
 					e.printStackTrace();
-					p.sendMessage(ChatColor.GRAY + "ERR: " + e.getMessage());
+					p.sendMessage(ChatColor.RED + "[Quest] Couldn't start your quest. :C");
 					return;
 				}
-				p.sendMessage("Quest has been started!");
+				p.sendMessage(ChatColor.YELLOW + "[Quest] Quest has been started!");
 			}
 
 		}).start();
@@ -362,21 +276,19 @@ public class QuestCommandFrontend extends CommandFrontend {
 		List<String> messages = new ArrayList<String>();
 		boolean inGroup = false;
 		boolean isLeader = false;
-		boolean inQuest = false;
+		QuestStatus inQuest = QuestStatus.NOQUEST;
 		Quest active = null;
-		if (GroupBackend.teamID(p)!=-1){
-			Group g = GroupBackend.getCurrentGroup(p);
+		if (Managers.getQuestGroupManager().indexOf(p)!=-1){
+			QuestGroup g = Managers.getQuestGroupManager().get(p);
 			inGroup = true;
 			isLeader = g.getLeader().equals(p);
-			inQuest = g.isInQuest();
+			inQuest = g.getQuestStatus();
 			active = g.getQuest();
 		}
 
 		/*
 		 * OP: reload <name>
-		 * accept <name>
-		 * accepted
-		 * available
+		 * given
 		 * info
 		 * 
 		 * abandon
@@ -388,10 +300,8 @@ public class QuestCommandFrontend extends CommandFrontend {
 		if (p.isOp())
 			messages.add(ChatUtils.formatHelp("quest reload [name]", "Reload quest into memory (or all)"));
 		messages.add(ChatUtils.formatHeader(I18NMessage.Cmd_Quest_HELP.getDescription()));
-		messages.add(ChatUtils.formatHelp("quest accept <name>", I18NMessage.Cmd_Quest_HELPACCEPT.getDescription()));
-		messages.add(ChatUtils.formatHelp("quest decline <name>", I18NMessage.Cmd_Quest_HELPDECLINE.getDescription()));
-		messages.add(ChatUtils.formatHelp("quest accepted", I18NMessage.Cmd_Quest_HELPACCEPTED.getDescription()));
-		messages.add(ChatUtils.formatHelp("quest available", I18NMessage.Cmd_Quest_HELPAVAILABLE.getDescription()));
+		messages.add(ChatUtils.formatHelp("quest given", I18NMessage.Cmd_Quest_HELPGIVEN.getDescription()));
+		messages.add(ChatUtils.formatHelp("quest drop <name>", I18NMessage.Cmd_Quest_HELPDROP.getDescription()));
 		messages.add(ChatUtils.formatHelp("quest info <name>", I18NMessage.Cmd_Quest_HELPINFO.getDescription()));
 
 		if (inGroup){
@@ -407,11 +317,11 @@ public class QuestCommandFrontend extends CommandFrontend {
 				messages.add(ChatUtils.formatHelp("quest active", I18NMessage.Cmd_Quest_HELPACTIVE.getDescription()));
 			else
 				messages.add(ChatColor.GRAY + "[quest active] " + I18NMessage.Cmd_Quest_NOACTIVE.getDescription());
-			if (active!=null && !inQuest && isLeader && active.isInstanced())
+			if (active!=null && inQuest==QuestStatus.NOTINQUEST && isLeader && active.isInstanced())
 				messages.add(ChatUtils.formatHelp("quest enter", I18NMessage.Cmd_Quest_HELPENTER.getDescription()));
-			else if (active!=null && inQuest && isLeader && active.isInstanced() && active.isFinished()!=null )
+			else if (active!=null && inQuest==QuestStatus.INQUEST && isLeader && active.isInstanced() && active.isFinished()!=null )
 				messages.add(ChatUtils.formatHelp("quest exit", I18NMessage.Cmd_Quest_HELPEXIT.getDescription()));
-			else if (active!=null && inQuest && isLeader && active.isInstanced() )
+			else if (active!=null && inQuest==QuestStatus.INQUEST && isLeader && active.isInstanced() )
 				messages.add(ChatColor.GRAY + "[quest exit] " + I18NMessage.Cmd_Quest_EXITUNFINISHED.getDescription());
 			else if (active!=null && !active.isInstanced())
 				messages.add(ChatColor.GRAY + "[quest enter/exit] " + I18NMessage.Cmd_Quest_MAINWORLD.getDescription());
@@ -425,8 +335,10 @@ public class QuestCommandFrontend extends CommandFrontend {
 				messages.add(ChatColor.GRAY + "[quest start] " + I18NMessage.Cmd_NOTLEADER.getDescription());
 			else
 				messages.add(ChatColor.GRAY + "[quest start] " + I18NMessage.Cmd_Quest_ALREADYACTIVE.getDescription());
-		} else
+		} else {
+			messages.add(ChatUtils.formatHelp("quest start <name>", I18NMessage.Cmd_Quest_HELPSTARTNOPARTY.getDescription()));
 			messages.add(ChatColor.AQUA + I18NMessage.Cmd_Quest_JOINPARTY.getDescription());
+		}
 
 		for (String m : messages) {
 			p.sendMessage(m);

@@ -1,7 +1,7 @@
 /**
- * This file, EventManager.java, is part of MineQuest:
+ * This file, MQEventManager.java, is part of MineQuest:
  * A full featured and customizable quest/mission system.
- * Copyright (C) 2012 The MineQuest Team
+ * Copyright (C) 2012 The MineQuest Party
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  **/
-package com.theminequest.MineQuest.EventsAPI;
+package com.theminequest.MineQuest.Events;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -35,26 +35,30 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.theminequest.MineQuest.MineQuest;
+import com.theminequest.MineQuest.API.Managers;
+import com.theminequest.MineQuest.API.Events.EventManager;
+import com.theminequest.MineQuest.API.Events.QuestEvent;
+import com.theminequest.MineQuest.API.Quest.Quest;
 
 /**
  * Because we don't know what classes will be available on runtime, we need to
- * keep track of all classes that extend QEvent and record them here.
+ * keep track of all classes that extend QuestEvent and record them here.
  * 
  * @author xu_robert <xu_robert@linux.com>
  * 
  */
-public class EventManager implements Listener {
+public class MQEventManager implements Listener, EventManager {
 
-	private LinkedHashMap<String, Class<? extends QEvent>> classes;
-	private List<QEvent> activeevents;
+	private LinkedHashMap<String, Class<? extends QuestEvent>> classes;
+	private List<QuestEvent> activeevents;
 	private Runnable activechecker;
 	private Object classlistlock;
 	private volatile boolean stop;
 
-	public EventManager() {
-		MineQuest.log("[Event] Starting Manager...");
-		classes = new LinkedHashMap<String, Class<? extends QEvent>>(0);
-		activeevents = Collections.synchronizedList(new ArrayList<QEvent>(0));
+	public MQEventManager() {
+		Managers.log("[Event] Starting Manager...");
+		classes = new LinkedHashMap<String, Class<? extends QuestEvent>>(0);
+		activeevents = Collections.synchronizedList(new ArrayList<QuestEvent>(0));
 		classlistlock = new Object();
 		stop = false;
 		activechecker = new Runnable(){
@@ -74,29 +78,23 @@ public class EventManager implements Listener {
 		};
 		Thread t = new Thread(activechecker);
 		t.setDaemon(true);
-		t.setName("MineQuest-EventManager");
+		t.setName("MineQuest-MQEventManager");
 		t.start();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.theminequest.MineQuest.Events.EventManager#dismantleRunnable()
+	 */
+	@Override
 	public void dismantleRunnable(){
 		stop = true;
 	}
 
-	/**
-	 * Register an event with MineQuest. It needs to have a name, such as
-	 * QuestFinishEvent, that the quest file can use. <br>
-	 * <b>WARNING: QEvents and classes based off of it must NOT tamper the
-	 * constructor. Instead, use {@link QEvent#parseDetails(String)} to set
-	 * instance variables and conditions.</b> This method explicitly
-	 * requests the original constructor and if the event does not have
-	 * this constructor, classes will fail to be hooked in entirely.
-	 * 
-	 * @param eventname
-	 *            Event name
-	 * @param event
-	 *            Class of the event (.class)
+	/* (non-Javadoc)
+	 * @see com.theminequest.MineQuest.Events.EventManager#registerEvent(java.lang.String, java.lang.Class)
 	 */
-	public void registerEvent(String eventname, Class<? extends QEvent> event) {
+	@Override
+	public void addEvent(String eventname, Class<? extends QuestEvent> event) {
 		synchronized(classlistlock){
 			if (classes.containsKey(eventname) || classes.containsValue(event))
 				throw new IllegalArgumentException("We already have this class!");
@@ -109,36 +107,18 @@ public class EventManager implements Listener {
 		}
 	}
 
-	/**
-	 * Retrieve a new instance of an event for use with a quest and task.
-	 * 
-	 * @param eventname
-	 *            Event to use
-	 * @param q
-	 *            Quest ID to attribute
-	 * @param eventnum
-	 *            Event Number for Quest
-	 * @param d
-	 *            Details for use with {@link QEvent#parseDetails(String)}
-	 * @return new instance of the event requested
-	 */
-	public QEvent getNewEvent(String eventname, long q, int eventnum, String d) {
+	@Override
+	public QuestEvent constructEvent(String eventname, Quest q, int eventnum, String d) {
 		synchronized(classlistlock){
 			if (!classes.containsKey(eventname))
 				return null;
-			Class<? extends QEvent> cl = classes.get(eventname);
-			Constructor<? extends QEvent> ctor = null;
+			Class<? extends QuestEvent> cl = classes.get(eventname);
 			try {
-				ctor = cl.getConstructor(long.class, int.class,
-						java.lang.String.class);
-			} catch (NoSuchMethodException e) {
-				// we have no idea how to handle this method.
-				return null;
-			}
-			try {
-				return (QEvent) ctor.newInstance(q, eventnum, d);
+				QuestEvent e = cl.getConstructor().newInstance();
+				e.setupProperties(q, eventnum, d);
+				return e;
 			} catch (Exception e) {
-				MineQuest.log(Level.SEVERE, "[Event] In retrieving event " + eventname + " from Quest ID " + q + ":");
+				Managers.log(Level.SEVERE, "[Event] In retrieving event " + eventname + " from Quest ID " + q + ":");
 				e.fillInStackTrace();
 				e.printStackTrace();
 				return null;
@@ -146,40 +126,29 @@ public class EventManager implements Listener {
 		}
 	}
 
-	/**
-	 * Check if the event implements an interface.
-	 * 
-	 * @param eventname
-	 *            Event to check
-	 * @param interfaze
-	 *            Interface to check
-	 * @return true if this event does implement the specified interface
+	/* (non-Javadoc)
+	 * @see com.theminequest.MineQuest.Events.EventManager#addEventListener(com.theminequest.MineQuest.API.Events.QuestEvent)
 	 */
-	public boolean hasInterface(String eventname, String interfaze) {
-		synchronized(classlistlock){
-			if (!classes.containsKey(eventname))
-				return false;
-			Class<? extends QEvent> cl = classes.get(eventname);
-			Class<?>[] interfazes = cl.getInterfaces();
-			for (Class<?> c : interfazes) {
-				if (c.getSimpleName().equals(interfaze))
-					return true;
-			}
-			return false;
-		}
-	}
-
-	public void addEventListener(final QEvent e){
+	@Override
+	public void registerEventListener(final QuestEvent e){
 		activeevents.add(e);
 	}
 
-	public void rmEventListener(QEvent e){
+	/* (non-Javadoc)
+	 * @see com.theminequest.MineQuest.Events.EventManager#rmEventListener(com.theminequest.MineQuest.API.Events.QuestEvent)
+	 */
+	@Override
+	public void deregisterEventListener(QuestEvent e){
 		activeevents.remove(e);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.theminequest.MineQuest.Events.EventManager#checkAllEvents()
+	 */
+	@Override
 	public void checkAllEvents(){
 		synchronized(activeevents){
-			for (final QEvent e : activeevents){
+			for (final QuestEvent e : activeevents){
 				new Thread(new Runnable(){
 					@Override
 					public void run() {
@@ -190,11 +159,15 @@ public class EventManager implements Listener {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.theminequest.MineQuest.Events.EventManager#onPlayerInteract(org.bukkit.event.player.PlayerInteractEvent)
+	 */
+	@Override
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerInteract(final PlayerInteractEvent e){
 		synchronized(activeevents){
 			for (int i=0; i<activeevents.size(); i++){
-				final QEvent a = activeevents.get(i);
+				final QuestEvent a = activeevents.get(i);
 				if (!e.isCancelled())
 					a.onPlayerInteract(e);
 				if (a.isComplete()!=null)
@@ -203,11 +176,15 @@ public class EventManager implements Listener {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see com.theminequest.MineQuest.Events.EventManager#onBlockBreak(org.bukkit.event.block.BlockBreakEvent)
+	 */
+	@Override
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockBreak(final BlockBreakEvent e){
 		synchronized(activeevents){
 			for (int i=0; i<activeevents.size(); i++){
-				final QEvent a = activeevents.get(i);
+				final QuestEvent a = activeevents.get(i);
 				if (!e.isCancelled())
 					a.onBlockBreak(e);
 				if (a.isComplete()!=null)
@@ -216,11 +193,15 @@ public class EventManager implements Listener {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see com.theminequest.MineQuest.Events.EventManager#onEntityDamageByEntityEvent(org.bukkit.event.entity.EntityDamageByEntityEvent)
+	 */
+	@Override
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDamageByEntityEvent(final EntityDamageByEntityEvent e){
 		synchronized(activeevents){
 			for (int i=0; i<activeevents.size(); i++){
-				final QEvent a = activeevents.get(i);
+				final QuestEvent a = activeevents.get(i);
 				if (!e.isCancelled())
 					a.onEntityDamageByEntity(e);
 				if (a.isComplete()!=null)
@@ -229,11 +210,15 @@ public class EventManager implements Listener {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see com.theminequest.MineQuest.Events.EventManager#onEntityDeathEvent(org.bukkit.event.entity.EntityDeathEvent)
+	 */
+	@Override
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDeathEvent(final EntityDeathEvent e){
 		synchronized(activeevents){
 			for (int i=0; i<activeevents.size(); i++){
-				final QEvent a = activeevents.get(i);
+				final QuestEvent a = activeevents.get(i);
 				a.onEntityDeath(e);
 				if (a.isComplete()!=null)
 					i--;

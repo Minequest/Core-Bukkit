@@ -1,22 +1,3 @@
-/**
- * This file, SignInteractListener.java, is part of MineQuest:
- * A full featured and customizable quest/mission system.
- * Copyright (C) 2012 The MineQuest Team
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- **/
 package com.theminequest.MineQuest.Frontend.Sign;
 
 import java.io.File;
@@ -36,13 +17,15 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.theminequest.MineQuest.MineQuest;
-import com.theminequest.MineQuest.Backend.BackendFailedException;
-import com.theminequest.MineQuest.Backend.QuestBackend;
+import com.theminequest.MineQuest.API.Managers;
+import com.theminequest.MineQuest.API.Quest.QuestDetails;
+import com.theminequest.MineQuest.API.Quest.QuestDetailsUtils;
+import com.theminequest.MineQuest.API.Tracker.QuestStatistic;
 
 public class QuestSign implements Listener {
 
 	public QuestSign(){
-		MineQuest.log("[QuestSign] Starting Sign Frontends...");
+		Managers.log("[QuestSign] Starting Sign Frontends...");
 	}
 
 	private boolean isQuestSign(Sign sign){
@@ -58,22 +41,32 @@ public class QuestSign implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerInteract(PlayerInteractEvent event){
 		Action action = event.getAction();
-		if (action != Action.RIGHT_CLICK_BLOCK){
-			return;
-		}
 		Block block = event.getClickedBlock();
 		Player player = event.getPlayer();
-
-		if (block.getState() instanceof Sign){
-			Sign sign = (Sign) block.getState();
-			if (isQuestSign(sign)){
-				String questName = sign.getLine(2);
-				try {
-					QuestBackend.giveQuestToPlayer(player, questName);
-				} catch (BackendFailedException e) {
-					player.sendMessage(ChatColor.RED + "Error: " + e.getMessage());
-				} 
-			}
+		if (!(block.getState() instanceof Sign))
+			return;
+		Sign sign = (Sign) block.getState();
+		if (!isQuestSign(sign))
+			return;
+		String quest_name = sign.getLine(2);
+		QuestDetails d = Managers.getQuestManager().getDetails(quest_name);
+		if (d==null){
+			block.breakNaturally();
+			player.sendMessage(ChatColor.RED + "Yikes! We can't find this quest anymore...");
+		}
+		if (action == Action.RIGHT_CLICK_BLOCK) {
+			player.sendMessage(QuestDetailsUtils.getOverviewString(d).split("\n"));
+			if (QuestDetailsUtils.requirementsMet(d, player))
+				player.sendMessage("This quest is currently " + ChatColor.BOLD + ChatColor.GREEN + "available" + ChatColor.RESET + " to you - left click to accept!");
+			else
+				player.sendMessage("This quest is currently " + ChatColor.BOLD + ChatColor.RED + "not available" + ChatColor.RESET + " to you.");
+		} else if (action == Action.LEFT_CLICK_BLOCK) {
+			if (QuestDetailsUtils.requirementsMet(d, player)) {
+				QuestStatistic pstat = Managers.getStatisticManager().getStatistic(player.getName(), QuestStatistic.class);
+				pstat.addGivenQuest(quest_name);
+				player.sendMessage(ChatColor.GREEN + "Successfully added " + d.getProperty(QuestDetails.QUEST_DISPLAYNAME) + " to your quest list!");
+			} else
+				player.sendMessage("This quest is currently " + ChatColor.BOLD + ChatColor.RED + "not available" + ChatColor.RESET + " to you.");
 		}
 	}
 
@@ -87,16 +80,13 @@ public class QuestSign implements Listener {
 			event.getBlock().breakNaturally();
 			return;
 		}
-		try {
-			QuestBackend.isRepeatable(event.getLine(2));
-		}catch (IllegalArgumentException e){
-			MineQuest.log(Level.SEVERE,e.toString());
+		if (Managers.getQuestManager().getDetails(event.getLine(2))==null){
 			event.setCancelled(true);
 			event.getPlayer().sendMessage(ChatColor.RED + "No such quest!");
 			event.getBlock().breakNaturally();
 			return;
 		}
 		// oh, prettify it ;D
-		event.setLine(1,ChatColor.DARK_GREEN+"[Quest]");
+		event.setLine(1,ChatColor.GREEN+"[Quest]");
 	}
 }

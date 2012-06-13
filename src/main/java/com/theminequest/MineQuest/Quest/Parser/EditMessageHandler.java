@@ -4,15 +4,16 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 
+import com.theminequest.MineQuest.API.Quest.QuestDetails;
+import com.theminequest.MineQuest.API.Quest.QuestParser.QHandler;
 import com.theminequest.MineQuest.Quest.Quest;
-import com.theminequest.MineQuest.Quest.QuestDescription;
-import com.theminequest.MineQuest.Quest.QuestParser.QHandler;
+import static com.theminequest.MineQuest.API.Quest.QuestDetails.*;
 
 public class EditMessageHandler implements QHandler {
 
 	@Override
-	public void parseDetails(QuestDescription q, List<String> line) {
-		q.editMessage = ChatColor.GRAY + line.get(0);
+	public void parseDetails(QuestDetails q, List<String> line) {
+		q.setProperty(QUEST_EDITMESSAGE, ChatColor.GRAY + line.get(0));
 	}
 
 }

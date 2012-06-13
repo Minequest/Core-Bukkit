@@ -50,7 +50,9 @@ public class H2 extends DatabaseHandler {
 				return DriverManager.getConnection("jdbc:h2:file:" + sqlFileURL
 						+ ";MODE=MYSQL;IGNORECASE=TRUE;AUTO_SERVER=TRUE");
 			} catch (SQLException e) {
-				this.writeError("SQLite exception on initialize " + e, true);
+				this.writeError("H2 exception on initialize " + e, true);
+				e.fillInStackTrace();
+				e.printStackTrace();
 			}
 		}
 		return null;

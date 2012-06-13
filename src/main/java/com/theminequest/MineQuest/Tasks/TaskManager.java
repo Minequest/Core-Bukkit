@@ -1,7 +1,7 @@
 /**
  * This file, TaskManager.java, is part of MineQuest:
  * A full featured and customizable quest/mission system.
- * Copyright (C) 2012 The MineQuest Team
+ * Copyright (C) 2012 The MineQuest Party
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,26 +22,24 @@ package com.theminequest.MineQuest.Tasks;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import com.theminequest.MineQuest.CompleteStatus;
-import com.theminequest.MineQuest.MineQuest;
-import com.theminequest.MineQuest.BukkitEvents.EventCompleteEvent;
-import com.theminequest.MineQuest.Quest.Quest;
-import com.theminequest.MineQuest.Quest.QuestManager;
+import com.theminequest.MineQuest.API.Managers;
+import com.theminequest.MineQuest.API.BukkitEvents.EventCompleteEvent;
+import com.theminequest.MineQuest.API.Quest.Quest;
+import com.theminequest.MineQuest.API.Task.QuestTask;
 
-public class TaskManager implements Listener {
+public class TaskManager implements Listener, com.theminequest.MineQuest.API.Task.TaskManager {
 	
 	public TaskManager(){
-		MineQuest.log("[Task] Starting Manager...");
+		Managers.log("[Task] Starting Manager...");
 	}
 	
 	@EventHandler
 	public void onEventComplete(EventCompleteEvent e){
 		if (e.getEvent().getQuest()==null)
 			return;
-		long questid = e.getEvent().getQuestId();
-		Quest q = MineQuest.questManager.getQuest(questid);
-		Task t = q.getActiveTask();
-		t.finishEvent(e.getEvent().getEventId(),(e.getCompleteStatus()));
+		Quest q = e.getEvent().getQuest();
+		QuestTask t = q.getActiveTask();
+		t.finishEvent(e.getEvent(),(e.getCompleteStatus()));
 	}
 
 }

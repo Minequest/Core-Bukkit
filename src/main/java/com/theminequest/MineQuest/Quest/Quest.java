@@ -1,7 +1,7 @@
 /**
  * This file, Quest.java, is part of MineQuest:
  * A full featured and customizable quest/mission system.
- * Copyright (C) 2012 The MineQuest Team
+ * Copyright (C) 2012 The MineQuest Party
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,94 +19,87 @@
  **/
 package com.theminequest.MineQuest.Quest;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_EDITS;
+import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_EVENTS;
+import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_LOADWORLD;
+import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_NETHERWORLD;
+import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_TASKS;
+import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_WORLD;
+
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
-import java.util.Set;
-import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
 import org.bukkit.World.Environment;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import org.bukkit.WorldCreator;
 
-import com.theminequest.MineQuest.CompleteStatus;
-import com.theminequest.MineQuest.MineQuest;
-import com.theminequest.MineQuest.BukkitEvents.QuestCompleteEvent;
-import com.theminequest.MineQuest.BukkitEvents.QuestStartedEvent;
-import com.theminequest.MineQuest.BukkitEvents.TaskCompleteEvent;
-import com.theminequest.MineQuest.Editable.AreaEdit;
-import com.theminequest.MineQuest.Editable.CertainBlockEdit;
-import com.theminequest.MineQuest.Editable.CoordinateEdit;
-import com.theminequest.MineQuest.Editable.Edit;
-import com.theminequest.MineQuest.Editable.InsideAreaEdit;
-import com.theminequest.MineQuest.Editable.ItemInHandEdit;
-import com.theminequest.MineQuest.Editable.OutsideAreaEdit;
-import com.theminequest.MineQuest.EventsAPI.NamedQEvent;
-import com.theminequest.MineQuest.EventsAPI.QEvent;
-import com.theminequest.MineQuest.Group.Group;
-import com.theminequest.MineQuest.Group.Team;
-import com.theminequest.MineQuest.Target.TargetDetails;
+import com.theminequest.MineQuest.API.CompleteStatus;
+import com.theminequest.MineQuest.API.Managers;
+import com.theminequest.MineQuest.API.BukkitEvents.QuestCompleteEvent;
+import com.theminequest.MineQuest.API.BukkitEvents.QuestStartedEvent;
+import com.theminequest.MineQuest.API.BukkitEvents.TaskCompleteEvent;
+import com.theminequest.MineQuest.API.Edit.Edit;
+import com.theminequest.MineQuest.API.Events.QuestEvent;
+import com.theminequest.MineQuest.API.Events.UserQuestEvent;
+import com.theminequest.MineQuest.API.Group.QuestGroup;
+import com.theminequest.MineQuest.API.Group.QuestGroupManager;
+import com.theminequest.MineQuest.API.Quest.QuestDetails;
+import com.theminequest.MineQuest.API.Task.QuestTask;
+import com.theminequest.MineQuest.API.Utils.ChatUtils;
+import com.theminequest.MineQuest.API.Utils.SetUtils;
+import com.theminequest.MineQuest.API.Utils.TimeUtils;
 import com.theminequest.MineQuest.Tasks.Task;
-import com.theminequest.MineQuest.Utils.ChatUtils;
-import com.theminequest.MineQuest.Utils.TimeUtils;
 
-public class Quest {
 
-	public final QuestDescription details;
+public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 
-	public final long questid;
-	private int currenttask;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7904219637011746046L;
+
+	private final QuestDetails details;
+
+	private final long questid;
 
 	private CompleteStatus finished;
-	private Task activeTask;
+	private QuestTask activeTask;
 
 
 	/*
 	 * Constructor will start the quest for the user.
 	 */
-	protected Quest(long questid, QuestDescription id) {
+	protected Quest(long questid, QuestDetails id) {
 		details = id;
 		this.questid = questid;
-		currenttask = -1;
 		activeTask = null;
 
 		// sort the tasks, events, and targets in order of id.
 		// because we have absolutely 0 idea if someone would skip numbers...
 
 		// load the world if necessary/move team to team leader
-		if (Bukkit.getWorld(details.world) == null) {
-			WorldCreator w = new WorldCreator(details.world);
-			if (details.nether)
+		String world = details.getProperty(QUEST_WORLD);
+		if (Bukkit.getWorld(world) == null) {
+			WorldCreator w = new WorldCreator(world);
+			if (details.getProperty(QUEST_NETHERWORLD))
 				w = w.environment(Environment.NETHER);
 			Bukkit.createWorld(w);
 		}
-		if (details.loadworld) {
+		if (details.getProperty(QUEST_LOADWORLD)) {
 			try {
-				details.world = QuestWorldManip.copyWorld(Bukkit.getWorld(details.world))
-						.getName();
+				world = QuestWorldManip.copyWorld(Bukkit.getWorld(world)).getName();
+				details.setProperty(QUEST_WORLD,world);
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
 		}
 		// enable edits
-		for (Edit e : details.editables.values())
-			e.startEdit(questid);
+		Map<Integer,Edit> edits = details.getProperty(QUEST_EDITS);
+		for (Edit e : edits.values())
+			e.startEdit(this);
 
 		// plugins should use QuestStartedEvent to setup their properties
 		// inside the quest.
@@ -114,38 +107,10 @@ public class Quest {
 		Bukkit.getPluginManager().callEvent(event);
 	}
 
-	private Integer getFirstKey(Set<Integer> s) {
-		int first = Integer.MAX_VALUE;
-		Iterator<Integer> it = s.iterator();
-		while (it.hasNext()) {
-			int i = it.next();
-			if (i < first)
-				first = i;
-		}
-		return first;
-
-	}
-
-	private ArrayList<Integer> getSortedKeys(Set<Integer> s) {
-		ArrayList<Integer> a = new ArrayList<Integer>();
-		Iterator<Integer> i = s.iterator();
-		while (i.hasNext())
-			a.add(i.next());
-		Collections.sort(a);
-		return a;
-	}
-
-	/**
-	 * Get all possible events
-	 * 
-	 * @return all possible events (# association)
-	 */
-	public Set<Integer> getEventNums() {
-		return details.events.keySet();
-	}
-
-	public boolean startQuest(){
-		return startTask(getFirstKey(details.tasks.keySet()));
+	public void startQuest(){
+		Map<Integer,String[]> tasks = details.getProperty(QUEST_TASKS);
+		if (!startTask(SetUtils.getFirstKey(tasks.keySet())))
+			throw new RuntimeException("Starting initial task failed: is everything ok?");
 	}
 
 	/**
@@ -156,16 +121,16 @@ public class Quest {
 	 * @return true if task was started successfully
 	 */
 	public boolean startTask(int taskid) {
+		Map<Integer,String[]> tasks = details.getProperty(QUEST_TASKS);
 		if (taskid == -1) {
 			finishQuest(CompleteStatus.SUCCESS);
 			return true;
 		}
-		if (!details.tasks.containsKey(taskid))
+		if (!tasks.containsKey(taskid))
 			return false;
-		if (activeTask!=null && !activeTask.isComplete())
+		if (activeTask!=null && activeTask.isComplete()==null)
 			activeTask.cancelTask();
-		currenttask = taskid;
-		String[] eventnums = details.tasks.get(taskid);
+		String[] eventnums = tasks.get(taskid);
 		List<Integer> eventnum = new ArrayList<Integer>();
 		for (String e : eventnums) {
 			eventnum.add(Integer.parseInt(e));
@@ -176,10 +141,10 @@ public class Quest {
 	}
 
 	public boolean isInstanced(){
-		return details.loadworld;
+		return details.getProperty(QUEST_LOADWORLD);
 	}
 
-	public Task getActiveTask() {
+	public QuestTask getActiveTask() {
 		return activeTask;
 	}
 
@@ -196,8 +161,9 @@ public class Quest {
 		// TODO this is lovely and all, but tasks should trigger other tasks...
 		// I'll just call the next task, and if the next task isn't available,
 		// finish the quest
-
-		List<Integer> sortedkeys = getSortedKeys(details.tasks.keySet());
+		
+		Map<Integer,String[]> tasks = details.getProperty(QUEST_TASKS);
+		List<Integer> sortedkeys = SetUtils.getSortedKeys(tasks.keySet());
 		int loc = sortedkeys.indexOf(e.getID());
 		if (loc == sortedkeys.size() - 1) {
 			finishQuest(CompleteStatus.SUCCESS);
@@ -209,20 +175,26 @@ public class Quest {
 
 	public void finishQuest(CompleteStatus c) {
 		finished = c;
-		if (!activeTask.isComplete())
+		if (activeTask.isComplete()==null)
 			activeTask.cancelTask();
-		for (Edit e : details.editables.values())
+		Map<Integer,Edit> edits = details.getProperty(QUEST_EDITS);
+		for (Edit e : edits.values())
 			e.dismantle();
-		TimeUtils.unlock(Bukkit.getWorld(details.world));
-		Group g = MineQuest.groupManager.getGroup(MineQuest.groupManager
-				.indexOfQuest(this));
-		QuestCompleteEvent event = new QuestCompleteEvent(questid, c, g);
+		String world = details.getProperty(QUEST_WORLD);
+		TimeUtils.unlock(Bukkit.getWorld(world));
+		QuestGroupManager qGM = Managers.getQuestGroupManager();
+		QuestGroup g = qGM.get(qGM.indexOf(this));
+		QuestCompleteEvent event = new QuestCompleteEvent(this, c, g);
 		Bukkit.getPluginManager().callEvent(event);
 	}
 
-	public void unloadQuest() throws IOException {
-		if (details.loadworld)
-			QuestWorldManip.removeWorld(Bukkit.getWorld(details.world));
+	public void cleanupQuest() {
+		if (details.getProperty(QUEST_LOADWORLD))
+			try {
+				QuestWorldManip.removeWorld(Bukkit.getWorld((String) details.getProperty(QUEST_WORLD)));
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 	}
 
 	public CompleteStatus isFinished() {
@@ -230,56 +202,14 @@ public class Quest {
 	}
 
 	public String getEvent(Integer id) {
-		if (!details.events.containsKey(id))
+		Map<Integer,String> events = details.getProperty(QUEST_EVENTS);
+		if (!events.containsKey(id))
 			throw new IllegalArgumentException("No such event ID!");
-		return details.events.get(id);
-	}
-
-	/**
-	 * Get the "YOU CAN'T EDIT THIS PLACE" message...
-	 * 
-	 * @return cannot edit message
-	 */
-	public String getEditMessage() {
-		return details.editMessage;
-	}
-
-	/**
-	 * Retrieve the current task ID.
-	 * 
-	 * @return Current Task ID.
-	 */
-	public int getCurrentTaskID() {
-		return currenttask;
-	}
-
-	public String[] getTaskDetails(int id) {
-		return details.tasks.get(id);
+		return events.get(id);
 	}
 
 	public long getID() {
 		return questid;
-	}
-
-	public String getWorld() {
-		return details.world;
-	}
-
-	/**
-	 * Retrieve the target specification.
-	 * 
-	 * @param id
-	 *            target ID
-	 * @return specification, or <code>null</code> if there is no such target
-	 *         id.
-	 */
-	public TargetDetails getTarget(int id) {
-		return details.targets.get(id);
-	}
-
-	public Location getSpawnLocation() {
-		return new Location(Bukkit.getWorld(details.world), details.spawnPoint[0],
-				details.spawnPoint[1], details.spawnPoint[2]);
 	}
 
 	/*
@@ -300,9 +230,9 @@ public class Quest {
 		String tr = details.toString() + "\n";
 		if (activeTask!=null){
 			tr += ChatUtils.formatHeader("Current Tasks") + "\n";
-			for (QEvent e : activeTask.getEvents()){
-				if (e instanceof NamedQEvent){
-					String description = ((NamedQEvent)e).getDescription();
+			for (QuestEvent e : activeTask.getEvents()){
+				if (e instanceof UserQuestEvent){
+					String description = ((UserQuestEvent)e).getDescription();
 					if (e.isComplete()==null)
 						tr += ChatColor.GREEN + "- " + description + "\n";
 					else
@@ -313,12 +243,19 @@ public class Quest {
 		return tr;
 	}
 
-	public String getName() {
-		return details.displayname;
+	@Override
+	public int compareTo(com.theminequest.MineQuest.API.Quest.Quest arg0) {
+		return ((Long)getQuestID()).compareTo(arg0.getQuestID());
 	}
 
-	public String getDescription() {
-		return details.displaydesc;
+	@Override
+	public long getQuestID() {
+		return questid;
+	}
+
+	@Override
+	public com.theminequest.MineQuest.API.Quest.QuestDetails getDetails() {
+		return details;
 	}
 
 }

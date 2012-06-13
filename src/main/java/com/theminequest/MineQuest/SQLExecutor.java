@@ -1,7 +1,7 @@
 /**
  * This file, SQLExecutor.java, is part of MineQuest:
  * A full featured and customizable quest/mission system.
- * Copyright (C) 2012 The MineQuest Team
+ * Copyright (C) 2012 The MineQuest Party
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -37,7 +37,8 @@ import java.util.logging.Logger;
 
 import org.apache.commons.io.IOUtils;
 
-import com.theminequest.MineQuest.Utils.PropertiesFile;
+import com.theminequest.MineQuest.API.Managers;
+import com.theminequest.MineQuest.API.Utils.PropertiesFile;
 
 import lib.PatPeter.SQLibrary.DatabaseHandler;
 import lib.PatPeter.SQLibrary.H2;
@@ -54,7 +55,7 @@ public class SQLExecutor {
 	private File datafolder;
 
 	public SQLExecutor(){
-		MineQuest.log("[SQL] Loading and connecting to SQL...");
+		Managers.log("[SQL] Loading and connecting to SQL...");
 		PropertiesFile config = MineQuest.configuration.databaseConfig;
 		String dbtype = config.getString("db_type","h2");
 		if (dbtype.equalsIgnoreCase("mysql"))
@@ -63,7 +64,7 @@ public class SQLExecutor {
 			databasetype = Mode.SQlite;
 		else
 			databasetype = Mode.H2;
-		MineQuest.log("[SQL] Using "+databasetype.name()+" as database.");
+		Managers.log("[SQL] Using "+databasetype.name()+" as database.");
 		String hostname = config.getString("db_hostname","localhost");
 		String port = config.getString("db_port","3306");
 		String databasename = config.getString("db_name","minequest");
@@ -72,10 +73,10 @@ public class SQLExecutor {
 		if (databasetype == Mode.MySQL)
 			db = new MySQL(Logger.getLogger("Minecraft"),"[MineQuest] [SQL] ",hostname,port,databasename,username,password);
 		else if (databasetype == Mode.SQlite)
-			db = new SQLite(Logger.getLogger("Minecraft"),"[MineQuest] [SQL] ","minequest",MineQuest.activePlugin.getDataFolder().getAbsolutePath());
+			db = new SQLite(Logger.getLogger("Minecraft"),"[MineQuest] [SQL] ","minequest",Managers.getActivePlugin().getDataFolder().getAbsolutePath());
 		else
-			db = new H2(Logger.getLogger("Minecraft"),"[MineQuest] [SQL] ","minequest",MineQuest.activePlugin.getDataFolder().getAbsolutePath());
-		datafolder = new File(MineQuest.activePlugin.getDataFolder().getAbsolutePath()+File.separator+"sql");
+			db = new H2(Logger.getLogger("Minecraft"),"[MineQuest] [SQL] ","minequest",Managers.getActivePlugin().getDataFolder().getAbsolutePath());
+		datafolder = new File(Managers.getActivePlugin().getDataFolder().getAbsolutePath()+File.separator+"sql");
 		checkInitialization();
 	}
 
@@ -111,20 +112,20 @@ public class SQLExecutor {
 		if (lastv==null || lastv.compareTo(MineQuest.getVersion())!=0){
 			if (lastv==null || lastv.equals("unofficialDev")){
 				if (lastv==null)
-					MineQuest.log(Level.WARNING, "[SQL] No existing DBVERSION file; initializing DB as new.");
+					Managers.log(Level.WARNING, "[SQL] No existing DBVERSION file; initializing DB as new.");
 				else
-					MineQuest.log(Level.WARNING, "[SQL] I don't know what your previous build was; attempting to reinitialize.");
+					Managers.log(Level.WARNING, "[SQL] I don't know what your previous build was; attempting to reinitialize.");
 				lastv = "initial";
 			}
 			
 			if (lastv!=null && !lastv.equals("unofficialDev") && !lastv.equals("initial")){
 				int last = Integer.parseInt(lastv);
-				MineQuest.log(Level.INFO, "[SQL] Fast forwarding through builds...");
+				Managers.log(Level.INFO, "[SQL] Fast forwarding through builds...");
 				while (last<Integer.parseInt(MineQuest.getVersion())){
 					try {
-						MineQuest.log("[SQL] Fast forwarding from build " + last + " to " + (last+1) + "...");
+						Managers.log("[SQL] Fast forwarding from build " + last + " to " + (last+1) + "...");
 						querySQL("update/"+last,"");
-						MineQuest.log("[SQL] Applied patch for build " + last + " to " + (last+1) + "!");
+						Managers.log("[SQL] Applied patch for build " + last + " to " + (last+1) + "!");
 					} catch (NoSuchElementException e){
 						//MineQuest.log(Level.WARNING,"[SQL] No update path from build " + last + " to " + (last+1) + " build; Probably normal.");
 					}
@@ -134,7 +135,7 @@ public class SQLExecutor {
 				try {
 					querySQL("update/"+lastv,"");
 				} catch (NoSuchElementException e){
-					MineQuest.log(Level.WARNING,"[SQL] No update path from build " + lastv + " to this build; Probably normal.");
+					Managers.log(Level.WARNING,"[SQL] No update path from build " + lastv + " to this build; Probably normal.");
 				}
 			}
 			
@@ -144,10 +145,10 @@ public class SQLExecutor {
 				out.write(databasetype.name()+IOUtils.LINE_SEPARATOR+MineQuest.getVersion());
 				out.close();
 			} catch (FileNotFoundException e) {
-				MineQuest.log(Level.SEVERE,"[SQL] Failed to commit DBVERSION: " + e.getMessage());
+				Managers.log(Level.SEVERE,"[SQL] Failed to commit DBVERSION: " + e.getMessage());
 				throw new RuntimeException(e);
 			} catch (IOException e) {
-				MineQuest.log(Level.SEVERE,"[SQL] Failed to commit DBVERSION: " + e.getMessage());
+				Managers.log(Level.SEVERE,"[SQL] Failed to commit DBVERSION: " + e.getMessage());
 				throw new RuntimeException(e);
 			}
 		}
@@ -175,7 +176,7 @@ public class SQLExecutor {
 	 * @return ResultSet of SQL query (or null... if there really is nothing good.)
 	 */
 	public ResultSet querySQL(String queryfilename, String ...params) {
-		InputStream i = MineQuest.activePlugin.getResource("sql/"+queryfilename+".sql");
+		InputStream i = Managers.getActivePlugin().getResource("sql/"+queryfilename+".sql");
 		if (i==null)
 			throw new NoSuchElementException("No such resource: " + queryfilename + ".sql");
 		String[] filecontents = convertStreamToString(i).split(IOUtils.LINE_SEPARATOR);
@@ -223,7 +224,7 @@ public class SQLExecutor {
 		}while (rs.next());
 		return toreturn;
 		} catch (SQLException e) {
-			MineQuest.log(Level.SEVERE, "[SQL] SQL exception on ResultSet: " + e);
+			Managers.log(Level.SEVERE, "[SQL] SQL exception on ResultSet: " + e);
 			throw e;
 		}
 	}

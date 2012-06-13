@@ -1,7 +1,7 @@
 /**
  * This file, CommandListener.java, is part of MineQuest:
  * A full featured and customizable quest/mission system.
- * Copyright (C) 2012 The MineQuest Team
+ * Copyright (C) 2012 The MineQuest Party
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -36,12 +36,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.theminequest.MineQuest.MineQuest;
-import com.theminequest.MineQuest.Backend.BackendFailedException;
-import com.theminequest.MineQuest.Backend.GroupBackend;
-import com.theminequest.MineQuest.Backend.QuestAvailability;
-import com.theminequest.MineQuest.Backend.QuestBackend;
-import com.theminequest.MineQuest.Group.Group;
-import com.theminequest.MineQuest.Group.Team;
+import com.theminequest.MineQuest.API.Managers;
+import com.theminequest.MineQuest.API.Group.Group;
+import com.theminequest.MineQuest.Group.Party;
 
 
 public class CommandListener implements CommandExecutor{
@@ -49,7 +46,7 @@ public class CommandListener implements CommandExecutor{
 	public Map<String,String> helpmenu;
 
 	public CommandListener(){
-		MineQuest.log("[CommandFrontend] Starting Command Frontend...");
+		Managers.log("[CommandFrontend] Starting Command Frontend...");
 		helpmenu = new LinkedHashMap<String,String>();
 		helpmenu.put("quest", "List Quest Commands.");
 		helpmenu.put("party", "List Party Commands.");

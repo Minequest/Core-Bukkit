@@ -15,7 +15,7 @@
 	<scm>
 		<connection>scm:git:git://github.com/Minequest/Minequest-Reloaded-Core.git</connection>
 		<url>https://github.com/Minequest/Minequest-Reloaded-Core</url>
-		<developerConnection>scm:git:https://github.com/Minequest/Minequest-Reloaded-Core.git</developerConnection>
+		<developerConnection>scm:ssh:git@github.com:Minequest/Minequest-Reloaded-Core.git</developerConnection>
 	</scm>
 	<repositories>
 		<repository>
@@ -29,8 +29,12 @@
 			<layout>default</layout>
 		</repository>
 		<repository>
-			<id>milkbowl-repo</id>
-			<url>http://ci.milkbowl.net/plugin/repository/everything/</url>
+			<id>herocraft-repo</id>
+			<url>http://ci.herocraftonline.com/plugin/repository/everything/</url>
+		</repository>
+		<repository>
+			<id>lincom-repo</id>
+			<url>http://build.lincomlinux.org/nexus/content/groups/public/</url>
 		</repository>
 	</repositories>
 	<build>
@@ -111,6 +115,13 @@
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
+			<version>LATEST</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.theminequest</groupId>
+			<artifactId>MineQuest-API</artifactId>
 			<version>LATEST</version>
 			<type>jar</type>
 			<scope>compile</scope>

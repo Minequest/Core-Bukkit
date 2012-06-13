@@ -1,7 +1,7 @@
 /**
  * This file, TargetManager.java, is part of MineQuest:
  * A full featured and customizable quest/mission system.
- * Copyright (C) 2012 The MineQuest Team
+ * Copyright (C) 2012 The MineQuest Party
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -30,18 +30,20 @@ import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import com.theminequest.MineQuest.MineQuest;
-import com.theminequest.MineQuest.EventsAPI.QEvent;
-import com.theminequest.MineQuest.EventsAPI.TargetedQEvent;
-import com.theminequest.MineQuest.Group.Group;
-import com.theminequest.MineQuest.Group.Team;
-import com.theminequest.MineQuest.Quest.Quest;
-import com.theminequest.MineQuest.Target.TargetDetails.TargetType;
-import com.theminequest.MineQuest.Tasks.Task;
+import com.theminequest.MineQuest.API.Managers;
+import com.theminequest.MineQuest.API.Events.QuestEvent;
+import com.theminequest.MineQuest.API.Events.TargetQuestEvent;
+import com.theminequest.MineQuest.API.Group.Group;
+import com.theminequest.MineQuest.API.Quest.Quest;
+import com.theminequest.MineQuest.API.Quest.QuestDetails;
+import com.theminequest.MineQuest.API.Quest.QuestUtils;
+import com.theminequest.MineQuest.API.Target.TargetDetails;
+import com.theminequest.MineQuest.API.Target.TargetDetails.TargetType;
+import com.theminequest.MineQuest.API.Task.QuestTask;
 
-public class TargetManager {
+public class TargetManager implements com.theminequest.MineQuest.API.Target.TargetManager {
 
-	public static List<LivingEntity> getTarget(Quest questid, TargetDetails t) {
+	public List<LivingEntity> processTargetDetails(Quest questid, TargetDetails t) {
 		if (t.getType() == TargetType.AREATARGET)
 			return areaTarget(questid,t);
 		else if (t.getType() == TargetType.AREATARGETQUESTER)
@@ -60,14 +62,14 @@ public class TargetManager {
 	/*
 	 * Details: x:y:z:radius
 	 */
-	private static List<LivingEntity> areaTarget(Quest q, TargetDetails t) {
+	private List<LivingEntity> areaTarget(Quest q, TargetDetails t) {
 		String[] details = t.getDetails().split(":");
 		double x = Double.parseDouble(details[0]);
 		double y = Double.parseDouble(details[1]);
 		double z = Double.parseDouble(details[2]);
 		double r = Double.parseDouble(details[3]);
-		World w = Bukkit.getWorld(q
-				.getWorld());
+		String world = q.getDetails().getProperty(QuestDetails.QUEST_WORLD);
+		World w = Bukkit.getWorld(world);
 		Location l = new Location(w, x, y, z);
 		return getEntitiesAroundRadius(l, r);
 	}
@@ -75,42 +77,43 @@ public class TargetManager {
 	/*
 	 * Quester = PLAYER targetID:radius
 	 */
-	private static List<LivingEntity> areaTargetQuester(Quest q, TargetDetails t) {
+	private List<LivingEntity> areaTargetQuester(Quest q, TargetDetails t) {
+		List<LivingEntity> all = new ArrayList<LivingEntity>();
 		String[] details = t.getDetails().split(":");
 		int targetID = Integer.parseInt(details[0]);
 		double r = Double.parseDouble(details[1]);
-		List<LivingEntity> es = getTarget(q,q.getTarget(targetID));
+		List<LivingEntity> es = processTargetDetails(q,QuestUtils.getTargetDetails(q,targetID));
 		for (LivingEntity en : es) {
 			if (en instanceof Player)
-				return getEntitiesAroundRadius(en.getLocation(), r);
+				all.addAll(getEntitiesAroundRadius(en.getLocation(), r));
 		}
-		return new ArrayList<LivingEntity>();
+		return all;
 	}
 
 	/*
 	 * this does NOT specify any details (details = "")
 	 */
-	private static List<LivingEntity> partyTarget(Quest q, TargetDetails t) {
-		Group team = MineQuest.groupManager.getGroup(MineQuest.groupManager.indexOfQuest(q));
+	private List<LivingEntity> partyTarget(Quest q, TargetDetails t) {
+		Group team = Managers.getQuestGroupManager().get(q);
 		List<LivingEntity> list = new ArrayList<LivingEntity>();
-		list.addAll(team.getPlayers());
+		list.addAll(team.getMembers());
 		return list;
 	}
 
 	/*
 	 * eventid1,eventid2,etc...
 	 */
-	private static List<LivingEntity> targetter(Quest q, TargetDetails t) {
+	private List<LivingEntity> targetter(Quest q, TargetDetails t) {
 		String[] ids = t.getDetails().split(",");
 		List<LivingEntity> toreturn = new ArrayList<LivingEntity>();
 		for (String id : ids) {
 			int i = Integer.parseInt(id);
-			Task ts = q.getActiveTask();
-			Collection<QEvent> running = ts.getEvents();
-			for (QEvent event : running) {
+			QuestTask ts = q.getActiveTask();
+			Collection<QuestEvent> running = ts.getEvents();
+			for (QuestEvent event : running) {
 				if (event.getEventId() == i) {
-					if (event instanceof TargetedQEvent) {
-						toreturn.addAll(((TargetedQEvent) event).getTargets());
+					if (event instanceof TargetQuestEvent) {
+						toreturn.addAll(((TargetQuestEvent) event).getTargets());
 					}
 				}
 			}
@@ -123,16 +126,16 @@ public class TargetManager {
 	 * TODO: actually implement this... even though this doesn't make any sense.
 	 */
 	@Deprecated
-	private static List<LivingEntity> targetteredit(Quest q, TargetDetails t) {
+	private List<LivingEntity> targetteredit(Quest q, TargetDetails t) {
 		String[] ids = t.getDetails().split(",");
 		List<LivingEntity> toreturn = new ArrayList<LivingEntity>();
 		return toreturn;
 	}
 	
-	private static List<LivingEntity> randomtarget(Quest q, TargetDetails t){
+	private List<LivingEntity> randomtarget(Quest q, TargetDetails t){
 		String targetid = t.getDetails();
 		List<LivingEntity> toreturn = new ArrayList<LivingEntity>();
-		List<LivingEntity> randomchoosing = TargetManager.getTarget(q,q.getTarget(Integer.parseInt(targetid)));
+		List<LivingEntity> randomchoosing = processTargetDetails(q,QuestUtils.getTargetDetails(q,Integer.parseInt(targetid)));
 		toreturn.add(randomchoosing.get(new Random().nextInt(randomchoosing.size())));
 		return toreturn;
 	}

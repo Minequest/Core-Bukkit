@@ -5,9 +5,9 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.theminequest.MineQuest.CompleteStatus;
 import com.theminequest.MineQuest.MineQuest;
-import com.theminequest.MineQuest.EventsAPI.QEvent;
+import com.theminequest.MineQuest.API.CompleteStatus;
+import com.theminequest.MineQuest.API.Events.QuestEvent;
 
 public class EventManagerTest {
 	
@@ -28,18 +28,14 @@ public class EventManagerTest {
 		//fail("Not yet implemented");
 	}
 	
-	private class TestEvent extends QEvent {
+	private class TestEvent extends QuestEvent {
 
 		private long milliseconds;
 		private long initialmilliseconds;
 		
-		public TestEvent() {
-			super(0, 1, "");
-		}
-
 		/*
 		 * (non-Javadoc)
-		 * @see com.theminequest.MineQuest.EventsAPI.QEvent#parseDetails(java.lang.String[])
+		 * @see com.theminequest.MineQuest.Events.QEvent#parseDetails(java.lang.String[])
 		 * Basic Quest Event:
 		 * [0]: delay in milliseconds
 		 * [1]: task to trigger

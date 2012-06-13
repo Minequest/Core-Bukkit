@@ -1,7 +1,7 @@
 /**
  * This file, CollectEvent.java, is part of MineQuest:
  * A full featured and customizable quest/mission system.
- * Copyright (C) 2012 The MineQuest Team
+ * Copyright (C) 2012 The MineQuest Party
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -26,25 +26,23 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
 
-import com.theminequest.MineQuest.CompleteStatus;
 import com.theminequest.MineQuest.MineQuest;
-import com.theminequest.MineQuest.EventsAPI.NamedQEvent;
-import com.theminequest.MineQuest.EventsAPI.QEvent;
-import com.theminequest.MineQuest.Group.Group;
-import com.theminequest.MineQuest.Group.Team;
+import com.theminequest.MineQuest.API.CompleteStatus;
+import com.theminequest.MineQuest.API.Managers;
+import com.theminequest.MineQuest.API.Events.UserQuestEvent;
+import com.theminequest.MineQuest.API.Events.QuestEvent;
+import com.theminequest.MineQuest.API.Group.Group;
+import com.theminequest.MineQuest.API.Group.QuestGroup;
+import com.theminequest.MineQuest.Group.Party;
 
-public class CollectEvent extends QEvent implements NamedQEvent {
+public class CollectEvent extends QuestEvent implements UserQuestEvent {
 	
 	private int taskid;
 	private List<Integer> itemids;
 
-	public CollectEvent(long q, int e, String details) {
-		super(q, e, details);
-	}
-
 	/*
 	 * (non-Javadoc)
-	 * @see com.theminequest.MineQuest.EventsAPI.QEvent#parseDetails(java.lang.String[])
+	 * @see com.theminequest.MineQuest.Events.QEvent#parseDetails(java.lang.String[])
 	 * Details:
 	 * [0]: task to incur upon completion
 	 * [1]: itemids;
@@ -62,13 +60,12 @@ public class CollectEvent extends QEvent implements NamedQEvent {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.theminequest.MineQuest.EventsAPI.QEvent#conditions()
+	 * @see com.theminequest.MineQuest.Events.QEvent#conditions()
 	 * Leader must have all the items.
 	 */
 	@Override
 	public boolean conditions() {
-		long gid = MineQuest.groupManager.indexOfQuest(MineQuest.questManager.getQuest(getQuestId()));
-		Group g = MineQuest.groupManager.getGroup(gid);
+		QuestGroup g = Managers.getQuestGroupManager().get(getQuest());
 		Player leader = g.getLeader();
 		PlayerInventory i = leader.getInventory();
 		for (int item : itemids){

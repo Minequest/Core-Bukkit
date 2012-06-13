@@ -1,7 +1,7 @@
 /*
  * This file, CompleteQuestEvent.java, is part of MineQuest:
  * A full featured and customizable quest/mission system.
- * Copyright (C) 2012 The MineQuest Team
+ * Copyright (C) 2012 The MineQuest Party
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,22 +19,19 @@
  */
 package com.theminequest.MQCoreEvents;
 
-import com.theminequest.MineQuest.CompleteStatus;
 import com.theminequest.MineQuest.MineQuest;
-import com.theminequest.MineQuest.EventsAPI.DelayedQEvent;
-import com.theminequest.MineQuest.EventsAPI.QEvent;
+import com.theminequest.MineQuest.API.CompleteStatus;
+import com.theminequest.MineQuest.API.Managers;
+import com.theminequest.MineQuest.API.Events.DelayedQuestEvent;
+import com.theminequest.MineQuest.API.Events.QuestEvent;
 
-public class CompleteQuestEvent extends DelayedQEvent {
+public class CompleteQuestEvent extends DelayedQuestEvent {
 
 	private long delay;
-	
-	public CompleteQuestEvent(long q, int e, String details) {
-		super(q, e, details);
-	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.theminequest.MineQuest.EventsAPI.QEvent#parseDetails(java.lang.String[])
+	 * @see com.theminequest.MineQuest.Events.QEvent#parseDetails(java.lang.String[])
 	 * Details:
 	 * [0]: DELAY in MS
 	 */
@@ -55,12 +52,11 @@ public class CompleteQuestEvent extends DelayedQEvent {
 
 	@Override
 	public CompleteStatus action() {
-		MineQuest.questManager.getQuest(getQuestId()).finishQuest(CompleteStatus.SUCCESS);
 		return CompleteStatus.SUCCESS;
 	}
 
 	@Override
 	public Integer switchTask() {
-		return null;
+		return -1;
 	}
 }

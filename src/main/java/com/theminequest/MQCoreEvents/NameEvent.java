@@ -1,8 +1,8 @@
 package com.theminequest.MQCoreEvents;
 
-import com.theminequest.MineQuest.CompleteStatus;
-import com.theminequest.MineQuest.EventsAPI.NamedQEvent;
-import com.theminequest.MineQuest.EventsAPI.QEvent;
+import com.theminequest.MineQuest.API.CompleteStatus;
+import com.theminequest.MineQuest.API.Events.UserQuestEvent;
+import com.theminequest.MineQuest.API.Events.QuestEvent;
 
 /**
  * Make an entry appear in Current Tasks. This allows
@@ -13,17 +13,13 @@ import com.theminequest.MineQuest.EventsAPI.QEvent;
  * @author Robert Xu <xu_robert@linux.com>
  *
  */
-public class NameEvent extends QEvent implements NamedQEvent {
+public class NameEvent extends QuestEvent implements UserQuestEvent {
 	
 	private String task;
 
-	public NameEvent(long q, int e, String details) {
-		super(q, e, details);
-	}
-
 	/*
 	 * (non-Javadoc)
-	 * @see com.theminequest.MineQuest.EventsAPI.QEvent#parseDetails(java.lang.String[])
+	 * @see com.theminequest.MineQuest.Events.QEvent#parseDetails(java.lang.String[])
 	 * [0] task
 	 */
 	@Override

@@ -1,7 +1,7 @@
 /**
  * This file, QuestConfig.java, is part of MineQuest:
  * A full featured and customizable quest/mission system.
- * Copyright (C) 2012 The MineQuest Team
+ * Copyright (C) 2012 The MineQuest Party
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,20 +22,21 @@ package com.theminequest.MineQuest;
 import java.io.File;
 import java.util.logging.Level;
 
-import com.theminequest.MineQuest.Utils.PropertiesFile;
+import com.theminequest.MineQuest.API.Managers;
+import com.theminequest.MineQuest.API.Utils.PropertiesFile;
 
 public final class QuestConfig {
 
-	public PropertiesFile mainConfig;
-	public PropertiesFile groupConfig;
-	public PropertiesFile questConfig;
-	public PropertiesFile economyConfig;
-	public PropertiesFile databaseConfig;
+	public final PropertiesFile mainConfig;
+	public final PropertiesFile groupConfig;
+	public final PropertiesFile questConfig;
+	public final PropertiesFile economyConfig;
+	public final PropertiesFile databaseConfig;
 	protected PropertiesFile localizationConfig;
 	
 	public QuestConfig(){
-		MineQuest.log(Level.INFO, "Loading configuration...");
-		String basefolder = MineQuest.activePlugin.getDataFolder()+File.separator;
+		Managers.log(Level.INFO, "Loading configuration...");
+		String basefolder = Managers.getActivePlugin().getDataFolder()+File.separator;
 		/*
 		 * Load Main Configuration
 		 */

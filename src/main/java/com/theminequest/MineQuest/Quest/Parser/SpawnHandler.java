@@ -2,20 +2,21 @@ package com.theminequest.MineQuest.Quest.Parser;
 
 import java.util.List;
 
-import com.theminequest.MineQuest.Quest.Quest;
-import com.theminequest.MineQuest.Quest.QuestDescription;
-import com.theminequest.MineQuest.Quest.QuestParser.QHandler;
+import com.theminequest.MineQuest.API.Quest.QuestParser.QHandler;
+import static com.theminequest.MineQuest.API.Quest.QuestDetails.*;
+import com.theminequest.MineQuest.API.Quest.QuestDetails;
 
 public class SpawnHandler implements QHandler {
 
 	@Override
-	public void parseDetails(QuestDescription q, List<String> line) {
+	public void parseDetails(QuestDetails q, List<String> line) {
+		double[] spawnPoint = q.getProperty(QUEST_SPAWNPOINT);
 		if (!line.get(0).equals(""))
-			q.spawnPoint[0] = Double.parseDouble(line.get(0));
+			spawnPoint[0] = Double.parseDouble(line.get(0));
 		if (!line.get(1).equals(""))
-			q.spawnPoint[1] = Double.parseDouble(line.get(1));
+			spawnPoint[1] = Double.parseDouble(line.get(1));
 		if (!line.get(2).equals(""))
-			q.spawnPoint[2] = Double.parseDouble(line.get(2));
+			spawnPoint[2] = Double.parseDouble(line.get(2));
 	}
 
 }

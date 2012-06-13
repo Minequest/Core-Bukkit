@@ -1,21 +1,22 @@
 package com.theminequest.MineQuest.Quest.Parser;
 
 import java.util.List;
+import java.util.Map;
 
-import com.theminequest.MineQuest.Editable.CertainBlockEdit;
-import com.theminequest.MineQuest.Editable.CoordinateEdit;
-import com.theminequest.MineQuest.Editable.Edit;
-import com.theminequest.MineQuest.Editable.InsideAreaEdit;
-import com.theminequest.MineQuest.Editable.ItemInHandEdit;
-import com.theminequest.MineQuest.Editable.OutsideAreaEdit;
-import com.theminequest.MineQuest.Quest.Quest;
-import com.theminequest.MineQuest.Quest.QuestDescription;
-import com.theminequest.MineQuest.Quest.QuestParser.QHandler;
+import com.theminequest.MineQuest.API.Edit.CertainBlockEdit;
+import com.theminequest.MineQuest.API.Edit.CoordinateEdit;
+import com.theminequest.MineQuest.API.Edit.Edit;
+import com.theminequest.MineQuest.API.Edit.InsideAreaEdit;
+import com.theminequest.MineQuest.API.Edit.ItemInHandEdit;
+import com.theminequest.MineQuest.API.Edit.OutsideAreaEdit;
+import com.theminequest.MineQuest.API.Quest.QuestDetails;
+import com.theminequest.MineQuest.API.Quest.QuestParser.QHandler;
+import static com.theminequest.MineQuest.API.Quest.QuestDetails.*;
 
 public class EditHandler implements QHandler {
 
 	@Override
-	public void parseDetails(QuestDescription q, List<String> line) {
+	public void parseDetails(QuestDetails q, List<String> line) {
 		int number = Integer.parseInt(line.get(0));
 		String edittype = line.get(1);
 		String d = "";
@@ -44,7 +45,8 @@ public class EditHandler implements QHandler {
 			else
 				e = new CertainBlockEdit(number,taskid,d);
 		}
-		q.editables.put(number, e);
+		Map<Integer,Edit> ed = q.getProperty(QUEST_EDITS);
+		ed.put(number, e);
 	}
 
 }

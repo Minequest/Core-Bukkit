@@ -1,7 +1,7 @@
 /**
  * This file, DestroyEvent.java, is part of MineQuest:
  * A full featured and customizable quest/mission system.
- * Copyright (C) 2012 The MineQuest Team
+ * Copyright (C) 2012 The MineQuest Party
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -26,26 +26,24 @@ import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.block.BlockBreakEvent;
 
-import com.theminequest.MineQuest.CompleteStatus;
 import com.theminequest.MineQuest.MineQuest;
-import com.theminequest.MineQuest.EventsAPI.NamedQEvent;
-import com.theminequest.MineQuest.EventsAPI.QEvent;
-import com.theminequest.MineQuest.Group.Group;
+import com.theminequest.MineQuest.API.CompleteStatus;
+import com.theminequest.MineQuest.API.Managers;
+import com.theminequest.MineQuest.API.Events.UserQuestEvent;
+import com.theminequest.MineQuest.API.Events.QuestEvent;
+import com.theminequest.MineQuest.API.Group.Group;
+import com.theminequest.MineQuest.API.Group.QuestGroup;
 
-public class DestroyEvent extends QEvent implements NamedQEvent {
+public class DestroyEvent extends QuestEvent implements UserQuestEvent {
 	
 	private List<Integer> typestodestroy;
 	private int totaltodestroy;
 	private int currentdestroy;
 	private int taskid;
 
-	public DestroyEvent(long q, int e, String details) {
-		super(q, e, details);
-	}
-
 	/*
 	 * (non-Javadoc)
-	 * @see com.theminequest.MineQuest.EventsAPI.QEvent#parseDetails(java.lang.String[])
+	 * @see com.theminequest.MineQuest.Events.QEvent#parseDetails(java.lang.String[])
 	 * [0]: task id to trigger
 	 * [1]: block ids
 	 * [2]: total # to kill
@@ -73,13 +71,12 @@ public class DestroyEvent extends QEvent implements NamedQEvent {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.theminequest.MineQuest.EventsAPI.QEvent#blockBreakCondition(org.bukkit.event.block.BlockBreakEvent)
+	 * @see com.theminequest.MineQuest.Events.QEvent#blockBreakCondition(org.bukkit.event.block.BlockBreakEvent)
 	 */
 	@Override
 	public boolean blockBreakCondition(BlockBreakEvent e) {
-		long gid = MineQuest.groupManager.indexOfQuest(MineQuest.questManager.getQuest(getQuestId()));
-		Group g = MineQuest.groupManager.getGroup(gid);
-		if (g.getPlayers().contains(e.getPlayer())){
+		QuestGroup g = Managers.getQuestGroupManager().get(getQuest());
+		if (g.getMembers().contains(e.getPlayer())){
 			int blockid = e.getBlock().getState().getTypeId();
 			for (int t : typestodestroy){
 				if (blockid==t){

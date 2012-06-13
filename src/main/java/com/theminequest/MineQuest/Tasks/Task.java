@@ -1,7 +1,7 @@
 /**
  * This file, Task.java, is part of MineQuest:
  * A full featured and customizable quest/mission system.
- * Copyright (C) 2012 The MineQuest Team
+ * Copyright (C) 2012 The MineQuest Party
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -24,26 +24,30 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 
 import com.theminequest.MQCoreEvents.NameEvent;
-import com.theminequest.MineQuest.CompleteStatus;
-import com.theminequest.MineQuest.MineQuest;
-import com.theminequest.MineQuest.BukkitEvents.TaskCompleteEvent;
-import com.theminequest.MineQuest.EventsAPI.QEvent;
-import com.theminequest.MineQuest.Quest.Quest;
-import com.theminequest.MineQuest.Quest.QuestManager;
+import com.theminequest.MineQuest.API.CompleteStatus;
+import com.theminequest.MineQuest.API.Managers;
+import com.theminequest.MineQuest.API.BukkitEvents.TaskCompleteEvent;
+import com.theminequest.MineQuest.API.Events.QuestEvent;
+import com.theminequest.MineQuest.API.Quest.Quest;
+import com.theminequest.MineQuest.API.Quest.QuestUtils;
+import com.theminequest.MineQuest.API.Task.QuestTask;
 
-public class Task {
+public class Task implements QuestTask {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6544586331188563646L;
 	private boolean started;
-	private boolean complete;
+	private CompleteStatus complete;
 	private long questid;
 	private int taskid;
-	private LinkedHashMap<Integer,QEvent> collection;
+	private LinkedHashMap<Integer,QuestEvent> collection;
 
 	/**
 	 * Task for a Quest.
@@ -57,27 +61,31 @@ public class Task {
 	 */
 	public Task(long questid, int taskid, List<Integer> events) {
 		started = false;
-		complete = false;
+		complete = null;
 		this.questid = questid;
 		this.taskid = taskid;
-		collection = new LinkedHashMap<Integer,QEvent>();
+		collection = new LinkedHashMap<Integer,QuestEvent>();
 		for (int e : events){
 			collection.put(e, null);
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see com.theminequest.MineQuest.Tasks.QuestTask#start()
+	 */
+	@Override
 	public synchronized void start() {
 		if (started)
 			return;
 		started = true;
-		Quest quest = MineQuest.questManager.getQuest(questid);
+		Quest quest = Managers.getQuestManager().getQuest(questid);
 		Iterator<Integer> i = collection.keySet().iterator();
 		List<Integer> list = new ArrayList<Integer>();
 		while (i.hasNext()){
 			list.add(i.next());
 		}
 		for (Integer event : list){
-			String d = quest.getEvent(event);
+			String d = QuestUtils.getEvent(quest,event);
 			String[] eventdetails = d.split(":");
 			String recombined = "";
 			for (int r=1; r<eventdetails.length; r++){
@@ -85,11 +93,11 @@ public class Task {
 				if (r!=(eventdetails.length-1));
 					recombined+=":";
 			}
-			QEvent e = MineQuest.eventManager.getNewEvent(eventdetails[0], questid, event, recombined);
+			QuestEvent e = Managers.getEventManager().constructEvent(eventdetails[0], quest, event, recombined);
 			if (e!=null)
 				collection.put(event, e);
 			else{
-				MineQuest.log(Level.WARNING, "[Task] Missing event " + eventdetails[0] + "; Ignoring.");
+				Managers.log(Level.WARNING, "[Task] Missing event " + eventdetails[0] + "; Ignoring.");
 				collection.remove(event);
 			}
 		}
@@ -100,11 +108,15 @@ public class Task {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see com.theminequest.MineQuest.Tasks.QuestTask#cancelTask()
+	 */
+	@Override
 	public synchronized void cancelTask() {
-		if (complete || !started)
+		if (complete!=null || !started)
 			return;
-		complete = true;
-		for (QEvent e : collection.values()) {
+		complete = CompleteStatus.CANCELED;
+		for (QuestEvent e : collection.values()) {
 			e.complete(CompleteStatus.CANCELED);
 		}
 		TaskCompleteEvent e = new TaskCompleteEvent(questid, taskid,
@@ -112,49 +124,83 @@ public class Task {
 		Bukkit.getPluginManager().callEvent(e);
 	}
 
-	public synchronized void finishEvent(int eventid,
+	// FIXME FIXME FIXME AHHHHHH
+	// implement task switching.
+	/* (non-Javadoc)
+	 * @see com.theminequest.MineQuest.Tasks.QuestTask#finishEvent(int, com.theminequest.MineQuest.API.CompleteStatus)
+	 */
+	@Override
+	public synchronized void finishEvent(QuestEvent qE,
 			CompleteStatus completeStatus) {
-		if (!complete && started && collection.containsKey(eventid)) {
+		if (complete==null && started && collection.containsKey(qE.getEventId())) {
 			if (completeStatus == CompleteStatus.FAILURE) {
-				for (QEvent event : collection.values())
+				for (QuestEvent event : collection.values())
 					event.complete(CompleteStatus.CANCELED);
-				complete = true;
+				complete = CompleteStatus.FAILURE;
 				TaskCompleteEvent e = new TaskCompleteEvent(questid, taskid,
 						CompleteStatus.FAILURE);
 				Bukkit.getPluginManager().callEvent(e);
-			} else
+			} else if (complete==CompleteStatus.CANCELED) {
+				//ignore
+			} else {
+				Integer taskswitch = qE.switchTask();
+				if (taskswitch!=null){
+					for (QuestEvent event : collection.values())
+						event.complete(CompleteStatus.CANCELED);
+					complete = CompleteStatus.IGNORE;
+					TaskCompleteEvent e = new TaskCompleteEvent(questid, taskid,
+							complete);
+					Bukkit.getPluginManager().callEvent(e);
+				}
 				checkCompletion();
+			}
 		}
 	}
 
 	private synchronized void checkCompletion() {
 		for (Integer eventid : collection.keySet()) {
-			QEvent e = collection.get(eventid);
+			QuestEvent e = collection.get(eventid);
 			// ignore NameEvents
 			if (e instanceof NameEvent)
 				continue;
 			if (e.isComplete()==null)
 				return;
 		}
-		complete = true;
+		complete = CompleteStatus.SUCCESS;
 		TaskCompleteEvent e = new TaskCompleteEvent(questid, taskid,
 				CompleteStatus.SUCCESS);
 		Bukkit.getPluginManager().callEvent(e);
 	}
 
-	public synchronized boolean isComplete() {
+	/* (non-Javadoc)
+	 * @see com.theminequest.MineQuest.Tasks.QuestTask#isComplete()
+	 */
+	@Override
+	public synchronized CompleteStatus isComplete() {
 		return complete;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.theminequest.MineQuest.Tasks.QuestTask#getQuestID()
+	 */
+	@Override
 	public long getQuestID() {
 		return questid;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.theminequest.MineQuest.Tasks.QuestTask#getTaskID()
+	 */
+	@Override
 	public int getTaskID() {
 		return taskid;
 	}
 
-	public Collection<QEvent> getEvents() {
+	/* (non-Javadoc)
+	 * @see com.theminequest.MineQuest.Tasks.QuestTask#getEvents()
+	 */
+	@Override
+	public Collection<QuestEvent> getEvents() {
 		return collection.values();
 	}
 
