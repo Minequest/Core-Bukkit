@@ -10,6 +10,7 @@ MineQuest is a full featured MMORPG system. It allows custom quests, classes, an
 <hr/>
 
     The code in this repository has been marked **stable** as of 1.2.5 Milestone 5.
+[![Build Status](http://build.lincomlinux.org/jenkins/job/MineQuest-Core/badge/icon)](http://build.lincomlinux.org/jenkins/job/MineQuest-Core/)
     
 <h3>License</h3>
 Copyright (c) 2011-2012, The MineQuest Team <http://www.theminequest.com/>
