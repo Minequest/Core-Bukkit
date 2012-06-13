@@ -45,7 +45,7 @@ public class Task implements QuestTask {
 	private static final long serialVersionUID = 6544586331188563646L;
 	private boolean started;
 	private CompleteStatus complete;
-	private long questid;
+	private Quest quest;
 	private int taskid;
 	private LinkedHashMap<Integer,QuestEvent> collection;
 
@@ -59,10 +59,10 @@ public class Task implements QuestTask {
 	 * @param events
 	 *            Event numbers that must be completed
 	 */
-	public Task(long questid, int taskid, List<Integer> events) {
+	public Task(Quest quest, int taskid, List<Integer> events) {
 		started = false;
 		complete = null;
-		this.questid = questid;
+		this.quest = quest;
 		this.taskid = taskid;
 		collection = new LinkedHashMap<Integer,QuestEvent>();
 		for (int e : events){
@@ -78,7 +78,6 @@ public class Task implements QuestTask {
 		if (started)
 			return;
 		started = true;
-		Quest quest = Managers.getQuestManager().getQuest(questid);
 		Iterator<Integer> i = collection.keySet().iterator();
 		List<Integer> list = new ArrayList<Integer>();
 		while (i.hasNext()){
@@ -119,7 +118,7 @@ public class Task implements QuestTask {
 		for (QuestEvent e : collection.values()) {
 			e.complete(CompleteStatus.CANCELED);
 		}
-		TaskCompleteEvent e = new TaskCompleteEvent(questid, taskid,
+		TaskCompleteEvent e = new TaskCompleteEvent(quest, taskid,
 				CompleteStatus.CANCELED);
 		Bukkit.getPluginManager().callEvent(e);
 	}
@@ -133,24 +132,26 @@ public class Task implements QuestTask {
 	public synchronized void finishEvent(QuestEvent qE,
 			CompleteStatus completeStatus) {
 		if (complete==null && started && collection.containsKey(qE.getEventId())) {
-			if (completeStatus == CompleteStatus.FAILURE) {
+			
+			switch(completeStatus){
+			case FAILURE:
 				for (QuestEvent event : collection.values())
 					event.complete(CompleteStatus.CANCELED);
 				complete = CompleteStatus.FAILURE;
-				TaskCompleteEvent e = new TaskCompleteEvent(questid, taskid,
+				TaskCompleteEvent e = new TaskCompleteEvent(quest, taskid,
 						CompleteStatus.FAILURE);
 				Bukkit.getPluginManager().callEvent(e);
-			} else if (complete==CompleteStatus.CANCELED) {
-				//ignore
-			} else {
+				break;
+			case CANCELED:
+				break;
+			default:
 				Integer taskswitch = qE.switchTask();
 				if (taskswitch!=null){
 					for (QuestEvent event : collection.values())
 						event.complete(CompleteStatus.CANCELED);
 					complete = CompleteStatus.IGNORE;
-					TaskCompleteEvent e = new TaskCompleteEvent(questid, taskid,
-							complete);
-					Bukkit.getPluginManager().callEvent(e);
+					getQuest().startTask(taskswitch);
+					return;
 				}
 				checkCompletion();
 			}
@@ -167,7 +168,7 @@ public class Task implements QuestTask {
 				return;
 		}
 		complete = CompleteStatus.SUCCESS;
-		TaskCompleteEvent e = new TaskCompleteEvent(questid, taskid,
+		TaskCompleteEvent e = new TaskCompleteEvent(quest, taskid,
 				CompleteStatus.SUCCESS);
 		Bukkit.getPluginManager().callEvent(e);
 	}
@@ -184,8 +185,8 @@ public class Task implements QuestTask {
 	 * @see com.theminequest.MineQuest.Tasks.QuestTask#getQuestID()
 	 */
 	@Override
-	public long getQuestID() {
-		return questid;
+	public Quest getQuest() {
+		return quest;
 	}
 
 	/* (non-Javadoc)

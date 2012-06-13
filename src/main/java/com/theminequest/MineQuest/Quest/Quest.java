@@ -135,7 +135,7 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 		for (String e : eventnums) {
 			eventnum.add(Integer.parseInt(e));
 		}
-		activeTask = new Task(questid, taskid, eventnum);
+		activeTask = new Task(this, taskid, eventnum);
 		activeTask.start();
 		return true;
 	}
@@ -150,7 +150,7 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 
 	// passed in from QuestManager
 	public void onTaskCompletion(TaskCompleteEvent e) {
-		if (e.getQuestID() != questid)
+		if (!e.getQuest().equals(this))
 			return;
 		if (e.getResult()==CompleteStatus.CANCELED)
 			return;

@@ -204,7 +204,7 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 	@Override
 	@EventHandler
 	public void taskCompletion(TaskCompleteEvent e){
-		getQuest(e.getQuestID()).onTaskCompletion(e);
+		e.getQuest().onTaskCompletion(e);
 	}
 
 	@Override
