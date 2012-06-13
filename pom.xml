@@ -5,7 +5,7 @@
 	<artifactId>MineQuest</artifactId>
 	<version>dev-SNAPSHOT</version>
 	<name>MineQuest</name>
-	<description>The Minecraft ultimate MMORPG plugin!</description>
+	<description>The ultimate MMORPG plugin!</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -13,26 +13,27 @@
 	</properties>
 
 	<scm>
-		<connection>scm:git:git://github.com/Minequest/Minequest-Reloaded-Core.git</connection>
-		<url>https://github.com/Minequest/Minequest-Reloaded-Core</url>
-		<developerConnection>scm:ssh:git@github.com:Minequest/Minequest-Reloaded-Core.git</developerConnection>
+		<connection>scm:git:git://github.com/Minequest/MineQuest-2-Core.git</connection>
+		<url>https://github.com/Minequest/MineQuest-2-Core</url>
+		<developerConnection>scm:ssh:git@github.com:Minequest/MineQuest-2-Core.git</developerConnection>
 	</scm>
-	
+
 	<distributionManagement>
-  <!-- Publish versioned releases here -->
-  <repository>
-    <id>nexus</id>
-    <name>Nexus.Lincom</name>
-    <url>http://build.lincomlinux.org/nexus/content/repositories/releases</url>
-  </repository>
- 
-  <!-- Publish snapshots here -->
-  <snapshotRepository>
-    <id>nexus</id>
-    <name>Nexus.Lincom</name>
-    <url>http://build.lincomlinux.org/nexus/content/repositories/snapshots</url>
-  </snapshotRepository>
-</distributionManagement>
+		<!-- Publish versioned releases here -->
+		<repository>
+			<id>nexus</id>
+			<name>Nexus.Lincom</name>
+			<url>http://build.lincomlinux.org/nexus/content/repositories/releases</url>
+		</repository>
+
+		<!-- Publish snapshots here -->
+		<snapshotRepository>
+			<id>nexus</id>
+			<name>Nexus.Lincom</name>
+			<url>http://build.lincomlinux.org/nexus/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+	
 	<repositories>
 		<repository>
 			<id>bukkit-repo</id>
@@ -53,6 +54,7 @@
 			<url>http://build.lincomlinux.org/nexus/content/groups/public/</url>
 		</repository>
 	</repositories>
+	
 	<build>
 		<finalName>MineQuest</finalName>
 		<defaultGoal>clean package javadoc:javadoc javadoc:jar install</defaultGoal>
@@ -127,6 +129,7 @@
 			</plugin>
 		</plugins>
 	</build>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.bukkit</groupId>
