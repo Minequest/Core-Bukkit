@@ -30,7 +30,6 @@ public final class QuestConfig {
 	public final PropertiesFile mainConfig;
 	public final PropertiesFile groupConfig;
 	public final PropertiesFile questConfig;
-	public final PropertiesFile economyConfig;
 	public final PropertiesFile databaseConfig;
 	protected PropertiesFile localizationConfig;
 	
@@ -49,10 +48,6 @@ public final class QuestConfig {
 		 * Load Quest Configuration
 		 */
 		questConfig = new PropertiesFile(basefolder+"quest.properties");
-		/*
-		 * Load Economy Hookin Configuration
-		 */
-		economyConfig = new PropertiesFile(basefolder+"economy.properties");
 		/*
 		 * Load Database Configuration
 		 */
