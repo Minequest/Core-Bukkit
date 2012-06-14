@@ -60,7 +60,9 @@ public class Statistics implements StatisticManager {
 		Statistic result = backend.select(tableClazz).where().equal("playerName", playerName.toLowerCase()).execute().findOne();
 		if (result==null)
 			try {
-				return (T) tableClazz.getConstructor().newInstance();
+				T statistic = (T) tableClazz.getConstructor().newInstance();
+				statistic.setPlayerName(playerName);
+				return statistic;
 			} catch (IllegalArgumentException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
