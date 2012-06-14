@@ -99,7 +99,7 @@ public class MQEventManager implements Listener, EventManager {
 			if (classes.containsKey(eventname) || classes.containsValue(event))
 				throw new IllegalArgumentException("We already have this class!");
 			try {
-				event.getConstructor(long.class, int.class, java.lang.String.class);
+				event.getConstructor();
 			} catch (Exception e) {
 				throw new IllegalArgumentException("Constructor tampered with!");
 			}
