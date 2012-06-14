@@ -224,8 +224,8 @@ public class QuestCommandFrontend extends CommandFrontend {
 			return false;
 		}
 		if (Managers.getQuestGroupManager().indexOf(p)==-1){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOPARTY.getDescription());
-			return false;
+			Managers.getQuestGroupManager().createNewGroup(p);
+			p.sendMessage(ChatColor.YELLOW + I18NMessage.Cmd_Party_CREATE.getDescription());
 		}
 		final QuestGroup g = Managers.getQuestGroupManager().get(p);
 		if (!g.getLeader().equals(p)){
