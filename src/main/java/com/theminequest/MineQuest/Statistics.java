@@ -2,11 +2,6 @@ package com.theminequest.MineQuest;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Logger;
-
-import lib.PatPeter.SQLibrary.H2;
-import lib.PatPeter.SQLibrary.MySQL;
-import lib.PatPeter.SQLibrary.SQLite;
 
 import com.alta189.simplesave.Database;
 import com.alta189.simplesave.DatabaseFactory;
@@ -51,7 +46,6 @@ public class Statistics implements StatisticManager {
 			backend = DatabaseFactory.createNewDatabase(s);
 		} else
 			backend = DatabaseFactory.createNewDatabase(new H2Configuration().setDatabase(Managers.getActivePlugin().getDataFolder().getAbsolutePath() + File.separator + "minequest_h2"));
-		backend.connect();
 	}
 
 	@Override
@@ -59,6 +53,7 @@ public class Statistics implements StatisticManager {
 		return backend;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends Statistic> T getStatistic(String playerName,
 			Class<? extends Statistic> tableClazz) {
@@ -101,6 +96,14 @@ public class Statistics implements StatisticManager {
 		} catch (TableRegistrationException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	@Override
+	public void connect(boolean connect) throws ConnectionException {
+		if (connect)
+			backend.connect();
+		else
+			backend.close();
 	}
 
 }

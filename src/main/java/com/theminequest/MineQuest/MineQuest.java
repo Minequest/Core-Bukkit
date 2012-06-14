@@ -172,6 +172,14 @@ public class MineQuest extends JavaPlugin {
 			@Override
 			public void run() {
 				Managers.getQuestManager().reloadQuests();
+				try {
+					Managers.getStatisticManager().connect(true);
+				} catch (ConnectionException e) {
+					Managers.log(Level.SEVERE,"[Core] Can't start Statistic Manager!");
+					e.fillInStackTrace();
+					e.printStackTrace();
+					Bukkit.getPluginManager().disablePlugin(Managers.getActivePlugin());
+				}
 			}
 		}, 500L);
 
@@ -179,6 +187,11 @@ public class MineQuest extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
+		try {
+			Managers.getStatisticManager().connect(false);
+		} catch (ConnectionException e) {
+			e.printStackTrace();
+		}
 		description = null;
 		Managers.setActivePlugin(null);
 		Managers.getEventManager().dismantleRunnable();
