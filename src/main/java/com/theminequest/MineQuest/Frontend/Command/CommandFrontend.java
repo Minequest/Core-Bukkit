@@ -10,6 +10,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.theminequest.MineQuest.I18NMessage;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.API.Managers;
 
@@ -41,7 +42,7 @@ public abstract class CommandFrontend implements CommandExecutor {
 		
 		if (player!=null){
 			if (!hasPermission(cmdname+"."+cmd,player)){
-				player.sendMessage(ChatColor.RED + "You don't have permission for this command.");
+				player.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOPERMISSION.getDescription());
 				return false;
 			}
 		}
@@ -63,7 +64,7 @@ public abstract class CommandFrontend implements CommandExecutor {
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
 		}
-		arg0.sendMessage(ChatColor.RED + "Invalid command. Use /"+cmdname+" help for commands.");
+		arg0.sendMessage(I18NMessage.Cmd_INVALIDARGS.getDescription());
 		return false;
 	}
 	

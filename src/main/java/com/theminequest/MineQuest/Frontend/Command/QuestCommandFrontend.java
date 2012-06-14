@@ -15,6 +15,7 @@ import com.theminequest.MineQuest.API.Group.QuestGroup.QuestStatus;
 import com.theminequest.MineQuest.API.Quest.Quest;
 import com.theminequest.MineQuest.API.Quest.QuestDetails;
 import com.theminequest.MineQuest.API.Quest.QuestDetailsUtils;
+import com.theminequest.MineQuest.API.Quest.QuestUtils;
 import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils;
 import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils.QSException;
 import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils.Status;
@@ -93,7 +94,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 			return false;
 		}
 	}
-	
+
 	public Boolean active(Player p, String[] args) {
 		if (args.length!=0){
 			p.sendMessage(I18NMessage.Cmd_INVALIDARGS.getDescription());
@@ -108,7 +109,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Quest_NOACTIVE.getDescription());
 			return false;
 		}
-		p.sendMessage(g.getQuest().toString().split("\n"));
+		p.sendMessage(QuestUtils.getStatusString(g.getQuest()).split("\n"));
 		return true;
 	}
 
@@ -201,14 +202,14 @@ public class QuestCommandFrontend extends CommandFrontend {
 		p.sendMessage(QuestDetailsUtils.getOverviewString(qd).split("\n"));
 		return true;
 	}
-	
+
 	public Boolean reload(Player p, String[] args) {
 		if (args.length>1){
 			p.sendMessage(I18NMessage.Cmd_INVALIDARGS.getDescription());
 			return false;
 		}
 		if (!p.isOp()){
-			p.sendMessage(I18NMessage.Cmd_NOTOP.getDescription());
+			p.sendMessage(I18NMessage.Cmd_NOPERMISSION.getDescription());
 			return false;
 		}
 		if (args.length==0)
@@ -243,13 +244,13 @@ public class QuestCommandFrontend extends CommandFrontend {
 			p.sendMessage(I18NMessage.Cmd_Quest_NOTHAVEQUEST.getDescription());
 			return false;
 		}
-		
+
 		final QuestDetails qd = Managers.getQuestManager().getDetails(args[0]);
 		if (qd==null){
 			p.sendMessage(I18NMessage.Cmd_Quest_UNAVAILABLE.getDescription());
 			return false;
 		}
-		
+
 		// TEST new multithreading
 		new Thread(new Runnable(){
 
@@ -317,18 +318,27 @@ public class QuestCommandFrontend extends CommandFrontend {
 				messages.add(ChatUtils.formatHelp("quest active", I18NMessage.Cmd_Quest_HELPACTIVE.getDescription()));
 			else
 				messages.add(ChatColor.GRAY + "[quest active] " + I18NMessage.Cmd_Quest_NOACTIVE.getDescription());
-			if (active!=null && inQuest==QuestStatus.NOTINQUEST && isLeader && active.isInstanced())
-				messages.add(ChatUtils.formatHelp("quest enter", I18NMessage.Cmd_Quest_HELPENTER.getDescription()));
-			else if (active!=null && inQuest==QuestStatus.INQUEST && isLeader && active.isInstanced() && active.isFinished()!=null )
-				messages.add(ChatUtils.formatHelp("quest exit", I18NMessage.Cmd_Quest_HELPEXIT.getDescription()));
-			else if (active!=null && inQuest==QuestStatus.INQUEST && isLeader && active.isInstanced() )
-				messages.add(ChatColor.GRAY + "[quest exit] " + I18NMessage.Cmd_Quest_EXITUNFINISHED.getDescription());
-			else if (active!=null && !active.isInstanced())
-				messages.add(ChatColor.GRAY + "[quest enter/exit] " + I18NMessage.Cmd_Quest_MAINWORLD.getDescription());
-			else if (active!=null && !isLeader)
+			if (!isLeader)
 				messages.add(ChatColor.GRAY + "[quest enter/exit] " + I18NMessage.Cmd_NOTLEADER.getDescription());
-			else
-				messages.add(ChatColor.GRAY + "[quest enter/exit] " + I18NMessage.Cmd_Quest_NOACTIVE.getDescription());
+			else{
+				switch(inQuest){
+				case NOTINQUEST:
+					messages.add(ChatUtils.formatHelp("quest enter", I18NMessage.Cmd_Quest_HELPENTER.getDescription()));
+					break;
+				case INQUEST:
+					if (active.isFinished()!=null)
+						messages.add(ChatUtils.formatHelp("quest exit", I18NMessage.Cmd_Quest_HELPEXIT.getDescription()));
+					else
+						messages.add(ChatColor.GRAY + "[quest exit] " + I18NMessage.Cmd_Quest_EXITUNFINISHED.getDescription());
+					break;
+				case MAINWORLDQUEST:
+					messages.add(ChatColor.GRAY + "[quest enter/exit] " + I18NMessage.Cmd_Quest_MAINWORLD.getDescription());
+					break;
+				default:
+					messages.add(ChatColor.GRAY + "[quest enter/exit] " + I18NMessage.Cmd_Quest_NOACTIVE.getDescription());
+					break;
+				}
+			}
 			if (active == null && isLeader)
 				messages.add(ChatUtils.formatHelp("quest start <name>", I18NMessage.Cmd_Quest_HELPSTART.getDescription()));
 			else if (active == null)

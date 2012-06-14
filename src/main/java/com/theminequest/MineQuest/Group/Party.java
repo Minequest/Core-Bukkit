@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -140,7 +141,12 @@ public class Party implements QuestGroup {
 		if (status==QuestStatus.INQUEST)
 			exitQuest();
 		else if (quest!=null && quest.isInstanced()){
-			quest.cleanupQuest();
+			try {
+				quest.cleanupQuest();
+			} catch (Exception e) {
+				Managers.log(Level.SEVERE, "Problems were encountered with cleaning up a quest:");
+				e.printStackTrace();
+			}
 		}
 		quest = null;
 	}
