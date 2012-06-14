@@ -21,6 +21,9 @@ import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Quest.QuestDetails;
 import com.theminequest.MineQuest.API.Quest.QuestDetailsUtils;
 import com.theminequest.MineQuest.API.Tracker.QuestStatistic;
+import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils;
+import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils.QSException;
+import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils.Status;
 
 public class QuestSign implements Listener {
 
@@ -43,6 +46,8 @@ public class QuestSign implements Listener {
 		Action action = event.getAction();
 		Block block = event.getClickedBlock();
 		Player player = event.getPlayer();
+		if (block==null || block.getState()==null)
+			return;
 		if (!(block.getState() instanceof Sign))
 			return;
 		Sign sign = (Sign) block.getState();
@@ -54,6 +59,13 @@ public class QuestSign implements Listener {
 			block.breakNaturally();
 			player.sendMessage(ChatColor.RED + "Yikes! We can't find this quest anymore...");
 		}
+		String[] givenquests = QuestStatisticUtils.getQuests(player, Status.GIVEN);
+		for (String s : givenquests){
+			if (quest_name.equals(s)){
+				player.sendMessage("You already have this quest!");
+				return;
+			}
+		}
 		if (action == Action.RIGHT_CLICK_BLOCK) {
 			player.sendMessage(QuestDetailsUtils.getOverviewString(d).split("\n"));
 			if (QuestDetailsUtils.requirementsMet(d, player))
@@ -62,9 +74,13 @@ public class QuestSign implements Listener {
 				player.sendMessage("This quest is currently " + ChatColor.BOLD + ChatColor.RED + "not available" + ChatColor.RESET + " to you.");
 		} else if (action == Action.LEFT_CLICK_BLOCK) {
 			if (QuestDetailsUtils.requirementsMet(d, player)) {
-				QuestStatistic pstat = Managers.getStatisticManager().getStatistic(player.getName(), QuestStatistic.class);
-				pstat.addGivenQuest(quest_name);
-				player.sendMessage(ChatColor.GREEN + "Successfully added " + d.getProperty(QuestDetails.QUEST_DISPLAYNAME) + " to your quest list!");
+				try {
+					QuestStatisticUtils.giveQuest(player, quest_name);
+					player.sendMessage(ChatColor.GREEN + "Successfully added " + d.getProperty(QuestDetails.QUEST_DISPLAYNAME) + " to your quest list!");
+				} catch (QSException e) {
+					player.sendMessage("This quest doesn't seem to like you.");
+					e.printStackTrace();
+				}
 			} else
 				player.sendMessage("This quest is currently " + ChatColor.BOLD + ChatColor.RED + "not available" + ChatColor.RESET + " to you.");
 		}
