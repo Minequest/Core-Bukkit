@@ -63,6 +63,9 @@ public abstract class CommandFrontend implements CommandExecutor {
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
+			arg0.sendMessage(ChatColor.RED + "A severe error occured executing the command.");
+			arg0.sendMessage(ChatColor.RED + "We've recovered as best as we can; please alert system admins.");
+			return true;
 		}
 		arg0.sendMessage(I18NMessage.Cmd_INVALIDARGS.getDescription());
 		return false;

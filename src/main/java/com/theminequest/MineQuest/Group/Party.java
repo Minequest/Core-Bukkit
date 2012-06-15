@@ -143,16 +143,13 @@ public class Party implements QuestGroup {
 		quest.finishQuest(CompleteStatus.CANCELED);
 		if (status==QuestStatus.INQUEST)
 			exitQuest();
-		else if (quest!=null && quest.isInstanced()){
-			try {
-				quest.cleanupQuest();
-			} catch (Exception e) {
-				Managers.log(Level.SEVERE, "Problems were encountered with cleaning up a quest:");
-				e.printStackTrace();
-			}
-		}
+		Quest q = quest;
 		status = QuestStatus.NOQUEST;
 		quest = null;
+		if (q!=null && q.isInstanced()){
+			q.cleanupQuest();
+		}
+
 	}
 	
 	/**
@@ -260,9 +257,10 @@ public class Party implements QuestGroup {
 		if (quest.isFinished()==null)
 			throw new GroupException(GroupReason.UNFINISHEDQUEST);
 		moveBackToLocations();
+		Quest q = quest;
 		status = QuestStatus.NOQUEST;
-		quest.cleanupQuest();
 		quest = null;
+		q.cleanupQuest();
 	}
 	
 	@Override
