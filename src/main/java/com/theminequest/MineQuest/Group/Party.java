@@ -128,9 +128,12 @@ public class Party implements QuestGroup {
 		}
 		quest = Managers.getQuestManager().getQuest(Managers.getQuestManager().startQuest(d));
 
+		status = QuestStatus.NOTINQUEST;
 		boolean loadworld = quest.getDetails().getProperty(QuestDetails.QUEST_LOADWORLD);
-		if (!loadworld)
+		if (!loadworld){
 			quest.startQuest();
+			status = QuestStatus.MAINWORLDQUEST;
+		}
 	}
 
 	@Override
@@ -148,6 +151,7 @@ public class Party implements QuestGroup {
 				e.printStackTrace();
 			}
 		}
+		status = QuestStatus.NOQUEST;
 		quest = null;
 	}
 	
@@ -270,6 +274,7 @@ public class Party implements QuestGroup {
 		if (quest.isFinished()==null)
 			throw new GroupException(GroupReason.UNFINISHEDQUEST);
 		quest = null;
+		status = QuestStatus.NOQUEST;
 	}
 
 	@Override
