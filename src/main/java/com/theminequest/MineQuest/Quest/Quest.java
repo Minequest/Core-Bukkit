@@ -185,7 +185,7 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 		String world = details.getProperty(QUEST_WORLD);
 		TimeUtils.unlock(Bukkit.getWorld(world));
 		QuestGroupManager qGM = Managers.getQuestGroupManager();
-		QuestGroup g = qGM.get(qGM.indexOf(this));
+		QuestGroup g = qGM.get(this);
 		QuestCompleteEvent event = new QuestCompleteEvent(this, c, g);
 		Bukkit.getPluginManager().callEvent(event);
 	}

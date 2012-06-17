@@ -89,6 +89,12 @@ public class MQQuestGroupManager implements Listener, QuestGroupManager {
 
 	@Override
 	public synchronized QuestGroup get(Quest activeQuest) {
+		if (!activeQuest.isInstanced()){
+			// create faux questgroup with fake methods
+			// and return that for events and such to use
+			// get player from getQuestOwner()
+			// return new MWSingleParty(activeQuest,player);
+		}
 		return get(activeQuest.getQuestID());
 	}
 
