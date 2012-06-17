@@ -68,14 +68,16 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 	private CompleteStatus finished;
 	private QuestTask activeTask;
 
+	private String questOwner;
 
 	/*
 	 * Constructor will start the quest for the user.
 	 */
-	protected Quest(long questid, QuestDetails id) {
+	protected Quest(long questid, QuestDetails id, String questOwner) {
 		details = id;
 		this.questid = questid;
 		activeTask = null;
+		this.questOwner = questOwner;
 
 		// sort the tasks, events, and targets in order of id.
 		// because we have absolutely 0 idea if someone would skip numbers...
@@ -201,17 +203,6 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 		return finished;
 	}
 
-	public String getEvent(Integer id) {
-		Map<Integer,String> events = details.getProperty(QUEST_EVENTS);
-		if (!events.containsKey(id))
-			throw new IllegalArgumentException("No such event ID!");
-		return events.get(id);
-	}
-
-	public long getID() {
-		return questid;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -256,6 +247,11 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 	@Override
 	public com.theminequest.MineQuest.API.Quest.QuestDetails getDetails() {
 		return details;
+	}
+
+	@Override
+	public String getQuestOwner() {
+		return questOwner;
 	}
 
 }

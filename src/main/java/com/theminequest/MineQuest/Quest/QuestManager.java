@@ -57,6 +57,8 @@ import com.theminequest.MineQuest.API.Quest.QuestDetailsUtils;
 import com.theminequest.MineQuest.API.Quest.QuestParser;
 import com.theminequest.MineQuest.API.Quest.QuestUtils;
 import com.theminequest.MineQuest.API.Tracker.QuestStatistic;
+import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils;
+import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils.QSException;
 import com.theminequest.MineQuest.Group.Party;
 import com.theminequest.MineQuest.Quest.Parser.AcceptTextHandler;
 import com.theminequest.MineQuest.Quest.Parser.CancelTextHandler;
@@ -180,7 +182,7 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 	}
 
 	@Override
-	public long startQuest(com.theminequest.MineQuest.API.Quest.QuestDetails d){
+	public long startQuest(com.theminequest.MineQuest.API.Quest.QuestDetails d, String ownerName){
 		if (d==null)
 			throw new IllegalArgumentException(new NullPointerException());
 		try {
@@ -188,7 +190,7 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		quests.put(questid,new Quest(questid,d));
+		quests.put(questid,new Quest(questid,d,ownerName));
 		long thisquestid = questid;
 		questid++;
 		return thisquestid;
@@ -216,9 +218,9 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 			String questfinish = q.getDetails().getProperty(QUEST_COMPLETE);
 			for (Player p : e.getGroup().getMembers()){
 				p.sendMessage(ChatColor.GREEN + questfinish);
-				QuestStatistic s = Managers.getStatisticManager().getStatistic(p.getName(), QuestStatistic.class);
-				s.removeGivenQuest(questname);
-				s.addCompletedQuest(questname);
+				try {
+					QuestStatisticUtils.completeQuest(p, questname);
+				} catch (QSException ignored) {}
 			}
 		}
 		//quests.put(e.getQuestId(), null);

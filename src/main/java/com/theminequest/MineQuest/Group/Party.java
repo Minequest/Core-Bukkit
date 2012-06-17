@@ -126,7 +126,7 @@ public class Party implements QuestGroup {
 			if (!r.isSatisfied(getLeader()))
 				throw new GroupException(GroupReason.REQUIREMENTSNOTFULFILLED);
 		}
-		quest = Managers.getQuestManager().getQuest(Managers.getQuestManager().startQuest(d));
+		quest = Managers.getQuestManager().getQuest(Managers.getQuestManager().startQuest(d,getLeader().getName()));
 
 		status = QuestStatus.NOTINQUEST;
 		boolean loadworld = quest.getDetails().getProperty(QuestDetails.QUEST_LOADWORLD);
