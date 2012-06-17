@@ -36,9 +36,10 @@ import com.theminequest.MineQuest.API.Group.QuestGroup;
 import com.theminequest.MineQuest.Group.Party;
 
 public class CollectEvent extends QuestEvent implements UserQuestEvent {
-	
+
 	private int taskid;
 	private List<Integer> itemids;
+	private int totaltocollect;
 
 	/*
 	 * (non-Javadoc)
@@ -56,22 +57,27 @@ public class CollectEvent extends QuestEvent implements UserQuestEvent {
 		for (String i : items){
 			itemids.add(Integer.parseInt(i));
 		}
+		totaltocollect = Integer.parseInt(details[2]);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * @see com.theminequest.MineQuest.Events.QEvent#conditions()
-	 * Leader must have all the items.
 	 */
 	@Override
 	public boolean conditions() {
 		QuestGroup g = Managers.getQuestGroupManager().get(getQuest());
-		Player leader = g.getLeader();
-		PlayerInventory i = leader.getInventory();
-		for (int item : itemids){
-			if (!i.contains(item))
-				return false;
+		int total = 0;
+		for (Player p : g.getMembers()){
+			PlayerInventory i = p.getInventory();
+			for (int item : itemids){
+				if (i.contains(item)){
+					total+=i.getItem(item).getAmount();
+				}
+			}
 		}
+		if (total<totaltocollect)
+			return false;
 		return true;
 	}
 
