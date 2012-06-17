@@ -37,11 +37,17 @@ public class QuestCommandFrontend extends CommandFrontend {
 		List<String> message = new ArrayList<String>();
 		message.add(ChatUtils.formatHeader(I18NMessage.Cmd_Quest_ACCEPTED.getDescription()));
 		for (String q : quests){
+			if (q.isEmpty())
+				continue;
 			QuestDetails qd = Managers.getQuestManager().getDetails(q);
-			if (qd!=null)
-				message.add(ChatColor.AQUA + q + " : " + ChatColor.GOLD + qd.getProperty(QuestDetails.QUEST_NAME));
-			else
-				message.add(ChatColor.AQUA + q + " : " + ChatColor.GRAY + "<unavailable>");
+			if (qd!=null){
+				if (qd.getProperty(QuestDetails.QUEST_LOADWORLD))
+					message.add(ChatColor.AQUA + q + " : " + ChatColor.GOLD + qd.getProperty(QuestDetails.QUEST_NAME));
+				else
+					message.add(ChatColor.LIGHT_PURPLE + q + " : " + ChatColor.GOLD + "MW : " + qd.getProperty(QuestDetails.QUEST_NAME));
+			} else {
+				message.add(ChatColor.GRAY + q + " : <unavailable>");
+			}
 		}
 
 		for (String m : message)

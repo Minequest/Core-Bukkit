@@ -151,6 +151,9 @@ public class Task implements QuestTask {
 						event.complete(CompleteStatus.CANCELED);
 					complete = CompleteStatus.IGNORE;
 					getQuest().startTask(taskswitch);
+					TaskCompleteEvent e1 = new TaskCompleteEvent(quest, taskid,
+							CompleteStatus.IGNORE);
+					Bukkit.getPluginManager().callEvent(e1);
 					return;
 				}
 				checkCompletion();

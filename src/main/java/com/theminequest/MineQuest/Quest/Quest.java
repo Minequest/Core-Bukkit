@@ -152,7 +152,7 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 	public void onTaskCompletion(TaskCompleteEvent e) {
 		if (!e.getQuest().equals(this))
 			return;
-		if (e.getResult()==CompleteStatus.CANCELED)
+		if (e.getResult()==CompleteStatus.CANCELED || e.getResult()==CompleteStatus.IGNORE)
 			return;
 		else if (e.getResult()==CompleteStatus.FAILURE){
 			finishQuest(CompleteStatus.FAILURE);
