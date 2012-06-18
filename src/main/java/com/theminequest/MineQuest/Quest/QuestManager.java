@@ -59,7 +59,6 @@ import com.theminequest.MineQuest.API.Quest.QuestUtils;
 import com.theminequest.MineQuest.API.Tracker.QuestStatistic;
 import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils;
 import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils.QSException;
-import com.theminequest.MineQuest.Group.Party;
 import com.theminequest.MineQuest.Quest.Parser.AcceptTextHandler;
 import com.theminequest.MineQuest.Quest.Parser.CancelTextHandler;
 import com.theminequest.MineQuest.Quest.Parser.DescriptionHandler;
@@ -213,7 +212,7 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 	@EventHandler
 	public void onQuestCompletion(QuestCompleteEvent e){
 		if (e.getResult()!=CompleteStatus.CANCELED){
-			Quest q = quests.get(e.getQuest());
+			com.theminequest.MineQuest.API.Quest.Quest q = e.getQuest();
 			String questname = q.getDetails().getProperty(QUEST_NAME);
 			String questfinish = q.getDetails().getProperty(QUEST_COMPLETE);
 			for (Player p : e.getGroup().getMembers()){
