@@ -230,19 +230,6 @@ public class QuestCommandFrontend extends CommandFrontend {
 			p.sendMessage(I18NMessage.Cmd_INVALIDARGS.getDescription());
 			return false;
 		}
-		if (Managers.getQuestGroupManager().indexOf(p)==-1){
-			Managers.getQuestGroupManager().createNewGroup(p);
-			p.sendMessage(ChatColor.YELLOW + I18NMessage.Cmd_Party_CREATE.getDescription());
-		}
-		final QuestGroup g = Managers.getQuestGroupManager().get(p);
-		if (!g.getLeader().equals(p)){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOTLEADER.getDescription());
-			return false;
-		}
-		if (g.getQuest()!=null){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Quest_ALREADYACTIVE.getDescription());
-			return false;
-		}
 
 		List<String> quests = Arrays.asList(QuestStatisticUtils.getQuests(p, Status.GIVEN));
 
@@ -257,23 +244,46 @@ public class QuestCommandFrontend extends CommandFrontend {
 			return false;
 		}
 
-		// TEST new multithreading
-		new Thread(new Runnable(){
+		if (qd.getProperty(QuestDetails.QUEST_LOADWORLD)){
 
-			@Override
-			public void run() {
-				p.sendMessage(ChatColor.YELLOW + "[Quest] Starting up. May take a few minutes.");
-				try {
-					g.startQuest(qd);
-				} catch (GroupException e) {
-					e.printStackTrace();
-					p.sendMessage(ChatColor.RED + "[Quest] Couldn't start your quest. :C");
-					return;
-				}
-				p.sendMessage(ChatColor.YELLOW + "[Quest] Quest has been started!");
+			if (Managers.getQuestGroupManager().indexOf(p)==-1){
+				Managers.getQuestGroupManager().createNewGroup(p);
+				p.sendMessage(ChatColor.YELLOW + I18NMessage.Cmd_Party_CREATE.getDescription());
 			}
+			final QuestGroup g = Managers.getQuestGroupManager().get(p);
+			if (!g.getLeader().equals(p)){
+				p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOTLEADER.getDescription());
+				return false;
+			}
+			if (g.getQuest()!=null){
+				p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Quest_ALREADYACTIVE.getDescription());
+				return false;
+			}
+			new Thread(new Runnable(){
 
-		}).start();
+				@Override
+				public void run() {
+					p.sendMessage(ChatColor.YELLOW + "[Quest] Starting up. May take a few minutes.");
+					try {
+						g.startQuest(qd);
+					} catch (GroupException e) {
+						e.printStackTrace();
+						p.sendMessage(ChatColor.RED + "[Quest] Couldn't start your quest. :C");
+						return;
+					}
+					p.sendMessage(ChatColor.YELLOW + "[Quest] Quest has been started!");
+				}
+
+			}).start();
+		} else {
+			// IMPROVE AND LINK TO STATISTICS (and move all this setup stuff to the manager)
+			// move it to startQuest() and have managers take care of it. frontends should
+			// not be doing this stuff.
+			long id = Managers.getQuestManager().startQuest(qd, p.getName());
+			p.sendMessage(ChatColor.YELLOW + "[Quest] Started Main World Quest!");
+			Managers.getQuestManager().getQuest(id).startQuest();
+		}
+
 		return true;
 	}
 
