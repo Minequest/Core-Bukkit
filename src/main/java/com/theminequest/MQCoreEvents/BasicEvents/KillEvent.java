@@ -57,7 +57,8 @@ public class KillEvent extends QuestEvent implements UserQuestEvent {
 		String[] entity = details[1].split(",");
 		typestokill = new ArrayList<EntityType>();
 		for (String e : entity){
-			typestokill.add(EntityType.fromName(e));
+			if (EntityType.fromName(e)!=null)
+				typestokill.add(EntityType.fromName(e));
 		}
 		totaltokill = Integer.parseInt(details[2]);
 		currentkill = 0;
@@ -86,7 +87,7 @@ public class KillEvent extends QuestEvent implements UserQuestEvent {
 		if (e.getDamager() instanceof Player){
 			Player p = (Player)e.getDamager();
 			for (EntityType t : typestokill){
-				if (e.getEntityType()==t){
+				if (e.getEntityType().equals(t)){
 					QuestGroup g = Managers.getQuestGroupManager().get(getQuest());
 					List<Player> team = g.getMembers();
 					if (team.contains(p)){
