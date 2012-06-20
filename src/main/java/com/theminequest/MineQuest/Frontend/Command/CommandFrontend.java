@@ -52,7 +52,8 @@ public abstract class CommandFrontend implements CommandExecutor {
 		Method m;
 		try {
 			m = this.getClass().getMethod(cmd, Player.class, String[].class);
-			return (Boolean)m.invoke(this, player, arguments);
+			m.invoke(this, player, arguments);
+			return true;
 		} catch (SecurityException e) {
 			e.printStackTrace();
 		} catch (NoSuchMethodException e) {
@@ -68,7 +69,7 @@ public abstract class CommandFrontend implements CommandExecutor {
 			return true;
 		}
 		arg0.sendMessage(I18NMessage.Cmd_INVALIDARGS.getDescription());
-		return false;
+		return true;
 	}
 	
 	private boolean hasPermission(String node, Player player){

@@ -3,6 +3,7 @@ package com.theminequest.MineQuest.Frontend.Command;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -41,10 +42,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 				continue;
 			QuestDetails qd = Managers.getQuestManager().getDetails(q);
 			if (qd!=null){
-				if (qd.getProperty(QuestDetails.QUEST_LOADWORLD))
-					message.add(ChatColor.AQUA + q + " : " + ChatColor.GOLD + qd.getProperty(QuestDetails.QUEST_NAME));
-				else
-					message.add(ChatColor.LIGHT_PURPLE + q + " : " + ChatColor.GOLD + "MW : " + qd.getProperty(QuestDetails.QUEST_NAME));
+				message.add(ChatColor.AQUA + q + " : " + ChatColor.GOLD + qd.getProperty(QuestDetails.QUEST_NAME));
 			} else {
 				message.add(ChatColor.GRAY + q + " : <unavailable>");
 			}
@@ -53,6 +51,37 @@ public class QuestCommandFrontend extends CommandFrontend {
 		for (String m : message)
 			p.sendMessage(m);
 		return true;
+	}
+
+	public Boolean main(Player p, String[] args) {
+		if (args.length>1){
+			p.sendMessage(I18NMessage.Cmd_INVALIDARGS.getDescription());
+			return false;
+		}
+		if (args.length==0){
+			String[] quests = QuestStatisticUtils.getQuests(p, Status.INPROGRESS);
+			List<String> message = new ArrayList<String>();
+			message.add(ChatUtils.formatHeader(I18NMessage.Cmd_Quest_MWACTIVE.getDescription()));
+			for (String q : quests){
+				if (q.isEmpty())
+					continue;
+				Quest quest = QuestStatisticUtils.getMainWorldQuest(p, q);
+				message.add(ChatColor.LIGHT_PURPLE + q + " : " + ChatColor.GOLD + quest.getDetails().getProperty(QuestDetails.QUEST_NAME));
+			}
+			for (String m : message)
+				p.sendMessage(m);
+			return true;
+		} else {
+			String name = args[0];
+			try {
+				Quest q = QuestStatisticUtils.getMainWorldQuest(p,name);
+				p.sendMessage(QuestUtils.getStatusString(q).split("\n"));
+				return true;
+			} catch (NoSuchElementException e){
+				p.sendMessage(I18NMessage.Cmd_NOSUCHQUEST.getDescription());
+				return true;
+			}
+		}
 	}
 
 	public Boolean drop(Player p, String[] args) {
@@ -244,45 +273,35 @@ public class QuestCommandFrontend extends CommandFrontend {
 			return false;
 		}
 
-		if (qd.getProperty(QuestDetails.QUEST_LOADWORLD)){
-
-			if (Managers.getQuestGroupManager().indexOf(p)==-1){
-				Managers.getQuestGroupManager().createNewGroup(p);
-				p.sendMessage(ChatColor.YELLOW + I18NMessage.Cmd_Party_CREATE.getDescription());
-			}
-			final QuestGroup g = Managers.getQuestGroupManager().get(p);
-			if (!g.getLeader().equals(p)){
-				p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOTLEADER.getDescription());
-				return false;
-			}
-			if (g.getQuest()!=null){
-				p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Quest_ALREADYACTIVE.getDescription());
-				return false;
-			}
-			new Thread(new Runnable(){
-
-				@Override
-				public void run() {
-					p.sendMessage(ChatColor.YELLOW + "[Quest] Starting up. May take a few minutes.");
-					try {
-						g.startQuest(qd);
-					} catch (GroupException e) {
-						e.printStackTrace();
-						p.sendMessage(ChatColor.RED + "[Quest] Couldn't start your quest. :C");
-						return;
-					}
-					p.sendMessage(ChatColor.YELLOW + "[Quest] Quest has been started!");
-				}
-
-			}).start();
-		} else {
-			// IMPROVE AND LINK TO STATISTICS (and move all this setup stuff to the manager)
-			// move it to startQuest() and have managers take care of it. frontends should
-			// not be doing this stuff.
-			long id = Managers.getQuestManager().startQuest(qd, p.getName());
-			p.sendMessage(ChatColor.YELLOW + "[Quest] Started Main World Quest!");
-			Managers.getQuestManager().getQuest(id).startQuest();
+		if (Managers.getQuestGroupManager().indexOf(p)==-1){
+			Managers.getQuestGroupManager().createNewGroup(p);
+			p.sendMessage(ChatColor.YELLOW + I18NMessage.Cmd_Party_CREATE.getDescription());
 		}
+		final QuestGroup g = Managers.getQuestGroupManager().get(p);
+		if (!g.getLeader().equals(p)){
+			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOTLEADER.getDescription());
+			return false;
+		}
+		if (g.getQuest()!=null){
+			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Quest_ALREADYACTIVE.getDescription());
+			return false;
+		}
+		new Thread(new Runnable(){
+
+			@Override
+			public void run() {
+				p.sendMessage(ChatColor.YELLOW + "[Quest] Starting up. May take a few minutes.");
+				try {
+					g.startQuest(qd);
+				} catch (GroupException e) {
+					e.printStackTrace();
+					p.sendMessage(ChatColor.RED + "[Quest] Couldn't start your quest. :C");
+					return;
+				}
+				p.sendMessage(ChatColor.YELLOW + "[Quest] Quest has been started!");
+			}
+
+		}).start();
 
 		return true;
 	}
@@ -304,8 +323,10 @@ public class QuestCommandFrontend extends CommandFrontend {
 		}
 
 		/*
-		 * OP: reload <name>
+		 * OP: reload [name]
 		 * given
+		 * main [name]
+		 * drop <name>
 		 * info
 		 * 
 		 * abandon
@@ -318,6 +339,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 			messages.add(ChatUtils.formatHelp("quest reload [name]", "Reload quest into memory (or all)"));
 		messages.add(ChatUtils.formatHeader(I18NMessage.Cmd_Quest_HELP.getDescription()));
 		messages.add(ChatUtils.formatHelp("quest given", I18NMessage.Cmd_Quest_HELPGIVEN.getDescription()));
+		messages.add(ChatUtils.formatHelp("quest main [name]", I18NMessage.Cmd_Quest_HELPMAIN.getDescription()));
 		messages.add(ChatUtils.formatHelp("quest drop <name>", I18NMessage.Cmd_Quest_HELPDROP.getDescription()));
 		messages.add(ChatUtils.formatHelp("quest info <name>", I18NMessage.Cmd_Quest_HELPINFO.getDescription()));
 
