@@ -47,6 +47,7 @@ import com.theminequest.MineQuest.API.Events.UserQuestEvent;
 import com.theminequest.MineQuest.API.Group.QuestGroup;
 import com.theminequest.MineQuest.API.Group.QuestGroupManager;
 import com.theminequest.MineQuest.API.Quest.QuestDetails;
+import com.theminequest.MineQuest.API.Quest.QuestSnapshot;
 import com.theminequest.MineQuest.API.Task.QuestTask;
 import com.theminequest.MineQuest.API.Utils.ChatUtils;
 import com.theminequest.MineQuest.API.Utils.SetUtils;
@@ -70,10 +71,11 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 
 	private String questOwner;
 
-	/*
-	 * Constructor will start the quest for the user.
-	 */
-	protected Quest(long questid, QuestDetails id, String questOwner) {
+	protected static Quest newInstance(long questid, QuestDetails id, String questOwner){
+		return new Quest(questid,id,questOwner);
+	}
+	
+	private Quest(long questid, QuestDetails id, String questOwner) {
 		details = id;
 		this.questid = questid;
 		activeTask = null;
@@ -213,7 +215,7 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 		if (!(arg0 instanceof Quest))
 			return false;
 		Quest q = (Quest) arg0;
-		return (q.questid == this.questid);
+		return (q.questid == this.questid) && (q.getQuestOwner().equals(this.getQuestOwner()) && q.getDetails().equals(this.getDetails()));
 	}
 
 	@Override
@@ -252,6 +254,11 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 	@Override
 	public String getQuestOwner() {
 		return questOwner;
+	}
+
+	@Override
+	public QuestSnapshot createSnapshot() {
+		return new com.theminequest.MineQuest.Quest.QuestSnapshot(this);
 	}
 
 }

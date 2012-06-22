@@ -191,11 +191,11 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 		}
 		Quest q;
 		if (d.getProperty(QUEST_LOADWORLD)){
-			q = new Quest(questid,d,ownerName);
+			q = Quest.newInstance(questid,d,ownerName);
 			quests.put(questid,q);
 			questid++;
 		} else {
-			q = new Quest(-1,d,ownerName);
+			q = Quest.newInstance(-1,d,ownerName);
 		}
 		return q;
 	}
