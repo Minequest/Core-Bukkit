@@ -93,7 +93,7 @@ public class MQQuestGroupManager implements Listener, QuestGroupManager {
 			// create faux questgroup with fake methods
 			// and return that for events and such to use
 			// get player from getQuestOwner()
-			// return new MWSingleParty(activeQuest,player);
+			return new SingleParty(Bukkit.getPlayer(activeQuest.getQuestOwner()),activeQuest);
 		}
 		return get(activeQuest.getQuestID());
 	}
