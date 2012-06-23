@@ -26,7 +26,10 @@ import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Tameable;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.API.CompleteStatus;
@@ -79,32 +82,49 @@ public class KillEvent extends QuestEvent implements UserQuestEvent {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.theminequest.MineQuest.Events.QEvent#entityDamageByEntityCondition(org.bukkit.event.entity.EntityDamageByEntityEvent)
+	 * @see com.theminequest.MineQuest.Events.QEvent#entityDeathCondition(org.bukkit.event.entity.EntityDeathEvent)
 	 */
 	@Override
-	public boolean entityDamageByEntityCondition(EntityDamageByEntityEvent e) {
-		if (!(e instanceof LivingEntity))
+	public boolean entityDeathCondition(EntityDeathEvent e) {
+		if (!(e.getEntity() instanceof LivingEntity))
 			return false;
-		LivingEntity el = (LivingEntity) e;
-		if (el.getHealth()-e.getDamage()>0)
+		LivingEntity el = (LivingEntity) e.getEntity();
+		if (!(el.getLastDamageCause() instanceof EntityDamageByEntityEvent))
 			return false;
-		if (e.getDamager() instanceof Player){
-			Player p = (Player)e.getDamager();
-			for (EntityType t : typestokill){
-				if (e.getEntityType().equals(t)){
-					QuestGroup g = Managers.getQuestGroupManager().get(getQuest());
-					List<Player> team = g.getMembers();
-					if (team.contains(p)){
-						currentkill++;
-						if (currentkill>=totaltokill)
-							return true;
-						else
-							return false;
-					} else
-						return false;
-				}
-			}				
+		
+		EntityDamageByEntityEvent edbee = (EntityDamageByEntityEvent) el.getLastDamageCause();
+		Player p = null;
+		if (edbee.getDamager() instanceof Player) {
+			p = (Player) edbee.getDamager();
+		} else if (edbee.getDamager() instanceof Projectile) {
+			Projectile projectile = (Projectile) edbee.getDamager();
+			if (projectile.getShooter() instanceof Player) {
+				p = (Player) projectile.getShooter();
+			}
+		} else if (edbee.getDamager() instanceof Tameable) {
+			Tameable tameable = (Tameable) edbee.getDamager();
+			if (tameable.getOwner() instanceof Player) {
+				p = (Player) tameable.getOwner();
+			}
 		}
+		
+		if (p == null)
+			return false;
+		
+		for (EntityType t : typestokill){
+			if (e.getEntityType().equals(t)){
+				QuestGroup g = Managers.getQuestGroupManager().get(getQuest());
+				List<Player> team = g.getMembers();
+				if (team.contains(p)){
+					currentkill++;
+					if (currentkill>=totaltokill)
+						return true;
+					else
+						return false;
+				} else
+					return false;
+			}
+		}							
 		return false;
 	}
 
