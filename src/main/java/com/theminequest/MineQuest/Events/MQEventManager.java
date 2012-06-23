@@ -194,26 +194,17 @@ public class MQEventManager implements Listener, EventManager {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see com.theminequest.MineQuest.Events.EventManager#onEntityDamageByEntityEvent(org.bukkit.event.entity.EntityDamageByEntityEvent)
-	 */
 	@Override
-	public void onEntityDamageByEntityEvent(final EntityDamageByEntityEvent e){
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onEntityDamageEvent(final EntityDamageEvent e){
 		synchronized(activeevents){
 			for (int i=0; i<activeevents.size(); i++){
 				final QuestEvent a = activeevents.get(i);
 				if (!e.isCancelled())
-					a.onEntityDamageByEntity(e);
+					a.onEntityDamage(e);
 				if (a.isComplete()!=null)
 					i--;
 			}
-		}
-	}
-
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onEntityDamageEvent(final EntityDamageEvent e){
-		if (e instanceof EntityDamageByEntityEvent) {
-			onEntityDamageByEntityEvent((EntityDamageByEntityEvent) e);
 		}
 	}
 

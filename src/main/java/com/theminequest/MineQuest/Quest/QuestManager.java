@@ -82,13 +82,17 @@ import static com.theminequest.MineQuest.API.Quest.QuestDetails.*;
 public class QuestManager implements Listener, com.theminequest.MineQuest.API.Quest.QuestManager {
 
 	protected final String locationofQuests;
-	private LinkedHashMap<Long,Quest> quests = new LinkedHashMap<Long,Quest>();
-	private List<QuestDetails> descriptions = new ArrayList<QuestDetails>();
-	private long questid = 0;
-	private final QuestParser parser = new QuestParser();
+	private LinkedHashMap<Long,Quest> quests;
+	private List<QuestDetails> descriptions;
+	private long questid;
+	private final QuestParser parser;
 
 	public QuestManager(){
 		Managers.log("[Quest] Starting Manager...");
+		quests = new LinkedHashMap<Long,Quest>();
+		descriptions = new ArrayList<QuestDetails>();
+		questid = 0;
+		parser = new QuestParser();
 		locationofQuests = MineQuest.configuration.questConfig
 				.getString("questfolderlocation",
 						Managers.getActivePlugin().getDataFolder().getAbsolutePath()
