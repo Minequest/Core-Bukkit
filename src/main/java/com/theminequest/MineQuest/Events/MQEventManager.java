@@ -31,6 +31,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -197,7 +198,6 @@ public class MQEventManager implements Listener, EventManager {
 	 * @see com.theminequest.MineQuest.Events.EventManager#onEntityDamageByEntityEvent(org.bukkit.event.entity.EntityDamageByEntityEvent)
 	 */
 	@Override
-	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDamageByEntityEvent(final EntityDamageByEntityEvent e){
 		synchronized(activeevents){
 			for (int i=0; i<activeevents.size(); i++){
@@ -207,6 +207,13 @@ public class MQEventManager implements Listener, EventManager {
 				if (a.isComplete()!=null)
 					i--;
 			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onEntityDamageEvent(final EntityDamageEvent e){
+		if (e instanceof EntityDamageByEntityEvent) {
+			onEntityDamageByEntityEvent((EntityDamageByEntityEvent) e);
 		}
 	}
 
