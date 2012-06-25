@@ -12,6 +12,8 @@ import com.theminequest.MineQuest.API.Group.GroupException.GroupReason;
 import com.theminequest.MineQuest.API.Group.QuestGroup;
 import com.theminequest.MineQuest.API.Quest.Quest;
 import com.theminequest.MineQuest.API.Quest.QuestDetails;
+import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils;
+import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils.QSException;
 
 public class SingleParty implements QuestGroup {
 	
@@ -124,7 +126,11 @@ public class SingleParty implements QuestGroup {
 
 	@Override
 	public void finishQuest() throws GroupException {
-		// do nothing
+		try {
+			QuestStatisticUtils.completeQuest(player, (String) activeQuest.getDetails().getProperty(QuestDetails.QUEST_NAME));
+		} catch (QSException e) {
+			throw new GroupException(e);
+		}
 	}
 
 }

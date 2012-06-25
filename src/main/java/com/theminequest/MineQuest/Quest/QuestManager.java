@@ -40,6 +40,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import com.theminequest.MineQuest.MineQuest;
@@ -290,5 +291,11 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 	@Override
 	public QuestParser getParser() {
 		return parser;
+	}
+	
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent e){
+		QuestStatistic s = Managers.getStatisticManager().getStatistic(e.getPlayer().getName(),QuestStatistic.class);
+		s.setup();
 	}
 }
