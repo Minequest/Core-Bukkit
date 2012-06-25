@@ -25,29 +25,31 @@ import org.bukkit.entity.Player;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.API.CompleteStatus;
 import com.theminequest.MineQuest.API.Managers;
-import com.theminequest.MineQuest.API.Events.QuestEvent;
+import com.theminequest.MineQuest.API.Events.DelayedQuestEvent;
 import com.theminequest.MineQuest.API.Group.Group;
 import com.theminequest.MineQuest.API.Group.QuestGroup;
 import com.theminequest.MineQuest.API.Utils.ChatUtils;
 import com.theminequest.MineQuest.Group.Party;
 
-public class MessageEvent extends QuestEvent {
+public class MessageEvent extends DelayedQuestEvent {
 	
 	private String message;
+	private int delay;
 
 	@Override
 	public void parseDetails(String[] details) {
-		message = "";
+		this.delay = Integer.parseInt(details[0]);
+		StringBuilder message = new StringBuilder();
 		for (int i=1; i<details.length; i++){
-			message+=details[i];
+			message.append(details[i]);
 			if (i!=details.length-1)
-				message+=":";
+				message.append(':');
 		}
-		this.message = ChatUtils.colorize(message);
+		this.message = ChatUtils.colorize(message.toString());
 	}
 
 	@Override
-	public boolean conditions() {
+	public boolean delayedConditions() {
 		return true;
 	}
 
@@ -62,6 +64,11 @@ public class MessageEvent extends QuestEvent {
 	@Override
 	public Integer switchTask() {
 		return null;
-	}	
+	}
+
+	@Override
+	public long getDelay() {
+		return delay;
+	}
 
 }
