@@ -2,7 +2,9 @@ package com.theminequest.MineQuest;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.alta189.simplesave.Database;
 import com.alta189.simplesave.DatabaseFactory;
@@ -24,6 +26,7 @@ public class Statistics implements StatisticManager {
 	}
 	private Mode databasetype;
 	private Database backend;
+	private Map<String,Statistic> cache;
 	
 	public Statistics() throws ConnectionException{
 		Managers.log("[SQL] Loading and connecting to SQL...");
@@ -49,6 +52,7 @@ public class Statistics implements StatisticManager {
 			backend = DatabaseFactory.createNewDatabase(s);
 		} else
 			backend = DatabaseFactory.createNewDatabase(new H2Configuration().setDatabase(Managers.getActivePlugin().getDataFolder().getAbsolutePath() + File.separator + "minequest_h2"));
+		cache = new LinkedHashMap<String,Statistic>();
 	}
 
 	@Override
@@ -58,39 +62,30 @@ public class Statistics implements StatisticManager {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T extends Statistic> T getStatistic(String playerName,
-			Class<? extends Statistic> tableClazz) {
+	public <T extends Statistic> T getStatistic(String playerName, Class<? extends Statistic> tableClazz) {
+		String classname = tableClazz.getName();
+		if (cache.containsKey(classname+"|"+playerName)){
+			return (T) cache.get(classname+"|"+playerName);
+		}
 		Statistic result = backend.select(tableClazz).where().equal("playerName", playerName.toLowerCase()).execute().findOne();
 		if (result==null)
 			try {
 				T statistic = (T) tableClazz.getConstructor().newInstance();
 				statistic.setPlayerName(playerName);
+				cache.put(classname+"|"+playerName, statistic);
 				return statistic;
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (SecurityException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InstantiationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (NoSuchMethodException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (Exception e){
+				throw new RuntimeException(e);
 			}
+		cache.put(classname+"|"+playerName, result);
 		return (T) result;
 	}
 
 	@Override
 	public <T extends Statistic> void setStatistic(T statistic,
 			Class<? extends Statistic> tableClazz) {
+		String classname = tableClazz.getName();
+		cache.put(classname+"|"+statistic.getPlayerName(), statistic);
 		backend.save(tableClazz,statistic);
 	}
 
@@ -115,7 +110,20 @@ public class Statistics implements StatisticManager {
 	public <T extends Statistic> List<T> getStatisticList(
 			Class<? extends Statistic> tableClazz) {
 		QueryResult<? extends Statistic> r = backend.select(tableClazz).execute();
-		return (List<T>) r.find();
+		List<T> results = (List<T>) r.find();
+		for (String s : cache.keySet()){
+			if (s.startsWith(tableClazz.getName()+"|")){
+				for (int i=0; i<results.size(); i++){
+					T statistic = results.get(i);
+					if (statistic.getPlayerName().equals(s.substring(s.indexOf("|")+1))){
+						results.remove(i);
+						i--;
+					}
+				}
+				results.add((T) cache.get(s));
+			}
+		}
+		return results;
 	}
 
 }
