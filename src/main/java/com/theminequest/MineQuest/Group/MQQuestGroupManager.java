@@ -37,6 +37,7 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.theminequest.MineQuest.MineQuest;
+import com.theminequest.MineQuest.API.CompleteStatus;
 import com.theminequest.MineQuest.API.ManagerException;
 import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.BukkitEvents.GroupInviteEvent;
@@ -245,7 +246,7 @@ public class MQQuestGroupManager implements Listener, QuestGroupManager {
 	@EventHandler
 	public synchronized void onQuestCompleteEvent(QuestCompleteEvent e){
 		Quest q = e.getQuest();
-		if (!q.isInstanced()){
+		if (!q.isInstanced() && e.getQuest().isFinished()!=CompleteStatus.CANCELED){
 			try {
 				e.getGroup().finishQuest();
 			} catch (GroupException e1) {
