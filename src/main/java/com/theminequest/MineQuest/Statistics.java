@@ -3,8 +3,14 @@ package com.theminequest.MineQuest;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.alta189.simplesave.Database;
 import com.alta189.simplesave.DatabaseFactory;
@@ -19,7 +25,7 @@ import com.theminequest.MineQuest.API.Tracker.StatisticManager;
 import com.theminequest.MineQuest.API.Tracker.StatisticManager.Statistic;
 import com.theminequest.MineQuest.API.Utils.PropertiesFile;
 
-public class Statistics implements StatisticManager {
+public class Statistics implements StatisticManager, Listener {
 	
 	private enum Mode{
 		MySQL, SQlite, H2;
@@ -124,6 +130,28 @@ public class Statistics implements StatisticManager {
 			}
 		}
 		return results;
+	}
+	
+	@EventHandler
+	public void onPlayerQuit(PlayerQuitEvent e){
+		List<String> toremove = new LinkedList<String>();
+		for (String s : cache.keySet()){
+			if (s.endsWith(e.getPlayer().getName()))
+				toremove.add(s);
+		}
+		for (String s : toremove)
+			cache.remove(s);
+	}
+	
+	@EventHandler
+	public void onPlayerKick(PlayerKickEvent e){
+		List<String> toremove = new LinkedList<String>();
+		for (String s : cache.keySet()){
+			if (s.endsWith(e.getPlayer().getName()))
+				toremove.add(s);
+		}
+		for (String s : toremove)
+			cache.remove(s);
 	}
 
 }
