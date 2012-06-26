@@ -21,7 +21,10 @@ import com.alta189.simplesave.h2.H2Configuration;
 import com.alta189.simplesave.mysql.MySQLConfiguration;
 import com.alta189.simplesave.query.QueryResult;
 import com.alta189.simplesave.sqlite.SQLiteConfiguration;
+import com.theminequest.MineQuest.API.CompleteStatus;
 import com.theminequest.MineQuest.API.Managers;
+import com.theminequest.MineQuest.API.Quest.Quest;
+import com.theminequest.MineQuest.API.Tracker.QuestStatistic;
 import com.theminequest.MineQuest.API.Tracker.StatisticManager;
 import com.theminequest.MineQuest.API.Tracker.StatisticManager.Statistic;
 import com.theminequest.MineQuest.API.Utils.PropertiesFile;
@@ -135,6 +138,11 @@ public class Statistics implements StatisticManager, Listener {
 	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerQuit(PlayerQuitEvent e){
+		QuestStatistic stat = Managers.getStatisticManager().getStatistic(e.getPlayer().getName(), QuestStatistic.class);
+		for (Quest q : stat.getMainWorldQuests()){
+			q.finishQuest(CompleteStatus.CANCELED);
+			q.cleanupQuest();
+		}
 		List<String> toremove = new LinkedList<String>();
 		for (String s : cache.keySet()){
 			if (s.endsWith(e.getPlayer().getName()))
@@ -146,6 +154,11 @@ public class Statistics implements StatisticManager, Listener {
 	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerKick(PlayerKickEvent e){
+		QuestStatistic stat = Managers.getStatisticManager().getStatistic(e.getPlayer().getName(), QuestStatistic.class);
+		for (Quest q : stat.getMainWorldQuests()){
+			q.finishQuest(CompleteStatus.CANCELED);
+			q.cleanupQuest();
+		}
 		List<String> toremove = new LinkedList<String>();
 		for (String s : cache.keySet()){
 			if (s.endsWith(e.getPlayer().getName()))
