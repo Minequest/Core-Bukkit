@@ -39,7 +39,7 @@ public class TaskManager implements Listener, com.theminequest.MineQuest.API.Tas
 			return;
 		Quest q = e.getEvent().getQuest();
 		QuestTask t = q.getActiveTask();
-		t.finishEvent(e.getEvent(),(e.getCompleteStatus()));
+		t.finishEvent(e.getEvent(),e.getCompleteStatus());
 	}
 
 }

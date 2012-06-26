@@ -62,9 +62,9 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 	 */
 	private static final long serialVersionUID = -7904219637011746046L;
 
-	private final QuestDetails details;
+	private QuestDetails details;
 
-	private final long questid;
+	private long questid;
 
 	private CompleteStatus finished;
 	private QuestTask activeTask;
@@ -201,6 +201,10 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 				throw new RuntimeException(e);
 			}
 		}
+		details = null;
+		activeTask = null;
+		questOwner = null;
+		questid = -1;
 	}
 
 	public synchronized CompleteStatus isFinished() {

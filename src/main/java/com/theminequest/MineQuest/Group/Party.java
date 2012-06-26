@@ -146,7 +146,7 @@ public class Party implements QuestGroup {
 		Quest q = quest;
 		status = QuestStatus.NOQUEST;
 		quest = null;
-		if (q!=null && q.isInstanced()){
+		if (q!=null){
 			q.cleanupQuest();
 		}
 
@@ -271,8 +271,10 @@ public class Party implements QuestGroup {
 			throw new GroupException(GroupReason.NOTMAINWORLDQUEST);
 		if (quest.isFinished()==null)
 			throw new GroupException(GroupReason.UNFINISHEDQUEST);
+		Quest q = quest;
 		quest = null;
 		status = QuestStatus.NOQUEST;
+		q.cleanupQuest();
 	}
 
 	@Override

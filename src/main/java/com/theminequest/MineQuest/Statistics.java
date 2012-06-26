@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -132,7 +133,7 @@ public class Statistics implements StatisticManager, Listener {
 		return results;
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerQuit(PlayerQuitEvent e){
 		List<String> toremove = new LinkedList<String>();
 		for (String s : cache.keySet()){
@@ -143,7 +144,7 @@ public class Statistics implements StatisticManager, Listener {
 			cache.remove(s);
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerKick(PlayerKickEvent e){
 		List<String> toremove = new LinkedList<String>();
 		for (String s : cache.keySet()){

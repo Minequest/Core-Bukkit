@@ -125,8 +125,10 @@ public class MineQuest extends JavaPlugin {
 		}
 		configuration = new QuestConfig();
 		try {
-			Managers.setStatisticManager(new Statistics());
+			Statistics s = new Statistics();
+			Managers.setStatisticManager(s);
 			Managers.getStatisticManager().registerStatistic(QuestStatistic.class);
+			getServer().getPluginManager().registerEvents(s, this);
 		} catch (ConnectionException e1) {
 			Managers.log(Level.SEVERE,"[Core] Can't start Statistic Manager!");
 			e1.fillInStackTrace();
