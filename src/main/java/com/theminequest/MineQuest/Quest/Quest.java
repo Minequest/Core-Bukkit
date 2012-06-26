@@ -179,7 +179,7 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 
 	public synchronized void finishQuest(CompleteStatus c) {
 		finished = c;
-		if (activeTask.isComplete()==null)
+		if (activeTask!=null && activeTask.isComplete()==null)
 			activeTask.cancelTask();
 		activeTask = null;
 		Map<Integer,Edit> edits = details.getProperty(QUEST_EDITS);
@@ -201,7 +201,6 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 				throw new RuntimeException(e);
 			}
 		}
-		details = null;
 		activeTask = null;
 		questOwner = null;
 		questid = -1;
@@ -218,6 +217,8 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 	 */
 	@Override
 	public boolean equals(Object arg0) {
+		if (arg0==null)
+			return false;
 		if (!(arg0 instanceof Quest))
 			return false;
 		Quest q = (Quest) arg0;
