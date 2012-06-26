@@ -2,6 +2,7 @@ package com.theminequest.MineQuest;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -138,34 +139,32 @@ public class Statistics implements StatisticManager, Listener {
 	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerQuit(PlayerQuitEvent e){
-		QuestStatistic stat = Managers.getStatisticManager().getStatistic(e.getPlayer().getName(), QuestStatistic.class);
+		QuestStatistic stat = getStatistic(e.getPlayer().getName(), QuestStatistic.class);
 		for (Quest q : stat.getMainWorldQuests()){
 			q.finishQuest(CompleteStatus.CANCELED);
 			q.cleanupQuest();
 		}
-		List<String> toremove = new LinkedList<String>();
-		for (String s : cache.keySet()){
-			if (s.endsWith(e.getPlayer().getName()))
-				toremove.add(s);
+		Iterator<String> iter = cache.keySet().iterator();
+		while (iter.hasNext()) {
+			String s = iter.next();
+			if (s.endsWith("|"+e.getPlayer().getName()))
+				iter.remove();
 		}
-		for (String s : toremove)
-			cache.remove(s);
 	}
 	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerKick(PlayerKickEvent e){
-		QuestStatistic stat = Managers.getStatisticManager().getStatistic(e.getPlayer().getName(), QuestStatistic.class);
+		QuestStatistic stat = getStatistic(e.getPlayer().getName(), QuestStatistic.class);
 		for (Quest q : stat.getMainWorldQuests()){
 			q.finishQuest(CompleteStatus.CANCELED);
 			q.cleanupQuest();
 		}
-		List<String> toremove = new LinkedList<String>();
-		for (String s : cache.keySet()){
-			if (s.endsWith(e.getPlayer().getName()))
-				toremove.add(s);
+		Iterator<String> iter = cache.keySet().iterator();
+		while (iter.hasNext()) {
+			String s = iter.next();
+			if (s.endsWith("|"+e.getPlayer().getName()))
+				iter.remove();
 		}
-		for (String s : toremove)
-			cache.remove(s);
 	}
 
 }
