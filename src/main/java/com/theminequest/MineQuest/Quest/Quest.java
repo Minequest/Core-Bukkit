@@ -111,7 +111,7 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 		Bukkit.getPluginManager().callEvent(event);
 	}
 
-	public void startQuest(){
+	public synchronized void startQuest(){
 		Map<Integer,String[]> tasks = details.getProperty(QUEST_TASKS);
 		if (!startTask(SetUtils.getFirstKey(tasks.keySet())))
 			throw new RuntimeException("Starting initial task failed: is everything ok?");
@@ -124,7 +124,7 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 	 *            task to start
 	 * @return true if task was started successfully
 	 */
-	public boolean startTask(int taskid) {
+	public synchronized boolean startTask(int taskid) {
 		Map<Integer,String[]> tasks = details.getProperty(QUEST_TASKS);
 		if (taskid == -1) {
 			finishQuest(CompleteStatus.SUCCESS);
@@ -148,12 +148,12 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 		return details.getProperty(QUEST_LOADWORLD);
 	}
 
-	public QuestTask getActiveTask() {
+	public synchronized QuestTask getActiveTask() {
 		return activeTask;
 	}
 
 	// passed in from QuestManager
-	public void onTaskCompletion(TaskCompleteEvent e) {
+	public synchronized void onTaskCompletion(TaskCompleteEvent e) {
 		if (!e.getQuest().equals(this))
 			return;
 		if (e.getResult()==CompleteStatus.CANCELED || e.getResult()==CompleteStatus.IGNORE)
@@ -177,10 +177,11 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 		startTask(sortedkeys.get(loc));
 	}
 
-	public void finishQuest(CompleteStatus c) {
+	public synchronized void finishQuest(CompleteStatus c) {
 		finished = c;
 		if (activeTask.isComplete()==null)
 			activeTask.cancelTask();
+		activeTask = null;
 		Map<Integer,Edit> edits = details.getProperty(QUEST_EDITS);
 		for (Edit e : edits.values())
 			e.dismantle();
@@ -193,15 +194,16 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 	}
 
 	public void cleanupQuest() {
-		if (details.getProperty(QUEST_LOADWORLD))
+		if (details.getProperty(QUEST_LOADWORLD)){
 			try {
 				QuestWorldManip.removeWorld(Bukkit.getWorld((String) details.getProperty(QUEST_WORLD)));
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
+		}
 	}
 
-	public CompleteStatus isFinished() {
+	public synchronized CompleteStatus isFinished() {
 		return finished;
 	}
 
@@ -219,7 +221,7 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 	}
 
 	@Override
-	public String toString() {
+	public synchronized String toString() {
 		String tr = details.toString() + "\n";
 		if (activeTask!=null){
 			tr += ChatUtils.formatHeader("Current Tasks") + "\n";

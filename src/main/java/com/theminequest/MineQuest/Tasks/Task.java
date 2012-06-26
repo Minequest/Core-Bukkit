@@ -44,7 +44,7 @@ public class Task implements QuestTask {
 	 */
 	private static final long serialVersionUID = 6544586331188563646L;
 	private boolean started;
-	private CompleteStatus complete;
+	private volatile CompleteStatus complete;
 	private Quest quest;
 	private int taskid;
 	private LinkedHashMap<Integer,QuestEvent> collection;
@@ -188,7 +188,7 @@ public class Task implements QuestTask {
 	 * @see com.theminequest.MineQuest.Tasks.QuestTask#getQuestID()
 	 */
 	@Override
-	public Quest getQuest() {
+	public synchronized Quest getQuest() {
 		return quest;
 	}
 

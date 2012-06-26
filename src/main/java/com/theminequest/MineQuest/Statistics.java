@@ -2,6 +2,7 @@ package com.theminequest.MineQuest;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 import com.alta189.simplesave.Database;
 import com.alta189.simplesave.DatabaseFactory;
@@ -9,9 +10,11 @@ import com.alta189.simplesave.exceptions.ConnectionException;
 import com.alta189.simplesave.exceptions.TableRegistrationException;
 import com.alta189.simplesave.h2.H2Configuration;
 import com.alta189.simplesave.mysql.MySQLConfiguration;
+import com.alta189.simplesave.query.QueryResult;
 import com.alta189.simplesave.sqlite.SQLiteConfiguration;
 import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Tracker.StatisticManager;
+import com.theminequest.MineQuest.API.Tracker.StatisticManager.Statistic;
 import com.theminequest.MineQuest.API.Utils.PropertiesFile;
 
 public class Statistics implements StatisticManager {
@@ -106,6 +109,13 @@ public class Statistics implements StatisticManager {
 			backend.connect();
 		else
 			backend.close();
+	}
+
+	@Override
+	public <T extends Statistic> List<T> getStatisticList(
+			Class<? extends Statistic> tableClazz) {
+		QueryResult<? extends Statistic> r = backend.select(tableClazz).execute();
+		return (List<T>) r.find();
 	}
 
 }

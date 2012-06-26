@@ -132,7 +132,9 @@ public class MQEventManager implements Listener, EventManager {
 	 */
 	@Override
 	public void registerEventListener(final QuestEvent e){
-		activeevents.add(e);
+		synchronized(activeevents){
+			activeevents.add(e);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -140,7 +142,9 @@ public class MQEventManager implements Listener, EventManager {
 	 */
 	@Override
 	public void deregisterEventListener(QuestEvent e){
-		activeevents.remove(e);
+		synchronized(activeevents){
+			activeevents.remove(e);
+		}
 	}
 
 	/* (non-Javadoc)
