@@ -11,7 +11,7 @@ website: www.theminequest.com
 load: POSTWORLD
 loadbefore: [MineQuest-NPC, MineQuest-RPG, MineQuest-Events, MineQuest-Abilities, MineQuest-Spout]
 
-depend: [Vault]
+softdepend: [Vault]
 
 commands:
   minequest:

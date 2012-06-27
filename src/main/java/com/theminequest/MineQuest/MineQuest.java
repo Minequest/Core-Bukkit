@@ -26,6 +26,7 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -34,7 +35,9 @@ import com.alta189.simplesave.exceptions.ConnectionException;
 import com.theminequest.MQCoreEvents.RegisterEvents;
 import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Edit.EditManager;
+import com.theminequest.MineQuest.API.Events.EventManager;
 import com.theminequest.MineQuest.API.Tracker.QuestStatistic;
+import com.theminequest.MineQuest.API.Tracker.StatisticManager;
 import com.theminequest.MineQuest.API.Utils.GriefcraftMetrics;
 import com.theminequest.MineQuest.API.Utils.UtilManager;
 import com.theminequest.MineQuest.Events.MQEventManager;
@@ -115,6 +118,16 @@ public class MineQuest extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		if (getServer().getPluginManager().getPlugin("Vault") == null) {
+			getServer().getLogger().severe("================= MineQuest ==================");
+			getServer().getLogger().severe("Vault is required for MineQuest to operate!");
+			getServer().getLogger().severe("Please install Vault first!");
+			getServer().getLogger().severe("You can find the latest version here:");
+			getServer().getLogger().severe("http://dev.bukkit.org/server-mods/vault/");
+			getServer().getLogger().severe("==============================================");
+			setEnabled(false);
+			return;
+		}
 		if (!getDataFolder().exists())
 			getDataFolder().mkdirs();
 		description = this.getDescription();
@@ -190,14 +203,19 @@ public class MineQuest extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		try {
-			Managers.getStatisticManager().connect(false);
+			StatisticManager statisticManager = Managers.getStatisticManager();
+			if (statisticManager != null)
+				statisticManager.connect(false);
 		} catch (ConnectionException e) {
 			e.printStackTrace();
 		}
 		description = null;
 		Managers.setActivePlugin(null);
-		Managers.getEventManager().dismantleRunnable();
-		Managers.setEventManager(null);
+		EventManager eventManager = Managers.getEventManager();
+		if (eventManager != null) {
+			Managers.getEventManager().dismantleRunnable();
+			Managers.setEventManager(null);
+		}
 		commandListener = null;
 		Managers.setEditManager(null);
 		Managers.setTaskManager(null);
