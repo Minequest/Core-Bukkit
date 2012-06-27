@@ -170,7 +170,7 @@ public class MineQuest extends JavaPlugin {
 		getCommand("quest").setExecutor(new QuestCommandFrontend());
 		getCommand("party").setExecutor(new PartyCommandFrontend());
 		
-		Bukkit.getScheduler().scheduleAsyncDelayedTask(this, new Runnable(){
+		Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable(){
 			@Override
 			public void run() {
 				Managers.getQuestManager().reloadQuests();
@@ -183,7 +183,7 @@ public class MineQuest extends JavaPlugin {
 					Bukkit.getPluginManager().disablePlugin(Managers.getActivePlugin());
 				}
 			}
-		}, 500L);
+		});
 
 	}
 
