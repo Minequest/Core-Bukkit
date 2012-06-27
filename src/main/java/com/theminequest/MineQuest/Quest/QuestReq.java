@@ -45,6 +45,7 @@ public class QuestReq implements QuestRequirement {
 			for (String q : stat.getCompletedQuests())
 				if (q.equals(quest.getProperty(QuestDetails.QUEST_NAME)))
 					return false;
+			break;
 		case GIVE:
 			int id = Integer.parseInt(details);
 			if (player.getItemInHand().getTypeId()!=id)
