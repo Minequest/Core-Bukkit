@@ -34,6 +34,7 @@ import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.BukkitEvents.TaskCompleteEvent;
 import com.theminequest.MineQuest.API.Events.QuestEvent;
 import com.theminequest.MineQuest.API.Quest.Quest;
+import com.theminequest.MineQuest.API.Quest.QuestDetails;
 import com.theminequest.MineQuest.API.Quest.QuestUtils;
 import com.theminequest.MineQuest.API.Task.QuestTask;
 
@@ -78,13 +79,14 @@ public class Task implements QuestTask {
 		if (started)
 			return;
 		started = true;
-		Iterator<Integer> i = collection.keySet().iterator();
-		List<Integer> list = new ArrayList<Integer>();
-		while (i.hasNext()){
-			list.add(i.next());
-		}
+		List<Integer> list = new ArrayList<Integer>(collection.keySet());
 		for (Integer event : list){
 			String d = QuestUtils.getEvent(quest,event);
+			if (d == null) {
+				Managers.log(Level.WARNING, "[Task] Missing event number " + event + " in task "+taskid+" for quest "+quest.getDetails().getProperty(QuestDetails.QUEST_NAME)+"; Ignoring.");
+				collection.remove(event);
+				continue;
+			}
 			String[] eventdetails = d.split(":");
 			String recombined = "";
 			for (int r=1; r<eventdetails.length; r++){
@@ -101,9 +103,9 @@ public class Task implements QuestTask {
 			}
 		}
 		
-		i = collection.keySet().iterator();
+		Iterator<QuestEvent> i = collection.values().iterator();
 		while (i.hasNext()){
-			collection.get(i.next()).fireEvent();
+			i.next().fireEvent();
 		}
 	}
 
