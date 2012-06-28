@@ -139,11 +139,6 @@ public class Statistics implements StatisticManager, Listener {
 	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerQuit(PlayerQuitEvent e){
-		QuestStatistic stat = getStatistic(e.getPlayer().getName(), QuestStatistic.class);
-		for (Quest q : stat.getMainWorldQuests()){
-			q.finishQuest(CompleteStatus.CANCELED);
-			q.cleanupQuest();
-		}
 		Iterator<String> iter = cache.keySet().iterator();
 		while (iter.hasNext()) {
 			String s = iter.next();
@@ -154,11 +149,6 @@ public class Statistics implements StatisticManager, Listener {
 	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerKick(PlayerKickEvent e){
-		QuestStatistic stat = getStatistic(e.getPlayer().getName(), QuestStatistic.class);
-		for (Quest q : stat.getMainWorldQuests()){
-			q.finishQuest(CompleteStatus.CANCELED);
-			q.cleanupQuest();
-		}
 		Iterator<String> iter = cache.keySet().iterator();
 		while (iter.hasNext()) {
 			String s = iter.next();

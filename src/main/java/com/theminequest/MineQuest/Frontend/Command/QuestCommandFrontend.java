@@ -65,7 +65,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 			for (String q : quests){
 				if (q.isEmpty())
 					continue;
-				Quest quest = QuestStatisticUtils.getMainWorldQuest(p, q);
+				Quest quest = Managers.getQuestManager().getMainWorldQuest(p, q);
 				message.add(ChatColor.LIGHT_PURPLE + q + " : " + ChatColor.GOLD + quest.getDetails().getProperty(QuestDetails.QUEST_NAME));
 			}
 			for (String m : message)
@@ -74,7 +74,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 		} else {
 			String name = args[0];
 			try {
-				Quest q = QuestStatisticUtils.getMainWorldQuest(p,name);
+				Quest q = Managers.getQuestManager().getMainWorldQuest(p,name);
 				p.sendMessage(QuestUtils.getStatusString(q).split("\n"));
 				return true;
 			} catch (NoSuchElementException e){

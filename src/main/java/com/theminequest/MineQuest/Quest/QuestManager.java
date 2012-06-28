@@ -27,6 +27,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,11 +37,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import com.theminequest.MineQuest.MineQuest;
@@ -55,6 +59,7 @@ import com.theminequest.MineQuest.API.Group.Group;
 import com.theminequest.MineQuest.API.Group.QuestGroup;
 import com.theminequest.MineQuest.API.Group.QuestGroup.QuestStatus;
 import com.theminequest.MineQuest.API.Quest.Quest;
+import com.theminequest.MineQuest.API.Quest.QuestSnapshot;
 import com.theminequest.MineQuest.API.Quest.QuestDetailsUtils;
 import com.theminequest.MineQuest.API.Quest.QuestParser;
 import com.theminequest.MineQuest.API.Quest.QuestUtils;
@@ -85,6 +90,7 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 
 	protected final String locationofQuests;
 	private LinkedHashMap<Long,Quest> quests;
+	private Map<String, Map<String, Quest>> mwQuests;
 	private List<QuestDetails> descriptions;
 	private long questid;
 	private final QuestParser parser;
@@ -92,6 +98,7 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 	public QuestManager(){
 		Managers.log("[Quest] Starting Manager...");
 		quests = new LinkedHashMap<Long,Quest>();
+		mwQuests = new HashMap<String, Map<String, Quest>>();
 		descriptions = new ArrayList<QuestDetails>();
 		questid = 0;
 		parser = new QuestParser();
@@ -199,6 +206,12 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 			questid++;
 		} else {
 			q = com.theminequest.MineQuest.Quest.Quest.newInstance(-1,d,ownerName);
+			Map<String, Quest> qs = mwQuests.get(ownerName);
+			if (qs == null) {
+				qs = new LinkedHashMap<String, Quest>();
+				mwQuests.put(ownerName, qs);
+			}
+			qs.put((String) q.getDetails().getProperty(QUEST_NAME), q);
 		}
 		return q;
 	}
@@ -208,6 +221,31 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 		if (quests.containsKey(currentquest))
 			return quests.get(currentquest);
 		return null;
+	}
+	
+	@Override
+	public Quest[] getMainWorldQuests(Player player){
+		Map<String, Quest> qs = mwQuests.get(player.getName());
+		if (qs == null)
+			return new Quest[0];
+		return qs.values().toArray(new Quest[qs.size()]);
+	}
+	
+	@Override
+	public Quest getMainWorldQuest(Player player, String questName) {
+		Map<String, Quest> qs = mwQuests.get(player.getName());
+		if (qs == null)
+			return null;
+		return qs.get(questName);
+		
+	}
+	
+	@Override
+	public void removeMainWorldQuest(Player player, String questName) {
+		Map<String, Quest> qs = mwQuests.get(player.getName());
+		if (qs == null)
+			return;
+		qs.remove(questName);
 	}
 
 	@Override
@@ -296,10 +334,40 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e){
-		QuestStatistic s = Managers.getStatisticManager().getStatistic(e.getPlayer().getName(),QuestStatistic.class);
-		s.setup();
-		for (Quest q : s.getMainWorldQuests()) {
-			q.startQuest();
+		QuestStatistic stat = Managers.getStatisticManager().getStatistic(e.getPlayer().getName(),QuestStatistic.class);
+		stat.setup();
+		LinkedHashMap<String, Quest> qs = new LinkedHashMap<String, Quest>();
+		for (QuestSnapshot s : stat.getMainWorldQuests()) {
+			Quest q = s.recreateQuest();
+			String questName = q.getDetails().getProperty(QUEST_NAME);
+			int taskId = s.getLastTaskID();
+			if (!q.startTask(taskId))
+				Managers.log(Level.SEVERE, "Starting task "+taskId+" for "+questName+" failed during login!");
+			
+			qs.put(questName, q);
+		}
+		mwQuests.put(e.getPlayer().getName(), qs);
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onPlayerQuit(PlayerQuitEvent e){
+		Map<String, Quest> qs = mwQuests.remove(e.getPlayer().getName());
+		if (qs == null)
+			return;
+		for (Quest q : qs.values()){
+			q.finishQuest(CompleteStatus.CANCELED);
+			q.cleanupQuest();
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onPlayerKick(PlayerKickEvent e){
+		Map<String, Quest> qs = mwQuests.remove(e.getPlayer().getName());
+		if (qs == null)
+			return;
+		for (Quest q : qs.values()){
+			q.finishQuest(CompleteStatus.CANCELED);
+			q.cleanupQuest();
 		}
 	}
 }
