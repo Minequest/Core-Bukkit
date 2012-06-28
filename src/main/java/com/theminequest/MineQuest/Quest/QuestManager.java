@@ -54,6 +54,7 @@ import com.theminequest.MineQuest.API.Edit.Edit;
 import com.theminequest.MineQuest.API.Group.Group;
 import com.theminequest.MineQuest.API.Group.QuestGroup;
 import com.theminequest.MineQuest.API.Group.QuestGroup.QuestStatus;
+import com.theminequest.MineQuest.API.Quest.Quest;
 import com.theminequest.MineQuest.API.Quest.QuestDetailsUtils;
 import com.theminequest.MineQuest.API.Quest.QuestParser;
 import com.theminequest.MineQuest.API.Quest.QuestUtils;
@@ -193,11 +194,11 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 		}
 		Quest q;
 		if (d.getProperty(QUEST_LOADWORLD)){
-			q = Quest.newInstance(questid,d,ownerName);
+			q = com.theminequest.MineQuest.Quest.Quest.newInstance(questid,d,ownerName);
 			quests.put(questid,q);
 			questid++;
 		} else {
-			q = Quest.newInstance(-1,d,ownerName);
+			q = com.theminequest.MineQuest.Quest.Quest.newInstance(-1,d,ownerName);
 		}
 		return q;
 	}
@@ -297,5 +298,8 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 	public void onPlayerJoin(PlayerJoinEvent e){
 		QuestStatistic s = Managers.getStatisticManager().getStatistic(e.getPlayer().getName(),QuestStatistic.class);
 		s.setup();
+		for (Quest q : s.getMainWorldQuests()) {
+			q.startQuest();
+		}
 	}
 }
