@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -188,6 +189,15 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 			if (d.getProperty(com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_NAME).equals(name))
 				return d;
 		return null;
+	}
+
+	@Override
+	public List<String> getListOfDetails() {
+		List<String> s = new LinkedList<String>();
+		for (QuestDetails d : descriptions){
+			s.add((String) d.getProperty(com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_NAME));
+		}
+		return s;
 	}
 
 	@Override
