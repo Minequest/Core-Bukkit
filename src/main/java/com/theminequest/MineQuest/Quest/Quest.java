@@ -49,6 +49,7 @@ import com.theminequest.MineQuest.API.Group.QuestGroupManager;
 import com.theminequest.MineQuest.API.Quest.QuestDetails;
 import com.theminequest.MineQuest.API.Quest.QuestSnapshot;
 import com.theminequest.MineQuest.API.Task.QuestTask;
+import com.theminequest.MineQuest.API.Tracker.QuestStatistic;
 import com.theminequest.MineQuest.API.Utils.ChatUtils;
 import com.theminequest.MineQuest.API.Utils.SetUtils;
 import com.theminequest.MineQuest.API.Utils.TimeUtils;
@@ -141,6 +142,12 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 		}
 		activeTask = new Task(this, taskid, eventnum);
 		activeTask.start();
+		
+		// main world quest
+		if (questid == -1) {
+			QuestStatistic stat = Managers.getStatisticManager().getStatistic(questOwner, QuestStatistic.class);
+			stat.saveMainWorldQuest(this);
+		}
 		return true;
 	}
 
