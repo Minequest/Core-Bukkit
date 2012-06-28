@@ -154,12 +154,7 @@ public class MQEventManager implements Listener, EventManager {
 	public void checkAllEvents(){
 		synchronized(activeevents){
 			for (final QuestEvent e : activeevents){
-				new Thread(new Runnable(){
-					@Override
-					public void run() {
-						e.check();
-					}
-				}).start();
+				e.check();
 			}
 		}
 	}
