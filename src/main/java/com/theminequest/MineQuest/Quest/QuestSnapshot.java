@@ -49,12 +49,7 @@ public class QuestSnapshot implements com.theminequest.MineQuest.API.Quest.Quest
 
 	@Override
 	public Quest recreateQuest() {
-		Quest q = com.theminequest.MineQuest.Quest.Quest.newInstance(-1,getDetails(),getQuestOwner());
-		if (lasttask!=-1){
-			if (!q.startTask(lasttask))
-				throw new RuntimeException("Could not start lasttask...");
-		}
-		return q;
+		return com.theminequest.MineQuest.Quest.Quest.newInstance(-1,getDetails(),getQuestOwner());
 	}
 
 }
