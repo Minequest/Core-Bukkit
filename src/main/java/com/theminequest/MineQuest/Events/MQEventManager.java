@@ -154,7 +154,11 @@ public class MQEventManager implements Listener, EventManager {
 	public void checkAllEvents(){
 		synchronized(activeevents){
 			for (final QuestEvent e : activeevents){
-				e.check();
+				try {
+					e.check();
+				} catch (Throwable t) {
+					t.printStackTrace();
+				}
 			}
 		}
 	}
