@@ -62,7 +62,7 @@ public class CommandListener implements CommandExecutor{
 	}
 
 	public void showMineQuestHelp(CommandSender sender){
-		String[] msg = new String[helpmenu.size()+1];
+		String[] msg = new String[helpmenu.size()+2];
 		msg[0] = formatHeader("MineQuest Help");
 		Iterator<String> entries = helpmenu.keySet().iterator();
 		int counter = 1;
@@ -71,6 +71,7 @@ public class CommandListener implements CommandExecutor{
 			msg[counter] = formatHelp(entry,helpmenu.get(entry));
 			counter++;
 		}
+		msg[msg.length-1] = formatHeader("Core Version: " + MineQuest.getVersion());
 		sender.sendMessage(msg);
 	}
 
