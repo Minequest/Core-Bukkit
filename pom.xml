@@ -3,13 +3,30 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.theminequest</groupId>
 	<artifactId>MineQuest</artifactId>
-	<version>dev-SNAPSHOT</version>
+	<version>2.0-SNAPSHOT</version>
 	<name>MineQuest</name>
 	<description>The ultimate MMORPG plugin!</description>
 
+	<profiles>
+		<profile>
+			<id>snapshot</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<build.version>${project.version}</build.version>
+			</properties>
+		</profile>
+		<profile>
+			<id>ci</id>
+			<properties>
+				<build.version>2.0.${build.number}</build.version>
+			</properties>
+		</profile>
+	</profiles>
+	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<build.number>unofficialDev</build.number>
 	</properties>
 
 	<scm>

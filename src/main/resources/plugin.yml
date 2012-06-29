@@ -1,6 +1,6 @@
 name: MineQuest
 main: com.theminequest.MineQuest.MineQuest
-version: ${build.number}
+version: ${build.version}
 
 author: JMonk
 authors: [Echobob, Xu_R, phrstbrn, Ltan, Makraiz, Blaksmith]
