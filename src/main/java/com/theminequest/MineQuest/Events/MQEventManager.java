@@ -120,7 +120,6 @@ public class MQEventManager implements Listener, EventManager {
 				return e;
 			} catch (Exception e) {
 				Managers.log(Level.SEVERE, "[Event] In retrieving event " + eventname + " from Quest ID " + q + ":");
-				e.fillInStackTrace();
 				e.printStackTrace();
 				return null;
 			}
