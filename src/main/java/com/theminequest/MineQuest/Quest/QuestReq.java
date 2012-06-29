@@ -1,5 +1,7 @@
 package com.theminequest.MineQuest.Quest;
 
+import javax.net.ssl.Status;
+
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -8,6 +10,7 @@ import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Group.QuestGroup;
 import com.theminequest.MineQuest.API.Quest.QuestRequirement;
 import com.theminequest.MineQuest.API.Tracker.QuestStatistic;
+import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils;
 import com.theminequest.MineQuest.API.Quest.QuestDetails;
 
 public class QuestReq implements QuestRequirement {
@@ -41,8 +44,8 @@ public class QuestReq implements QuestRequirement {
 	public boolean isSatisfied(Player player) {
 		switch(type){
 		case NEVERDONE:
-			QuestStatistic stat = Managers.getStatisticManager().getStatistic(player.getName(),QuestStatistic.class);
-			for (String q : stat.getCompletedQuests())
+			String[] completed = QuestStatisticUtils.getQuests(player.getName(), Status.COMPLETED);
+			for (String q : completed)
 				if (q.equals(quest.getProperty(QuestDetails.QUEST_NAME)))
 					return false;
 			break;
