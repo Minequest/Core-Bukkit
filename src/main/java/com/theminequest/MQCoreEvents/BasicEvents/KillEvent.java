@@ -38,6 +38,7 @@ import com.theminequest.MineQuest.API.Events.UserQuestEvent;
 import com.theminequest.MineQuest.API.Events.QuestEvent;
 import com.theminequest.MineQuest.API.Group.Group;
 import com.theminequest.MineQuest.API.Group.QuestGroup;
+import com.theminequest.MineQuest.API.Utils.MobUtils;
 import com.theminequest.MineQuest.Group.Party;
 
 public class KillEvent extends QuestEvent implements UserQuestEvent {
@@ -60,12 +61,9 @@ public class KillEvent extends QuestEvent implements UserQuestEvent {
 		String[] entity = details[1].split(",");
 		typestokill = new ArrayList<EntityType>();
 		for (String e : entity){
-			try {
-				if (EntityType.fromName(e) != null)
-					typestokill.add(EntityType.fromName(e));
-				else if (EntityType.fromId(Integer.parseInt(e)) != null)
-					typestokill.add(EntityType.fromId(Integer.parseInt(e)));
-			} catch (Exception ignored) {}
+			EntityType t = MobUtils.getEntityType(e);
+			if (t != null)
+				typestokill.add(t);
 		}
 		totaltokill = Integer.parseInt(details[2]);
 		currentkill = 0;
