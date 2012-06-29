@@ -1,7 +1,5 @@
 package com.theminequest.MineQuest.Quest;
 
-import javax.net.ssl.Status;
-
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -11,6 +9,7 @@ import com.theminequest.MineQuest.API.Group.QuestGroup;
 import com.theminequest.MineQuest.API.Quest.QuestRequirement;
 import com.theminequest.MineQuest.API.Tracker.QuestStatistic;
 import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils;
+import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils.Status;
 import com.theminequest.MineQuest.API.Quest.QuestDetails;
 
 public class QuestReq implements QuestRequirement {
