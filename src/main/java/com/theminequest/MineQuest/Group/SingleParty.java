@@ -127,7 +127,7 @@ public class SingleParty implements QuestGroup {
 	@Override
 	public void finishQuest() throws GroupException {
 		try {
-			QuestStatisticUtils.completeQuest(player, (String) activeQuest.getDetails().getProperty(QuestDetails.QUEST_NAME));
+			QuestStatisticUtils.completeQuest(player.getName(), (String) activeQuest.getDetails().getProperty(QuestDetails.QUEST_NAME));
 		} catch (QSException e) {
 			throw new GroupException(e);
 		}

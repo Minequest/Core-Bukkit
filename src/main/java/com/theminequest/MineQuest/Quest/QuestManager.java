@@ -242,8 +242,8 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 	}
 	
 	@Override
-	public Quest getMainWorldQuest(Player player, String questName) {
-		Map<String, Quest> qs = mwQuests.get(player.getName());
+	public Quest getMainWorldQuest(String player, String questName) {
+		Map<String, Quest> qs = mwQuests.get(player);
 		if (qs == null)
 			return null;
 		return qs.get(questName);
@@ -251,8 +251,8 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 	}
 	
 	@Override
-	public void removeMainWorldQuest(Player player, String questName) {
-		Map<String, Quest> qs = mwQuests.get(player.getName());
+	public void removeMainWorldQuest(String player, String questName) {
+		Map<String, Quest> qs = mwQuests.get(player);
 		if (qs == null)
 			return;
 		qs.remove(questName);
@@ -274,7 +274,7 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 			for (Player p : e.getGroup().getMembers()){
 				p.sendMessage(ChatColor.GREEN + questfinish);
 				try {
-					QuestStatisticUtils.completeQuest(p, questname);
+					QuestStatisticUtils.completeQuest(p.getName(), questname);
 				} catch (QSException ignored) {}
 			}
 		}

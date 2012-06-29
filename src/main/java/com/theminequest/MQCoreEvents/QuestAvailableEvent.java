@@ -67,7 +67,7 @@ public class QuestAvailableEvent extends DelayedQuestEvent {
 		CompleteStatus toreturn = CompleteStatus.SUCCESS;
 		for (Player p : g.getMembers()){
 			try {
-				QuestStatisticUtils.giveQuest(p, questavailable);
+				QuestStatisticUtils.giveQuest(p.getName(), questavailable);
 			} catch (QSException e) {
 				toreturn = CompleteStatus.WARNING;
 			}

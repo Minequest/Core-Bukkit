@@ -59,7 +59,7 @@ public class QuestSign implements Listener {
 			block.breakNaturally();
 			player.sendMessage(ChatColor.RED + "Yikes! We can't find this quest anymore...");
 		}
-		String[] givenquests = QuestStatisticUtils.getQuests(player, Status.GIVEN);
+		String[] givenquests = QuestStatisticUtils.getQuests(player.getName(), Status.GIVEN);
 		for (String s : givenquests){
 			if (quest_name.equals(s)){
 				player.sendMessage("You already have this quest!");
@@ -75,7 +75,7 @@ public class QuestSign implements Listener {
 		} else if (action == Action.LEFT_CLICK_BLOCK) {
 			if (QuestDetailsUtils.requirementsMet(d, player)) {
 				try {
-					QuestStatisticUtils.giveQuest(player, quest_name);
+					QuestStatisticUtils.giveQuest(player.getName(), quest_name);
 					player.sendMessage(ChatColor.GREEN + "Successfully added " + d.getProperty(QuestDetails.QUEST_DISPLAYNAME) + " to your quest list!");
 				} catch (QSException e) {
 					player.sendMessage("This quest doesn't seem to like you.");

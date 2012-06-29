@@ -3,7 +3,7 @@ main: com.theminequest.MineQuest.MineQuest
 version: ${build.number}
 
 author: JMonk
-authors: [Echobob, Xu_R, Ltan, Makraiz, Blaksmith]
+authors: [Echobob, Xu_R, phrstbrn, Ltan, Makraiz, Blaksmith]
 
 description: This plugin, and its add-ons expands Minecraft to add in Npcs, Quests, and custom events to create a Role-Play enviorment in Minecraft
 website: www.theminequest.com
@@ -16,27 +16,25 @@ softdepend: [Vault]
 commands:
   minequest:
     description: View MineQuest commands.
-    permission: minequest.user
   quest:
     description: View Quest commands.
-    aliases: [mqquest]
-    permission: minequest.user
+    aliases: [mqquest,mquest]
+    permission: minequest.quest
   party:
     description: View Party commands.
-    aliases: [mqparty]
-    permission: minequest.user
+    aliases: [mqparty,questparty]
+    permission: minequest.party
     
 permissions:
   minequest.*:
-    description: Allows all MineQuest-1-Core commands.
-    children:
-      minequest.user: true
-      minequest.op: true
-  minequest.user:
-    description: Allows MQ-1-Core user-related commands.
-    default: true
-  minequest.op:
-    description: Allows MQ-1-Core administrator-related commands.
+    description: Allows all MineQuest-Core commands.
     default: op
     children:
-      minequest.user: true
+      minequest.quest: true
+      minequest.party: true
+  minequest.quest:
+    description: Allows MQ-Core quest-related commands.
+    default: true
+  minequest.party:
+    description: Allows MQ-Core party-related commands.
+    default: true

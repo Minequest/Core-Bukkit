@@ -33,7 +33,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 			p.sendMessage(I18NMessage.Cmd_INVALIDARGS.getDescription());
 			return false;
 		}
-		String[] quests = QuestStatisticUtils.getQuests(p,Status.GIVEN);
+		String[] quests = QuestStatisticUtils.getQuests(p.getName(),Status.GIVEN);
 
 		List<String> message = new ArrayList<String>();
 		message.add(ChatUtils.formatHeader(I18NMessage.Cmd_Quest_ACCEPTED.getDescription()));
@@ -59,13 +59,13 @@ public class QuestCommandFrontend extends CommandFrontend {
 			return false;
 		}
 		if (args.length==0){
-			String[] quests = QuestStatisticUtils.getQuests(p, Status.INPROGRESS);
+			String[] quests = QuestStatisticUtils.getQuests(p.getName(), Status.INPROGRESS);
 			List<String> message = new ArrayList<String>();
 			message.add(ChatUtils.formatHeader(I18NMessage.Cmd_Quest_MWACTIVE.getDescription()));
 			for (String q : quests){
 				if (q.isEmpty())
 					continue;
-				Quest quest = Managers.getQuestManager().getMainWorldQuest(p, q);
+				Quest quest = Managers.getQuestManager().getMainWorldQuest(p.getName(), q);
 				message.add(ChatColor.LIGHT_PURPLE + q + " : " + ChatColor.GOLD + quest.getDetails().getProperty(QuestDetails.QUEST_NAME));
 			}
 			for (String m : message)
@@ -74,7 +74,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 		} else {
 			String name = args[0];
 			try {
-				Quest q = Managers.getQuestManager().getMainWorldQuest(p,name);
+				Quest q = Managers.getQuestManager().getMainWorldQuest(p.getName(),name);
 				p.sendMessage(QuestUtils.getStatusString(q).split("\n"));
 				return true;
 			} catch (NoSuchElementException e){
@@ -90,7 +90,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 			return false;
 		}
 		try {
-			QuestStatisticUtils.degiveQuest(p, args[0]);
+			QuestStatisticUtils.degiveQuest(p.getName(), args[0]);
 		} catch (QSException e) {
 			p.sendMessage(I18NMessage.Cmd_Quest_NOTHAVEQUEST.getDescription());
 			return false;
@@ -260,7 +260,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 			return false;
 		}
 
-		List<String> quests = Arrays.asList(QuestStatisticUtils.getQuests(p, Status.GIVEN));
+		List<String> quests = Arrays.asList(QuestStatisticUtils.getQuests(p.getName(), Status.GIVEN));
 
 		if (!quests.contains(args[0])){
 			p.sendMessage(I18NMessage.Cmd_Quest_NOTHAVEQUEST.getDescription());
