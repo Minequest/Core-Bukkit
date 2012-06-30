@@ -19,10 +19,13 @@
  **/
 package com.theminequest.MQCoreEvents.BasicEvents;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
 
-import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -31,21 +34,17 @@ import org.bukkit.entity.Tameable;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 
-import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.API.CompleteStatus;
 import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Events.UserQuestEvent;
 import com.theminequest.MineQuest.API.Events.QuestEvent;
-import com.theminequest.MineQuest.API.Group.Group;
 import com.theminequest.MineQuest.API.Group.QuestGroup;
 import com.theminequest.MineQuest.API.Utils.MobUtils;
-import com.theminequest.MineQuest.Group.Party;
 
 public class KillEvent extends QuestEvent implements UserQuestEvent {
 
-	private List<EntityType> typestokill;
-	private int totaltokill;
-	private int currentkill;
+	private Map<EntityType, Integer> killMap;
+	private Map<EntityType, Integer> currentKills;
 	private int taskid;
 
 	/*
@@ -58,20 +57,46 @@ public class KillEvent extends QuestEvent implements UserQuestEvent {
 	@Override
 	public void parseDetails(String[] details) {
 		taskid = Integer.parseInt(details[0]);
-		String[] entity = details[1].split(",");
-		typestokill = new ArrayList<EntityType>();
-		for (String e : entity){
-			EntityType t = MobUtils.getEntityType(e);
-			if (t != null)
-				typestokill.add(t);
+		killMap = Collections.synchronizedMap(new LinkedHashMap<EntityType, Integer>());
+		currentKills = Collections.synchronizedMap(new HashMap<EntityType, Integer>());
+		String[] entities = details[1].split(",");
+		String[] amounts = details[2].split(",");
+		for (int i = 0; i < entities.length; i++) {
+			String entity = entities[i];
+			Integer amount = null;
+			try {
+				if (amounts.length == 1) {
+						amount = Integer.valueOf(amounts[0]);
+				} else if (i < amounts.length) {
+					amount = Integer.valueOf(amounts[i]);
+				}
+			} catch (NumberFormatException e) {}
+			
+			if (amount == null) {
+				Managers.log(Level.SEVERE, "[Event] In KillEvent, could not determine number of kills for "+entity);
+				continue;
+			}
+			
+			EntityType m = MobUtils.getEntityType(entity);
+			
+			if (m == null) {
+				Managers.log(Level.SEVERE, "[Event] In KillEvent, could not determine mob type for "+entity);
+				continue;
+			}
+			killMap.put(m, amount);
 		}
-		totaltokill = Integer.parseInt(details[2]);
-		currentkill = 0;
 	}
 
 	@Override
 	public boolean conditions() {
-		return false;
+		synchronized (killMap) {
+			for (Map.Entry<EntityType, Integer> entry : killMap.entrySet()) {
+				Integer kills = currentKills.get(entry.getKey());
+				if (kills == null || kills.intValue() < entry.getValue().intValue())
+					return false;
+			}
+		}
+		return true;
 	}
 
 	@Override
@@ -109,20 +134,17 @@ public class KillEvent extends QuestEvent implements UserQuestEvent {
 		if (p == null)
 			return false;
 		
-		for (EntityType t : typestokill){
-			if (e.getEntityType().equals(t)){
-				QuestGroup g = Managers.getQuestGroupManager().get(getQuest());
-				List<Player> team = g.getMembers();
-				if (team.contains(p)){
-					currentkill++;
-					if (currentkill>=totaltokill)
-						return true;
-					else
-						return false;
-				} else
-					return false;
+		
+		QuestGroup g = Managers.getQuestGroupManager().get(getQuest());
+		List<Player> team = g.getMembers();
+		if (team.contains(p)) {
+			if (currentKills.containsKey(el.getType())) {
+				int count = currentKills.get(el.getType());
+				currentKills.put(el.getType(), count + 1);
+			} else {
+				currentKills.put(el.getType(), 1);
 			}
-		}							
+		}
 		return false;
 	}
 
@@ -133,16 +155,27 @@ public class KillEvent extends QuestEvent implements UserQuestEvent {
 
 	@Override
 	public String getDescription() {
-		String tr = "Kill " + (totaltokill-currentkill) + " ";
-		for (int i=0; i<typestokill.size(); i++){
-			tr+=typestokill.get(i).getName();
-			if (i<typestokill.size()-1)
-				tr+="(s), ";
-			else
-				tr+=", and ";
+		StringBuilder builder = new StringBuilder();
+		builder.append("Kill ");
+		boolean first = false;
+		int i = 0;
+		synchronized (killMap) {
+			for (Map.Entry<EntityType, Integer> entry : killMap.entrySet()) {
+				i++;
+				if (first) {
+					first = false;
+				} else {
+					builder.append(", ");
+					
+					if (i == killMap.size())
+						builder.append("and ");
+				}
+				
+				builder.append(entry.getValue().toString()).append(" ").append(entry.getKey().getName());
+			}
 		}
-		tr+="(s)!";
-		return tr;
+		builder.append("!");
+		return builder.toString();
 	}
 
 }
