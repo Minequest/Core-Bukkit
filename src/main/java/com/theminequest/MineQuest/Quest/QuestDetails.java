@@ -114,6 +114,11 @@ public class QuestDetails implements com.theminequest.MineQuest.API.Quest.QuestD
 	}
 
 	@Override
+	public String toString() {
+		return database.toString();
+	}
+
+	@Override
 	public void setProperty(String key, Serializable property) {
 		database.put(key, property);
 	}

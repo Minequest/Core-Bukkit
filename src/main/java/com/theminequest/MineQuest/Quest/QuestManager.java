@@ -345,7 +345,6 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e){
 		QuestStatistic stat = Managers.getStatisticManager().getStatistic(e.getPlayer().getName(),QuestStatistic.class);
-		stat.setup();
 		LinkedHashMap<String, Quest> qs = new LinkedHashMap<String, Quest>();
 		for (QuestSnapshot s : stat.getMainWorldQuests()) {
 			Quest q = s.recreateQuest();
@@ -359,7 +358,7 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 		mwQuests.put(e.getPlayer().getName(), qs);
 	}
 	
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerQuit(PlayerQuitEvent e){
 		Map<String, Quest> qs = mwQuests.remove(e.getPlayer().getName());
 		if (qs == null)
@@ -370,7 +369,7 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerKick(PlayerKickEvent e){
 		Map<String, Quest> qs = mwQuests.remove(e.getPlayer().getName());
 		if (qs == null)

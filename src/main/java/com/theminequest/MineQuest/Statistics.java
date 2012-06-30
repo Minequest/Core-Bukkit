@@ -84,11 +84,13 @@ public class Statistics implements StatisticManager, Listener {
 				T statistic = (T) tableClazz.getConstructor().newInstance();
 				statistic.setPlayerName(playerName);
 				cache.put(classname+"|"+playerName, statistic);
+				statistic.setup();
 				return statistic;
 			} catch (Exception e){
 				throw new RuntimeException(e);
 			}
 		cache.put(classname+"|"+playerName, result);
+		result.setup();
 		return (T) result;
 	}
 
