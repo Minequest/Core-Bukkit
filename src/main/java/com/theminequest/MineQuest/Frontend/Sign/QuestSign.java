@@ -53,10 +53,13 @@ public class QuestSign implements Listener {
 		Sign sign = (Sign) block.getState();
 		if (!isQuestSign(sign))
 			return;
+		if (!player.hasPermission("minequest.sign.takequest")) {
+			player.sendMessage(ChatColor.RED + "You do not have permission to use this!");
+			return;
+		}
 		String quest_name = sign.getLine(2);
 		QuestDetails d = Managers.getQuestManager().getDetails(quest_name);
 		if (d==null){
-			block.breakNaturally();
 			player.sendMessage(ChatColor.RED + "Yikes! We can't find this quest anymore...");
 		}
 		String[] givenquests = QuestStatisticUtils.getQuests(player.getName(), Status.GIVEN);
@@ -88,18 +91,25 @@ public class QuestSign implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onSignChangeEvent(SignChangeEvent event) {
-		if (!event.getLine(1).equalsIgnoreCase("[Quest]") && !event.getLine(1).equalsIgnoreCase("quest"))
+		if (!event.getLine(1).equalsIgnoreCase("[Quest]"))
 			return;
+		Player player = event.getPlayer();
+		Block block = event.getBlock();
+		if (!player.hasPermission("minequest.sign.placesign")) {
+			player.sendMessage(ChatColor.RED + "You do not have permission to do this!");
+			block.breakNaturally();
+			return;
+		}
 		if (event.getLine(2).equalsIgnoreCase("")){
 			event.setCancelled(true);
-			event.getPlayer().sendMessage(ChatColor.RED + "Must specify a quest!");
-			event.getBlock().breakNaturally();
+			player.sendMessage(ChatColor.RED + "Must specify a quest!");
+			block.breakNaturally();
 			return;
 		}
 		if (Managers.getQuestManager().getDetails(event.getLine(2))==null){
 			event.setCancelled(true);
-			event.getPlayer().sendMessage(ChatColor.RED + "No such quest!");
-			event.getBlock().breakNaturally();
+			player.sendMessage(ChatColor.RED + "No such quest!");
+			block.breakNaturally();
 			return;
 		}
 		// oh, prettify it ;D

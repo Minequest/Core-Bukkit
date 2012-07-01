@@ -38,3 +38,9 @@ permissions:
   minequest.party:
     description: Allows MQ-Core party-related commands.
     default: true
+  minequest.sign.placesign:
+    description: Allows you to place a quest sign
+    default: op
+  minequest.sign.takequest:
+    description: Allows you to take a quest from a sign
+    default: true
