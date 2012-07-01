@@ -26,18 +26,6 @@ commands:
     permission: minequest.party
     
 permissions:
-  minequest.*:
-    description: Allows all MineQuest-Core commands.
-    default: op
-    children:
-      minequest.quest: true
-      minequest.party: true
-  minequest.quest:
-    description: Allows MQ-Core quest-related commands.
-    default: true
-  minequest.party:
-    description: Allows MQ-Core party-related commands.
-    default: true
   minequest.sign.placesign:
     description: Allows you to place a quest sign
     default: op
