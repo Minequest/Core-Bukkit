@@ -44,3 +44,60 @@ permissions:
   minequest.sign.takequest:
     description: Allows you to take a quest from a sign
     default: true
+  minequest.command.party.accept:
+    description: Accepts party request
+    default: true
+  minequest.command.party.create:
+    description: Creates a new party
+    default: true
+  minequest.command.party.invite:
+    description: Sends a party invite
+    default: true
+  minequest.command.party.kick:
+    description: Kicks member from your party
+    default: true
+  minequest.command.party.leave:
+    description: Leaves your current party
+    default: true
+  minequest.command.party.list:
+    description: List members in your current party
+    default: true
+  minequest.command.party.promote:
+    description: Promotes member to party leader
+    default: true
+  minequest.command.party.help:
+    description: Displays party help
+    default: true
+  minequest.command.quest.given:
+    description: Shows your given quests
+    default: true
+  minequest.command.quest.main:
+    description: Starts a mainworld quest
+    default: true
+  minequest.command.quest.drop:
+    description: Drops a quest
+    default: true
+  minequest.command.quest.abandon:
+    description: Abandons your current quest
+    default: true
+  minequest.command.quest.active:
+    description: Sets instanced quest to active
+    default: true
+  minequest.command.quest.enter:
+    description: Enters the quest instance
+    default: true
+  minequest.command.quest.exit:
+    description: Exists the quest instance
+    default: true
+  minequest.command.quest.info:
+    description: Shows quest info
+    default: true
+  minequest.command.quest.reload:
+    description: Reloads quest from disk
+    default: op
+  minequest.command.quest.start:
+    description: Starts your active quest
+    default: true
+  minequest.command.quest.help:
+    description: Shows quest help
+    default: true

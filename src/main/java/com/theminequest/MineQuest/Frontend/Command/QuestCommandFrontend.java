@@ -243,10 +243,6 @@ public class QuestCommandFrontend extends CommandFrontend {
 			p.sendMessage(I18NMessage.Cmd_INVALIDARGS.getDescription());
 			return false;
 		}
-		if (!p.isOp()){
-			p.sendMessage(I18NMessage.Cmd_NOPERMISSION.getDescription());
-			return false;
-		}
 		if (args.length==0)
 			Managers.getQuestManager().reloadQuests();
 		else
@@ -335,7 +331,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 		 * exit
 		 * start <name>
 		 */
-		if (p.isOp())
+		if (p.hasPermission("minequest.command.quest.reload"))
 			messages.add(ChatUtils.formatHelp("quest reload [name]", "Reload quest into memory (or all)"));
 		messages.add(ChatUtils.formatHeader(I18NMessage.Cmd_Quest_HELP.getDescription()));
 		messages.add(ChatUtils.formatHelp("quest given", I18NMessage.Cmd_Quest_HELPGIVEN.getDescription()));

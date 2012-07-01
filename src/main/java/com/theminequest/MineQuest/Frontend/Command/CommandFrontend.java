@@ -2,6 +2,7 @@ package com.theminequest.MineQuest.Frontend.Command;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
@@ -11,7 +12,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.theminequest.MineQuest.I18NMessage;
-import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.API.Managers;
 
 public abstract class CommandFrontend implements CommandExecutor {
@@ -24,30 +24,27 @@ public abstract class CommandFrontend implements CommandExecutor {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender arg0, Command arg1, String arg2,
-			String[] arg3) {
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		
 		Player player = null;
-		if (arg0 instanceof Player)
-			player = (Player)arg0;
+		if (sender instanceof Player)
+			player = (Player)sender;
 		if ((player==null) && !allowConsole()){
 			Managers.log(Level.WARNING,"[CommandFrontend] No console use for \""+cmdname+"\"...");
 			return false;
 		}
 		
-		if (arg3.length==0)
-			return help(player,arg3);
+		if (args.length==0)
+			return help(player,args);
 
-		String cmd = arg3[0].toLowerCase();
+		String cmd = args[0].toLowerCase();
 		
-		if (player!=null){
-			if (!hasPermission(cmdname+"."+cmd,player)){
-				player.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOPERMISSION.getDescription());
-				return false;
-			}
+		if (!sender.hasPermission("minequest.command."+label+"."+cmd)) {
+			player.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOPERMISSION.getDescription());
+			return true;
 		}
 
-		String[] arguments = shrinkArray(arg3);
+		String[] arguments = shrinkArray(args);
 
 		Method m;
 		try {
@@ -64,44 +61,18 @@ public abstract class CommandFrontend implements CommandExecutor {
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
-			arg0.sendMessage(ChatColor.RED + "A severe error occured executing the command.");
-			arg0.sendMessage(ChatColor.RED + "We've recovered as best as we can; please alert system admins.");
+			sender.sendMessage(ChatColor.RED + "A severe error occured executing the command.");
+			sender.sendMessage(ChatColor.RED + "We've recovered as best as we can; please alert system admins.");
 			return true;
 		}
-		arg0.sendMessage(I18NMessage.Cmd_INVALIDARGS.getDescription());
+		sender.sendMessage(I18NMessage.Cmd_INVALIDARGS.getDescription());
 		return true;
-	}
-	
-	private boolean hasPermission(String node, Player player){
-		if (player.isOp())
-			return true;
-		node = "minequest." + node;
-		String[] parts = node.split(".");
-		for (int i=0; i<parts.length; i++){
-			String newnode = "";
-			for (int j=0; j<i+1; i++){
-				newnode+=parts[j] + ".";
-			}
-			if (i!=parts.length-1)
-				newnode+="*";
-			else
-				newnode = newnode.substring(0, newnode.length()-1);
-			if (player.hasPermission(node))
-				return true;
-			if (MineQuest.permission.has(player, node))
-				return true;
-		}
-		
-		return false;
 	}
 	
 	private String[] shrinkArray(String[] array){
 		if (array.length<=1)
 			return new String[0];
-		String[] toreturn = new String[array.length-1];
-		for (int i=1; i<array.length; i++)
-			toreturn[i-1] = array[i];
-		return toreturn;
+		return Arrays.copyOfRange(array, 1, array.length);
 	}
 	
 	public abstract Boolean help(Player p, String[] args);
