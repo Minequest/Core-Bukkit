@@ -26,6 +26,46 @@ commands:
     permission: minequest.party
     
 permissions:
+  minequest.*:
+    description: Allows all MineQuest-Core permissions.
+    default: false
+    children:
+      minequest.command.*: true
+      minequest.sign.placesign: true
+      minequest.sign.takequest: true
+  minequest.command.*:
+    description: Allows access to all MineQuest-Core commnads.
+    default: false
+    children:
+      minequest.command.party.*: true
+      minequest.command.quest.*: true
+  minequest.command.party.*:
+    description: Allows access to all MineQuest-Core party commnads.
+    default: false
+    children:
+      minequest.command.party.accept: true
+      minequest.command.party.create: true
+	  minequest.command.party.invite: true
+	  minequest.command.party.kick: true
+	  minequest.command.party.leave: true
+	  minequest.command.party.list: true
+	  minequest.command.party.promote: true
+	  minequest.command.party.help: true
+  minequest.command.quest.*:
+    description: Allows access to all MineQuest-Core quest commnads.
+    default: false
+    children:
+	  minequest.command.quest.given: true
+	  minequest.command.quest.main: true
+	  minequest.command.quest.drop: true
+	  minequest.command.quest.abandon: true
+	  minequest.command.quest.active: true
+	  minequest.command.quest.enter: true
+	  minequest.command.quest.exit: true
+	  minequest.command.quest.info: true
+	  minequest.command.quest.reload: op
+	  minequest.command.quest.start: true
+	  minequest.command.quest.help: true
   minequest.sign.placesign:
     description: Allows you to place a quest sign
     default: op
