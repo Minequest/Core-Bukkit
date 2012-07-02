@@ -36,7 +36,9 @@ import com.theminequest.MQCoreEvents.RegisterEvents;
 import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Edit.EditManager;
 import com.theminequest.MineQuest.API.Events.EventManager;
+import com.theminequest.MineQuest.API.Tracker.LogStatistic;
 import com.theminequest.MineQuest.API.Tracker.QuestStatistic;
+import com.theminequest.MineQuest.API.Tracker.SnapshotStatistic;
 import com.theminequest.MineQuest.API.Tracker.StatisticManager;
 import com.theminequest.MineQuest.API.Utils.GriefcraftMetrics;
 import com.theminequest.MineQuest.API.Utils.UtilManager;
@@ -140,7 +142,8 @@ public class MineQuest extends JavaPlugin {
 		try {
 			Statistics s = new Statistics();
 			Managers.setStatisticManager(s);
-			Managers.getStatisticManager().registerStatistic(QuestStatistic.class);
+			Managers.getStatisticManager().registerStatistic(LogStatistic.class);
+			Managers.getStatisticManager().registerStatistic(SnapshotStatistic.class);
 			getServer().getPluginManager().registerEvents(s, this);
 		} catch (ConnectionException e1) {
 			Managers.log(Level.SEVERE,"[Core] Can't start Statistic Manager!");
