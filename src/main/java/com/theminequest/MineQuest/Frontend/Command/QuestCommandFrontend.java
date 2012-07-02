@@ -2,7 +2,9 @@ package com.theminequest.MineQuest.Frontend.Command;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.bukkit.ChatColor;
@@ -17,9 +19,9 @@ import com.theminequest.MineQuest.API.Quest.Quest;
 import com.theminequest.MineQuest.API.Quest.QuestDetails;
 import com.theminequest.MineQuest.API.Quest.QuestDetailsUtils;
 import com.theminequest.MineQuest.API.Quest.QuestUtils;
+import com.theminequest.MineQuest.API.Tracker.LogStatus;
 import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils;
 import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils.QSException;
-import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils.Status;
 import com.theminequest.MineQuest.API.Utils.ChatUtils;
 
 public class QuestCommandFrontend extends CommandFrontend {
@@ -33,11 +35,11 @@ public class QuestCommandFrontend extends CommandFrontend {
 			p.sendMessage(I18NMessage.Cmd_INVALIDARGS.getDescription());
 			return false;
 		}
-		String[] quests = QuestStatisticUtils.getQuests(p.getName(),Status.GIVEN);
+		Map<String, Date> quests = QuestStatisticUtils.getQuests(p.getName(),LogStatus.GIVEN);
 
 		List<String> message = new ArrayList<String>();
 		message.add(ChatUtils.formatHeader(I18NMessage.Cmd_Quest_ACCEPTED.getDescription()));
-		for (String q : quests){
+		for (String q : quests.keySet()){
 			if (q.isEmpty())
 				continue;
 			QuestDetails qd = Managers.getQuestManager().getDetails(q);
@@ -59,10 +61,10 @@ public class QuestCommandFrontend extends CommandFrontend {
 			return false;
 		}
 		if (args.length==0){
-			String[] quests = QuestStatisticUtils.getQuests(p.getName(), Status.INPROGRESS);
+			Map<String, Date> quests = QuestStatisticUtils.getQuests(p.getName(), LogStatus.ACTIVE);
 			List<String> message = new ArrayList<String>();
 			message.add(ChatUtils.formatHeader(I18NMessage.Cmd_Quest_MWACTIVE.getDescription()));
-			for (String q : quests){
+			for (String q : quests.keySet()){
 				if (q.isEmpty())
 					continue;
 				Quest quest = Managers.getQuestManager().getMainWorldQuest(p.getName(), q);
@@ -90,7 +92,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 			return false;
 		}
 		try {
-			QuestStatisticUtils.degiveQuest(p.getName(), args[0]);
+			QuestStatisticUtils.dropQuest(p.getName(), args[0]);
 		} catch (QSException e) {
 			p.sendMessage(I18NMessage.Cmd_Quest_NOTHAVEQUEST.getDescription());
 			return false;
@@ -256,9 +258,9 @@ public class QuestCommandFrontend extends CommandFrontend {
 			return false;
 		}
 
-		List<String> quests = Arrays.asList(QuestStatisticUtils.getQuests(p.getName(), Status.GIVEN));
+		Map<String, Date> quests = QuestStatisticUtils.getQuests(p.getName(), LogStatus.GIVEN);
 
-		if (!quests.contains(args[0])){
+		if (!quests.containsKey(args[0])){
 			p.sendMessage(I18NMessage.Cmd_Quest_NOTHAVEQUEST.getDescription());
 			return false;
 		}

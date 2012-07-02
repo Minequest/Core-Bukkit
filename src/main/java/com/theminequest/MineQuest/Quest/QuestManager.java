@@ -67,6 +67,7 @@ import com.theminequest.MineQuest.API.Quest.QuestUtils;
 import com.theminequest.MineQuest.API.Tracker.QuestStatistic;
 import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils;
 import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils.QSException;
+import com.theminequest.MineQuest.API.Tracker.SnapshotStatistic;
 import com.theminequest.MineQuest.Quest.Parser.AcceptTextHandler;
 import com.theminequest.MineQuest.Quest.Parser.CancelTextHandler;
 import com.theminequest.MineQuest.Quest.Parser.DescriptionHandler;
@@ -344,12 +345,12 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e){
-		QuestStatistic stat = Managers.getStatisticManager().getStatistic(e.getPlayer().getName(),QuestStatistic.class);
+		List<SnapshotStatistic> snapshots = Managers.getStatisticManager().getStatistics(e.getPlayer().getName(), SnapshotStatistic.class);
 		LinkedHashMap<String, Quest> qs = new LinkedHashMap<String, Quest>();
-		for (QuestSnapshot s : stat.getMainWorldQuests()) {
-			Quest q = s.recreateQuest();
+		for (SnapshotStatistic s : snapshots) {
+			Quest q = s.getSnapshot().recreateQuest();
 			String questName = q.getDetails().getProperty(QUEST_NAME);
-			int taskId = s.getLastTaskID();
+			int taskId = s.getSnapshot().getLastTaskID();
 			if (!q.startTask(taskId))
 				Managers.log(Level.SEVERE, "Starting task "+taskId+" for "+questName+" failed during login!");
 			

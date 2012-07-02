@@ -1,5 +1,8 @@
 package com.theminequest.MineQuest.Quest;
 
+import java.util.Date;
+import java.util.Map;
+
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -7,9 +10,8 @@ import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Group.QuestGroup;
 import com.theminequest.MineQuest.API.Quest.QuestRequirement;
-import com.theminequest.MineQuest.API.Tracker.QuestStatistic;
+import com.theminequest.MineQuest.API.Tracker.LogStatus;
 import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils;
-import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils.Status;
 import com.theminequest.MineQuest.API.Quest.QuestDetails;
 
 public class QuestReq implements QuestRequirement {
@@ -43,8 +45,8 @@ public class QuestReq implements QuestRequirement {
 	public boolean isSatisfied(Player player) {
 		switch(type){
 		case NEVERDONE:
-			String[] completed = QuestStatisticUtils.getQuests(player.getName(), Status.COMPLETED);
-			for (String q : completed)
+			Map<String,Date> completed = QuestStatisticUtils.getQuests(player.getName(), LogStatus.COMPLETED);
+			for (String q : completed.keySet())
 				if (q.equals(quest.getProperty(QuestDetails.QUEST_NAME)))
 					return false;
 			break;

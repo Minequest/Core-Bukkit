@@ -2,6 +2,8 @@ package com.theminequest.MineQuest.Frontend.Sign;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Date;
+import java.util.Map;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
@@ -20,10 +22,9 @@ import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Quest.QuestDetails;
 import com.theminequest.MineQuest.API.Quest.QuestDetailsUtils;
-import com.theminequest.MineQuest.API.Tracker.QuestStatistic;
+import com.theminequest.MineQuest.API.Tracker.LogStatus;
 import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils;
 import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils.QSException;
-import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils.Status;
 
 public class QuestSign implements Listener {
 
@@ -62,8 +63,8 @@ public class QuestSign implements Listener {
 		if (d==null){
 			player.sendMessage(ChatColor.RED + "Yikes! We can't find this quest anymore...");
 		}
-		String[] givenquests = QuestStatisticUtils.getQuests(player.getName(), Status.GIVEN);
-		for (String s : givenquests){
+		Map<String, Date> givenquests = QuestStatisticUtils.getQuests(player.getName(), LogStatus.GIVEN);
+		for (String s : givenquests.keySet()){
 			if (quest_name.equals(s)){
 				player.sendMessage("You already have this quest!");
 				return;

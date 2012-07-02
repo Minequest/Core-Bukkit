@@ -50,6 +50,7 @@ import com.theminequest.MineQuest.API.Quest.QuestDetails;
 import com.theminequest.MineQuest.API.Quest.QuestSnapshot;
 import com.theminequest.MineQuest.API.Task.QuestTask;
 import com.theminequest.MineQuest.API.Tracker.QuestStatistic;
+import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils;
 import com.theminequest.MineQuest.API.Utils.ChatUtils;
 import com.theminequest.MineQuest.API.Utils.SetUtils;
 import com.theminequest.MineQuest.API.Utils.TimeUtils;
@@ -145,8 +146,7 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 		
 		// main world quest
 		if (questid == -1) {
-			QuestStatistic stat = Managers.getStatisticManager().getStatistic(questOwner, QuestStatistic.class);
-			stat.saveMainWorldQuest(this);
+			QuestStatisticUtils.checkpointQuest(this);
 		}
 		return true;
 	}
@@ -234,20 +234,7 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 
 	@Override
 	public synchronized String toString() {
-		String tr = details.toString() + "\n";
-		if (activeTask!=null){
-			tr += ChatUtils.formatHeader("Current Tasks") + "\n";
-			for (QuestEvent e : activeTask.getEvents()){
-				if (e instanceof UserQuestEvent){
-					String description = ((UserQuestEvent)e).getDescription();
-					if (e.isComplete()==null)
-						tr += ChatColor.GREEN + "- " + description + "\n";
-					else
-						tr += ChatColor.GRAY + "- " + description + "\n";
-				}
-			}
-		}
-		return tr;
+		return details.toString() + ":" + getQuestOwner() + ":" + getQuestID();
 	}
 
 	@Override

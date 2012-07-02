@@ -37,7 +37,6 @@ public class Statistics implements StatisticManager, Listener {
 	}
 	private Mode databasetype;
 	private Database backend;
-	private Map<String,Statistic> cache;
 	
 	public Statistics() throws ConnectionException{
 		Managers.log("[SQL] Loading and connecting to SQL...");
@@ -63,7 +62,6 @@ public class Statistics implements StatisticManager, Listener {
 			backend = DatabaseFactory.createNewDatabase(s);
 		} else
 			backend = DatabaseFactory.createNewDatabase(new H2Configuration().setDatabase(Managers.getActivePlugin().getDataFolder().getAbsolutePath() + File.separator + "minequest_h2"));
-		cache = new LinkedHashMap<String,Statistic>();
 	}
 
 	@Override
@@ -73,32 +71,15 @@ public class Statistics implements StatisticManager, Listener {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T extends Statistic> T getStatistic(String playerName, Class<? extends Statistic> tableClazz) {
-		String classname = tableClazz.getName();
-		if (cache.containsKey(classname+"|"+playerName)){
-			return (T) cache.get(classname+"|"+playerName);
-		}
-		Statistic result = backend.select(tableClazz).where().equal("playerName", playerName.toLowerCase()).execute().findOne();
-		if (result==null)
-			try {
-				T statistic = (T) tableClazz.getConstructor().newInstance();
-				statistic.setPlayerName(playerName);
-				cache.put(classname+"|"+playerName, statistic);
-				statistic.setup();
-				return statistic;
-			} catch (Exception e){
-				throw new RuntimeException(e);
-			}
-		cache.put(classname+"|"+playerName, result);
-		result.setup();
-		return (T) result;
+	public <T extends Statistic> List<T> getStatistics(String playerName, Class<? extends Statistic> tableClazz) {
+		List<? extends Statistic> result = backend.select(tableClazz).where().equal("playerName", playerName.toLowerCase()).execute().find();
+		for (Statistic s : result)
+			s.setup();
+		return (List<T>) result;
 	}
 
 	@Override
-	public <T extends Statistic> void setStatistic(T statistic,
-			Class<? extends Statistic> tableClazz) {
-		String classname = tableClazz.getName();
-		cache.put(classname+"|"+statistic.getPlayerName(), statistic);
+	public <T extends Statistic> void saveStatistic(T statistic,	Class<? extends Statistic> tableClazz) {
 		backend.save(tableClazz,statistic);
 	}
 
@@ -123,40 +104,26 @@ public class Statistics implements StatisticManager, Listener {
 	public <T extends Statistic> List<T> getStatisticList(
 			Class<? extends Statistic> tableClazz) {
 		QueryResult<? extends Statistic> r = backend.select(tableClazz).execute();
-		List<T> results = (List<T>) r.find();
-		for (String s : cache.keySet()){
-			if (s.startsWith(tableClazz.getName()+"|")){
-				for (int i=0; i<results.size(); i++){
-					T statistic = results.get(i);
-					if (statistic.getPlayerName().equals(s.substring(s.indexOf("|")+1))){
-						results.remove(i);
-						i--;
-					}
-				}
-				results.add((T) cache.get(s));
-			}
-		}
-		return results;
+		return (List<T>) r.find();
 	}
-	
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void onPlayerQuit(PlayerQuitEvent e){
-		Iterator<String> iter = cache.keySet().iterator();
-		while (iter.hasNext()) {
-			String s = iter.next();
-			if (s.endsWith("|"+e.getPlayer().getName()))
-				iter.remove();
-		}
-	}
-	
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void onPlayerKick(PlayerKickEvent e){
-		Iterator<String> iter = cache.keySet().iterator();
-		while (iter.hasNext()) {
-			String s = iter.next();
-			if (s.endsWith("|"+e.getPlayer().getName()))
-				iter.remove();
+
+	@Override
+	public <T extends Statistic> T createStatistic(String playerName,
+			Class<? extends Statistic> tableClazz) {
+		try {
+			T s = (T) tableClazz.newInstance();
+			s.setPlayerName(playerName);
+			s.setup();
+			return s;
+		} catch (Exception e){
+			throw new RuntimeException(e);
 		}
 	}
 
+	@Override
+	public <T extends Statistic> void removeStatistic(T statistic,
+			Class<? extends Statistic> tableClazz) {
+		backend.remove(tableClazz, statistic);
+	}
+	
 }
