@@ -139,6 +139,7 @@ public class MineQuest extends JavaPlugin {
 		try {
 			Statistics s = new Statistics();
 			Managers.setStatisticManager(s);
+			Managers.setQuestStatisticManager(s);
 			Managers.getStatisticManager().registerStatistic(LogStatistic.class);
 			Managers.getStatisticManager().registerStatistic(SnapshotStatistic.class);
 			getServer().getPluginManager().registerEvents(s, this);

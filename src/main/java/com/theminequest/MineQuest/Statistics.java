@@ -16,11 +16,12 @@ import com.alta189.simplesave.sqlite.SQLiteConfiguration;
 
 import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Tracker.QuestStatistic;
+import com.theminequest.MineQuest.API.Tracker.QuestStatisticManager;
 import com.theminequest.MineQuest.API.Tracker.Statistic;
 import com.theminequest.MineQuest.API.Tracker.StatisticManager;
 import com.theminequest.MineQuest.API.Utils.PropertiesFile;
 
-public class Statistics implements StatisticManager, Listener {
+public class Statistics implements QuestStatisticManager, Listener {
 	
 	private enum Mode{
 		MySQL, SQlite, H2;
@@ -125,6 +126,21 @@ public class Statistics implements StatisticManager, Listener {
 		if (s != null)
 			s.setup();
 		return s;
+	}
+
+	@Override
+	public <T extends QuestStatistic> T createStatistic(String playerName,
+			String questName, Class<? extends QuestStatistic> tableClazz) {
+		try {
+			@SuppressWarnings("unchecked")
+			T s = (T) tableClazz.newInstance();
+			s.setPlayerName(playerName);
+			s.setQuestName(questName);
+			s.setup();
+			return s;
+		} catch (Exception e){
+			throw new RuntimeException(e);
+		}
 	}
 	
 }
