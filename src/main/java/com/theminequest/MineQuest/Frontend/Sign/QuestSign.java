@@ -92,7 +92,7 @@ public class QuestSign implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onSignChangeEvent(SignChangeEvent event) {
-		if (!event.getLine(1).equalsIgnoreCase("[Quest]"))
+		if (!event.getLine(1).equalsIgnoreCase("[Quest]") && !event.getLine(1).equalsIgnoreCase("quest"))
 			return;
 		Player player = event.getPlayer();
 		Block block = event.getBlock();
