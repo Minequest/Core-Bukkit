@@ -107,6 +107,8 @@ public class QuestReq implements QuestRequirement {
 			break;
 		case WORLD:
 			break;
+		case DATE:
+			break;
 		default:
 			break;
 		}
