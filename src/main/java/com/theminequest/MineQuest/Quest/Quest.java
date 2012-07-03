@@ -130,6 +130,12 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 			return false;
 		if (activeTask!=null && activeTask.isComplete()==null)
 			activeTask.cancelTask();
+		
+		if (activeTask!=null) {
+			if (activeTask.getTaskID() == taskid)
+				return false;
+		}
+		
 		String[] eventnums = tasks.get(taskid);
 		List<Integer> eventnum = new ArrayList<Integer>();
 		for (String e : eventnums) {
