@@ -163,19 +163,6 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 			finishQuest(CompleteStatus.FAILURE);
 			return;
 		}
-		// TODO this is lovely and all, but tasks should trigger other tasks...
-		// I'll just call the next task, and if the next task isn't available,
-		// finish the quest
-		
-		Map<Integer,String[]> tasks = details.getProperty(QUEST_TASKS);
-		List<Integer> sortedkeys = SetUtils.getSortedKeys(tasks.keySet());
-		int loc = sortedkeys.indexOf(e.getID());
-		if (loc == sortedkeys.size() - 1) {
-			finishQuest(CompleteStatus.SUCCESS);
-			return;
-		}
-		loc++;
-		startTask(sortedkeys.get(loc));
 	}
 
 	public synchronized void finishQuest(CompleteStatus c) {
