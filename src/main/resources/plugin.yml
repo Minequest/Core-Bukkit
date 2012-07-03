@@ -19,11 +19,9 @@ commands:
   quest:
     description: View Quest commands.
     aliases: [mqquest,mquest]
-    permission: minequest.quest
   party:
     description: View Party commands.
     aliases: [mqparty,questparty]
-    permission: minequest.party
     
 permissions:
   minequest.*:
@@ -34,13 +32,13 @@ permissions:
       minequest.sign.placesign: true
       minequest.sign.takequest: true
   minequest.command.*:
-    description: Allows access to all MineQuest-Core commnads.
+    description: Allows access to all MineQuest-Core commands.
     default: false
     children:
       minequest.command.party.*: true
       minequest.command.quest.*: true
   minequest.command.party.*:
-    description: Allows access to all MineQuest-Core party commnads.
+    description: Allows access to all MineQuest-Core party commands.
     default: false
     children:
       minequest.command.party.accept: true
@@ -52,7 +50,7 @@ permissions:
       minequest.command.party.promote: true
       minequest.command.party.help: true
   minequest.command.quest.*:
-    description: Allows access to all MineQuest-Core quest commnads.
+    description: Allows access to all MineQuest-Core quest commands.
     default: false
     children:
       minequest.command.quest.given: true
