@@ -28,7 +28,6 @@ import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 
-import com.theminequest.MQCoreEvents.NameEvent;
 import com.theminequest.MineQuest.API.CompleteStatus;
 import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.BukkitEvents.TaskCompleteEvent;
@@ -43,7 +42,6 @@ public class Task implements QuestTask {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6544586331188563646L;
 	private boolean started;
 	private volatile CompleteStatus complete;
 	private Quest quest;
@@ -124,57 +122,11 @@ public class Task implements QuestTask {
 				CompleteStatus.CANCELED);
 		Bukkit.getPluginManager().callEvent(e);
 	}
-
-	// FIXME FIXME FIXME AHHHHHH
-	// implement task switching.
-	/* (non-Javadoc)
-	 * @see com.theminequest.MineQuest.Tasks.QuestTask#finishEvent(int, com.theminequest.MineQuest.API.CompleteStatus)
-	 */
+	
 	@Override
-	public synchronized void finishEvent(QuestEvent qE,
-			CompleteStatus completeStatus) {
-		if (complete==null && started && collection.containsKey(qE.getEventId())) {
-			
-			switch(completeStatus){
-			case FAILURE:
-				for (QuestEvent event : collection.values())
-					event.complete(CompleteStatus.CANCELED);
-				complete = CompleteStatus.FAILURE;
-				TaskCompleteEvent e = new TaskCompleteEvent(quest, taskid,
-						CompleteStatus.FAILURE);
-				Bukkit.getPluginManager().callEvent(e);
-				break;
-			case CANCELED:
-				break;
-			default:
-				Integer taskswitch = qE.switchTask();
-				if (taskswitch!=null){
-					for (QuestEvent event : collection.values())
-						event.complete(CompleteStatus.CANCELED);
-					complete = CompleteStatus.IGNORE;
-					getQuest().startTask(taskswitch);
-					TaskCompleteEvent e1 = new TaskCompleteEvent(quest, taskid,
-							CompleteStatus.IGNORE);
-					Bukkit.getPluginManager().callEvent(e1);
-					return;
-				}
-				checkCompletion();
-			}
-		}
-	}
-
-	private synchronized void checkCompletion() {
-		for (Integer eventid : collection.keySet()) {
-			QuestEvent e = collection.get(eventid);
-			// ignore NameEvents
-			if (e instanceof NameEvent)
-				continue;
-			if (e.isComplete()==null)
-				return;
-		}
+	public void completeTask() {
 		complete = CompleteStatus.SUCCESS;
-		TaskCompleteEvent e = new TaskCompleteEvent(quest, taskid,
-				CompleteStatus.SUCCESS);
+		TaskCompleteEvent e = new TaskCompleteEvent(quest, taskid, CompleteStatus.SUCCESS);
 		Bukkit.getPluginManager().callEvent(e);
 	}
 

@@ -23,24 +23,20 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -51,20 +47,15 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.API.CompleteStatus;
 import com.theminequest.MineQuest.API.Managers;
-import com.theminequest.MineQuest.API.BukkitEvents.QuestGivenEvent;
 import com.theminequest.MineQuest.API.BukkitEvents.QuestCompleteEvent;
-import com.theminequest.MineQuest.API.BukkitEvents.QuestStartedEvent;
 import com.theminequest.MineQuest.API.BukkitEvents.TaskCompleteEvent;
 import com.theminequest.MineQuest.API.Edit.Edit;
-import com.theminequest.MineQuest.API.Group.Group;
 import com.theminequest.MineQuest.API.Group.QuestGroup;
 import com.theminequest.MineQuest.API.Group.QuestGroup.QuestStatus;
 import com.theminequest.MineQuest.API.Quest.Quest;
-import com.theminequest.MineQuest.API.Quest.QuestSnapshot;
 import com.theminequest.MineQuest.API.Quest.QuestDetailsUtils;
 import com.theminequest.MineQuest.API.Quest.QuestParser;
 import com.theminequest.MineQuest.API.Quest.QuestUtils;
-import com.theminequest.MineQuest.API.Tracker.QuestStatistic;
 import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils;
 import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils.QSException;
 import com.theminequest.MineQuest.API.Tracker.SnapshotStatistic;
@@ -345,7 +336,7 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e){
-		List<SnapshotStatistic> snapshots = Managers.getStatisticManager().getStatistics(e.getPlayer().getName(), SnapshotStatistic.class);
+		List<SnapshotStatistic> snapshots = Managers.getStatisticManager().getAllStatistics(e.getPlayer().getName(), SnapshotStatistic.class);
 		LinkedHashMap<String, Quest> qs = new LinkedHashMap<String, Quest>();
 		for (SnapshotStatistic s : snapshots) {
 			Quest q = s.getSnapshot().recreateQuest();

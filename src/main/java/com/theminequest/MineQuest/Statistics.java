@@ -1,18 +1,9 @@
 package com.theminequest.MineQuest;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.alta189.simplesave.Database;
 import com.alta189.simplesave.DatabaseFactory;
@@ -22,12 +13,9 @@ import com.alta189.simplesave.h2.H2Configuration;
 import com.alta189.simplesave.mysql.MySQLConfiguration;
 import com.alta189.simplesave.query.QueryResult;
 import com.alta189.simplesave.sqlite.SQLiteConfiguration;
-import com.theminequest.MineQuest.API.CompleteStatus;
+
 import com.theminequest.MineQuest.API.Managers;
-import com.theminequest.MineQuest.API.Quest.Quest;
-import com.theminequest.MineQuest.API.Tracker.QuestStatistic;
 import com.theminequest.MineQuest.API.Tracker.StatisticManager;
-import com.theminequest.MineQuest.API.Tracker.StatisticManager.Statistic;
 import com.theminequest.MineQuest.API.Utils.PropertiesFile;
 
 public class Statistics implements StatisticManager, Listener {
@@ -71,7 +59,7 @@ public class Statistics implements StatisticManager, Listener {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T extends Statistic> List<T> getStatistics(String playerName, Class<? extends Statistic> tableClazz) {
+	public <T extends Statistic> List<T> getAllStatistics(String playerName, Class<? extends Statistic> tableClazz) {
 		List<? extends Statistic> result = backend.select(tableClazz).where().equal("playerName", playerName.toLowerCase()).execute().find();
 		for (Statistic s : result)
 			s.setup();
@@ -104,15 +92,18 @@ public class Statistics implements StatisticManager, Listener {
 	public <T extends Statistic> List<T> getStatisticList(
 			Class<? extends Statistic> tableClazz) {
 		QueryResult<? extends Statistic> r = backend.select(tableClazz).execute();
-		return (List<T>) r.find();
+		@SuppressWarnings("unchecked")
+		List<T> list = (List<T>) r.find();
+		return list;
 	}
 
 	@Override
-	public <T extends Statistic> T createStatistic(String playerName,
-			Class<? extends Statistic> tableClazz) {
+	public <T extends Statistic> T createStatistic(String playerName, String questName, Class<? extends Statistic> tableClazz) {
 		try {
+			@SuppressWarnings("unchecked")
 			T s = (T) tableClazz.newInstance();
 			s.setPlayerName(playerName);
+			s.setQuestName(questName);
 			s.setup();
 			return s;
 		} catch (Exception e){
@@ -124,6 +115,15 @@ public class Statistics implements StatisticManager, Listener {
 	public <T extends Statistic> void removeStatistic(T statistic,
 			Class<? extends Statistic> tableClazz) {
 		backend.remove(tableClazz, statistic);
+	}
+
+	@Override
+	public <T extends Statistic> T getStatistic(String playerName, String questName, Class<? extends Statistic> tableClazz) {
+		@SuppressWarnings("unchecked")
+		T s = (T) backend.select(tableClazz).where().equal("playerName", playerName.toLowerCase()).and().equal("questName", questName).execute().findOne();
+		if (s != null)
+			s.setup();
+		return s;
 	}
 	
 }

@@ -26,7 +26,6 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -37,7 +36,6 @@ import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Edit.EditManager;
 import com.theminequest.MineQuest.API.Events.EventManager;
 import com.theminequest.MineQuest.API.Tracker.LogStatistic;
-import com.theminequest.MineQuest.API.Tracker.QuestStatistic;
 import com.theminequest.MineQuest.API.Tracker.SnapshotStatistic;
 import com.theminequest.MineQuest.API.Tracker.StatisticManager;
 import com.theminequest.MineQuest.API.Utils.GriefcraftMetrics;
@@ -50,7 +48,6 @@ import com.theminequest.MineQuest.Frontend.Sign.QuestSign;
 import com.theminequest.MineQuest.Group.MQQuestGroupManager;
 import com.theminequest.MineQuest.Quest.QuestManager;
 import com.theminequest.MineQuest.Target.TargetManager;
-import com.theminequest.MineQuest.Tasks.TaskManager;
 
 /**
  * MineQuest Plugin Class for Bukkit
@@ -155,8 +152,6 @@ public class MineQuest extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(Managers.getEditManager(), this);
 		Managers.setEventManager(new MQEventManager());
 		getServer().getPluginManager().registerEvents(Managers.getEventManager(), this);
-		Managers.setTaskManager(new TaskManager());
-		getServer().getPluginManager().registerEvents(Managers.getTaskManager(), this);
 		Managers.setQuestGroupManager(new MQQuestGroupManager());
 		Managers.setGroupManager(Managers.getQuestGroupManager());
 		getServer().getPluginManager().registerEvents(Managers.getGroupManager(), this);
@@ -221,7 +216,6 @@ public class MineQuest extends JavaPlugin {
 		}
 		commandListener = null;
 		Managers.setEditManager(null);
-		Managers.setTaskManager(null);
 		Managers.setQuestManager(null);
 		Managers.setGroupManager(null);
 		Managers.setUtilManager(null);
