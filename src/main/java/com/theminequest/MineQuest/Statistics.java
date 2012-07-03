@@ -15,6 +15,8 @@ import com.alta189.simplesave.query.QueryResult;
 import com.alta189.simplesave.sqlite.SQLiteConfiguration;
 
 import com.theminequest.MineQuest.API.Managers;
+import com.theminequest.MineQuest.API.Tracker.QuestStatistic;
+import com.theminequest.MineQuest.API.Tracker.Statistic;
 import com.theminequest.MineQuest.API.Tracker.StatisticManager;
 import com.theminequest.MineQuest.API.Utils.PropertiesFile;
 
@@ -98,12 +100,11 @@ public class Statistics implements StatisticManager, Listener {
 	}
 
 	@Override
-	public <T extends Statistic> T createStatistic(String playerName, String questName, Class<? extends Statistic> tableClazz) {
+	public <T extends Statistic> T createStatistic(String playerName, Class<? extends Statistic> tableClazz) {
 		try {
 			@SuppressWarnings("unchecked")
 			T s = (T) tableClazz.newInstance();
 			s.setPlayerName(playerName);
-			s.setQuestName(questName);
 			s.setup();
 			return s;
 		} catch (Exception e){
@@ -118,7 +119,7 @@ public class Statistics implements StatisticManager, Listener {
 	}
 
 	@Override
-	public <T extends Statistic> T getStatistic(String playerName, String questName, Class<? extends Statistic> tableClazz) {
+	public <T extends QuestStatistic> T getQuestStatistic(String playerName, String questName, Class<? extends QuestStatistic> tableClazz) {
 		@SuppressWarnings("unchecked")
 		T s = (T) backend.select(tableClazz).where().equal("playerName", playerName.toLowerCase()).and().equal("questName", questName).execute().findOne();
 		if (s != null)
