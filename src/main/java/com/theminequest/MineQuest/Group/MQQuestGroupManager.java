@@ -21,6 +21,7 @@ package com.theminequest.MineQuest.Group;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -266,7 +267,23 @@ public class MQQuestGroupManager implements Listener, QuestGroupManager {
 				e.printStackTrace();
 			}
 		}
-		groups.remove(group);
+		Iterator<QuestGroup> i1 = groups.values().iterator();
+		while (i1.hasNext()){
+			Group g = i1.next();
+			if (g.equals(group)){
+				i1.remove();
+				break;
+			}
+		}
+		Iterator<QuestGroup> i2 = invitations.values().iterator();
+		while (i2.hasNext()){
+			Group g = i2.next();
+			if (g.equals(group)){
+				i2.remove();
+				break;
+			}
+		}
+		return;
 	}
 
 	@Override
