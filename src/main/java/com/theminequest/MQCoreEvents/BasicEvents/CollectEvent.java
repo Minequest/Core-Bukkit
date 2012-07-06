@@ -134,7 +134,7 @@ public class CollectEvent extends QuestEvent implements UserQuestEvent {
 			}
 		};
 		
-		futureTask = Bukkit.getScheduler().callSyncMethod(Bukkit.getPluginManager().getPlugin("MineQuest"), c);
+		futureTask = Bukkit.getScheduler().callSyncMethod(Managers.getActivePlugin(), c);
 		
 		return false;
 	}

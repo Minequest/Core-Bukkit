@@ -19,7 +19,6 @@
  **/
 package com.theminequest.MineQuest.Events;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -30,12 +29,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Events.EventManager;
 import com.theminequest.MineQuest.API.Events.QuestEvent;
@@ -151,13 +148,17 @@ public class MQEventManager implements Listener, EventManager {
 	 */
 	@Override
 	public void checkAllEvents(){
+		List<QuestEvent> events = new ArrayList<QuestEvent>(activeevents.size());
 		synchronized(activeevents){
-			for (final QuestEvent e : activeevents){
-				try {
-					e.check();
-				} catch (Throwable t) {
-					t.printStackTrace();
-				}
+			for (QuestEvent e : activeevents){
+				events.add(e);
+			}
+		}
+		for (QuestEvent e: events) {
+			try {
+				e.check();
+			} catch (Throwable t) {
+				t.printStackTrace();
 			}
 		}
 	}
