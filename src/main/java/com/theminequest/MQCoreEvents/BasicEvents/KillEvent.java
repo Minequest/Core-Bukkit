@@ -157,7 +157,7 @@ public class KillEvent extends QuestEvent implements UserQuestEvent {
 	public String getDescription() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Kill ");
-		boolean first = false;
+		boolean first = true;
 		int i = 0;
 		synchronized (killMap) {
 			for (Map.Entry<EntityType, Integer> entry : killMap.entrySet()) {
