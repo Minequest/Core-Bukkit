@@ -12,6 +12,7 @@ public final class RegisterEvents {
 		EventManager e = Managers.getEventManager();
 		e.addEvent("QuestEvent", GenericQuestEvent.class);
 		e.addEvent("CompleteQuestEvent", CompleteQuestEvent.class);
+		e.addEvent("QuestAvailableEvent", QuestAvailableEvent.class);
 		e.addEvent("LockWorldTimeEvent", LockWorldTimeEvent.class);
 		e.addEvent("MessageEvent", MessageEvent.class);
 		e.addEvent("PartyHealthEvent", PartyHealthEvent.class);
