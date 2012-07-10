@@ -16,7 +16,6 @@ public final class RegisterEvents {
 		e.addEvent("LockWorldTimeEvent", LockWorldTimeEvent.class);
 		e.addEvent("MessageEvent", MessageEvent.class);
 		e.addEvent("PartyHealthEvent", PartyHealthEvent.class);
-		e.addEvent("QuestGivenEvent",QuestAvailableEvent.class);
 		e.addEvent("TaskEvent", TaskEvent.class);
 		e.addEvent("RewardMoneyEvent",RewardMoneyEvent.class);
 		e.addEvent("RewardPermEvent",RewardPermEvent.class);
