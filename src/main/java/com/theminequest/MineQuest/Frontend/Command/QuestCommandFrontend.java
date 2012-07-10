@@ -1,11 +1,9 @@
 package com.theminequest.MineQuest.Frontend.Command;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -75,11 +73,11 @@ public class QuestCommandFrontend extends CommandFrontend {
 			return true;
 		} else {
 			String name = args[0];
-			try {
-				Quest q = Managers.getQuestManager().getMainWorldQuest(p.getName(),name);
+			Quest q = Managers.getQuestManager().getMainWorldQuest(p.getName(),name);
+			if (q != null) {
 				p.sendMessage(QuestUtils.getStatusString(q).split("\n"));
 				return true;
-			} catch (NoSuchElementException e){
+			} else {
 				p.sendMessage(I18NMessage.Cmd_NOSUCHQUEST.getDescription());
 				return true;
 			}
