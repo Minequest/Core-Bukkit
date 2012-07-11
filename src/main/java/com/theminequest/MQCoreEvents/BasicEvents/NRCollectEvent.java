@@ -33,12 +33,12 @@ import org.bukkit.inventory.PlayerInventory;
 
 import com.theminequest.MineQuest.API.CompleteStatus;
 import com.theminequest.MineQuest.API.Managers;
-import com.theminequest.MineQuest.API.Events.UserQuestEvent;
 import com.theminequest.MineQuest.API.Events.QuestEvent;
+import com.theminequest.MineQuest.API.Events.UserQuestEvent;
 import com.theminequest.MineQuest.API.Utils.InventoryUtils;
 
-public class CollectEvent extends QuestEvent implements UserQuestEvent {
-
+public class NRCollectEvent extends QuestEvent implements UserQuestEvent {
+	
 	private int taskid;
 	private Map<Material, Integer> itemMap;
 	private Future<Boolean> futureTask;
@@ -122,11 +122,6 @@ public class CollectEvent extends QuestEvent implements UserQuestEvent {
 					int amount = entry.getValue();
 					if (!InventoryUtils.inventoryContains(i, m, 0, amount))
 						return false;
-				}
-				
-				for (Map.Entry<Material, Integer> entry : itemMap.entrySet()) {
-					ItemStack stack = new ItemStack(entry.getKey(), entry.getValue());
-					i.removeItem(stack);
 				}
 				
 				return true;

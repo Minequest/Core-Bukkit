@@ -21,6 +21,7 @@ package com.theminequest.MQCoreEvents;
 import com.theminequest.MQCoreEvents.BasicEvents.CollectEvent;
 import com.theminequest.MQCoreEvents.BasicEvents.DestroyEvent;
 import com.theminequest.MQCoreEvents.BasicEvents.KillEvent;
+import com.theminequest.MQCoreEvents.BasicEvents.NRCollectEvent;
 import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Events.EventManager;
 
@@ -41,6 +42,7 @@ public final class RegisterEvents {
 		e.addEvent("RewardCmdEvent", RewardCmdEvent.class);
 		
 		e.addEvent("CollectEvent", CollectEvent.class);
+		e.addEvent("NRCollectEvent", NRCollectEvent.class);
 		e.addEvent("DestroyEvent", DestroyEvent.class);
 		e.addEvent("KillEvent", KillEvent.class);
 	}
