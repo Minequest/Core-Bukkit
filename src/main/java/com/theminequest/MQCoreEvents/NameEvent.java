@@ -28,8 +28,6 @@ import com.theminequest.MineQuest.API.Events.QuestEvent;
  * the player to accomplish. <b>This does NOT block
  * automatic completion of events due to a manual
  * specification inside Task.</b>
- * @author Robert Xu <xu_robert@linux.com>
- *
  */
 public class NameEvent extends QuestEvent implements UserQuestEvent {
 	
