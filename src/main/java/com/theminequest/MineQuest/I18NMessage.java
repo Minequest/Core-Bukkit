@@ -88,7 +88,7 @@ public enum I18NMessage {
 		description = d;
 	}
 	
-	public String getDescription(){
+	public String getValue(){
 		return MineQuest.configuration.localizationConfig.getChatString(name(), description);
 	}
 
@@ -97,7 +97,7 @@ public enum I18NMessage {
 	 */
 	@Override
 	public String toString() {
-		return getDescription();
+		return getValue();
 	}
 	
 }

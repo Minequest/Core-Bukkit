@@ -71,10 +71,10 @@ public class QuestDetails implements com.theminequest.MineQuest.API.Quest.QuestD
 		setProperty(QuestDetails.QUEST_NAME,id);
 		// DEFAULTS start
 		setProperty(QuestDetails.QUEST_DISPLAYNAME,id);
-		setProperty(QuestDetails.QUEST_DESCRIPTION,I18NMessage.Quest_NODESC.getDescription());
-		setProperty(QuestDetails.QUEST_ACCEPT,I18NMessage.Quest_ACCEPT.getDescription());
-		setProperty(QuestDetails.QUEST_ABORT,I18NMessage.Quest_ABORT.getDescription());
-		setProperty(QuestDetails.QUEST_COMPLETE,I18NMessage.Quest_COMPLETE.getDescription());
+		setProperty(QuestDetails.QUEST_DESCRIPTION,I18NMessage.Quest_NODESC.getValue());
+		setProperty(QuestDetails.QUEST_ACCEPT,I18NMessage.Quest_ACCEPT.getValue());
+		setProperty(QuestDetails.QUEST_ABORT,I18NMessage.Quest_ABORT.getValue());
+		setProperty(QuestDetails.QUEST_COMPLETE,I18NMessage.Quest_COMPLETE.getValue());
 		setProperty(QuestDetails.QUEST_SPAWNRESET,true);
 
 		double[] spawnPoint = new double[3];
@@ -83,7 +83,7 @@ public class QuestDetails implements com.theminequest.MineQuest.API.Quest.QuestD
 		spawnPoint[2] = 0;
 		setProperty(QuestDetails.QUEST_SPAWNPOINT,spawnPoint);
 
-		setProperty(QuestDetails.QUEST_EDITMESSAGE,ChatColor.GRAY + I18NMessage.Quest_NOEDIT.getDescription());
+		setProperty(QuestDetails.QUEST_EDITMESSAGE,ChatColor.GRAY + I18NMessage.Quest_NOEDIT.getValue());
 		setProperty(QuestDetails.QUEST_WORLD,Bukkit.getWorlds().get(0).getName());
 		setProperty(QuestDetails.QUEST_LOADWORLD,false);
 		

@@ -58,7 +58,7 @@ public abstract class CommandFrontend implements CommandExecutor {
 		String cmd = args[0].toLowerCase();
 		
 		if (!sender.hasPermission("minequest.command."+label+"."+cmd)) {
-			player.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOPERMISSION.getDescription());
+			player.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOPERMISSION.getValue());
 			return true;
 		}
 
@@ -83,7 +83,7 @@ public abstract class CommandFrontend implements CommandExecutor {
 			sender.sendMessage(ChatColor.RED + "We've recovered as best as we can; please alert system admins.");
 			return true;
 		}
-		sender.sendMessage(I18NMessage.Cmd_INVALIDARGS.getDescription());
+		sender.sendMessage(I18NMessage.Cmd_INVALIDARGS.getValue());
 		return true;
 	}
 	
