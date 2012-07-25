@@ -96,7 +96,7 @@ public class MQQuestGroupManager implements Listener, QuestGroupManager {
 			// get player from getQuestOwner()
 			return new SingleParty(Bukkit.getPlayer(activeQuest.getQuestOwner()),activeQuest);
 		}
-		return get(activeQuest.getQuestID());
+		return get(indexOf(activeQuest));
 	}
 
 	/**
@@ -250,7 +250,6 @@ public class MQQuestGroupManager implements Listener, QuestGroupManager {
 			try {
 				e.getGroup().finishQuest();
 			} catch (GroupException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
