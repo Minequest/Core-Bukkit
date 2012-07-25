@@ -18,6 +18,9 @@
  */
 package com.theminequest.MineQuest.Quest;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
@@ -30,6 +33,7 @@ import com.theminequest.MineQuest.API.Group.QuestGroup;
 import com.theminequest.MineQuest.API.Quest.QuestRequirement;
 import com.theminequest.MineQuest.API.Tracker.LogStatus;
 import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils;
+import com.theminequest.MineQuest.API.Utils.TimeUtils;
 import com.theminequest.MineQuest.API.Quest.QuestDetails;
 
 public class QuestReq implements QuestRequirement {
@@ -61,74 +65,92 @@ public class QuestReq implements QuestRequirement {
 
 	@Override
 	public boolean isSatisfied(Player player) {
-		switch(type){
-		case NEVERDONE:
+		if (type == Type.NEVERDONE) {
 			Map<String,Date> completed = QuestStatisticUtils.getQuests(player.getName(), LogStatus.COMPLETED);
 			for (String q : completed.keySet())
 				if (q.equals(quest.getProperty(QuestDetails.QUEST_NAME)))
 					return false;
-			break;
-		case GIVE:
+		} else if (type == Type.GIVE) {
 			int id = Integer.parseInt(details);
 			if (player.getItemInHand().getTypeId()!=id)
 				return false;
-			break;
-		case GROUPSIZE:
+		} else if (type == Type.GROUPSIZE) {
 			QuestGroup gsg = Managers.getQuestGroupManager().get(player);
 			if (gsg!=null){
 				int size = Integer.parseInt(details);
 				if (gsg.getMembers().size()>size)
 					return false;
 			}
-			break;
-		case ITEM:
+		} else if (type == Type.ITEM) {
 			String[] ivalues = details.split(":");
 			int qty = Integer.parseInt(ivalues[0]);
 			int ivalue = Integer.parseInt(ivalues[1]);
 			short idamage = Short.parseShort(ivalues[2]);
 			if (!player.getInventory().contains(new ItemStack(ivalue,qty,idamage)))
 				return false;
-			break;
-		case BELOWLEVEL:
-			int level1 = Integer.parseInt(details);
-			if (player.getLevel()>level1)
+		} else if (type == Type.BELOWLEVEL) {
+			int level = Integer.parseInt(details);
+			if (player.getLevel()>level)
 				return false;
-			break;
-		case ABOVELEVEL:
-			int level2 = Integer.parseInt(details);
-			if (player.getLevel()<level2)
+		} else if (type == Type.ABOVELEVEL) {
+			int level = Integer.parseInt(details);
+			if (player.getLevel()<level)
 				return false;
-			break;
-		case MONEY:
+		} else if (type == Type.MONEY) {
 			if (MineQuest.economy!=null){
 				double moneyvalue = Double.parseDouble(details);
 				if (!MineQuest.economy.has(player.getName(),moneyvalue))
 					return false;
 			}
-			break;
-		case PERMISSION:
+		} else if (type == Type.PERMISSION) {
 			if (!player.hasPermission(details))
 				return false;
-			break;
-		case PLAYER:
+		} else if (type == Type.PLAYER) {
 			String[] playernames = details.split(",");
 			for (String s : playernames){
 				if (s.equalsIgnoreCase(player.getName()))
 					return true;
 			}
 			return false;
-		case PREREQ:
-			break;
-		case TIME:
-			break;
-		case WEATHER:
-			break;
-		case WORLD:
-			break;
-		case DATE:
-			break;
-		default:
-			break;
+		} else if (type == Type.PREREQ) {
+			String[] requirements = details.split(",");
+			boolean isSuccess = requirements[0].equalsIgnoreCase("S");
+			String questToCheck = requirements[1];
+			LogStatus ls = QuestStatisticUtils.hasQuest(player.getName(), questToCheck);
+			if (ls == LogStatus.COMPLETED || ls == LogStatus.FAILED)
+				return (isSuccess == (ls==LogStatus.COMPLETED));
+			return false;
+		} else if (type == Type.TIME) {
+			String[] timezone = details.split("-");
+			long firsttimeticks = TimeUtils.matchTime(timezone[0]);
+			long secondtimeticks = TimeUtils.matchTime(timezone[1]);
+			long worldtime = player.getLocation().getWorld().getTime();
+			if (worldtime>=firsttimeticks && worldtime <= secondtimeticks)
+				return true;
+			else if (secondtimeticks < firsttimeticks) {
+				if (worldtime >= firsttimeticks || worldtime <= secondtimeticks)
+					return true;
+			}
+			return false;
+		} else if (type == Type.WEATHER) {
+			boolean downpour = details.equalsIgnoreCase("rain");
+			if (player.getWorld().isThundering()!=downpour)
+				return false;
+		} else if (type == Type.WORLD) {
+			if (!player.getWorld().getName().equals(details))
+				return false;
+		} else if (type == Type.DATE) {
+			String[] range = details.split("|");
+			try {
+				Date before = DateFormat.getInstance().parse(range[0]);
+				Date after = DateFormat.getInstance().parse(range[1]);
+				Date current = Calendar.getInstance().getTime();
+				if (current.after(before) && current.before(after))
+					return true;
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			return false;
 		}
 		return true;
 	}
