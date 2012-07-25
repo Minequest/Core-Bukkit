@@ -20,6 +20,7 @@ package com.theminequest.MineQuest.Target;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -55,6 +56,8 @@ public class TargetManager implements com.theminequest.MineQuest.API.Target.Targ
 			return targetteredit(questid,t);
 		else if (t.getType() == TargetType.RANDOMTARGET)
 			return randomtarget(questid,t);
+		else if (t.getType() == TargetType.LEADER)
+			return leader(questid,t);
 		return null;
 	}
 
@@ -137,6 +140,13 @@ public class TargetManager implements com.theminequest.MineQuest.API.Target.Targ
 		List<LivingEntity> randomchoosing = processTargetDetails(q,QuestUtils.getTargetDetails(q,Integer.parseInt(targetid)));
 		toreturn.add(randomchoosing.get(new Random().nextInt(randomchoosing.size())));
 		return toreturn;
+	}
+
+	private List<LivingEntity> leader(Quest questid, TargetDetails t) {
+		Group team = Managers.getQuestGroupManager().get(questid);
+		List<LivingEntity> list = new LinkedList<LivingEntity>();
+		list.add(team.getLeader());
+		return list;
 	}
 
 	private static List<LivingEntity> getEntitiesAroundRadius(Location l,
