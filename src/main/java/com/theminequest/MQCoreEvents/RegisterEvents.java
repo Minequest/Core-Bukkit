@@ -45,6 +45,10 @@ public final class RegisterEvents {
 		e.addEvent("NRCollectEvent", NRCollectEvent.class);
 		e.addEvent("DestroyEvent", DestroyEvent.class);
 		e.addEvent("KillEvent", KillEvent.class);
+		
+		e.addEvent("RewardEnchanted", RewardEnchanted.class);
+		e.addEvent("RewardDamaged", RewardDamaged.class);
+		
 	}
 	
 }
