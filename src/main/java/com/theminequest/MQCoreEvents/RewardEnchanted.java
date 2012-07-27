@@ -51,16 +51,12 @@ public class RewardEnchanted extends QuestEvent {
 	 */
 	@Override
 	public void parseDetails(String[] details) {
-		for (String s : details){
-			String[] values = s.split(":");
+		item = Integer.parseInt(details[0]);
+		
+		enchantNumber = Integer.parseInt(details[1]);
+		enchantLevel = Integer.parseInt(details[2]);
+		itemDurability = Short.parseShort(details[3]);
 
-			item = Integer.parseInt(values[0]);
-			
-			enchantNumber = Integer.parseInt(values[1]);
-			enchantLevel = Integer.parseInt(values[2]);
-			itemDurability = Short.parseShort(values[3]);
-
-			}
 	}
 
 	@Override

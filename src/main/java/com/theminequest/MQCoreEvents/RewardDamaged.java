@@ -46,12 +46,8 @@ public class RewardDamaged extends QuestEvent {
 	 */
 	@Override
 	public void parseDetails(String[] details) {
-		for (String s : details){
-			String[] values = s.split(":");
-			
-			item = Integer.parseInt(values[0]);
-			itemDurability = Short.parseShort(values[1]);	
-			}
+		item = Integer.parseInt(details[0]);
+		itemDurability = Short.parseShort(details[1]);	
 	}
 
 	@Override
