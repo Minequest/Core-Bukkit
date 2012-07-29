@@ -82,6 +82,7 @@ public class QuestSign implements Listener {
 			player.sendMessage(ChatColor.RED + "Yikes! We can't find this quest anymore...");
 		}
 		Map<String, Date> givenquests = QuestStatisticUtils.getQuests(player.getName(), LogStatus.GIVEN);
+		givenquests.putAll(QuestStatisticUtils.getQuests(player.getName(), LogStatus.ACTIVE));
 		for (String s : givenquests.keySet()){
 			if (quest_name.equals(s)){
 				player.sendMessage("You already have this quest!");

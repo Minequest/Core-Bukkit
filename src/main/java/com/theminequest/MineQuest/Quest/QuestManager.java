@@ -24,6 +24,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -55,6 +56,7 @@ import com.theminequest.MineQuest.API.Quest.Quest;
 import com.theminequest.MineQuest.API.Quest.QuestDetailsUtils;
 import com.theminequest.MineQuest.API.Quest.QuestParser;
 import com.theminequest.MineQuest.API.Quest.QuestUtils;
+import com.theminequest.MineQuest.API.Tracker.LogStatus;
 import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils;
 import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils.QSException;
 import com.theminequest.MineQuest.API.Tracker.SnapshotStatistic;
@@ -365,6 +367,16 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 			qs.put(questName, q);
 		}
 		mwQuests.put(e.getPlayer().getName(), qs);
+		
+		// consistency check
+		Map<String,Date> check = QuestStatisticUtils.getQuests(e.getPlayer().getName(), LogStatus.ACTIVE);
+		for (String s : check.keySet()){
+			if (getMainWorldQuest(e.getPlayer().getName(),s)==null){
+				try {
+					QuestStatisticUtils.dropQuest(e.getPlayer().getName(), s);
+				} catch (QSException e1) { e1.printStackTrace(); }
+			}
+		}
 	}
 	
 	@EventHandler(priority = EventPriority.LOW)
