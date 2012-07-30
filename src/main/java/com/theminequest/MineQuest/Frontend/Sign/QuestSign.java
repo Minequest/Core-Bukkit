@@ -82,13 +82,21 @@ public class QuestSign implements Listener {
 			player.sendMessage(ChatColor.RED + "Yikes! We can't find this quest anymore...");
 		}
 		Map<String, Date> givenquests = QuestStatisticUtils.getQuests(player.getName(), LogStatus.GIVEN);
-		givenquests.putAll(QuestStatisticUtils.getQuests(player.getName(), LogStatus.ACTIVE));
 		for (String s : givenquests.keySet()){
 			if (quest_name.equals(s)){
-				player.sendMessage("You already have this quest!");
+				player.sendMessage("You already have this quest! Check your given quests!");
 				return;
 			}
 		}
+		
+		Map<String, Date> activequests = QuestStatisticUtils.getQuests(player.getName(), LogStatus.ACTIVE);
+		for (String s : activequests.keySet()){
+			if (quest_name.equals(s)){
+				player.sendMessage("You already have this quest active in the world!");
+				return;
+			}
+		}
+
 		if (action == Action.RIGHT_CLICK_BLOCK) {
 			player.sendMessage(QuestDetailsUtils.getOverviewString(d).split("\n"));
 			if (QuestDetailsUtils.requirementsMet(d, player))
