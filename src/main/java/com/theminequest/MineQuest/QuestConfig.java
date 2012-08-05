@@ -30,7 +30,6 @@ public final class QuestConfig {
 	public final PropertiesFile groupConfig;
 	public final PropertiesFile questConfig;
 	public final PropertiesFile databaseConfig;
-	protected PropertiesFile localizationConfig;
 	
 	public QuestConfig(){
 		Managers.log(Level.INFO, "Loading configuration...");
@@ -51,10 +50,6 @@ public final class QuestConfig {
 		 * Load Database Configuration
 		 */
 		databaseConfig = new PropertiesFile(basefolder+"database.properties");
-		/*
-		 * Load Localization Configuration
-		 */
-		localizationConfig = new PropertiesFile(basefolder+"localization.properties");
 	}
 	
 }

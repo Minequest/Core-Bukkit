@@ -196,6 +196,17 @@ public class MineQuest extends JavaPlugin {
 			}
 		});
 
+		Bukkit.getScheduler().scheduleAsyncDelayedTask(this, new Runnable(){
+
+			@Override
+			public void run() {
+				for (I18NMessage msg : I18NMessage.values()){
+					// refresh the locales
+					msg.getValue();
+				}
+			}
+			
+		});
 	}
 
 	@Override

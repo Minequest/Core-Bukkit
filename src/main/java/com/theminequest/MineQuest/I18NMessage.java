@@ -18,6 +18,13 @@
  */
 package com.theminequest.MineQuest;
 
+import java.io.File;
+
+import org.bukkit.configuration.file.YamlConfiguration;
+
+import com.theminequest.MineQuest.API.Managers;
+import com.theminequest.MineQuest.API.Utils.PropertiesFile;
+
 public enum I18NMessage {
 
 	Cmd_INVALIDARGS ("Invalid arguments. See the help menu for arguments."),
@@ -83,13 +90,29 @@ public enum I18NMessage {
 	Quest_NOEDIT ("Nice try, but you can't edit this part of the world."),
 	Top_Cat_MEOW ("Meow!");
 	
+	private static final String LOCATION = Managers.getActivePlugin().getDataFolder().getAbsolutePath() + File.separator + "locales";
+	
+	static {
+		File f = new File(LOCATION);
+		if (!f.exists() || !f.isDirectory()){
+			if (f.exists())
+				f.delete();
+			f.mkdirs();
+		}
+	}
+	
+	private static String getLocale(){
+		return MineQuest.configuration.mainConfig.getString("locale", "en_US");
+	}
+	
 	private final String description;
 	private I18NMessage(String d){
 		description = d;
 	}
 	
 	public String getValue(){
-		return MineQuest.configuration.localizationConfig.getChatString(name(), description);
+		PropertiesFile localefile = new PropertiesFile(LOCATION + File.separator + getLocale() + ".dict");
+		return localefile.getChatString(name(), description);
 	}
 
 	/* (non-Javadoc)
