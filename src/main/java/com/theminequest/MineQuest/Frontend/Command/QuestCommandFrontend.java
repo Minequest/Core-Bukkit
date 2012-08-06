@@ -109,6 +109,11 @@ public class QuestCommandFrontend extends CommandFrontend {
 		}
 		try {
 			QuestStatisticUtils.dropQuest(p.getName(), args[0]);
+			QuestDetails d = Managers.getQuestManager().getDetails(args[0]);
+			if (d==null || d.getProperty(QuestDetails.QUEST_ABORT)==null)
+				p.sendMessage(I18NMessage.Cmd_Quest_DROP + "");
+			else
+				p.sendMessage(ChatUtils.chatify((String) d.getProperty(QuestDetails.QUEST_ABORT)));
 		} catch (QSException e) {
 			p.sendMessage(I18NMessage.Cmd_Quest_NOTHAVEQUEST.getValue());
 			return false;

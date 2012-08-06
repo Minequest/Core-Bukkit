@@ -24,7 +24,7 @@ import com.theminequest.MineQuest.API.Quest.QuestDetails;
 import com.theminequest.MineQuest.API.Quest.QuestParser.QHandler;
 import static com.theminequest.MineQuest.API.Quest.QuestDetails.*;
 
-public class FinishTextHandler implements QHandler {
+public class CompleteTextHandler implements QHandler {
 
 	@Override
 	public void parseDetails(QuestDetails q, List<String> line) {

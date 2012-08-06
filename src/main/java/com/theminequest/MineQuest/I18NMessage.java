@@ -60,6 +60,7 @@ public enum I18NMessage {
 	Cmd_Quest_NOTHAVEQUEST ("You don't have this quest!"),
 	Cmd_Quest_ACCEPTED ("Accepted (Pending) Quests"),
 	Cmd_Quest_AVAILABLE ("Available Quests"),
+	Cmd_Quest_DROP ("The Quest was dropped!"),
 	Cmd_Quest_MWACTIVE ("Main World Quests"),
 	Cmd_Quest_NOACTIVE ("No active quest!"),
 	Cmd_Quest_ALREADYDONE ("The quest has already finished!"),
