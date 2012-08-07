@@ -119,6 +119,7 @@
 									<exclude>org.bukkit:*</exclude>
 									<exclude>org.getspout:*</exclude>
 									<exclude>net.milkbowl.vault:*</exclude>
+									<exclude>org.xerial:sqlite-jdbc</exclude>
 								</excludes>
 							</artifactSet>
 						</configuration>
