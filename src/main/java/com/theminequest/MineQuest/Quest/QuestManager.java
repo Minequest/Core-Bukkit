@@ -199,11 +199,7 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 	public Quest startQuest(com.theminequest.MineQuest.API.Quest.QuestDetails d, String ownerName){
 		if (d==null)
 			throw new IllegalArgumentException(new NullPointerException());
-		try {
-			d = QuestDetailsUtils.getCopy(d);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		d = QuestDetailsUtils.getCopy(d);
 		Quest q;
 		if (d.getProperty(QUEST_LOADWORLD)){
 			q = com.theminequest.MineQuest.Quest.Quest.newInstance(questid,d,ownerName);
