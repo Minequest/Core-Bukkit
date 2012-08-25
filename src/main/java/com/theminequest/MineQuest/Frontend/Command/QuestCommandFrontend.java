@@ -270,6 +270,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 			Managers.getQuestManager().reloadQuests();
 		else
 			Managers.getQuestManager().reloadQuest(args[0]);
+		p.sendMessage(I18NMessage.Cmd_Quest_RELOAD.getValue());
 		return true;
 	}
 
