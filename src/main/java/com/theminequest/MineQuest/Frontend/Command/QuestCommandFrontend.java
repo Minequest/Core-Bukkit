@@ -60,7 +60,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 				continue;
 			QuestDetails qd = Managers.getQuestManager().getDetails(q);
 			if (qd!=null){
-				message.add(ChatColor.AQUA + q + " : " + ChatColor.GOLD + qd.getProperty(QuestDetails.QUEST_NAME));
+				message.add(ChatColor.AQUA + q + " : " + ChatColor.GOLD + qd.getProperty(QuestDetails.QUEST_DISPLAYNAME));
 			} else {
 				message.add(ChatColor.GRAY + q + " : <unavailable>");
 			}
