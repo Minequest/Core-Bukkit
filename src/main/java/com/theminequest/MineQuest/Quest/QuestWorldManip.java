@@ -51,7 +51,8 @@ public class QuestWorldManip {
 	public static void removeWorld(World w) throws IOException{
 		String removename = w.getName();
 		if (Bukkit.unloadWorld(w, false))
-			FileUtils.deleteDirectory(new File(removename));
+			if (!FileUtils.deleteQuietly(new File(removename)))
+				FileUtils.deleteQuietly(new File(removename));
 	}
 	
 }

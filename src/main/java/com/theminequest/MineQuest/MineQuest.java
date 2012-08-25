@@ -205,6 +205,7 @@ public class MineQuest extends JavaPlugin {
 					// refresh the locales
 					msg.getValue();
 				}
+				Managers.log("Refreshed i18n messages!");
 			}
 			
 		});

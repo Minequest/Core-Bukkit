@@ -86,9 +86,9 @@ public enum I18NMessage {
 	Quest_ABORT("Quest aborted!"),
 	Quest_ACCEPT("Quest accepted!"),
 	Quest_COMPLETE("You've successfully completed the quest!"),
+	Quest_FAIL("You've failed the quest!"),
 	Quest_NODESC("No description available..."),
-	Quest_NOEDIT("Nice try, but you can't edit this part of the world."),
-	Top_Cat_MEOW("Meow!");
+	Quest_NOEDIT("Nice try, but you can't edit this part of the world."), Top_Cat_MEOW("Meow!");
 	
 	private static final String LOCATION = Managers.getActivePlugin().getDataFolder().getAbsolutePath() + File.separator + "locales";
 	

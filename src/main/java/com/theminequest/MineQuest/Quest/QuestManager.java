@@ -44,6 +44,7 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
+import com.theminequest.MineQuest.I18NMessage;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.API.CompleteStatus;
 import com.theminequest.MineQuest.API.Managers;
@@ -262,12 +263,16 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 			com.theminequest.MineQuest.API.Quest.Quest q = e.getQuest();
 			String questname = q.getDetails().getProperty(QUEST_NAME);
 			String questfinish = q.getDetails().getProperty(QUEST_COMPLETE);
+			if (questfinish == null)
+				questfinish = I18NMessage.Quest_COMPLETE.getValue();
 			boolean failed = (e.getResult()==CompleteStatus.FAILURE);
 			String color = ChatColor.GRAY + "[done] ";
 			switch (e.getResult()) {
 			case FAILURE:
 				color = ChatColor.RED + "[fail] ";
 				questfinish = q.getDetails().getProperty(QUEST_FAIL);
+				if (questfinish == null)
+					questfinish = I18NMessage.Quest_FAIL.getValue();
 				break;
 			case SUCCESS:
 				color = ChatColor.GREEN + "[complete] ";
