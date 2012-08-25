@@ -93,7 +93,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 			String name = args[0];
 			Quest q = Managers.getQuestManager().getMainWorldQuest(p.getName(),name);
 			if (q != null) {
-				p.sendMessage(QuestUtils.getStatusString(q).split(QuestDetailsUtils.CODE_NEWLINE_CHAR));
+				p.sendMessage(QuestUtils.getStatusString(q).split(QuestDetailsUtils.CODE_NEWLINE_SEQ));
 				return true;
 			} else {
 				p.sendMessage(I18NMessage.Cmd_NOSUCHQUEST.getValue());
@@ -167,7 +167,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Quest_NOACTIVE.getValue());
 			return false;
 		}
-		p.sendMessage(QuestUtils.getStatusString(g.getQuest()).split(QuestDetailsUtils.CODE_NEWLINE_CHAR));
+		p.sendMessage(QuestUtils.getStatusString(g.getQuest()).split(QuestDetailsUtils.CODE_NEWLINE_SEQ));
 		return true;
 	}
 
@@ -257,7 +257,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 			p.sendMessage(I18NMessage.Cmd_NOSUCHQUEST.getValue());
 			return false;
 		}
-		p.sendMessage(QuestDetailsUtils.getOverviewString(qd).split(QuestDetailsUtils.CODE_NEWLINE_CHAR));
+		p.sendMessage(QuestDetailsUtils.getOverviewString(qd).split(QuestDetailsUtils.CODE_NEWLINE_SEQ));
 		return true;
 	}
 
