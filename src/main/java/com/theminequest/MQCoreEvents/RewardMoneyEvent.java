@@ -40,7 +40,7 @@ public class RewardMoneyEvent extends QuestEvent {
 	 */
 	@Override
 	public void parseDetails(String[] details) {
-		money = Double.parseDouble(details[0]);
+		money = Math.abs(Double.parseDouble(details[0]));
 	}
 
 	@Override
