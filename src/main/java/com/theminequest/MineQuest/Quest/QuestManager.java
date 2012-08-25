@@ -274,6 +274,10 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 				if (questfinish == null)
 					questfinish = I18NMessage.Quest_FAIL.getValue();
 				break;
+			case ERROR:
+				color = ChatColor.BOLD + "" + ChatColor.RED + "[! error !] ";
+				questfinish = I18NMessage.Quest_ERROR.getValue();
+				break;
 			case SUCCESS:
 				color = ChatColor.GREEN + "[complete] ";
 				break;

@@ -20,6 +20,7 @@ package com.theminequest.MineQuest.Quest;
 
 import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_EDITS;
 import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_LOADWORLD;
+import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_NAME;
 import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_NETHERWORLD;
 import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_TASKS;
 import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_WORLD;
@@ -28,6 +29,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World.Environment;
@@ -108,8 +110,10 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 
 	public synchronized void startQuest(){
 		Map<Integer,String[]> tasks = details.getProperty(QUEST_TASKS);
-		if (!startTask(SetUtils.getFirstKey(tasks.keySet())))
-			throw new RuntimeException("Starting initial task failed: is everything ok?");
+		if (!startTask(SetUtils.getFirstKey(tasks.keySet()))) {
+			Managers.log(Level.SEVERE, "Starting initial task for " + details.getProperty(QUEST_NAME) + "/" + getQuestOwner() + " failed!");
+			finishQuest(CompleteStatus.ERROR);
+		}
 	}
 
 	/**
@@ -164,8 +168,8 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 			return;
 		if (e.getResult()==CompleteStatus.CANCELED || e.getResult()==CompleteStatus.IGNORE)
 			return;
-		else if (e.getResult()==CompleteStatus.FAILURE){
-			finishQuest(CompleteStatus.FAILURE);
+		else if (e.getResult()==CompleteStatus.FAILURE || e.getResult()==CompleteStatus.ERROR){
+			finishQuest(e.getResult());
 			return;
 		}
 	}
