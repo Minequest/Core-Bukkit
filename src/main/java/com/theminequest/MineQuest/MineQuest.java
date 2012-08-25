@@ -196,10 +196,11 @@ public class MineQuest extends JavaPlugin {
 			}
 		});
 
-		Bukkit.getScheduler().scheduleAsyncDelayedTask(this, new Runnable(){
+		Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable(){
 
 			@Override
 			public void run() {
+				Managers.log("Refreshing i18n messages...");
 				for (I18NMessage msg : I18NMessage.values()){
 					// refresh the locales
 					msg.getValue();

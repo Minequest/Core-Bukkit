@@ -98,7 +98,7 @@ public class QuestSign implements Listener {
 		}
 
 		if (action == Action.RIGHT_CLICK_BLOCK) {
-			player.sendMessage(QuestDetailsUtils.getOverviewString(d).split("\n"));
+			player.sendMessage(QuestDetailsUtils.getOverviewString(d).split(QuestDetailsUtils.CODE_NEWLINE_CHAR));
 			if (QuestDetailsUtils.requirementsMet(d, player))
 				player.sendMessage("This quest is currently " + ChatColor.BOLD + ChatColor.GREEN + "available" + ChatColor.RESET + " to you - left click to accept!");
 			else
