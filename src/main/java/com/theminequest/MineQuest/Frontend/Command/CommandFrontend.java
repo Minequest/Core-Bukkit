@@ -40,7 +40,7 @@ public abstract class CommandFrontend implements CommandExecutor {
 		cmdname = name;
 		Managers.log("[CommandFrontend] Starting Command Frontend for \""+cmdname+"\"...");
 	}
-
+	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		
@@ -52,22 +52,29 @@ public abstract class CommandFrontend implements CommandExecutor {
 			return false;
 		}
 		
-		if (args.length==0)
-			return help(player,args);
-
+		if (args.length==0) {
+			noOptionSpecified(sender,args);
+			return true;
+		}
+		
 		String cmd = args[0].toLowerCase();
 		
 		if (!sender.hasPermission("minequest.command."+label+"."+cmd)) {
-			player.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOPERMISSION.getValue());
+			sender.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOPERMISSION.getValue());
 			return true;
 		}
-
+		
 		String[] arguments = shrinkArray(args);
-
+		
 		Method m;
 		try {
-			m = this.getClass().getMethod(cmd, Player.class, String[].class);
-			m.invoke(this, player, arguments);
+			if (!allowConsole()) {
+				m = this.getClass().getMethod(cmd, Player.class, String[].class);
+				m.invoke(this, player, arguments);
+			} else {
+				m = this.getClass().getMethod(cmd, CommandSender.class, String[].class);
+				m.invoke(this, sender, arguments);
+			}
 			return true;
 		} catch (SecurityException e) {
 			e.printStackTrace();
@@ -93,7 +100,8 @@ public abstract class CommandFrontend implements CommandExecutor {
 		return Arrays.copyOfRange(array, 1, array.length);
 	}
 	
-	public abstract Boolean help(Player p, String[] args);
+	public abstract void help(CommandSender p, String[] args);
+	public abstract void noOptionSpecified(CommandSender sender, String[] args);
 	public abstract boolean allowConsole();
-
+	
 }

@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.theminequest.MineQuest.I18NMessage;
@@ -227,7 +228,8 @@ public class PartyCommandFrontend extends CommandFrontend {
 	}
 
 	@Override
-	public Boolean help(Player p, String[] args) {
+	public void help(CommandSender sender, String[] args) {
+		Player p = (Player)sender;
 		/*
 		 * accept
 		 * create
@@ -275,12 +277,16 @@ public class PartyCommandFrontend extends CommandFrontend {
 
 		for (String s : messages)
 			p.sendMessage(s);
-		return true;
 	}
 
 	@Override
 	public boolean allowConsole() {
 		return false;
+	}
+
+	@Override
+	public void noOptionSpecified(CommandSender sender, String[] args) {
+		help(sender,args);
 	}
 
 }
