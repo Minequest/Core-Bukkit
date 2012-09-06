@@ -68,6 +68,10 @@ public abstract class CommandFrontend implements CommandExecutor {
 		
 		Method m;
 		try {
+			if (cmd.equals("help")) {
+				help(sender,arguments);
+				return true;
+			}
 			if (!allowConsole()) {
 				m = this.getClass().getMethod(cmd, Player.class, String[].class);
 				m.invoke(this, player, arguments);
