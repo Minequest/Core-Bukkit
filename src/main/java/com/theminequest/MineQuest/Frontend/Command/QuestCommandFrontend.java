@@ -68,7 +68,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 		}
 		
 		if (message.size()==1)
-			p.sendMessage(I18NMessage.Cmd_NOQUESTS.getValue());
+			message.add(I18NMessage.Cmd_NOQUESTS.getValue());
 		else
 			message.add(ChatUtils.formatHeader(I18NMessage.Cmd_Quest_GIVEN_INFO.getValue()));
 		
@@ -94,7 +94,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 			}
 			
 			if (message.size()==1)
-				p.sendMessage(I18NMessage.Cmd_NOQUESTS.getValue());
+				message.add(I18NMessage.Cmd_NOQUESTS.getValue());
 			else
 				message.add(ChatUtils.formatHeader(I18NMessage.Cmd_Quest_MAIN_INFO.getValue()));
 			
