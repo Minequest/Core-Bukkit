@@ -67,12 +67,13 @@ public class QuestCommandFrontend extends CommandFrontend {
 			}
 		}
 		
-		message.add(ChatUtils.formatHeader(I18NMessage.Cmd_Quest_GIVEN_INFO.getValue()));
+		if (message.size()==1)
+			p.sendMessage(I18NMessage.Cmd_NOQUESTS.getValue());
+		else
+			message.add(ChatUtils.formatHeader(I18NMessage.Cmd_Quest_GIVEN_INFO.getValue()));
 		
 		for (String m : message)
 			p.sendMessage(m);
-		if (message.size()==1)
-			p.sendMessage(I18NMessage.Cmd_NOQUESTS.getValue());
 		return true;
 	}
 	
@@ -92,12 +93,14 @@ public class QuestCommandFrontend extends CommandFrontend {
 				message.add(ChatColor.LIGHT_PURPLE + q + " : " + ChatColor.GOLD + quest.getDetails().getProperty(QuestDetails.QUEST_NAME));
 			}
 			
-			message.add(ChatUtils.formatHeader(I18NMessage.Cmd_Quest_MAIN_INFO.getValue()));
+			if (message.size()==1)
+				p.sendMessage(I18NMessage.Cmd_NOQUESTS.getValue());
+			else
+				message.add(ChatUtils.formatHeader(I18NMessage.Cmd_Quest_MAIN_INFO.getValue()));
 			
 			for (String m : message)
 				p.sendMessage(m);
-			if (message.size()==1)
-				p.sendMessage(I18NMessage.Cmd_NOQUESTS.getValue());
+
 			return true;
 		} else {
 			String name = args[0];
