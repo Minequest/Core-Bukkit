@@ -19,6 +19,7 @@
 package com.theminequest.MQCoreEvents;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -34,6 +35,7 @@ import com.theminequest.MineQuest.Group.Party;
 
 public class RewardPermEvent extends QuestEvent {
 	
+	private int taskid;
 	private List<String> permissions;
 
 	/*
@@ -44,6 +46,8 @@ public class RewardPermEvent extends QuestEvent {
 	 */
 	@Override
 	public void parseDetails(String[] details) {
+		taskid = Integer.parseInt(details[0]);
+		details = Arrays.copyOfRange(details, 1, details.length-1, String[].class);
 		permissions = new ArrayList<String>();
 		for (String d : details){
 			permissions.add(d);
@@ -68,7 +72,7 @@ public class RewardPermEvent extends QuestEvent {
 
 	@Override
 	public Integer switchTask() {
-		return null;
+		return taskid;
 	}
 
 }

@@ -29,13 +29,15 @@ public final class RegisterEvents {
 
 	public static void registerEvents(){
 		EventManager e = Managers.getEventManager();
+		// start QuestEvent
 		e.addEvent("QuestEvent", GenericQuestEvent.class);
+		e.addEvent("TaskEvent", TaskEvent.class);
+		// end QuestEvent
 		e.addEvent("CompleteQuestEvent", CompleteQuestEvent.class);
 		e.addEvent("QuestAvailableEvent", QuestAvailableEvent.class);
 		e.addEvent("LockWorldTimeEvent", LockWorldTimeEvent.class);
 		e.addEvent("MessageEvent", MessageEvent.class);
 		e.addEvent("PartyHealthEvent", PartyHealthEvent.class);
-		e.addEvent("TaskEvent", TaskEvent.class);
 		e.addEvent("RewardMoneyEvent",RewardMoneyEvent.class);
 		e.addEvent("RewardPermEvent",RewardPermEvent.class);
 		e.addEvent("RewardItemEvent", RewardItemEvent.class);

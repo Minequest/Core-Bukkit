@@ -19,6 +19,7 @@
 package com.theminequest.MQCoreEvents;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -35,6 +36,7 @@ import com.theminequest.MineQuest.API.Group.QuestGroup;
 
 public class RewardItemEvent extends QuestEvent {
 	
+	private int taskid;
 	private LinkedHashMap<Integer,Integer> items;
 
 	/*
@@ -45,6 +47,8 @@ public class RewardItemEvent extends QuestEvent {
 	@Override
 	public void parseDetails(String[] details) {
 		items = new LinkedHashMap<Integer,Integer>();
+		taskid = Integer.parseInt(details[0]);
+		details = Arrays.copyOfRange(details, 1, details.length-1, String[].class);
 		for (String s : details){
 			String[] d = s.split(",");
 			items.put(Integer.parseInt(d[0]),Integer.parseInt(d[1]));
@@ -69,7 +73,7 @@ public class RewardItemEvent extends QuestEvent {
 
 	@Override
 	public Integer switchTask() {
-		return null;
+		return taskid;
 	}
 
 }

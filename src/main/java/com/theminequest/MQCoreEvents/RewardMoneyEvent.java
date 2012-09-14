@@ -30,6 +30,7 @@ import com.theminequest.MineQuest.Group.Party;
 
 public class RewardMoneyEvent extends QuestEvent {
 	
+	private int taskid;
 	private double money;
 
 	/*
@@ -40,7 +41,8 @@ public class RewardMoneyEvent extends QuestEvent {
 	 */
 	@Override
 	public void parseDetails(String[] details) {
-		money = Math.abs(Double.parseDouble(details[0]));
+		taskid = Integer.parseInt(details[0]);
+		money = Math.abs(Double.parseDouble(details[1]));
 	}
 
 	@Override
@@ -60,7 +62,7 @@ public class RewardMoneyEvent extends QuestEvent {
 
 	@Override
 	public Integer switchTask() {
-		return null;
+		return taskid;
 	}
 
 }

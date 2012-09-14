@@ -35,6 +35,7 @@ import com.theminequest.MineQuest.API.Group.QuestGroup;
 
 public class RewardDamaged extends QuestEvent {
 	
+	private int taskid;
 	private int item;
 	private short itemDurability = 100;
 	private boolean isDurableItem;
@@ -46,8 +47,9 @@ public class RewardDamaged extends QuestEvent {
 	 */
 	@Override
 	public void parseDetails(String[] details) {
-		item = Integer.parseInt(details[0]);
-		itemDurability = Short.parseShort(details[1]);	
+		taskid = Integer.parseInt(details[0]);
+		item = Integer.parseInt(details[1]);
+		itemDurability = Short.parseShort(details[2]);	
 	}
 
 	@Override
@@ -75,7 +77,7 @@ public class RewardDamaged extends QuestEvent {
 	
 	@Override
 	public Integer switchTask() {
-		return null;
+		return taskid;
 	}
 
 }

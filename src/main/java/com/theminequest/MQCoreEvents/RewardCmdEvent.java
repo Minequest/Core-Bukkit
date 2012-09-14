@@ -18,6 +18,8 @@
  */
 package com.theminequest.MQCoreEvents;
 
+import java.util.Arrays;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -31,17 +33,20 @@ import com.theminequest.MineQuest.API.Group.QuestGroup;
 
 public class RewardCmdEvent extends QuestEvent {
 	
+	private int taskid;
 	private String[] cmds;
 
 	/*
 	 * (non-Javadoc)
 	 * @see com.theminequest.MineQuest.Events.QEvent#parseDetails(java.lang.String[])
+	 * [0] taskid
 	 * [n] command
 	 * * %p in commands are substituted with player name.
 	 */
 	@Override
 	public void parseDetails(String[] details) {
-		cmds = details;
+		taskid = Integer.parseInt(details[0]);
+		cmds = Arrays.copyOfRange(details, 1, details.length-1, String[].class);
 	}
 
 	@Override
@@ -63,7 +68,7 @@ public class RewardCmdEvent extends QuestEvent {
 
 	@Override
 	public Integer switchTask() {
-		return null;
+		return taskid;
 	}
 
 }

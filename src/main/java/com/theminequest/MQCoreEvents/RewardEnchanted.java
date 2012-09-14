@@ -36,6 +36,7 @@ import com.theminequest.MineQuest.API.Group.QuestGroup;
 
 public class RewardEnchanted extends QuestEvent {
 	
+	private int taskid;
 	private int item;
 	private int itemEnchant;
 	private short itemDurability = 100;
@@ -51,11 +52,11 @@ public class RewardEnchanted extends QuestEvent {
 	 */
 	@Override
 	public void parseDetails(String[] details) {
-		item = Integer.parseInt(details[0]);
-		
-		enchantNumber = Integer.parseInt(details[1]);
-		enchantLevel = Integer.parseInt(details[2]);
-		itemDurability = Short.parseShort(details[3]);
+		taskid = Integer.parseInt(details[0]);
+		item = Integer.parseInt(details[1]);
+		enchantNumber = Integer.parseInt(details[2]);
+		enchantLevel = Integer.parseInt(details[3]);
+		itemDurability = Short.parseShort(details[4]);
 
 	}
 
@@ -143,7 +144,7 @@ public class RewardEnchanted extends QuestEvent {
 	
 	@Override
 	public Integer switchTask() {
-		return null;
+		return taskid;
 	}
 
 }
