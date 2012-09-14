@@ -98,10 +98,7 @@ permissions:
     description: Shows your given quests
     default: true
   minequest.command.quest.main:
-    description: Starts a mainworld quest
-    default: true
-  minequest.command.quest.drop:
-    description: Drops a quest
+    description: View your main world quests
     default: true
   minequest.command.quest.abandon:
     description: Abandons your current quest
@@ -118,6 +115,12 @@ permissions:
   minequest.command.quest.info:
     description: Shows quest info
     default: true
+  minequest.command.quest.admindrop:
+    description: Drops another player's quest
+    default: op
+  minequest.command.quest.drop:
+    description: Drops a quest you have
+    default: op
   minequest.command.quest.reload:
     description: Reloads quest from disk
     default: op

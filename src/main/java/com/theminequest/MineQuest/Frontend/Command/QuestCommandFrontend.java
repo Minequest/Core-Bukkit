@@ -100,7 +100,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 			
 			for (String m : message)
 				p.sendMessage(m);
-
+			
 			return true;
 		} else {
 			String name = args[0];
@@ -111,6 +111,39 @@ public class QuestCommandFrontend extends CommandFrontend {
 			} else {
 				p.sendMessage(I18NMessage.Cmd_NOSUCHQUEST.getValue());
 				return true;
+			}
+		}
+	}
+	
+	public void admindrop(Player p, String[] args) {
+		if (args.length!=3) {
+			p.sendMessage(I18NMessage.Cmd_INVALIDARGS.getValue());
+			return;
+		}
+		String username = args[0];
+		String questname = args[1];
+		boolean complete = Boolean.parseBoolean(args[2]);
+		if (complete) {
+			try {
+				QuestStatisticUtils.completeQuest(username, questname);
+				QuestDetails d = Managers.getQuestManager().getDetails(args[0]);
+				if (d==null || d.getProperty(QuestDetails.QUEST_COMPLETE)==null)
+					p.sendMessage(I18NMessage.Quest_COMPLETE + "");
+				else
+					p.sendMessage(ChatUtils.chatify((String) d.getProperty(QuestDetails.QUEST_COMPLETE)));
+			} catch (QSException e) {
+				p.sendMessage(I18NMessage.Cmd_Quest_NOTHAVEQUEST.getValue());
+			}
+		} else {
+			try {
+				QuestStatisticUtils.dropQuest(username, questname);
+				QuestDetails d = Managers.getQuestManager().getDetails(args[0]);
+				if (d==null || d.getProperty(QuestDetails.QUEST_ABORT)==null)
+					p.sendMessage(I18NMessage.Cmd_Quest_DROP + "");
+				else
+					p.sendMessage(ChatUtils.chatify((String) d.getProperty(QuestDetails.QUEST_ABORT)));
+			} catch (QSException e) {
+				p.sendMessage(I18NMessage.Cmd_Quest_NOTHAVEQUEST.getValue());
 			}
 		}
 	}
