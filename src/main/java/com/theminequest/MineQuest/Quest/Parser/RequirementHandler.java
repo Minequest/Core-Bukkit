@@ -36,7 +36,7 @@ public class RequirementHandler implements QHandler {
 	public void parseDetails(QuestDetails q, List<String> line) {
 		List<QuestRequirement> r = q.getProperty(QUEST_REQUIREMENTS);
 		String details = "";
-		for (int i=1; i<line.size(); i++){
+		for (int i=0; i<line.size(); i++){
 			details+=line.get(i) + ":";
 		}
 		if (details.length()!=0)
