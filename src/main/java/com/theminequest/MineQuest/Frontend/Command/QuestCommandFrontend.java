@@ -148,6 +148,20 @@ public class QuestCommandFrontend extends CommandFrontend {
 		}
 	}
 	
+	public Boolean admininfo(Player p, String[] args){
+		if (args.length!=1){
+			p.sendMessage(I18NMessage.Cmd_INVALIDARGS.getValue());
+			return false;
+		}
+		QuestDetails qd = Managers.getQuestManager().getDetails(args[0]);
+		if (qd==null){
+			p.sendMessage(I18NMessage.Cmd_NOSUCHQUEST.getValue());
+			return false;
+		}
+		p.sendMessage(QuestDetailsUtils.getOverviewString(qd).split(QuestDetailsUtils.CODE_NEWLINE_SEQ));
+		return true;
+	}
+	
 	public Boolean drop(Player p, String[] args) {
 		if (args.length!=1){
 			p.sendMessage(I18NMessage.Cmd_INVALIDARGS.getValue());
@@ -217,41 +231,41 @@ public class QuestCommandFrontend extends CommandFrontend {
 		return true;
 	}
 	
-	public Boolean enter(Player p, String[] args) {
-		if (args.length!=0){
-			p.sendMessage(I18NMessage.Cmd_INVALIDARGS.getValue());
-			return false;
-		}
-		if (Managers.getQuestGroupManager().indexOf(p)==-1){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOPARTY.getValue());
-			return false;
-		}
-		QuestGroup g = Managers.getQuestGroupManager().get(p);
-		if (g.getQuest()==null){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Quest_NOACTIVE.getValue());
-			return false;
-		}
-		if (!g.getQuest().isInstanced()){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Quest_MAINWORLD.getValue());
-			return false;
-		}
-		if (!g.getLeader().equals(p)){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOTLEADER.getValue());
-			return false;
-		}
-		if (g.getQuestStatus()==QuestStatus.INQUEST){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Quest_INQUEST.getValue());
-			return false;
-		}
-		try {
-			g.enterQuest();
-			return true;
-		} catch (GroupException e) {
-			e.printStackTrace();
-			p.sendMessage(ChatColor.GRAY + "ERR: " + e.getMessage());
-			return false;
-		}
-	}
+//	public Boolean enter(Player p, String[] args) {
+//		if (args.length!=0){
+//			p.sendMessage(I18NMessage.Cmd_INVALIDARGS.getValue());
+//			return false;
+//		}
+//		if (Managers.getQuestGroupManager().indexOf(p)==-1){
+//			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOPARTY.getValue());
+//			return false;
+//		}
+//		QuestGroup g = Managers.getQuestGroupManager().get(p);
+//		if (g.getQuest()==null){
+//			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Quest_NOACTIVE.getValue());
+//			return false;
+//		}
+//		if (!g.getQuest().isInstanced()){
+//			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Quest_MAINWORLD.getValue());
+//			return false;
+//		}
+//		if (!g.getLeader().equals(p)){
+//			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOTLEADER.getValue());
+//			return false;
+//		}
+//		if (g.getQuestStatus()==QuestStatus.INQUEST){
+//			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Quest_INQUEST.getValue());
+//			return false;
+//		}
+//		try {
+//			g.enterQuest();
+//			return true;
+//		} catch (GroupException e) {
+//			e.printStackTrace();
+//			p.sendMessage(ChatColor.GRAY + "ERR: " + e.getMessage());
+//			return false;
+//		}
+//	}
 	
 	public Boolean exit(Player p, String[] args) {
 		if (args.length!=0){
@@ -291,20 +305,6 @@ public class QuestCommandFrontend extends CommandFrontend {
 			p.sendMessage(ChatColor.GRAY + "ERR: " + e.getMessage());
 			return false;
 		}
-	}
-	
-	public Boolean info(Player p, String[] args){
-		if (args.length!=1){
-			p.sendMessage(I18NMessage.Cmd_INVALIDARGS.getValue());
-			return false;
-		}
-		QuestDetails qd = Managers.getQuestManager().getDetails(args[0]);
-		if (qd==null){
-			p.sendMessage(I18NMessage.Cmd_NOSUCHQUEST.getValue());
-			return false;
-		}
-		p.sendMessage(QuestDetailsUtils.getOverviewString(qd).split(QuestDetailsUtils.CODE_NEWLINE_SEQ));
-		return true;
 	}
 	
 	public Boolean reload(Player p, String[] args) {
@@ -359,6 +359,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 				p.sendMessage(ChatColor.YELLOW + "[Quest] Starting up. May take a few minutes.");
 				try {
 					g.startQuest(qd);
+					g.enterQuest();
 				} catch (GroupException e) {
 					e.printStackTrace();
 					p.sendMessage(ChatColor.RED + "[Quest] Couldn't start your quest. :C");
@@ -392,69 +393,116 @@ public class QuestCommandFrontend extends CommandFrontend {
 		
 		/*
 		 * OP: reload [name]
-		 * given
-		 * main [name]
-		 * drop <name>
-		 * info
-		 * 
+		 * OP: admindrop <username> <name> <true/false (complete?)>
+		 * OP: admininfo [name]
+		 * OP: userhas <username>
+		 * NoByDefault: drop <name>
+		 *
+		 * list [name]
+		 * info [name] // when called by non-admin, it checks if the player has the actual quest
+		 *
+		 * active // in MW, shows main world status. in instance, shows instance status.
 		 * abandon
-		 * active
-		 * enter
-		 * exit
 		 * start <name>
 		 */
+		
+		messages.add(ChatUtils.formatHeader(I18NMessage.Cmd_Quest_HELP.getValue()));
+		
+		// admin
 		if (p.hasPermission("minequest.command.quest.reload"))
 			messages.add(ChatUtils.formatHelp("quest reload [name]", "Reload quest into memory (or all)"));
-		messages.add(ChatUtils.formatHeader(I18NMessage.Cmd_Quest_HELP.getValue()));
-		messages.add(ChatUtils.formatHelp("quest given", I18NMessage.Cmd_Quest_HELPGIVEN.getValue()));
-		messages.add(ChatUtils.formatHelp("quest main [name]", I18NMessage.Cmd_Quest_HELPMAIN.getValue()));
-		messages.add(ChatUtils.formatHelp("quest drop <name>", I18NMessage.Cmd_Quest_HELPDROP.getValue()));
-		messages.add(ChatUtils.formatHelp("quest info <name>", I18NMessage.Cmd_Quest_HELPINFO.getValue()));
+		if (p.hasPermission("minequest.command.quest.admindrop"))
+			messages.add(ChatUtils.formatHelp("quest admindrop <user> <name> <true/false>", "Drop a quest for a user completed or discarded."));
+		if (p.hasPermission("minequest.command.quest.admininfo"))
+			messages.add(ChatUtils.formatHelp("quest admininfo <name>", I18NMessage.Cmd_Quest_HELPINFO.getValue()));
+		if (p.hasPermission("minequest.command.quest.userhas"))
+			messages.add(ChatUtils.formatHelp("quest userhas <user>", "See what quests a user has."));
 		
-		if (inGroup){
-			if (active != null && isLeader && active.isFinished()==null)
+		// off by default
+		if (p.hasPermission("minequest.command.quest.drop"))
+			messages.add(ChatUtils.formatHelp("quest drop <name>", I18NMessage.Cmd_Quest_HELPDROP.getValue()));
+		
+		//messages.add(ChatUtils.formatHelp("quest given", I18NMessage.Cmd_Quest_HELPGIVEN.getValue()));
+		//messages.add(ChatUtils.formatHelp("quest main [name]", I18NMessage.Cmd_Quest_HELPMAIN.getValue()));
+		
+		// basic commands
+		if (p.hasPermission("minequest.command.quest.list"))
+			messages.add(ChatUtils.formatHelp("quest list", "See what quests you have."));
+		if (p.hasPermission("minequest.command.quest.info"))
+			messages.add(ChatUtils.formatHelp("quest info [name]", "Get information about a quest you have."));
+		
+		if (active != null) { // quest commands - instanced
+			// abandon
+			if (isLeader && active.isFinished()==null)
 				messages.add(ChatUtils.formatHelp("quest abandon", I18NMessage.Cmd_Quest_HELPABANDON.getValue()));
-			else if (active != null && isLeader && active.isFinished()!=null)
+			else if (isLeader && active.isFinished()!=null)
 				messages.add(ChatColor.GRAY + "[quest abandon] " + I18NMessage.Cmd_Quest_ALREADYDONE.getValue());
-			else if (active != null)
+			else
 				messages.add(ChatColor.GRAY + "[quest abandon] " + I18NMessage.Cmd_NOTLEADER.getValue());
+			// active
+			messages.add(ChatUtils.formatHelp("quest active", "See the current tasks for this quest."));
+			// exit
+			if (active.isFinished()!=null)
+				messages.add(ChatUtils.formatHelp("quest exit", I18NMessage.Cmd_Quest_HELPEXIT.getValue()));
 			else
-				messages.add(ChatColor.GRAY + "[quest abandon] " + I18NMessage.Cmd_Quest_NOACTIVE.getValue());
-			if (active!=null)
-				messages.add(ChatUtils.formatHelp("quest active", I18NMessage.Cmd_Quest_HELPACTIVE.getValue()));
-			else
-				messages.add(ChatColor.GRAY + "[quest active] " + I18NMessage.Cmd_Quest_NOACTIVE.getValue());
-			if (!isLeader)
-				messages.add(ChatColor.GRAY + "[quest enter/exit] " + I18NMessage.Cmd_NOTLEADER.getValue());
-			else{
-				switch(inQuest){
-				case NOTINQUEST:
-					messages.add(ChatUtils.formatHelp("quest enter", I18NMessage.Cmd_Quest_HELPENTER.getValue()));
-					break;
-				case INQUEST:
-					if (active.isFinished()!=null)
-						messages.add(ChatUtils.formatHelp("quest exit", I18NMessage.Cmd_Quest_HELPEXIT.getValue()));
-					else
-						messages.add(ChatColor.GRAY + "[quest exit] " + I18NMessage.Cmd_Quest_EXITUNFINISHED.getValue());
-					break;
-				case MAINWORLDQUEST:
-					messages.add(ChatColor.GRAY + "[quest enter/exit] " + I18NMessage.Cmd_Quest_MAINWORLD.getValue());
-					break;
-				default:
-					messages.add(ChatColor.GRAY + "[quest enter/exit] " + I18NMessage.Cmd_Quest_NOACTIVE.getValue());
-					break;
-				}
+				messages.add(ChatColor.GRAY + "[quest exit] " + I18NMessage.Cmd_Quest_EXITUNFINISHED.getValue());
+		} else { // non-instanced
+			// active
+			messages.add(ChatUtils.formatHelp("quest active [name]", "See the current tasks for your quests."));
+			if (inGroup) { // in group
+				if (isLeader)
+					messages.add(ChatUtils.formatHelp("quest start <name>", I18NMessage.Cmd_Quest_HELPSTART.getValue()));
+				else
+					messages.add(ChatColor.GRAY + "[quest start] " + I18NMessage.Cmd_NOTLEADER.getValue());
+			} else {
+				messages.add(ChatUtils.formatHelp("quest start <name>", I18NMessage.Cmd_Quest_HELPSTARTNOPARTY.getValue()));
 			}
-			if (active == null && isLeader)
-				messages.add(ChatUtils.formatHelp("quest start <name>", I18NMessage.Cmd_Quest_HELPSTART.getValue()));
-			else if (active == null)
-				messages.add(ChatColor.GRAY + "[quest start] " + I18NMessage.Cmd_NOTLEADER.getValue());
-			else
-				messages.add(ChatColor.GRAY + "[quest start] " + I18NMessage.Cmd_Quest_ALREADYACTIVE.getValue());
-		} else {
-			messages.add(ChatUtils.formatHelp("quest start <name>", I18NMessage.Cmd_Quest_HELPSTARTNOPARTY.getValue()));
-			messages.add(ChatColor.AQUA + I18NMessage.Cmd_Quest_JOINPARTY.getValue());
 		}
+		
+		//		if (inGroup){
+		//			if (active != null && isLeader && active.isFinished()==null)
+		//				messages.add(ChatUtils.formatHelp("quest abandon", I18NMessage.Cmd_Quest_HELPABANDON.getValue()));
+		//			else if (active != null && isLeader && active.isFinished()!=null)
+		//				messages.add(ChatColor.GRAY + "[quest abandon] " + I18NMessage.Cmd_Quest_ALREADYDONE.getValue());
+		//			else if (active != null)
+		//				messages.add(ChatColor.GRAY + "[quest abandon] " + I18NMessage.Cmd_NOTLEADER.getValue());
+		//			else
+		//				messages.add(ChatColor.GRAY + "[quest abandon] " + I18NMessage.Cmd_Quest_NOACTIVE.getValue());
+		//			if (active!=null)
+		//				messages.add(ChatUtils.formatHelp("quest active", I18NMessage.Cmd_Quest_HELPACTIVE.getValue()));
+		//			else
+		//				messages.add(ChatColor.GRAY + "[quest active] " + I18NMessage.Cmd_Quest_NOACTIVE.getValue());
+		//			if (!isLeader)
+		//				messages.add(ChatColor.GRAY + "[quest enter/exit] " + I18NMessage.Cmd_NOTLEADER.getValue());
+		//			else{
+		//				switch(inQuest){
+		//				case NOTINQUEST:
+		//					messages.add(ChatUtils.formatHelp("quest enter", I18NMessage.Cmd_Quest_HELPENTER.getValue()));
+		//					break;
+		//				case INQUEST:
+		//					if (active.isFinished()!=null)
+		//						messages.add(ChatUtils.formatHelp("quest exit", I18NMessage.Cmd_Quest_HELPEXIT.getValue()));
+		//					else
+		//						messages.add(ChatColor.GRAY + "[quest exit] " + I18NMessage.Cmd_Quest_EXITUNFINISHED.getValue());
+		//					break;
+		//				case MAINWORLDQUEST:
+		//					messages.add(ChatColor.GRAY + "[quest enter/exit] " + I18NMessage.Cmd_Quest_MAINWORLD.getValue());
+		//					break;
+		//				default:
+		//					messages.add(ChatColor.GRAY + "[quest enter/exit] " + I18NMessage.Cmd_Quest_NOACTIVE.getValue());
+		//					break;
+		//				}
+		//			}
+		//			if (active == null && isLeader)
+		//				messages.add(ChatUtils.formatHelp("quest start <name>", I18NMessage.Cmd_Quest_HELPSTART.getValue()));
+		//			else if (active == null)
+		//				messages.add(ChatColor.GRAY + "[quest start] " + I18NMessage.Cmd_NOTLEADER.getValue());
+		//			else
+		//				messages.add(ChatColor.GRAY + "[quest start] " + I18NMessage.Cmd_Quest_ALREADYACTIVE.getValue());
+		//		} else {
+		//			messages.add(ChatUtils.formatHelp("quest start <name>", I18NMessage.Cmd_Quest_HELPSTARTNOPARTY.getValue()));
+		//			messages.add(ChatColor.AQUA + I18NMessage.Cmd_Quest_JOINPARTY.getValue());
+		//		}
 		
 		for (String m : messages) {
 			p.sendMessage(m);
