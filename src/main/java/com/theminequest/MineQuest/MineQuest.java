@@ -46,6 +46,7 @@ import com.theminequest.MineQuest.Frontend.Command.QuestCommandFrontend;
 import com.theminequest.MineQuest.Frontend.Sign.QuestSign;
 import com.theminequest.MineQuest.Group.MQQuestGroupManager;
 import com.theminequest.MineQuest.Quest.QuestManager;
+import com.theminequest.MineQuest.Quest.Requirements.MQRequirementManager;
 import com.theminequest.MineQuest.Target.TargetManager;
 
 /**
@@ -159,6 +160,7 @@ public class MineQuest extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(Managers.getQuestManager(), this);
 		Managers.setUtilManager(new UtilManager());
 		getServer().getPluginManager().registerEvents(Managers.getUtilManager(), this);
+		Managers.setRequirementManager(new MQRequirementManager());
 		Managers.setTargetManager(new TargetManager());
 		try {
 			gcMetrics = new GriefcraftMetrics(this);
@@ -232,6 +234,8 @@ public class MineQuest extends JavaPlugin {
 		Managers.setQuestManager(null);
 		Managers.setGroupManager(null);
 		Managers.setUtilManager(null);
+		Managers.setRequirementManager(null);
+		Managers.setTargetManager(null);
 		configuration = null;
 		permission = null;
 		economy = null;

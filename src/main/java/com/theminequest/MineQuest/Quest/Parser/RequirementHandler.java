@@ -19,31 +19,32 @@
 package com.theminequest.MineQuest.Quest.Parser;
 
 import java.util.List;
+import java.util.Map;
 
+import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Quest.QuestDetails;
 import com.theminequest.MineQuest.API.Quest.QuestParser.QHandler;
-import com.theminequest.MineQuest.API.Quest.QuestRequirement;
-import com.theminequest.MineQuest.Quest.RequirementFactory;
+import com.theminequest.MineQuest.API.Requirements.QuestRequirement;
 
 import static com.theminequest.MineQuest.API.Quest.QuestDetails.*;
 
 public class RequirementHandler implements QHandler {
 
 	/*
-	 * Requirement:TYPE:details
+	 * Requirement:ID:Name:Details
 	 */
 	@Override
 	public void parseDetails(QuestDetails q, List<String> line) {
-		List<QuestRequirement> r = q.getProperty(QUEST_REQUIREMENTS);
+		int number = Integer.parseInt(line.remove(0));
+		String name = line.remove(1);
 		String details = "";
-		for (int i=0; i<line.size(); i++){
-			details+=line.get(i) + ":";
-		}
-		if (details.length()!=0)
-			details = details.substring(0, details.length()-1);
-		QuestRequirement qr = RequirementFactory.constructRequirement(line.get(0), q, details);
-		if (qr!=null)
-			r.add(qr);
+		for (String s : line)
+			details+=s + ":";
+		if (details.length() != 0)
+			details = details.substring(0,details.length()-2);
+		Map<Integer,QuestRequirement> reqs = q.getProperty(QUEST_REQUIREMENTDETAILS);
+		QuestRequirement req = Managers.getRequirementManager().construct(name, number, q, details);
+		reqs.put(number, req);
 	}
 
 }

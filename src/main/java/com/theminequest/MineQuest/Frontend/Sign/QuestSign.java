@@ -99,12 +99,12 @@ public class QuestSign implements Listener {
 
 		if (action == Action.RIGHT_CLICK_BLOCK) {
 			player.sendMessage(QuestDetailsUtils.getOverviewString(d).split(QuestDetailsUtils.CODE_NEWLINE_SEQ));
-			if (QuestDetailsUtils.requirementsMet(d, player))
+			if (QuestDetailsUtils.getRequirementsMet(d, player))
 				player.sendMessage("This quest is currently " + ChatColor.BOLD + ChatColor.GREEN + "available" + ChatColor.RESET + " to you - left click to accept!");
 			else
 				player.sendMessage("This quest is currently " + ChatColor.BOLD + ChatColor.RED + "not available" + ChatColor.RESET + " to you.");
 		} else if (action == Action.LEFT_CLICK_BLOCK) {
-			if (QuestDetailsUtils.requirementsMet(d, player)) {
+			if (QuestDetailsUtils.getRequirementsMet(d, player)) {
 				try {
 					QuestStatisticUtils.giveQuest(player.getName(), quest_name);
 					player.sendMessage(ChatColor.GREEN + "Successfully added " + d.getProperty(QuestDetails.QUEST_DISPLAYNAME) + " to your quest list!");

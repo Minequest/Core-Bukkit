@@ -42,13 +42,14 @@ import com.theminequest.MineQuest.API.Group.GroupException.GroupReason;
 import com.theminequest.MineQuest.API.Group.QuestGroup;
 import com.theminequest.MineQuest.API.Quest.Quest;
 import com.theminequest.MineQuest.API.Quest.QuestDetails;
-import com.theminequest.MineQuest.API.Quest.QuestRequirement;
+import com.theminequest.MineQuest.API.Quest.QuestDetailsUtils;
 import com.theminequest.MineQuest.API.Quest.QuestUtils;
+import com.theminequest.MineQuest.API.Requirements.QuestRequirement;
 
 public class Party implements QuestGroup {
 	
 	public static final String CONFIG_CAPACITY = "party.maxCapacity";
-
+	
 	private long teamid;
 	private List<Player> players;
 	private LinkedHashMap<Player,Location> locations;
@@ -56,7 +57,7 @@ public class Party implements QuestGroup {
 	private Quest quest;
 	private QuestStatus status;
 	private boolean pvp;
-
+	
 	protected Party(long id, List<Player> p){
 		if (p.size()<=0)
 			throw new IllegalArgumentException(GroupReason.BADCAPACITY.name());
@@ -69,12 +70,12 @@ public class Party implements QuestGroup {
 		status = QuestStatus.NOQUEST;
 		capacity = MineQuest.configuration.groupConfig.getInt(CONFIG_CAPACITY, 8);
 	}
-
+	
 	@Override
 	public synchronized Player getLeader(){
 		return players.get(0);
 	}
-
+	
 	@Override
 	public synchronized void setLeader(Player p) throws GroupException{
 		if (!contains(p))
@@ -82,29 +83,29 @@ public class Party implements QuestGroup {
 		players.remove(p);
 		players.add(0, p);
 	}
-
+	
 	@Override
 	public synchronized List<Player> getMembers(){
 		return players;
 	}
-
+	
 	@Override
 	public synchronized void setCapacity(int c) throws GroupException{
 		if (c<players.size())
 			throw new GroupException(GroupReason.BADCAPACITY);
 		capacity = c;
 	}
-
+	
 	@Override
 	public synchronized int getCapacity(){
 		return capacity;
 	}
-
+	
 	@Override
 	public long getID(){
 		return teamid;
 	}
-
+	
 	@Override
 	public synchronized boolean contains(Player p){
 		return players.contains(p);
@@ -120,13 +121,10 @@ public class Party implements QuestGroup {
 		if (quest!=null)
 			throw new GroupException(GroupReason.ALREADYONQUEST);
 		// check requirements
-		List<QuestRequirement> requirements = d.getProperty(QuestDetails.QUEST_REQUIREMENTS);
-		for (QuestRequirement r : requirements){
-			if (!r.isSatisfied(getLeader()))
-				throw new GroupException(GroupReason.REQUIREMENTSNOTFULFILLED);
-		}
+		if (!QuestDetailsUtils.startRequirementsMet(d, getLeader()))
+			throw new GroupException(GroupReason.REQUIREMENTSNOTFULFILLED);
 		quest = Managers.getQuestManager().startQuest(d,getLeader().getName());
-
+		
 		status = QuestStatus.NOTINQUEST;
 		boolean loadworld = quest.getDetails().getProperty(QuestDetails.QUEST_LOADWORLD);
 		if (!loadworld){
@@ -134,7 +132,7 @@ public class Party implements QuestGroup {
 			status = QuestStatus.MAINWORLDQUEST;
 		}
 	}
-
+	
 	@Override
 	public synchronized void abandonQuest() throws GroupException {
 		if (quest==null)
@@ -148,7 +146,7 @@ public class Party implements QuestGroup {
 		if (q!=null){
 			q.cleanupQuest();
 		}
-
+		
 	}
 	
 	/**
@@ -160,14 +158,14 @@ public class Party implements QuestGroup {
 	public synchronized Quest getQuest() {
 		return quest;
 	}
-
+	
 	@Override
 	public synchronized void teleportPlayers(Location l) {
 		for (Player p : players){
 			p.teleport(l);
 		}
 	}
-
+	
 	@Override
 	public synchronized void add(Player p) throws GroupException {
 		if (Managers.getGroupManager().indexOf(p)!=-1)
@@ -185,7 +183,7 @@ public class Party implements QuestGroup {
 			throw new GroupException(GroupReason.EXTERNALEXCEPTION);
 		players.add(p);
 	}
-
+	
 	@Override
 	public synchronized void remove(Player p) throws GroupException{
 		if (!contains(p))
@@ -210,7 +208,7 @@ public class Party implements QuestGroup {
 			Managers.getGroupManager().disposeGroup(this);
 		}
 	}
-
+	
 	@Override
 	public synchronized void enterQuest() throws GroupException {
 		if (quest==null)
@@ -224,7 +222,7 @@ public class Party implements QuestGroup {
 		teleportPlayers(QuestUtils.getSpawnLocation(quest));
 		quest.startQuest();
 	}
-
+	
 	public synchronized void recordCurrentLocations() {
 		locations = new LinkedHashMap<Player,Location>();
 		for (Player p : players){
@@ -245,7 +243,7 @@ public class Party implements QuestGroup {
 		p.teleport(locations.get(p));
 		locations.remove(p);
 	}
-
+	
 	public synchronized void exitQuest() throws GroupException {
 		if (quest==null)
 			throw new GroupException(GroupReason.NOQUEST);
@@ -275,25 +273,25 @@ public class Party implements QuestGroup {
 		status = QuestStatus.NOQUEST;
 		q.cleanupQuest();
 	}
-
+	
 	@Override
 	public int compareTo(Group arg0) {
 		return (int) (teamid-arg0.getID());
 	}
-
+	
 	@Override
 	public boolean isPVP() {
 		return pvp;
 	}
-
+	
 	@Override
 	public void setPVP(boolean on) {
 		pvp = on;
 	}
-
+	
 	@Override
 	public QuestStatus getQuestStatus() {
 		return status;
 	}
-
+	
 }

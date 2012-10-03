@@ -23,40 +23,29 @@ import org.bukkit.entity.Player;
 import com.theminequest.MineQuest.API.CompleteStatus;
 import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Events.QuestEvent;
-import com.theminequest.MineQuest.API.Quest.QuestRequirement;
-import com.theminequest.MineQuest.Quest.RequirementFactory;
+import com.theminequest.MineQuest.API.Quest.QuestDetailsUtils;
+import com.theminequest.MineQuest.API.Requirements.QuestRequirement;
 
 public class RequirementMetEvent extends QuestEvent {
 	
 	private int taskifmet;
 	private int taskifnotmet;
 	private int tasktosend;
-	private QuestRequirement requirement;
+	private int requirementid;
 
 	/*
 	 * (non-Javadoc)
 	 * @see com.theminequest.MineQuest.API.Events.QuestEvent#parseDetails(java.lang.String[])
-	 * [0] task id if met
-	 * [1] task id if not met
-	 * [n] requirement details...
+	 * [0] Requirement ID
+	 * [1] task id if met
+	 * [2] task id if not met
 	 */
 	@Override
 	public void parseDetails(String[] details) {
-		taskifmet = Integer.parseInt(details[0]);
-		taskifnotmet = Integer.parseInt(details[1]);
+		requirementid = Integer.parseInt(details[0]);
+		taskifmet = Integer.parseInt(details[1]);
+		taskifnotmet = Integer.parseInt(details[2]);
 		tasktosend = -1;
-		String type = details[2];
-		String req = "";
-		for (int i=3; i<details.length; i++){
-			req+=details[i];
-			if (i<details.length-1)
-				req+=":";
-		}
-		QuestRequirement qr = RequirementFactory.constructRequirement(type, getQuest().getDetails(), req);
-		if (qr!=null)
-			requirement = qr;
-		else
-			throw new RuntimeException("Invalid Requirement!");
 	}
 
 	@Override
@@ -67,7 +56,7 @@ public class RequirementMetEvent extends QuestEvent {
 	@Override
 	public CompleteStatus action() {
 		Player leader = Managers.getQuestGroupManager().get(getQuest()).getLeader();
-		if (requirement.isSatisfied(leader))
+		if (QuestDetailsUtils.requirementMet(getQuest().getDetails(), requirementid, leader))
 			tasktosend = taskifmet;
 		else
 			tasktosend = taskifnotmet;

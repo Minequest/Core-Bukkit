@@ -19,13 +19,15 @@
 package com.theminequest.MineQuest.Quest.Parser;
 
 import java.util.List;
+import java.util.Map;
 
+import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Quest.QuestParser.QHandler;
-import com.theminequest.MineQuest.API.Quest.QuestRequirement;
 
 import static com.theminequest.MineQuest.API.Quest.QuestDetails.*;
+
 import com.theminequest.MineQuest.API.Quest.QuestDetails;
-import com.theminequest.MineQuest.Quest.RequirementFactory;
+import com.theminequest.MineQuest.API.Requirements.QuestRequirement;
 
 @Deprecated
 public class RepeatableHandler implements QHandler {
@@ -33,8 +35,11 @@ public class RepeatableHandler implements QHandler {
 	@Override
 	public void parseDetails(QuestDetails q, List<String> line) {
 		if (line.get(0).equalsIgnoreCase("false")){
-			List<QuestRequirement> r = q.getProperty(QUEST_REQUIREMENTS);
-			r.add(RequirementFactory.constructRequirement("neverdone", q, null));
+			Map<Integer,QuestRequirement> reqs = q.getProperty(QUEST_REQUIREMENTDETAILS);
+			QuestRequirement req = Managers.getRequirementManager().construct("NotRepeatableRequirement",-1,q,"");
+			reqs.put(-1,req);
+			List<Integer> getreqs = q.getProperty(QUEST_GETREQUIREMENTS);
+			getreqs.add(-1);
 		}
 	}
 

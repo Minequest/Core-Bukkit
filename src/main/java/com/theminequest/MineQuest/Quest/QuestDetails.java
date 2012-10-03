@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
@@ -32,7 +33,7 @@ import org.bukkit.ChatColor;
 import com.theminequest.MineQuest.I18NMessage;
 import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Edit.Edit;
-import com.theminequest.MineQuest.API.Quest.QuestRequirement;
+import com.theminequest.MineQuest.API.Requirements.QuestRequirement;
 import com.theminequest.MineQuest.API.Target.TargetDetails;
 
 /**
@@ -46,7 +47,7 @@ public class QuestDetails implements com.theminequest.MineQuest.API.Quest.QuestD
 	 * 
 	 */
 	private static final long serialVersionUID = 9148896666724411547L;
-	public Map<String, Serializable> database;
+	private Map<String, Serializable> database;
 
 	/**
 	 * Create a QuestDetails from the file
@@ -93,7 +94,9 @@ public class QuestDetails implements com.theminequest.MineQuest.API.Quest.QuestD
 		setProperty(QuestDetails.QUEST_EDITS,new LinkedHashMap<Integer,Edit>(0));
 
 		setProperty(QuestDetails.QUEST_NETHERWORLD,false);
-		setProperty(QuestDetails.QUEST_REQUIREMENTS,new ArrayList<QuestRequirement>());
+		setProperty(QuestDetails.QUEST_REQUIREMENTDETAILS,new LinkedHashMap<Integer,QuestRequirement>());
+		setProperty(QuestDetails.QUEST_GETREQUIREMENTS, new LinkedList<Integer>());
+		setProperty(QuestDetails.QUEST_STARTREQUIREMENTS, new LinkedList<Integer>());
 	}
 	
 	
