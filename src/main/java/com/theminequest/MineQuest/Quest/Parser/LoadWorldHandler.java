@@ -25,6 +25,7 @@ import static com.theminequest.MineQuest.API.Quest.QuestDetails.*;
 
 import com.theminequest.MineQuest.API.Quest.QuestDetails;
 
+@Deprecated
 public class LoadWorldHandler implements QHandler {
 
 	@Override

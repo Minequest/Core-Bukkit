@@ -31,6 +31,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.alta189.simplesave.exceptions.ConnectionException;
 import com.theminequest.MQCoreEvents.RegisterEvents;
+import com.theminequest.MQCoreRequirements.RegisterRequirements;
 import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Edit.EditManager;
 import com.theminequest.MineQuest.API.Events.EventManager;
@@ -174,6 +175,7 @@ public class MineQuest extends JavaPlugin {
 		if (!setupEconomy())
 			Managers.log(Level.SEVERE,"[Vault] You don't seem to have any economy plugin...");
 		RegisterEvents.registerEvents();
+		RegisterRequirements.registerRequirements();
 
 		// sign frontend
 		getServer().getPluginManager().registerEvents(new QuestSign(), this);
