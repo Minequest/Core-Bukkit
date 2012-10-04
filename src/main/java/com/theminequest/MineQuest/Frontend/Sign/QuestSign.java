@@ -45,11 +45,11 @@ import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils;
 import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils.QSException;
 
 public class QuestSign implements Listener {
-
+	
 	public QuestSign(){
 		Managers.log("[QuestSign] Starting Sign Frontends...");
 	}
-
+	
 	private boolean isQuestSign(Sign sign){
 		String[] line = sign.getLines();
 		if (line[1] != null && line[1].contains("[Quest]")){
@@ -57,9 +57,9 @@ public class QuestSign implements Listener {
 		}
 		return false;
 	}
-
+	
 	//Listeners For Sign interact and place. 
-
+	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerInteract(PlayerInteractEvent event){
 		Action action = event.getAction();
@@ -81,22 +81,17 @@ public class QuestSign implements Listener {
 		if (d==null){
 			player.sendMessage(ChatColor.RED + "Yikes! We can't find this quest anymore...");
 		}
-		Map<String, Date> givenquests = QuestStatisticUtils.getQuests(player.getName(), LogStatus.GIVEN);
-		for (String s : givenquests.keySet()){
-			if (quest_name.equals(s)){
-				player.sendMessage("You already have this quest! Check your given quests!");
-				return;
-			}
+		
+		if (QuestStatisticUtils.hasQuest(player.getName(), quest_name) == LogStatus.GIVEN) {
+			player.sendMessage("You already have this quest! Check your given quests!");
+			return;
 		}
 		
-		Map<String, Date> activequests = QuestStatisticUtils.getQuests(player.getName(), LogStatus.ACTIVE);
-		for (String s : activequests.keySet()){
-			if (quest_name.equals(s)){
-				player.sendMessage("You already have this quest active in the world!");
-				return;
-			}
+		if (QuestStatisticUtils.hasQuest(player.getName(), quest_name) == LogStatus.ACTIVE) {
+			player.sendMessage("This quest is already running actively in the world!");
+			return;
 		}
-
+		
 		if (action == Action.RIGHT_CLICK_BLOCK) {
 			player.sendMessage(QuestDetailsUtils.getOverviewString(d).split(QuestDetailsUtils.CODE_NEWLINE_SEQ));
 			if (QuestDetailsUtils.getRequirementsMet(d, player))
@@ -116,7 +111,7 @@ public class QuestSign implements Listener {
 				player.sendMessage("This quest is currently " + ChatColor.BOLD + ChatColor.RED + "not available" + ChatColor.RESET + " to you.");
 		}
 	}
-
+	
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onSignChangeEvent(SignChangeEvent event) {
 		if (!event.getLine(1).equalsIgnoreCase("[Quest]"))

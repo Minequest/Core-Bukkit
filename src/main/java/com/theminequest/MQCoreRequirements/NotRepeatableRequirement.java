@@ -17,8 +17,7 @@ public class NotRepeatableRequirement extends QuestRequirement {
 	
 	@Override
 	public boolean isSatisfied(Player player) {
-		Map<String,Date> completed = QuestStatisticUtils.getQuests(player.getName(), LogStatus.COMPLETED);
-		return completed.keySet().contains((String) getDetails().getProperty(QuestDetails.QUEST_NAME));
+		return QuestStatisticUtils.hasQuest(player.getName(), (String) getDetails().getProperty(QuestDetails.QUEST_NAME)) != LogStatus.COMPLETED;
 	}
 	
 }
