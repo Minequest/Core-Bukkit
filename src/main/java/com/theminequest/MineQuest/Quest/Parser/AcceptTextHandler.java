@@ -21,8 +21,13 @@ package com.theminequest.MineQuest.Quest.Parser;
 import java.util.List;
 
 import com.theminequest.MineQuest.API.Quest.QuestDetails;
+import com.theminequest.MineQuest.API.Quest.QuestParser.QHFields;
+import com.theminequest.MineQuest.API.Quest.QuestParser.QHInfo;
 import com.theminequest.MineQuest.API.Quest.QuestParser.QHandler;
 
+@QHInfo(name = "AcceptText", description="Acceptance Text: " +
+		"The message that the player will receive when he/she accepts the quest.")
+@QHFields({"Message"})
 public class AcceptTextHandler implements QHandler {
 
 	@Override

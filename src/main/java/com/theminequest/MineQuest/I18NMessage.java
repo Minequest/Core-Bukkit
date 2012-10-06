@@ -20,11 +20,14 @@ package com.theminequest.MineQuest;
 
 import java.io.File;
 
+import org.bukkit.ChatColor;
+
 import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Utils.PropertiesFile;
 
 public enum I18NMessage {
 	
+	INTERNAL_ERROR(ChatColor.RED + "An internal error occured. Log follows below:"),
 	Cmd_INVALIDARGS("Invalid arguments. See the help menu for arguments."),
 	Cmd_NOPARTY("Not in party!"),
 	Cmd_NOPERMISSION("You do not have sufficient permissions."),
@@ -60,31 +63,22 @@ public enum I18NMessage {
 	Cmd_Quest_DROP("The Quest was dropped!"),
 	Cmd_Quest_EXITUNFINISHED("Quest unfinished - to stop now, use abandon."),
 	Cmd_Quest_GIVEN("Given (Pending) Quests"),
-	Cmd_Quest_GIVEN_INFO("Specific Information: /quest info <name>"),
 	Cmd_Quest_HELP("Quest Help"),
-	Cmd_Quest_HELPABANDON("Abandon active quest."),
-	Cmd_Quest_HELPACCEPT("Accept a Quest."),
-	Cmd_Quest_HELPACTIVE("View Active Quest."),
-	Cmd_Quest_HELPAVAILABLE("View Available Quests."),
-	Cmd_Quest_HELPDROP("Drop a given quest."),
-	Cmd_Quest_HELPENTER("Enter active quest."),
-	Cmd_Quest_HELPEXIT("Exit active quest."),
-	Cmd_Quest_HELPGIVEN("View Pending Quests."),
+	Cmd_Quest_HELPABANDON("Abandon the quest."),
+	Cmd_Quest_HELPACTIVE("View information about the active quest."),
+	Cmd_Quest_HELPDROP("Drop a quest."),
+	Cmd_Quest_HELPEXIT("Exit the quest."),
 	Cmd_Quest_HELPINFO("View information about a Quest."),
-	Cmd_Quest_HELPMAIN("View Main World Quests."),
-	Cmd_Quest_HELPSTART("Start an instanced quest."),
+	Cmd_Quest_HELPSTART("Start and enter an instanced quest."),
 	Cmd_Quest_HELPSTARTNOPARTY("Create a party and start an instanced quest."),
-	Cmd_Quest_INQUEST("Already inside the quest!"),
 	Cmd_Quest_JOINPARTY("Join a party to see all available options!"),
 	Cmd_Quest_MAIN("Main World Quests"),
-	Cmd_Quest_MAIN_INFO("View the current status with /quest main <name>"),
-	Cmd_Quest_MAINWORLD("This is a main world quest!"),
+	Cmd_Quest_MAINWORLD("This is a main world quest! It's already started!"),
 	Cmd_Quest_NOACTIVE("No active quest!"),
 	Cmd_Quest_NOTHAVEQUEST("You don't have this quest!"),
 	Cmd_Quest_NOTINQUEST("Not inside the quest!"),
 	Cmd_Quest_RELOAD("Toggled a reload. Check the server log for more details."),
 	Cmd_Quest_UNAVAILABLE("The quest seems to be unavailable at this time."),
-	Cmd_SQLEXCEPTION("An internal server error occured; blame the admins..."),
 	Quest_ABORT("Quest aborted!"),
 	Quest_ACCEPT("Quest accepted!"),
 	Quest_COMPLETE("You've successfully completed the quest!"),
