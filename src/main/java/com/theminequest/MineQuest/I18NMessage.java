@@ -35,8 +35,8 @@ import com.theminequest.MineQuest.API.Utils.PropertiesFile;
 public class I18NMessage {
 	
 	private static final String LOCATION = Managers.getActivePlugin().getDataFolder().getAbsolutePath() + File.separator + "locales";
-	private static final Locale LOCALE = new Locale(MineQuest.configuration.mainConfig.getString("locale", "en_US"));
 	private static final String CUSTOM = LOCATION + File.separator + "custom.dict";
+	private static final Locale LOCALE = new Locale(MineQuest.configuration.mainConfig.getString("locale", "en_US"));
 	
 	public synchronized static Locale getLocale() {
 		return LOCALE;
