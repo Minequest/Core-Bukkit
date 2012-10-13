@@ -90,7 +90,7 @@ public class MineQuest extends JavaPlugin {
 	 * @return Build version.
 	 */
 	public static String getVersion() {
-		return active.getVersion();
+		return active.getDescription().getVersion();
 	}
 
 	/**
@@ -98,7 +98,7 @@ public class MineQuest extends JavaPlugin {
 	 * @return Name.
 	 */
 	public static String getPluginName() {
-		return active.getName();
+		return active.getDescription().getName();
 	}
 	
 	/**
@@ -145,7 +145,7 @@ public class MineQuest extends JavaPlugin {
 			getDataFolder().mkdirs();
 		active = this;
 		Managers.setActivePlugin(this);
-		if (active.getVersion().equals("unofficialDev")){
+		if (getVersion().equals("unofficialDev")){
 			Managers.log(Level.SEVERE,"[Core] You're using an unofficial dev build!");
 			Managers.log(Level.SEVERE,"[Core] We cannot provide support for this unless you know the GIT hash.");
 		}
