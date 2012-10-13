@@ -94,8 +94,8 @@
 				</includes>
 			</resource>
 			<resource>
-				<targetPath>sql</targetPath>
-				<directory>${basedir}/src/main/resources/sql/</directory>
+				<targetPath>i18n</targetPath>
+				<directory>${basedir}/src/main/resources/i18n/</directory>
 				<filtering>true</filtering>
 				<includes>
 					<include>**/*.dict</include>
