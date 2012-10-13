@@ -38,15 +38,6 @@ public class I18NMessage {
 	private static final Locale LOCALE = new Locale(MineQuest.configuration.mainConfig.getString("locale", "en_US"));
 	private static final String CUSTOM = LOCATION + File.separator + "custom.dict";
 	
-	static {
-		File f = new File(LOCATION);
-		if (!f.exists() || !f.isDirectory()) {
-			if (f.exists())
-				f.delete();
-			f.mkdirs();
-		}
-	}
-	
 	public synchronized static Locale getLocale() {
 		return LOCALE;
 	}
@@ -57,7 +48,13 @@ public class I18NMessage {
 		private PropertiesFile customprops;
 		
 		private Locale(String localename) {
-			//localefile = new PropertiesFile(LOCATION + File.separator + getLocale() + ".dict");
+			File localedir = new File(LOCATION);
+			if (!localedir.exists() || !localedir.isDirectory()) {
+				if (localedir.exists())
+					localedir.delete();
+				localedir.mkdirs();
+			}
+			
 			File localefile = new File(LOCATION + File.separator + localename + ".dict");
 			if (!localefile.exists())
 				copyFromJar(localefile,localename);
