@@ -269,20 +269,16 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 			com.theminequest.MineQuest.API.Quest.Quest q = e.getQuest();
 			String questname = q.getDetails().getProperty(QUEST_NAME);
 			String questfinish = q.getDetails().getProperty(QUEST_COMPLETE);
-			if (questfinish == null)
-				questfinish = I18NMessage.Quest_COMPLETE.getValue();
 			boolean failed = (e.getResult()==CompleteStatus.FAILURE);
 			String color = ChatColor.GRAY + "[done] ";
 			switch (e.getResult()) {
 			case FAILURE:
 				color = ChatColor.RED + "[fail] ";
 				questfinish = q.getDetails().getProperty(QUEST_FAIL);
-				if (questfinish == null)
-					questfinish = I18NMessage.Quest_FAIL.getValue();
 				break;
 			case ERROR:
 				color = ChatColor.BOLD + "" + ChatColor.RED + "[! error !] ";
-				questfinish = I18NMessage.Quest_ERROR.getValue();
+				questfinish = I18NMessage.getLocale().getString(QuestDetails.IERROR);
 				break;
 			case SUCCESS:
 				color = ChatColor.GREEN + "[complete] ";

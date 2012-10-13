@@ -98,7 +98,7 @@
 				<directory>${basedir}/src/main/resources/sql/</directory>
 				<filtering>true</filtering>
 				<includes>
-					<include>**/*.sql</include>
+					<include>**/*.dict</include>
 				</includes>
 			</resource>
 		</resources>

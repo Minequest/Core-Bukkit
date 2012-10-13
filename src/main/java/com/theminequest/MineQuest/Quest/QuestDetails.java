@@ -42,6 +42,14 @@ import com.theminequest.MineQuest.API.Target.TargetDetails;
  *
  */
 public class QuestDetails implements com.theminequest.MineQuest.API.Quest.QuestDetails {
+	
+	public static final String ICOMPLETE = "DETAILSCOMPLETE";
+	public static final String IFAILED = "DETAILSFAILED";
+	public static final String IERROR = "DETAILSERROR";
+	public static final String IABORT = "DETAILSABORT";
+	public static final String IACCEPT = "DETAILSACCEPT";
+	public static final String INOEDIT = "DETAILSNOEDIT";
+	public static final String INODESC = "DETAILSNODESC";
 
 	/**
 	 * 
@@ -72,10 +80,11 @@ public class QuestDetails implements com.theminequest.MineQuest.API.Quest.QuestD
 		setProperty(QuestDetails.QUEST_NAME,id);
 		// DEFAULTS start
 		setProperty(QuestDetails.QUEST_DISPLAYNAME,id);
-		setProperty(QuestDetails.QUEST_DESCRIPTION,I18NMessage.Quest_NODESC.getValue());
-		setProperty(QuestDetails.QUEST_ACCEPT,I18NMessage.Quest_ACCEPT.getValue());
-		setProperty(QuestDetails.QUEST_ABORT,I18NMessage.Quest_ABORT.getValue());
-		setProperty(QuestDetails.QUEST_COMPLETE,I18NMessage.Quest_COMPLETE.getValue());
+		setProperty(QuestDetails.QUEST_DESCRIPTION,I18NMessage.getLocale().getString(INODESC));
+		setProperty(QuestDetails.QUEST_ACCEPT,I18NMessage.getLocale().getString(IACCEPT));
+		setProperty(QuestDetails.QUEST_ABORT,I18NMessage.getLocale().getString(IABORT));
+		setProperty(QuestDetails.QUEST_COMPLETE,I18NMessage.getLocale().getString(ICOMPLETE));
+		setProperty(QuestDetails.QUEST_FAIL,I18NMessage.getLocale().getString(IFAILED));
 		setProperty(QuestDetails.QUEST_SPAWNRESET,true);
 
 		double[] spawnPoint = new double[3];
@@ -84,7 +93,7 @@ public class QuestDetails implements com.theminequest.MineQuest.API.Quest.QuestD
 		spawnPoint[2] = 0;
 		setProperty(QuestDetails.QUEST_SPAWNPOINT,spawnPoint);
 
-		setProperty(QuestDetails.QUEST_EDITMESSAGE,ChatColor.GRAY + I18NMessage.Quest_NOEDIT.getValue());
+		setProperty(QuestDetails.QUEST_EDITMESSAGE,ChatColor.GRAY + I18NMessage.getLocale().getString(INOEDIT));
 		setProperty(QuestDetails.QUEST_WORLD,Bukkit.getWorlds().get(0).getName());
 		setProperty(QuestDetails.QUEST_LOADWORLD,false);
 		

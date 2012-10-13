@@ -34,6 +34,11 @@ import com.theminequest.MineQuest.API.Managers;
 
 public abstract class CommandFrontend implements CommandExecutor {
 	
+	public static final String INOPERM = "CMDNOPERM";
+	public static final String IINVALID = "CMDINVALID";
+	public static final String ISEVERE = "CMDSEVERE";
+	public static final String INOPLAYER = "CMDNOPLAYER";
+	
 	private String cmdname;
 	
 	public CommandFrontend(String name){
@@ -60,7 +65,7 @@ public abstract class CommandFrontend implements CommandExecutor {
 		String cmd = args[0].toLowerCase();
 		
 		if (!sender.hasPermission("minequest.command."+label+"."+cmd)) {
-			sender.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOPERMISSION.getValue());
+			sender.sendMessage(I18NMessage.getLocale().getString(INOPERM));
 			return true;
 		}
 		
@@ -73,28 +78,37 @@ public abstract class CommandFrontend implements CommandExecutor {
 				return true;
 			}
 			if (!allowConsole()) {
-				m = this.getClass().getMethod(cmd, Player.class, String[].class);
+				try {
+					m = this.getClass().getMethod(cmd, Player.class, String[].class);
+				} catch (NoSuchMethodException e) {
+					try {
+						m = this.getClass().getMethod(cmd, CommandSender.class, String[].class);
+					} catch (NoSuchMethodException e1) {
+						sender.sendMessage(I18NMessage.getLocale().getString(IINVALID));
+						return true;
+					}
+				}
 				m.invoke(this, player, arguments);
 			} else {
-				m = this.getClass().getMethod(cmd, CommandSender.class, String[].class);
+				try {
+					m = this.getClass().getMethod(cmd, CommandSender.class, String[].class);
+				} catch (NoSuchMethodException e) {
+					sender.sendMessage(I18NMessage.getLocale().getString(IINVALID));
+					return true;
+				}
 				m.invoke(this, sender, arguments);
 			}
 			return true;
 		} catch (SecurityException e) {
 			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			//e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
-			sender.sendMessage(ChatColor.RED + "A severe error occured executing the command.");
-			sender.sendMessage(ChatColor.RED + "We've recovered as best as we can; please alert system admins.");
-			return true;
 		}
-		sender.sendMessage(I18NMessage.Cmd_INVALIDARGS.getValue());
+		sender.sendMessage(I18NMessage.getLocale().getString(ISEVERE));
 		return true;
 	}
 	

@@ -1,0 +1,195 @@
+#################################################
+# Localization file for en_US                   #
+# Last Updated: 11 October 2012                 #
+# Last Author: Robert Xu <robxu9@gmail.com>     #
+#################################################
+
+#### General Commands
+
+# No Permission!
+CMDNOPERM=&cYou don't have permission!
+
+# Invalid Arguments
+CMDINVALID=&eInvalid arguments. See the help menu for more information.
+
+# Severe Error
+CMDSEVERE=&4A severe error has occured. We've recovered the best we can.\
+&4Please alert the system administrators!
+
+# No such player
+CMDNOPLAYER=&cNo such player found!
+
+#### Quest Details
+
+# Quest Completed!
+DETAILSCOMPLETE=Completed the Quest!
+
+# Quest failed!
+DETAILSFAILED=Failed the Quest!
+
+# Quest failed due to error!
+DETAILSERROR=An error occurred and the quest was stopped. Contact a sysadmin.
+
+# Quest Aborted!
+DETAILSABORT=Quest Aborted!
+
+# Quest Accepted!
+DETAILSACCEPT=Accepted the quest!
+
+# You can't edit the world
+DETAILSNOEDIT=Can't edit the world!
+
+# No description available...
+DETAILSNODESC=No description is available for this quest!
+
+#### Party Commands
+
+# Already in a party!
+PARTYIN=&cYou're already in a party!
+
+# Not in a party!
+PARTYOUT=&cYou're not in a party!
+
+# No invite
+PARTYNOINVITE=&7You haven't been invited to a party!
+
+# Accepted invite
+PARTYACCEPT=&aAccepted invite and joined the party!
+
+# Discard party invite
+PARTYDISCARD=&7Discarded party invite.
+
+# Create a new party!
+PARTYCREATE=&aCreated a new party!
+
+# Not the leader!
+PARTYNOTLEADER=&7You're not the leader of the party!
+
+# Target in a party!
+PARTYTARGETIN=&cThe target player is in a party!
+
+# Target not in party!
+PARTYTARGETOUT=&cThe target player isn't in the party!
+
+# Sent a party invite!
+PARTYTARGETSENT=&aSent a party invite!
+
+# Kicked %n%!
+PARTYKICK=&cKicked %n%!
+
+# You were kicked by %n%!
+PARTYTARGETKICK=&cYou were kicked from the party by %n%!
+
+# Leaving the party.
+PARTYLEAVE=&eYou left the party.
+
+# The list of players
+PARTYLIST=Players in the Party
+
+# Promote target
+PARTYPROMOTE=&e%n% was promoted to leader in the party!
+
+#### Party Help Commands
+
+# Party Header
+PHELPHEAD=Party Help Menu
+
+# Accept pending invite
+PHELPACCEPT=Accept pending party invite.
+
+# Create a party!
+PHELPCREATE=Create a party!
+
+# Hint to join a party to see commands
+PHELPHINT=Join a party to see all the commands!
+
+# Invite someone!
+PHELPINVITE=Invite a player to the party!
+
+# Kick someone!
+PHELPKICK=Kick a player from the party.
+
+# Leave the party!
+PHELPLEAVE=Leave the current party.
+
+# List the members!
+PHELPLIST=List current members.
+
+# Promote to leader!
+PHELPPROMOTE=Promote a member to leader!
+
+#### Quest Commands
+
+# Reload Command
+QUESTRELOAD=&eReloaded Quest(s); Check the server.log for more information.
+
+# Don't have this quest!
+QUESTNOHAVE=&cYou don't have this quest!
+
+# Don't have any quests!
+QUESTNONE=No Quests!
+
+# No such quest (global)
+QUESTNOSUCH=&cQuest does not exist!
+
+# No active quest!
+QUESTNOACTIVE=&cNot on an active quest!
+
+# Already have an active quest!
+QUESTACTIVE=&eAlready on an active quest!
+
+# Not inside active quest!
+QUESTNOTIN=&cYou haven't entered the active quest!
+
+# Quest Unfinished!
+QUESTUNFINISHED=&eThe quest isn't finished! To exit now, abandon the quest.
+
+# Quest Already Finished!
+QUESTFINISHED=&eThe quest has already finished!
+
+# Pending Quests (Formerly given)
+QUESTPENDING=Pending Quests
+
+# Main World/"World" Quests
+QUESTWORLD=World Quests
+
+# Quest unavailable! (Where .quest/QuestDetails isn't available)
+QUESTUNAVAIL=&cThe quest seems to be unavailable right now.
+
+# Loading active quest.
+QUESTACTIVELOAD=&eLoading the Active Quest World...
+
+#### Quest Help Commands
+
+# Quest Header
+QHELPHEAD=Quest Help Menu
+
+# Quest Reload
+QHELPRELOAD=Reload one or all quests into memory.
+
+# Quest AdminDrop
+QHELPADMINDROP=Drop a quest for a user completed or discarded.
+
+# Quest AdminInfo
+QHELPADMININFO=View information about a quest (global).
+
+# Quest UserHas
+QHELPUSERHAS=See quests that a user has.
+
+# Quest Drop
+QHELPDROP=Drop a Quest (Abort, abort!)
+
+# Quest Active
+QHELPACTIVE=View information about the active quest.
+
+# Quest Abandon
+QHELPABANDON=Abandon and leave the active quest.
+
+# Quest Exit
+QHELPEXIT=Leave the completed active quest.
+
+# Quest Start
+QHELPSTART=Start a pending quest, making it active.
+
+# Quest Start NOPARTY
+QHELPSTARTNO=Create a party and start a pending quest, making it active.

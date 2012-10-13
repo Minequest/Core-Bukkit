@@ -18,6 +18,7 @@
  */
 package com.theminequest.MineQuest;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 
@@ -73,7 +74,11 @@ public class MineQuest extends JavaPlugin {
 	 * Access Hidendra's Metrics
 	 */
 	public static GriefcraftMetrics gcMetrics = null;
-	private static PluginDescriptionFile description = null;
+	
+	/**
+	 * Access private instance of this plugin.
+	 */
+	private static MineQuest active = null;
 	
 	/**
 	 * Access main /minequest help menu modifier
@@ -85,7 +90,7 @@ public class MineQuest extends JavaPlugin {
 	 * @return Build version.
 	 */
 	public static String getVersion() {
-		return description.getVersion();
+		return active.getVersion();
 	}
 
 	/**
@@ -93,7 +98,15 @@ public class MineQuest extends JavaPlugin {
 	 * @return Name.
 	 */
 	public static String getPluginName() {
-		return description.getName();
+		return active.getName();
+	}
+	
+	/**
+	 * Get the underlying jarfile
+	 * @return Underlying Jarfile
+	 */
+	public static File getFileReference() {
+		return active.getFile();
 	}
 
 	private boolean setupPermissions() {
@@ -130,9 +143,9 @@ public class MineQuest extends JavaPlugin {
 		}
 		if (!getDataFolder().exists())
 			getDataFolder().mkdirs();
-		description = this.getDescription();
+		active = this;
 		Managers.setActivePlugin(this);
-		if (description.getVersion().equals("unofficialDev")){
+		if (active.getVersion().equals("unofficialDev")){
 			Managers.log(Level.SEVERE,"[Core] You're using an unofficial dev build!");
 			Managers.log(Level.SEVERE,"[Core] We cannot provide support for this unless you know the GIT hash.");
 		}
@@ -205,10 +218,7 @@ public class MineQuest extends JavaPlugin {
 			@Override
 			public void run() {
 				Managers.log("Refreshing i18n messages...");
-				for (I18NMessage msg : I18NMessage.values()){
-					// refresh the locales
-					msg.getValue();
-				}
+				I18NMessage.getLocale();
 				Managers.log("Refreshed i18n messages!");
 			}
 			
@@ -224,7 +234,7 @@ public class MineQuest extends JavaPlugin {
 		} catch (ConnectionException e) {
 			e.printStackTrace();
 		}
-		description = null;
+		active = null;
 		Managers.setActivePlugin(null);
 		EventManager eventManager = Managers.getEventManager();
 		if (eventManager != null) {

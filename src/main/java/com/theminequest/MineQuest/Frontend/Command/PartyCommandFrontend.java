@@ -36,120 +36,126 @@ import com.theminequest.MineQuest.API.Group.GroupException.GroupReason;
 import com.theminequest.MineQuest.API.Utils.ChatUtils;
 
 public class PartyCommandFrontend extends CommandFrontend {
+	
+	public static final String IINPARTY = "PARTYIN";
+	public static final String IOUTPARTY = "PARTYOUT";
+	public static final String INOINVITE = "PARTYNOINVITE";
+	public static final String IACCEPT = "PARTYACCEPT";
+	public static final String IDISCARD = "PARTYDISCARD";
+	public static final String ICREATE = "PARTYCREATE";
+	public static final String INOTLEADER = "PARTYNOTLEADER";
+	public static final String ITARGETINPARTY = "PARTYTARGETIN";
+	public static final String ITARGETOUTPARTY = "PARTYTARGETOUT";
+	public static final String ITARGETINVITED = "PARTYTARGETSENT";
+	public static final String IKICKED = "PARTYKICK";
+	public static final String ITARGETKICKED = "PARTYTARGETKICK";
+	public static final String ILEAVE = "PARTYLEAVE";
+	public static final String ILIST = "PARTYLIST";
+	public static final String IPROMOTE = "PARTYPROMOTE";
 
 	public PartyCommandFrontend() {
 		super("party");
 	}
 
-	public Boolean accept(Player p, String[] args) {
+	public void accept(Player p, String[] args) {
 		if (Managers.getGroupManager().indexOf(p)!=-1){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Party_INPARTY.getValue());
-			return false;
+			p.sendMessage(I18NMessage.getLocale().getString(IINPARTY));
+			return;
 		}
 		if (!Managers.getGroupManager().hasInvite(p)){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Party_NOINVITE.getValue());
-			return false;
+			p.sendMessage(I18NMessage.getLocale().getString(INOINVITE));
+			return;
 		}
 		try {
 			Managers.getGroupManager().acceptInvite(p);
-			p.sendMessage(I18NMessage.Cmd_Party_ACCEPT.getValue());
-			return true;
+			p.sendMessage(I18NMessage.getLocale().getString(IACCEPT));
 		} catch (ManagerException e) {
-			e.printStackTrace();
-			p.sendMessage("Exception occured: " + e.toString());
-			return false;
+			throw new RuntimeException(e); // toss this to CommandFrontend
 		}
 	}
 
-	public Boolean create(Player p, String[] args) {
+	public void create(Player p, String[] args) {
 		if (Managers.getGroupManager().indexOf(p)!=-1){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Party_INPARTY.getValue());
-			return false;
+			p.sendMessage(I18NMessage.getLocale().getString(IINPARTY));
+			return;
 		}
 		if (Managers.getGroupManager().hasInvite(p)){
-			p.sendMessage(ChatColor.GRAY + I18NMessage.Cmd_Party_DISCARD.getValue());
+			p.sendMessage(I18NMessage.getLocale().getString(IDISCARD));
 		}
 		Managers.getGroupManager().createNewGroup(p);
-		p.sendMessage(I18NMessage.Cmd_Party_CREATE.getValue());
-		return true;
+		p.sendMessage(I18NMessage.getLocale().getString(ICREATE));
 	}
 
-	public Boolean invite(Player p, String[] args) {
+	public void invite(Player p, String[] args) {
 		if (Managers.getGroupManager().indexOf(p)==-1){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOPARTY.getValue());
-			return false;
+			p.sendMessage(I18NMessage.getLocale().getString(IOUTPARTY));
+			return;
 		}
 		if (args.length!=1){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_INVALIDARGS.getValue());
-			return false;
+			p.sendMessage(I18NMessage.getLocale().getString(CommandFrontend.IINVALID));
+			return;
 		}
 		Group g = Managers.getGroupManager().get(p);
 		if (!g.getLeader().equals(p)){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOTLEADER.getValue());
-			return false;
+			p.sendMessage(I18NMessage.getLocale().getString(INOTLEADER));
+			return;
 		}
 
 		Player mate = Bukkit.getPlayerExact(args[0]);
 		if (mate==null){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOSUCHPLAYER.getValue());
-			return false;
+			p.sendMessage(I18NMessage.getLocale().getString(CommandFrontend.INOPLAYER));
+			return;
 		}
 		if (Managers.getGroupManager().indexOf(mate)!=-1){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Party_TARGETINPARTY.getValue());
-			return false;
+			p.sendMessage(I18NMessage.getLocale().getString(ITARGETINPARTY));
+			return;
 		}
 		try {
 			Managers.getGroupManager().invite(mate,g);
-			p.sendMessage(I18NMessage.Cmd_Party_TARGETINVITESENT.getValue());
-			return true;
+			p.sendMessage(I18NMessage.getLocale().getString(ITARGETINVITED));
 		} catch (ManagerException e) {
-			e.printStackTrace();
-			p.sendMessage("Error occurred trying to send message: " + e.getMessage());
-			return false;
+			throw new RuntimeException(e); // throw to CommandFrontend
 		}
 	}
 
-	public Boolean kick(Player p, String[] args) {
+	public void kick(Player p, String[] args) {
 		if (Managers.getGroupManager().indexOf(p)==-1){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOPARTY.getValue());
-			return false;
+			p.sendMessage(I18NMessage.getLocale().getString(IOUTPARTY));
+			return;
 		}
 		if (args.length!=1){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_INVALIDARGS.getValue());
-			return false;
+			p.sendMessage(I18NMessage.getLocale().getString(CommandFrontend.IINVALID));
+			return;
 		}
 		Group g = Managers.getGroupManager().get(p);
 		if (!g.getLeader().equals(p)){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOTLEADER.getValue());
-			return false;
+			p.sendMessage(I18NMessage.getLocale().getString(INOTLEADER));
+			return;
 		}
 		Player mate = Bukkit.getPlayer(args[0]);
 		if (!g.contains(mate)){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Party_TARGETNOPARTY.getValue());
-			return false;
+			p.sendMessage(I18NMessage.getLocale().getString(ITARGETOUTPARTY));
+			return;
 		}
 
 		try {
 			g.remove(mate);
-			p.sendMessage(I18NMessage.Cmd_Party_KICK + mate.getDisplayName());
-			mate.sendMessage(I18NMessage.Cmd_Party_KICKTARGET + " (" + p.getDisplayName() + ")");
-			return true;
+			p.sendMessage(I18NMessage.getLocale().getString(IKICKED).replace("%n%",mate.getDisplayName()));
+			mate.sendMessage(I18NMessage.getLocale().getString(ITARGETKICKED).replace("%n%",p.getDisplayName()));
 		} catch (GroupException e) {
-			p.sendMessage(ChatColor.GRAY + "ERR: " + e.getMessage());
-			e.printStackTrace();
-			return false;
+			throw new RuntimeException(e); // toss to CommandFrontend
 		}
 
 	}
 
-	public Boolean leave(Player p, String[] args) {
+	public void leave(Player p, String[] args) {
 		if (Managers.getGroupManager().indexOf(p)==-1){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOPARTY.getValue());
-			return false;
+			p.sendMessage(I18NMessage.getLocale().getString(IOUTPARTY));
+			return;
 		}
 		if (args.length!=0){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_INVALIDARGS.getValue());
-			return false;
+			p.sendMessage(I18NMessage.getLocale().getString(CommandFrontend.IINVALID));
+			return;
 		}
 		Group g = Managers.getGroupManager().get(p);
 		boolean leader = g.getLeader().equals(p);
@@ -158,29 +164,26 @@ public class PartyCommandFrontend extends CommandFrontend {
 			if (leader && g.getMembers().size()!=1)
 				g.setLeader(g.getMembers().get(1));
 			g.remove(p);
-			p.sendMessage(I18NMessage.Cmd_Party_LEAVE.getValue());
-			return true;
+			p.sendMessage(I18NMessage.getLocale().getString(ILEAVE));
 		} catch (GroupException e) {
-			p.sendMessage(ChatColor.GRAY + "ERR: " + e.getMessage());
-			e.printStackTrace();
-			return false;
+			throw new RuntimeException(e); // toss to CommandFrontend
 		}
 
 	}
 
-	public Boolean list(Player p, String[] args) {
+	public void list(Player p, String[] args) {
 		if (Managers.getGroupManager().indexOf(p)==-1){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOPARTY.getValue());
-			return false;
+			p.sendMessage(I18NMessage.getLocale().getString(IOUTPARTY));
+			return;
 		}
 		if (args.length!=0){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_INVALIDARGS.getValue());
-			return false;
+			p.sendMessage(I18NMessage.getLocale().getString(CommandFrontend.IINVALID));
+			return;
 		}
 		Group g = Managers.getGroupManager().get(p);
 		List<Player> members = g.getMembers();
 		List<String> messages = new ArrayList<String>();
-		messages.add(ChatUtils.formatHeader(I18NMessage.Cmd_Party_LIST.getValue() + " " + members.size() + "/" + g.getCapacity()));
+		messages.add(ChatUtils.formatHeader(I18NMessage.getLocale().getString(ILIST) + " " + members.size() + "/" + g.getCapacity()));
 		for (Player m : members) {
 			if (g.getLeader().equals(m))
 				messages.add(ChatColor.RED + m.getName() + ChatColor.GRAY + " : Lvl " + m.getLevel() + ", Health " + m.getHealth() + "/" + m.getMaxHealth());
@@ -191,39 +194,35 @@ public class PartyCommandFrontend extends CommandFrontend {
 		for (String m : messages) {
 			p.sendMessage(m);
 		}
-
-		return true;
 	}
 
-	public Boolean promote(Player p, String[] args) {
+	public void promote(Player p, String[] args) {
 		if (Managers.getGroupManager().indexOf(p)==-1){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOPARTY.getValue());
-			return false;
+			p.sendMessage(I18NMessage.getLocale().getString(IOUTPARTY));
+			return;
 		}
 		if (args.length!=1){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_INVALIDARGS.getValue());
-			return false;
+			p.sendMessage(I18NMessage.getLocale().getString(CommandFrontend.IINVALID));
+			return;
 		}
 		Group g = Managers.getGroupManager().get(p);
 		if (!g.getLeader().equals(p)){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_NOTLEADER.getValue());
-			return false;
+			p.sendMessage(I18NMessage.getLocale().getString(INOTLEADER));
+			return;
 		}
 		Player mate = Bukkit.getPlayer(args[0]);
 		if (!g.contains(mate)){
-			p.sendMessage(ChatColor.RED + I18NMessage.Cmd_Party_TARGETNOPARTY.getValue());
-			return false;
+			p.sendMessage(I18NMessage.getLocale().getString(ITARGETOUTPARTY));
+			return;
 		}
 
 		try {
 			g.setLeader(mate);
-			mate.sendMessage(I18NMessage.Cmd_Party_PROMOTETARGET.getValue());
-			p.sendMessage(I18NMessage.Cmd_Party_PROMOTE.getValue());
-			return true;
+			for (Player member : g.getMembers()) {
+				member.sendMessage(I18NMessage.getLocale().getString(IPROMOTE));
+			}
 		} catch (GroupException e) {
-			p.sendMessage(ChatColor.GRAY + "ERR: " + e.getMessage());
-			e.printStackTrace();
-			return false;
+			throw new RuntimeException(e); // throw to CommandFrontend
 		}
 	}
 
@@ -251,28 +250,28 @@ public class PartyCommandFrontend extends CommandFrontend {
 			isLeader = g.getLeader().equals(p);
 		}
 
-		messages.add(ChatUtils.formatHeader(I18NMessage.Cmd_Party_HELP.getValue()));
+		messages.add(ChatUtils.formatHeader(I18NMessage.getLocale().getString("PHELPHEAD")));
 		if (g==null){
 			if (invite)
-				messages.add(ChatUtils.formatHelp("party accept", I18NMessage.Cmd_Party_HELPINVITE.getValue()));
+				messages.add(ChatUtils.formatHelp("party accept", I18NMessage.getLocale().getString("PHELPACCEPT")));
 			else
-				messages.add(ChatColor.GRAY + I18NMessage.Cmd_Party_NOINVITE.getValue());
-			messages.add(ChatUtils.formatHelp("party create", I18NMessage.Cmd_Party_HELPCREATE.getValue()));
-			messages.add(ChatColor.AQUA + I18NMessage.Cmd_NOPARTY.getValue());
+				messages.add(ChatColor.GRAY + I18NMessage.getLocale().getString(INOINVITE));
+			messages.add(ChatUtils.formatHelp("party create", I18NMessage.getLocale().getString("PHELPCREATE")));
+			messages.add(ChatColor.AQUA + I18NMessage.getLocale().getString("PHELPHINT"));
 		} else {
 			if (isLeader){
-				messages.add(ChatUtils.formatHelp("party invite <name>", I18NMessage.Cmd_Party_HELPINVITETARGET.getValue()));
-				messages.add(ChatUtils.formatHelp("party kick <name>", I18NMessage.Cmd_Party_HELPKICK.getValue()));
+				messages.add(ChatUtils.formatHelp("party invite <name>", I18NMessage.getLocale().getString("PHELPINVITE")));
+				messages.add(ChatUtils.formatHelp("party kick <name>", I18NMessage.getLocale().getString("PHELPKICK")));
 			} else {
-				messages.add(ChatColor.GRAY + "[party invite] " + I18NMessage.Cmd_NOTLEADER.getValue());
-				messages.add(ChatColor.GRAY + "[party kick] " + I18NMessage.Cmd_NOTLEADER.getValue());
+				messages.add(ChatColor.GRAY + "[party invite] " + I18NMessage.getLocale().getString(INOTLEADER));
+				messages.add(ChatColor.GRAY + "[party kick] " + I18NMessage.getLocale().getString(INOTLEADER));
 			}
-			messages.add(ChatUtils.formatHelp("party leave", I18NMessage.Cmd_Party_HELPLEAVE.getValue()));
-			messages.add(ChatUtils.formatHelp("party list", I18NMessage.Cmd_Party_HELPLIST.getValue()));
+			messages.add(ChatUtils.formatHelp("party leave", I18NMessage.getLocale().getString("PHELPLEAVE")));
+			messages.add(ChatUtils.formatHelp("party list", I18NMessage.getLocale().getString("PHELPLIST")));
 			if (isLeader)
-				messages.add(ChatUtils.formatHelp("party promote <name>", I18NMessage.Cmd_Party_HELPPROMOTE.getValue()));
+				messages.add(ChatUtils.formatHelp("party promote <name>", I18NMessage.getLocale().getString("PHELPPROMOTE")));
 			else
-				messages.add(ChatColor.GRAY + "[party promote] " + I18NMessage.Cmd_NOTLEADER.getValue());
+				messages.add(ChatColor.GRAY + "[party promote] " + I18NMessage.getLocale().getString(INOTLEADER));
 		}
 
 		for (String s : messages)
