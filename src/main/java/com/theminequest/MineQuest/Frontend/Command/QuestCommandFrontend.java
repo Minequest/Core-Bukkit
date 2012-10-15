@@ -159,7 +159,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 			if (q.isEmpty())
 				continue;
 			Quest quest = Managers.getQuestManager().getMainWorldQuest(p.getName(), q);
-			mwmessage.add(ChatColor.LIGHT_PURPLE + q + " : " + ChatColor.GOLD + quest.getDetails().getProperty(QuestDetails.QUEST_NAME) + ChatColor.GRAY + " in " + quest.getDetails().getProperty(QuestDetails.QUEST_WORLD));
+			mwmessage.add(ChatColor.LIGHT_PURPLE + q + " : " + ChatColor.GOLD + quest.getDetails().getProperty(QuestDetails.QUEST_DISPLAYNAME) + ChatColor.GRAY + " in " + quest.getDetails().getProperty(QuestDetails.QUEST_WORLD));
 		}
 		for (String m : mwmessage)
 			sender.sendMessage(m);
@@ -453,7 +453,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 			if (q.isEmpty())
 				continue;
 			Quest quest = Managers.getQuestManager().getMainWorldQuest(p.getName(), q);
-			mwmessage.add(ChatColor.LIGHT_PURPLE + q + " : " + ChatColor.GOLD + quest.getDetails().getProperty(QuestDetails.QUEST_NAME) + ChatColor.GRAY + " in " + quest.getDetails().getProperty(QuestDetails.QUEST_WORLD));
+			mwmessage.add(ChatColor.LIGHT_PURPLE + q + " : " + ChatColor.GOLD + quest.getDetails().getProperty(QuestDetails.QUEST_DISPLAYNAME) + ChatColor.GRAY + " in " + quest.getDetails().getProperty(QuestDetails.QUEST_WORLD));
 		}
 		for (String m : mwmessage)
 			p.sendMessage(m);
