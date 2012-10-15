@@ -37,7 +37,7 @@ import com.theminequest.MineQuest.API.Quest.QuestUtils;
 import com.theminequest.MineQuest.API.Task.QuestTask;
 
 public class Task implements QuestTask {
-
+	
 	/**
 	 * 
 	 */
@@ -46,7 +46,7 @@ public class Task implements QuestTask {
 	private Quest quest;
 	private int taskid;
 	private LinkedHashMap<Integer,QuestEvent> collection;
-
+	
 	/**
 	 * Task for a Quest.
 	 * 
@@ -67,7 +67,7 @@ public class Task implements QuestTask {
 			collection.put(e, null);
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.theminequest.MineQuest.Tasks.QuestTask#start()
 	 */
@@ -89,7 +89,7 @@ public class Task implements QuestTask {
 			for (int r=1; r<eventdetails.length; r++){
 				recombined+=eventdetails[r];
 				if (r!=(eventdetails.length-1));
-					recombined+=":";
+				recombined+=":";
 			}
 			QuestEvent e = Managers.getEventManager().constructEvent(eventdetails[0], quest, event, recombined);
 			if (e!=null)
@@ -105,30 +105,35 @@ public class Task implements QuestTask {
 			i.next().fireEvent();
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.theminequest.MineQuest.Tasks.QuestTask#cancelTask()
 	 */
 	@Override
 	public synchronized void cancelTask() {
-		if (complete!=null || !started)
-			return;
-		complete = CompleteStatus.CANCELED;
-		for (QuestEvent e : collection.values()) {
-			e.complete(CompleteStatus.CANCELED);
-		}
-		TaskCompleteEvent e = new TaskCompleteEvent(quest, taskid,
-				CompleteStatus.CANCELED);
-		Bukkit.getPluginManager().callEvent(e);
+		completeTask(CompleteStatus.CANCELED);
 	}
 	
 	@Override
-	public void completeTask() {
-		complete = CompleteStatus.SUCCESS;
-		TaskCompleteEvent e = new TaskCompleteEvent(quest, taskid, CompleteStatus.SUCCESS);
-		Bukkit.getPluginManager().callEvent(e);
+	public synchronized void checkTasks() {
+		for (QuestEvent e : collection.values()) {
+			if (e.isComplete() == null)
+				return;
+		}
+		completeTask(CompleteStatus.SUCCESS);
 	}
 
+	@Override
+	public synchronized void completeTask(CompleteStatus status) {
+		if (complete!=null || !started)
+			return;
+		complete = status;
+		for (QuestEvent e : collection.values())
+			e.complete(CompleteStatus.CANCELED);
+		TaskCompleteEvent e = new TaskCompleteEvent(quest, taskid, status);
+		Bukkit.getPluginManager().callEvent(e);
+	}
+	
 	/* (non-Javadoc)
 	 * @see com.theminequest.MineQuest.Tasks.QuestTask#isComplete()
 	 */
@@ -136,7 +141,7 @@ public class Task implements QuestTask {
 	public synchronized CompleteStatus isComplete() {
 		return complete;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.theminequest.MineQuest.Tasks.QuestTask#getQuestID()
 	 */
@@ -144,7 +149,7 @@ public class Task implements QuestTask {
 	public synchronized Quest getQuest() {
 		return quest;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.theminequest.MineQuest.Tasks.QuestTask#getTaskID()
 	 */
@@ -152,7 +157,7 @@ public class Task implements QuestTask {
 	public int getTaskID() {
 		return taskid;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.theminequest.MineQuest.Tasks.QuestTask#getEvents()
 	 */
@@ -160,5 +165,5 @@ public class Task implements QuestTask {
 	public Collection<QuestEvent> getEvents() {
 		return collection.values();
 	}
-
+	
 }

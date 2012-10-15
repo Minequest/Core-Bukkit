@@ -45,6 +45,7 @@ import com.theminequest.MineQuest.API.Group.QuestGroup;
 import com.theminequest.MineQuest.API.Group.QuestGroupManager;
 import com.theminequest.MineQuest.API.Quest.QuestDetails;
 import com.theminequest.MineQuest.API.Quest.QuestSnapshot;
+import com.theminequest.MineQuest.API.Quest.QuestUtils;
 import com.theminequest.MineQuest.API.Task.QuestTask;
 import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils;
 import com.theminequest.MineQuest.API.Utils.SetUtils;
@@ -168,10 +169,10 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 			return;
 		if (e.getResult()==CompleteStatus.CANCELED || e.getResult()==CompleteStatus.IGNORE)
 			return;
-		else if (e.getResult()==CompleteStatus.FAILURE || e.getResult()==CompleteStatus.ERROR){
+		else if (e.getResult()==CompleteStatus.FAILURE || e.getResult()==CompleteStatus.ERROR)
 			finishQuest(e.getResult());
-			return;
-		}
+		else
+			startTask(QuestUtils.getNextTask(this));
 	}
 
 	public synchronized void finishQuest(CompleteStatus c) {
