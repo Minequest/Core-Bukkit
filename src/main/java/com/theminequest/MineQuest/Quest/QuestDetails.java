@@ -20,6 +20,7 @@ package com.theminequest.MineQuest.Quest;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -60,9 +61,9 @@ public class QuestDetails implements com.theminequest.MineQuest.API.Quest.QuestD
 	/**
 	 * Create a QuestDetails from the file
 	 * @param f Valid quest file to read
-	 * @throws FileNotFoundException If file was suddenly disappears
+	 * @throws IOException  
 	 */
-	protected QuestDetails(File f) throws FileNotFoundException{
+	protected QuestDetails(File f) throws IOException {
 		String id = f.getName().substring(0, f.getName().indexOf(".quest"));
 		database = Collections.synchronizedMap(new LinkedHashMap<String,Serializable>());
 		setProperty(QuestDetails.QUEST_FILE,f);
@@ -112,9 +113,9 @@ public class QuestDetails implements com.theminequest.MineQuest.API.Quest.QuestD
 	/**
 	 * Reads in the file description from the quest folder.
 	 * @param p 
-	 * @throws FileNotFoundException If the file mysteriously disappeared.
+	 * @throws IOException  
 	 */
-	private void readInFile() throws FileNotFoundException{
+	private void readInFile() throws IOException {
 		Managers.getQuestManager().getParser().parseDefinition(this);
 	}
 	

@@ -178,7 +178,7 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 			QuestDetails d = new QuestDetails(f);
 			descriptions.add(d);
 			Managers.log("[Quest] Loaded " + d.getProperty(com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_NAME)+".");
-		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 			Managers.log(Level.SEVERE, "[Quest] Failed to load "+f.getName()+"!");
 		}
