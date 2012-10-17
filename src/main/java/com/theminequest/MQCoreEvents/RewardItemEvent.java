@@ -48,9 +48,8 @@ public class RewardItemEvent extends QuestEvent {
 	public void parseDetails(String[] details) {
 		items = new LinkedHashMap<Integer,Integer>();
 		taskid = Integer.parseInt(details[0]);
-		details = Arrays.copyOfRange(details, 1, details.length-1, String[].class);
-		for (String s : details){
-			String[] d = s.split(",");
+		for (int i=1; i<details.length; i++){
+			String[] d = details[i].split(",");
 			items.put(Integer.parseInt(d[0]),Integer.parseInt(d[1]));
 		}
 	}
