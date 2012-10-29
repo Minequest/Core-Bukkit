@@ -41,7 +41,7 @@ public class RequirementHandler implements QHandler {
 		for (String s : line)
 			details+=s + ":";
 		if (details.length() != 0)
-			details = details.substring(0,details.length()-2);
+			details = details.substring(0,details.length()-1);
 		Map<Integer,QuestRequirement> reqs = q.getProperty(QUEST_REQUIREMENTDETAILS);
 		QuestRequirement req = Managers.getRequirementManager().construct(name, number, q, details);
 		reqs.put(number, req);
