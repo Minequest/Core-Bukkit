@@ -44,7 +44,10 @@ public class RequirementHandler implements QHandler {
 			details = details.substring(0,details.length()-1);
 		Map<Integer,QuestRequirement> reqs = q.getProperty(QUEST_REQUIREMENTDETAILS);
 		QuestRequirement req = Managers.getRequirementManager().construct(name, number, q, details);
-		reqs.put(number, req);
+		if (req != null)
+			reqs.put(number, req);
+		else
+			Managers.log("[Quest] Attempted to parse Requirement for " + q + " failed! Number: " + number);
 	}
 
 }
