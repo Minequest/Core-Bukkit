@@ -32,7 +32,7 @@ import org.bukkit.entity.Player;
 
 import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Events.QuestEvent;
-import com.theminequest.MineQuest.API.Events.TargetQuestEvent;
+import com.theminequest.MineQuest.API.Events.TargetterQuestEvent;
 import com.theminequest.MineQuest.API.Group.Group;
 import com.theminequest.MineQuest.API.Quest.Quest;
 import com.theminequest.MineQuest.API.Quest.QuestDetails;
@@ -114,8 +114,8 @@ public class TargetManager implements com.theminequest.MineQuest.API.Target.Targ
 			Collection<QuestEvent> running = ts.getEvents();
 			for (QuestEvent event : running) {
 				if (event.getEventId() == i) {
-					if (event instanceof TargetQuestEvent) {
-						toreturn.addAll(((TargetQuestEvent) event).getTargets());
+					if (event instanceof TargetterQuestEvent) {
+						toreturn.addAll(((TargetterQuestEvent) event).getTargets());
 					}
 				}
 			}
