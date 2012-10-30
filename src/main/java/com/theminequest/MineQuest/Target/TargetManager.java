@@ -18,10 +18,13 @@
  */
 package com.theminequest.MineQuest.Target;
 
+import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_EDITS;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -30,7 +33,9 @@ import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import com.google.common.net.InetAddresses.TeredoInfo;
 import com.theminequest.MineQuest.API.Managers;
+import com.theminequest.MineQuest.API.Edit.Edit;
 import com.theminequest.MineQuest.API.Events.QuestEvent;
 import com.theminequest.MineQuest.API.Events.TargetterQuestEvent;
 import com.theminequest.MineQuest.API.Group.Group;
@@ -125,12 +130,19 @@ public class TargetManager implements com.theminequest.MineQuest.API.Target.Targ
 	
 	/*
 	 * editid1,editid2,editid3...
-	 * TODO: actually implement this... even though this doesn't make any sense.
+	 * TODO: Test this - written by jmonk
 	 */
-	@Deprecated
 	private List<LivingEntity> targetteredit(Quest q, TargetDetails t) {
 		String[] ids = t.getDetails().split(",");
 		List<LivingEntity> toreturn = new ArrayList<LivingEntity>();
+		Map<Integer,Edit> edits = q.getDetails().getProperty(QUEST_EDITS);
+		for (String idStr : ids)  {
+			int id = Integer.parseInt(idStr);
+			Edit edit = edits.get(id);
+			if  ((edit != null) && (edit.getLastEditor() != null)) {
+				toreturn.add(edit.getLastEditor());
+			}
+		}
 		return toreturn;
 	}
 	
