@@ -371,8 +371,11 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 			Quest q = s.getSnapshot().recreateQuest();
 			String questName = q.getDetails().getProperty(QUEST_NAME);
 			int taskId = s.getSnapshot().getLastTaskID();
-			if (!q.startTask(taskId))
-				Managers.log(Level.SEVERE, "Starting task "+taskId+" for "+questName+" failed during login!");
+			if (taskId != -1) {
+				if (!q.startTask(taskId))
+					Managers.log(Level.SEVERE, "Starting task "+taskId+" for "+questName+" failed during login!");
+			} else
+				q.startQuest();
 			
 			qs.put(questName, q);
 		}
