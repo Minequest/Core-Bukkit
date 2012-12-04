@@ -18,6 +18,7 @@
  */
 package com.theminequest.MineQuest.Quest.Parser;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -29,27 +30,26 @@ public class EventHandler implements QHandler {
 
 	@Override
 	public void parseDetails(QuestDetails q, List<String> line) {
-		int number = Integer.parseInt(line.get(0));
+		Iterator<String> iter = line.iterator();
+		int number = Integer.parseInt(iter.next());
+		StringBuilder details = new StringBuilder();
+		
+		String eventname = iter.next();
 		// T = targeted event
-		boolean targetedevent = false;
-		if (line.get(1).equals("T")) {
-			line.remove(1);
-			targetedevent = true;
+		if (eventname.equals("T")) {
+			eventname = iter.next();
+			details.append(eventname);
+			details.append(":T");
+		} else {
+			details.append(eventname);
 		}
-		String eventname = line.get(1);
-		String details = "";
-		if (targetedevent)
-			details += "T:";
-		for (int i = 2; i < line.size(); i++) {
-			details += line.get(i);
-			if (i < line.size() - 1) {
-				details += ":";
-			}
+		
+		while (iter.hasNext()) {
+			details.append(':');
+			details.append(iter.next());
 		}
-		//System.out.println(number + " : " + eventname + ":" + details);
-		// final result: "eventname:T:details"
 		Map<Integer,String> events = q.getProperty(QUEST_EVENTS);
-		events.put(number, new String(eventname + ":" + details));
+		events.put(number, details.toString());
 	}
 
 }
