@@ -20,7 +20,7 @@ package com.theminequest.MineQuest.Tasks;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -72,7 +72,7 @@ public class Task implements QuestTask {
 	 * @see com.theminequest.MineQuest.Tasks.QuestTask#start()
 	 */
 	@Override
-	public synchronized void start() {
+	public void start() {
 		if (started)
 			return;
 		started = true;
@@ -99,10 +99,10 @@ public class Task implements QuestTask {
 				collection.remove(event);
 			}
 		}
-		
-		Iterator<QuestEvent> i = collection.values().iterator();
-		while (i.hasNext()){
-			i.next().fireEvent();
+
+		Managers.getEventManager().registerEventListeners(Collections.unmodifiableCollection(collection.values()));
+		for (QuestEvent e : collection.values()) {
+			e.fireEvent();
 		}
 	}
 	
@@ -110,12 +110,12 @@ public class Task implements QuestTask {
 	 * @see com.theminequest.MineQuest.Tasks.QuestTask#cancelTask()
 	 */
 	@Override
-	public synchronized void cancelTask() {
+	public void cancelTask() {
 		completeTask(CompleteStatus.CANCELED);
 	}
 	
 	@Override
-	public synchronized void checkTasks() {
+	public void checkTasks() {
 		for (QuestEvent e : collection.values()) {
 			if (e.isComplete() == null)
 				return;
@@ -124,7 +124,7 @@ public class Task implements QuestTask {
 	}
 
 	@Override
-	public synchronized void completeTask(CompleteStatus status) {
+	public void completeTask(CompleteStatus status) {
 		if (complete!=null || !started)
 			return;
 		complete = status;
@@ -138,7 +138,7 @@ public class Task implements QuestTask {
 	 * @see com.theminequest.MineQuest.Tasks.QuestTask#isComplete()
 	 */
 	@Override
-	public synchronized CompleteStatus isComplete() {
+	public CompleteStatus isComplete() {
 		return complete;
 	}
 	
@@ -146,7 +146,7 @@ public class Task implements QuestTask {
 	 * @see com.theminequest.MineQuest.Tasks.QuestTask#getQuestID()
 	 */
 	@Override
-	public synchronized Quest getQuest() {
+	public Quest getQuest() {
 		return quest;
 	}
 	

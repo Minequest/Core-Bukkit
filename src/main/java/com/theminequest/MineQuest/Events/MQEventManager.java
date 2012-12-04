@@ -18,10 +18,10 @@
  */
 package com.theminequest.MineQuest.Events;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 
 import org.bukkit.event.EventHandler;
@@ -49,14 +49,12 @@ public class MQEventManager implements Listener, EventManager {
 	private LinkedHashMap<String, Class<? extends QuestEvent>> classes;
 	private List<QuestEvent> activeevents;
 	private Runnable activechecker;
-	private Object classlistlock;
 	private volatile boolean stop;
 
 	public MQEventManager() {
 		Managers.log("[Event] Starting Manager...");
 		classes = new LinkedHashMap<String, Class<? extends QuestEvent>>(0);
-		activeevents = Collections.synchronizedList(new ArrayList<QuestEvent>(0));
-		classlistlock = new Object();
+		activeevents = new CopyOnWriteArrayList<QuestEvent>();
 		stop = false;
 		activechecker = new Runnable(){
 
@@ -92,33 +90,29 @@ public class MQEventManager implements Listener, EventManager {
 	 */
 	@Override
 	public void addEvent(String eventname, Class<? extends QuestEvent> event) {
-		synchronized(classlistlock){
-			if (classes.containsKey(eventname) || classes.containsValue(event))
-				throw new IllegalArgumentException("We already have this class!");
-			try {
-				event.getConstructor();
-			} catch (Exception e) {
-				throw new IllegalArgumentException("Constructor tampered with!");
-			}
-			classes.put(eventname, event);
+		if (classes.containsKey(eventname) || classes.containsValue(event))
+			throw new IllegalArgumentException("We already have this class!");
+		try {
+			event.getConstructor();
+		} catch (Exception e) {
+			throw new IllegalArgumentException("Constructor tampered with!");
 		}
+		classes.put(eventname, event);
 	}
 
 	@Override
 	public QuestEvent constructEvent(String eventname, Quest q, int eventnum, String d) {
-		synchronized(classlistlock){
-			if (!classes.containsKey(eventname))
-				return null;
-			Class<? extends QuestEvent> cl = classes.get(eventname);
-			try {
-				QuestEvent e = cl.getConstructor().newInstance();
-				e.setupProperties(q, eventnum, d);
-				return e;
-			} catch (Exception e) {
-				Managers.log(Level.SEVERE, "[Event] In retrieving event " + eventname + " from Quest ID " + q + ":");
-				e.printStackTrace();
-				return null;
-			}
+		if (!classes.containsKey(eventname))
+			return null;
+		Class<? extends QuestEvent> cl = classes.get(eventname);
+		try {
+			QuestEvent e = cl.getConstructor().newInstance();
+			e.setupProperties(q, eventnum, d);
+			return e;
+		} catch (Exception e) {
+			Managers.log(Level.SEVERE, "[Event] In retrieving event " + eventname + " from Quest ID " + q + ":");
+			e.printStackTrace();
+			return null;
 		}
 	}
 
@@ -126,34 +120,24 @@ public class MQEventManager implements Listener, EventManager {
 	 * @see com.theminequest.MineQuest.Events.EventManager#addEventListener(com.theminequest.MineQuest.API.Events.QuestEvent)
 	 */
 	@Override
-	public void registerEventListener(final QuestEvent e){
-		synchronized(activeevents){
-			activeevents.add(e);
-		}
+	public void registerEventListeners(Collection<QuestEvent> events) {
+		activeevents.addAll(events);
 	}
 
 	/* (non-Javadoc)
 	 * @see com.theminequest.MineQuest.Events.EventManager#rmEventListener(com.theminequest.MineQuest.API.Events.QuestEvent)
 	 */
 	@Override
-	public void deregisterEventListener(QuestEvent e){
-		synchronized(activeevents){
-			activeevents.remove(e);
-		}
+	public void deregisterEventListener(QuestEvent e) {
+		activeevents.remove(e);
 	}
 
 	/* (non-Javadoc)
 	 * @see com.theminequest.MineQuest.Events.EventManager#checkAllEvents()
 	 */
 	@Override
-	public void checkAllEvents(){
-		List<QuestEvent> events = new ArrayList<QuestEvent>(activeevents.size());
-		synchronized(activeevents){
-			for (QuestEvent e : activeevents){
-				events.add(e);
-			}
-		}
-		for (QuestEvent e: events) {
+	public void checkAllEvents() {
+		for (QuestEvent e : activeevents) {
 			try {
 				e.check();
 			} catch (Throwable t) {
@@ -167,15 +151,11 @@ public class MQEventManager implements Listener, EventManager {
 	 */
 	@Override
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerInteract(final PlayerInteractEvent e){
-		synchronized(activeevents){
-			for (int i=0; i<activeevents.size(); i++){
-				final QuestEvent a = activeevents.get(i);
-				if (!e.isCancelled())
-					a.onPlayerInteract(e);
-				if (a.isComplete()!=null)
-					i--;
-			}
+	public void onPlayerInteract(final PlayerInteractEvent event) {
+		if (event.isCancelled())
+			return;
+		for (QuestEvent e : activeevents) {
+			e.onPlayerInteract(event);
 		}
 	}
 
@@ -184,29 +164,21 @@ public class MQEventManager implements Listener, EventManager {
 	 */
 	@Override
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onBlockBreak(final BlockBreakEvent e){
-		synchronized(activeevents){
-			for (int i=0; i<activeevents.size(); i++){
-				final QuestEvent a = activeevents.get(i);
-				if (!e.isCancelled())
-					a.onBlockBreak(e);
-				if (a.isComplete()!=null)
-					i--;
-			}
+	public void onBlockBreak(final BlockBreakEvent event) {
+		if (event.isCancelled())
+			return;
+		for (QuestEvent e : activeevents) {
+			e.onBlockBreak(event);
 		}
 	}
 
 	@Override
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onEntityDamageEvent(final EntityDamageEvent e){
-		synchronized(activeevents){
-			for (int i=0; i<activeevents.size(); i++){
-				final QuestEvent a = activeevents.get(i);
-				if (!e.isCancelled())
-					a.onEntityDamage(e);
-				if (a.isComplete()!=null)
-					i--;
-			}
+	public void onEntityDamageEvent(final EntityDamageEvent event) {
+		if (event.isCancelled())
+			return;
+		for (QuestEvent e : activeevents) {
+			e.onEntityDamage(event);
 		}
 	}
 
@@ -215,14 +187,9 @@ public class MQEventManager implements Listener, EventManager {
 	 */
 	@Override
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onEntityDeathEvent(final EntityDeathEvent e){
-		synchronized(activeevents){
-			for (int i=0; i<activeevents.size(); i++){
-				final QuestEvent a = activeevents.get(i);
-				a.onEntityDeath(e);
-				if (a.isComplete()!=null)
-					i--;
-			}
+	public void onEntityDeathEvent(final EntityDeathEvent event) {
+		for (QuestEvent e : activeevents) {
+			e.onEntityDeath(event);
 		}
 	}
 
