@@ -9,8 +9,8 @@ MineQuest is a full featured MMORPG system. It allows custom quests, classes, an
 
 <hr/>
 
-[![Build Status](http://build.lincomlinux.org/jenkins/job/MineQuest-Core/badge/icon)](http://build.lincomlinux.org/jenkins/job/MineQuest-Core/)
-    
+[![Build Status](http://jci.lincomlinux.org/view/MineQuest/job/MineQuest-Core/badge/icon)](http://jci.lincomlinux.org/view/MineQuest/job/MineQuest-Core/)
+
 <h3>License</h3>
 Copyright (c) 2012, The MineQuest Team <http://www.theminequest.com/>
 
@@ -18,7 +18,7 @@ MineQuest is released under the terms of the **GNU General Public License, versi
 See the included _LICENSE.txt_ for details.
 
 <h3>Team</h3>
-MineQuest is developed by Ltan, JMonk, Echobob, cloned, TheWaffleGod, and robxu9.
+MineQuest is developed by cloned, Echobob, JMonk, Ltan, phrstbrn, and robxu9.
 
 <h3>Source</h3>
 MineQuest uses Maven to manage and build its source. To checkout and build this project, use Maven.
