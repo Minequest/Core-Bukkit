@@ -75,7 +75,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 			Managers.getQuestManager().reloadQuest(args[0]);
 		p.sendMessage(I18NMessage.getLocale().getString(IRELOAD));
 	}
-
+	
 	public void admindrop(Player p, String[] args) {
 		if (args.length!=3) {
 			p.sendMessage(I18NMessage.getLocale().getString(CommandFrontend.IINVALID));
@@ -108,7 +108,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 			}
 		}
 	}
-
+	
 	public void admininfo(Player p, String[] args){
 		if (args.length!=1){
 			p.sendMessage(I18NMessage.getLocale().getString(CommandFrontend.IINVALID));
@@ -166,7 +166,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 		if (mwmessage.size()==1)
 			sender.sendMessage(I18NMessage.getLocale().getString(INONE));
 	}
-
+	
 	public void drop(Player p, String[] args) {
 		if (args.length!=1){
 			p.sendMessage(I18NMessage.getLocale().getString(CommandFrontend.IINVALID));
@@ -183,7 +183,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 			p.sendMessage(I18NMessage.getLocale().getString(INOHAVE));
 		}
 	}
-
+	
 	public void info(Player p, String[] args) {
 		if (args.length!=1){
 			p.sendMessage(I18NMessage.getLocale().getString(CommandFrontend.IINVALID));
@@ -211,7 +211,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 			break;
 		}
 		
-
+		
 	}
 	
 	public void abandon(Player p, String[] args) {
@@ -243,23 +243,6 @@ public class QuestCommandFrontend extends CommandFrontend {
 		}
 	}
 	
-	public void active(Player p, String[] args) {
-		if (args.length!=0){
-			p.sendMessage(I18NMessage.getLocale().getString(CommandFrontend.IINVALID));
-			return;
-		}
-		if (Managers.getQuestGroupManager().indexOf(p)==-1){
-			p.sendMessage(I18NMessage.getLocale().getString(PartyCommandFrontend.IOUTPARTY));
-			return;
-		}
-		QuestGroup g = Managers.getQuestGroupManager().get(p);
-		if (g.getQuest()==null){
-			p.sendMessage(I18NMessage.getLocale().getString(INOTACTIVE));
-			return;
-		}
-		p.sendMessage(QuestUtils.getStatusString(g.getQuest()).split(QuestDetailsUtils.CODE_NEWLINE_SEQ));
-	}
-		
 	public void exit(Player p, String[] args) {
 		if (args.length!=0){
 			p.sendMessage(I18NMessage.getLocale().getString(CommandFrontend.IINVALID));
@@ -378,7 +361,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 		// off by default
 		if (p.hasPermission("minequest.command.quest.drop"))
 			messages.add(ChatUtils.formatHelp("quest drop <name>", I18NMessage.getLocale().getString("QHELPDROP")));
-				
+		
 		// basic commands
 		boolean inGroup = Managers.getQuestGroupManager().get(p) != null;
 		boolean isLeader = inGroup && Managers.getQuestGroupManager().get(p).getLeader().equals(p);
@@ -387,7 +370,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 		
 		switch (hasQuest) {
 		case INQUEST:
-			messages.add(ChatUtils.formatHelp("quest active", I18NMessage.getLocale().getString("QHELPACTIVE")));
+			messages.add(ChatUtils.formatHelp("quest", I18NMessage.getLocale().getString("QHELPACTIVE")));
 			if (isLeader) {
 				if (questStatus == null)
 					messages.add(ChatUtils.formatHelp("quest abandon", I18NMessage.getLocale().getString("QHELPABANDON")));
@@ -409,7 +392,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 		default:
 			break;
 		}
-				
+		
 		for (String m : messages) {
 			p.sendMessage(m);
 		}
@@ -424,41 +407,66 @@ public class QuestCommandFrontend extends CommandFrontend {
 	public void noOptionSpecified(CommandSender sender, String[] args) {
 		Player p = (Player)sender;
 		
-		/* Given Quests */
-		Map<String, Date> givenquests = QuestStatisticUtils.getQuests(p.getName(),LogStatus.GIVEN);
+		/*
+		 * Is the player in an active quest? If so, show the current quest.
+		 */
 		
-		List<String> givenmessage = new ArrayList<String>();
-		givenmessage.add(ChatUtils.formatHeader(I18NMessage.getLocale().getString(IPENDING)));
-		for (String q : givenquests.keySet()){
-			if (q.isEmpty())
-				continue;
-			QuestDetails qd = Managers.getQuestManager().getDetails(q);
-			if (qd!=null){
-				givenmessage.add(ChatColor.AQUA + q + " : " + ChatColor.GOLD + qd.getProperty(QuestDetails.QUEST_DISPLAYNAME));
-			} else {
-				givenmessage.add(ChatColor.GRAY + q + " : <?>");
+		QuestGroup group = Managers.getQuestGroupManager().get(p);
+		boolean inGroup = group != null;
+		boolean isLeader = inGroup && group.getLeader().equals(p);
+		QuestStatus hasQuest = inGroup ? group.getQuestStatus() : QuestStatus.NOQUEST;
+		CompleteStatus questStatus = hasQuest == QuestStatus.INQUEST ? group.getQuest().isFinished() : CompleteStatus.IGNORE;
+		
+		if (hasQuest == QuestStatus.INQUEST) {
+			
+			p.sendMessage(QuestUtils.getStatusString(group.getQuest()).split(QuestDetailsUtils.CODE_NEWLINE_SEQ));
+			
+			if (isLeader) {
+				if (questStatus == null)
+					p.sendMessage(ChatUtils.formatHelp("quest abandon", I18NMessage.getLocale().getString("QHELPABANDON")));
+				else
+					p.sendMessage(ChatUtils.formatHelp("quest exit", I18NMessage.getLocale().getString("QHELPEXIT")));
 			}
+			
+		} else {
+			
+			/* Given Quests */
+			Map<String, Date> givenquests = QuestStatisticUtils.getQuests(p.getName(),LogStatus.GIVEN);
+			
+			List<String> givenmessage = new ArrayList<String>();
+			givenmessage.add(ChatUtils.formatHeader(I18NMessage.getLocale().getString(IPENDING)));
+			for (String q : givenquests.keySet()){
+				if (q.isEmpty())
+					continue;
+				QuestDetails qd = Managers.getQuestManager().getDetails(q);
+				if (qd!=null){
+					givenmessage.add(ChatColor.AQUA + q + " : " + ChatColor.GOLD + qd.getProperty(QuestDetails.QUEST_DISPLAYNAME));
+				} else {
+					givenmessage.add(ChatColor.GRAY + q + " : <?>");
+				}
+			}
+			
+			for (String m : givenmessage)
+				p.sendMessage(m);
+			if (givenmessage.size()==1)
+				p.sendMessage(I18NMessage.getLocale().getString(INONE));
+			
+			/* Main World Quests */
+			Map<String, Date> mqquests = QuestStatisticUtils.getQuests(p.getName(), LogStatus.ACTIVE);
+			List<String> mwmessage = new ArrayList<String>();
+			mwmessage.add(ChatUtils.formatHeader(I18NMessage.getLocale().getString(IWORLD)));
+			for (String q : mqquests.keySet()){
+				if (q.isEmpty())
+					continue;
+				Quest quest = Managers.getQuestManager().getMainWorldQuest(p.getName(), q);
+				mwmessage.add(ChatColor.LIGHT_PURPLE + q + " : " + ChatColor.GOLD + quest.getDetails().getProperty(QuestDetails.QUEST_DISPLAYNAME) + ChatColor.GRAY + " in " + quest.getDetails().getProperty(QuestDetails.QUEST_WORLD));
+			}
+			for (String m : mwmessage)
+				p.sendMessage(m);
+			if (mwmessage.size()==1)
+				p.sendMessage(I18NMessage.getLocale().getString(INONE));
+			
 		}
-		
-		for (String m : givenmessage)
-			p.sendMessage(m);
-		if (givenmessage.size()==1)
-			p.sendMessage(I18NMessage.getLocale().getString(INONE));
-		
-		/* Main World Quests */
-		Map<String, Date> mqquests = QuestStatisticUtils.getQuests(p.getName(), LogStatus.ACTIVE);
-		List<String> mwmessage = new ArrayList<String>();
-		mwmessage.add(ChatUtils.formatHeader(I18NMessage.getLocale().getString(IWORLD)));
-		for (String q : mqquests.keySet()){
-			if (q.isEmpty())
-				continue;
-			Quest quest = Managers.getQuestManager().getMainWorldQuest(p.getName(), q);
-			mwmessage.add(ChatColor.LIGHT_PURPLE + q + " : " + ChatColor.GOLD + quest.getDetails().getProperty(QuestDetails.QUEST_DISPLAYNAME) + ChatColor.GRAY + " in " + quest.getDetails().getProperty(QuestDetails.QUEST_WORLD));
-		}
-		for (String m : mwmessage)
-			p.sendMessage(m);
-		if (mwmessage.size()==1)
-			p.sendMessage(I18NMessage.getLocale().getString(INONE));
 		
 		p.sendMessage(ChatUtils.formatHeader("Help Options: /quest help"));
 	}
