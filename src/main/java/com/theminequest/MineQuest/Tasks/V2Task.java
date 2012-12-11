@@ -36,7 +36,14 @@ import com.theminequest.MineQuest.API.Quest.QuestDetails;
 import com.theminequest.MineQuest.API.Quest.QuestUtils;
 import com.theminequest.MineQuest.API.Task.QuestTask;
 
-public class Task implements QuestTask {
+/**
+ * V2Task operates according to the 1.2.5 MineQuest System,
+ * which each set of events run linked to a task.
+ * Whenever a new task is toggled, all events linked to the old task
+ * are canceled, and the task itself canceled as well.
+ *
+ */
+public class V2Task implements QuestTask {
 	
 	/**
 	 * 
@@ -57,7 +64,7 @@ public class Task implements QuestTask {
 	 * @param events
 	 *            Event numbers that must be completed
 	 */
-	public Task(Quest quest, int taskid, List<Integer> events) {
+	public V2Task(Quest quest, int taskid, List<Integer> events) {
 		started = false;
 		complete = null;
 		this.quest = quest;
@@ -80,7 +87,7 @@ public class Task implements QuestTask {
 		for (Integer event : list){
 			String d = QuestUtils.getEvent(quest,event);
 			if (d == null) {
-				Managers.log(Level.WARNING, "[Task] Missing event number " + event + " in task "+taskid+" for quest "+quest.getDetails().getProperty(QuestDetails.QUEST_NAME)+"; Ignoring.");
+				Managers.log(Level.WARNING, "[Task] Missing event number " + event + " in V2Task "+taskid+" for quest "+quest.getDetails().getProperty(QuestDetails.QUEST_NAME)+"; Ignoring.");
 				collection.remove(event);
 				continue;
 			}

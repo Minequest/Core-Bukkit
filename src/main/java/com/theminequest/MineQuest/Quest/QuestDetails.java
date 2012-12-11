@@ -149,9 +149,10 @@ public class QuestDetails implements com.theminequest.MineQuest.API.Quest.QuestD
 		return database.toString();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public void setProperty(String key, Serializable property) {
-		database.put(key, property);
+	public <E> E setProperty(String key, Serializable property) {
+		return (E) database.put(key, property);
 	}
 
 	@Override

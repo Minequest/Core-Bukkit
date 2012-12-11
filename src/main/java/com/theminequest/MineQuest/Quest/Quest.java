@@ -50,25 +50,28 @@ import com.theminequest.MineQuest.API.Task.QuestTask;
 import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils;
 import com.theminequest.MineQuest.API.Utils.SetUtils;
 import com.theminequest.MineQuest.API.Utils.TimeUtils;
-import com.theminequest.MineQuest.Tasks.Task;
+import com.theminequest.MineQuest.Tasks.V1Task;
+import com.theminequest.MineQuest.Tasks.V2Task;
 
 
 public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
-
+	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7904219637011746046L;
-
+	
 	private QuestDetails details;
-
+	
 	private long questid;
-
+	
 	private CompleteStatus finished;
 	private QuestTask activeTask;
-
+	
 	private String questOwner;
-
+	
+	private boolean initialized;
+	
 	protected static Quest newInstance(long questid, QuestDetails id, String questOwner){
 		return new Quest(questid,id,questOwner);
 	}
@@ -78,10 +81,11 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 		this.questid = questid;
 		activeTask = null;
 		this.questOwner = questOwner;
-
+		initialized = false;
+		
 		// sort the tasks, events, and targets in order of id.
 		// because we have absolutely 0 idea if someone would skip numbers...
-
+		
 		// load the world if necessary/move team to team leader
 		String world = details.getProperty(QUEST_WORLD);
 		if (Bukkit.getWorld(world) == null) {
@@ -102,13 +106,13 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 		Map<Integer,Edit> edits = details.getProperty(QUEST_EDITS);
 		for (Edit e : edits.values())
 			e.startEdit(this);
-
+		
 		// plugins should use QuestStartedEvent to setup their properties
 		// inside the quest.
 		QuestStartedEvent event = new QuestStartedEvent(this);
 		Bukkit.getPluginManager().callEvent(event);
 	}
-
+	
 	public synchronized void startQuest(){
 		Map<Integer,String[]> tasks = details.getProperty(QUEST_TASKS);
 		if (!startTask(SetUtils.getFirstKey(tasks.keySet()))) {
@@ -116,7 +120,7 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 			finishQuest(CompleteStatus.ERROR);
 		}
 	}
-
+	
 	/**
 	 * Start a task of the quest.
 	 * 
@@ -130,12 +134,20 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 			finishQuest(CompleteStatus.SUCCESS);
 			return true;
 		}
+		
+		// well, this is slightly hacky.
+		if (!initialized && (Boolean)details.getProperty(V1Task.DETAILS_TOGGLE) == true) {
+			activeTask = new V1Task(this, taskid, null, null);
+			activeTask.start();
+			initialized = true;
+		}
+		
 		if (!tasks.containsKey(taskid))
 			return false;
-		if (activeTask!=null && activeTask.isComplete()==null)
-			activeTask.cancelTask();
-		
 		if (activeTask!=null) {
+			if (activeTask.isComplete()==null)
+				activeTask.cancelTask();
+			
 			if (activeTask.getTaskID() == taskid)
 				return false;
 		}
@@ -145,7 +157,12 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 		for (String e : eventnums) {
 			eventnum.add(Integer.parseInt(e));
 		}
-		activeTask = new Task(this, taskid, eventnum);
+		
+		if (details.getProperty(V1Task.DETAILS_TOGGLE))
+			activeTask = new V1Task(this, taskid, eventnum, (V1Task)activeTask);
+		else
+			activeTask = new V2Task(this, taskid, eventnum);
+		
 		activeTask.start();
 		
 		// main world quest
@@ -154,15 +171,15 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 		}
 		return true;
 	}
-
+	
 	public boolean isInstanced(){
 		return details.getProperty(QUEST_LOADWORLD);
 	}
-
+	
 	public synchronized QuestTask getActiveTask() {
 		return activeTask;
 	}
-
+	
 	// passed in from QuestManager
 	public synchronized void onTaskCompletion(TaskCompleteEvent e) {
 		if (!e.getQuest().equals(this))
@@ -174,11 +191,11 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 		else
 			startTask(QuestUtils.getNextTask(this));
 	}
-
+	
 	public synchronized void finishQuest(CompleteStatus c) {
 		finished = c;
 		if (activeTask!=null && activeTask.isComplete()==null)
-			activeTask.cancelTask();
+			activeTask.completeTask(CompleteStatus.CANCELED);
 		activeTask = null;
 		Map<Integer,Edit> edits = details.getProperty(QUEST_EDITS);
 		for (Edit e : edits.values())
@@ -190,7 +207,7 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 		QuestCompleteEvent event = new QuestCompleteEvent(this, c, g);
 		Bukkit.getPluginManager().callEvent(event);
 	}
-
+	
 	public void cleanupQuest() {
 		if (details.getProperty(QUEST_LOADWORLD)){
 			try {
@@ -203,11 +220,11 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 		questOwner = null;
 		questid = -1;
 	}
-
+	
 	public synchronized CompleteStatus isFinished() {
 		return finished;
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -222,35 +239,35 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 		Quest q = (Quest) arg0;
 		return (q.questid == this.questid) && (q.getQuestOwner().equals(this.getQuestOwner()) && q.getDetails().equals(this.getDetails()));
 	}
-
+	
 	@Override
 	public synchronized String toString() {
 		return details.toString() + ":" + getQuestOwner() + ":" + getQuestID();
 	}
-
+	
 	@Override
 	public int compareTo(com.theminequest.MineQuest.API.Quest.Quest arg0) {
 		return ((Long)getQuestID()).compareTo(arg0.getQuestID());
 	}
-
+	
 	@Override
 	public long getQuestID() {
 		return questid;
 	}
-
+	
 	@Override
 	public com.theminequest.MineQuest.API.Quest.QuestDetails getDetails() {
 		return details;
 	}
-
+	
 	@Override
 	public String getQuestOwner() {
 		return questOwner;
 	}
-
+	
 	@Override
 	public QuestSnapshot createSnapshot() {
 		return new com.theminequest.MineQuest.Quest.QuestSnapshot(this);
 	}
-
+	
 }

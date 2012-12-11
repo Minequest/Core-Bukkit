@@ -81,19 +81,20 @@ import com.theminequest.MineQuest.Quest.Parser.StartRequirementHandler;
 import com.theminequest.MineQuest.Quest.Parser.TargetHandler;
 import com.theminequest.MineQuest.Quest.Parser.TaskHandler;
 import com.theminequest.MineQuest.Quest.Parser.WorldHandler;
+import com.theminequest.MineQuest.Tasks.V1Task;
 
 import static com.theminequest.MineQuest.API.Quest.QuestDetails.*;
 
 
 public class QuestManager implements Listener, com.theminequest.MineQuest.API.Quest.QuestManager {
-
+	
 	protected final String locationofQuests;
 	private LinkedHashMap<Long,Quest> quests;
 	private Map<String, Map<String, Quest>> mwQuests;
 	private List<QuestDetails> descriptions;
 	private long questid;
 	private final QuestParser parser;
-
+	
 	public QuestManager(){
 		Managers.log("[Quest] Starting Manager...");
 		quests = new LinkedHashMap<Long,Quest>();
@@ -132,36 +133,36 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 		parser.addClassHandler("task", TaskHandler.class);
 		parser.addClassHandler("world", WorldHandler.class);
 	}
-
+	
 	@Override
 	public synchronized void reloadQuests(){
 		Managers.log("[Quest] Reload Triggered. Starting reload...");
 		descriptions.clear();
 		File file = new File(locationofQuests);
 		for (File f : file.listFiles(new FilenameFilter(){
-
+			
 			@Override
 			public boolean accept(File dir, String name) {
 				return name.endsWith(".quest");
 			}
-
+			
 		})){
 			loadQuest(f);
 		}
 	}
-
+	
 	@Override
 	public synchronized void reloadQuest(String name){
 		Managers.log("[Quest] Reload Triggered for Quest " + name + ". Attempting reload...");
 		String newname = name + ".quest";
 		File f = new File(locationofQuests);
 		File[] sorted = f.listFiles(new FilenameFilter(){
-
+			
 			@Override
 			public boolean accept(File dir, String name) {
 				return name.endsWith(".quest");
 			}
-
+			
 		});
 		Arrays.sort(sorted);
 		File lookfor = new File(locationofQuests + File.separator + newname);
@@ -172,7 +173,7 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 			descriptions.remove(getDetails(name));
 		loadQuest(sorted[loc]);
 	}
-
+	
 	private synchronized void loadQuest(File f){
 		try {
 			QuestDetails d = new QuestDetails(f);
@@ -183,7 +184,7 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 			Managers.log(Level.SEVERE, "[Quest] Failed to load "+f.getName()+"!");
 		}
 	}
-
+	
 	@Override
 	public com.theminequest.MineQuest.API.Quest.QuestDetails getDetails(
 			String name) {
@@ -192,7 +193,7 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 				return d;
 		return null;
 	}
-
+	
 	@Override
 	public List<String> getListOfDetails() {
 		List<String> s = new LinkedList<String>();
@@ -201,7 +202,7 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 		}
 		return s;
 	}
-
+	
 	@Override
 	public Quest startQuest(com.theminequest.MineQuest.API.Quest.QuestDetails d, String ownerName){
 		if (d==null)
@@ -223,7 +224,7 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 		}
 		return q;
 	}
-
+	
 	@Override
 	public Quest getQuest(long currentquest) {
 		if (quests.containsKey(currentquest))
@@ -255,13 +256,13 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 			return;
 		qs.remove(questName);
 	}
-
+	
 	@Override
 	@EventHandler
 	public void taskCompletion(TaskCompleteEvent e){
 		e.getQuest().onTaskCompletion(e);
 	}
-
+	
 	@Override
 	@EventHandler
 	public void onQuestCompletion(QuestCompleteEvent e){
@@ -301,7 +302,7 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 		}
 		//quests.put(e.getQuestId(), null);
 	}
-
+	
 	@Override
 	@EventHandler
 	public void onBlockPlaceEvent(BlockPlaceEvent e){
@@ -323,7 +324,7 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 			e.getPlayer().sendMessage(ChatColor.YELLOW+"[!] " + q.getDetails().getProperty(QUEST_EDITMESSAGE));
 		}
 	}
-
+	
 	@Override
 	@EventHandler
 	public void onBlockDamageEvent(BlockDamageEvent e){
@@ -345,7 +346,7 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 			e.getPlayer().sendMessage(ChatColor.YELLOW+"[!] " + q.getDetails().getProperty(QUEST_EDITMESSAGE));
 		}
 	}
-
+	
 	@Override
 	@EventHandler
 	public void onPlayerRespawnEvent(PlayerRespawnEvent e){
@@ -357,7 +358,7 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 		if (g.getQuestStatus()==QuestStatus.INQUEST)
 			e.setRespawnLocation(QuestUtils.getSpawnLocation(g.getQuest()));
 	}
-
+	
 	@Override
 	public QuestParser getParser() {
 		return parser;
@@ -370,10 +371,12 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 		for (SnapshotStatistic s : snapshots) {
 			Quest q = s.getSnapshot().recreateQuest();
 			String questName = q.getDetails().getProperty(QUEST_NAME);
+			
 			int taskId = s.getSnapshot().getLastTaskID();
 			if (taskId != -1) {
-				if (!q.startTask(taskId))
+				if (!q.startTask(taskId)) {
 					Managers.log(Level.SEVERE, "Starting task "+taskId+" for "+questName+" failed during login!");
+				}
 			} else
 				q.startQuest();
 			
