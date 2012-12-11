@@ -80,6 +80,7 @@ import com.theminequest.MineQuest.Quest.Parser.SpawnHandler;
 import com.theminequest.MineQuest.Quest.Parser.StartRequirementHandler;
 import com.theminequest.MineQuest.Quest.Parser.TargetHandler;
 import com.theminequest.MineQuest.Quest.Parser.TaskHandler;
+import com.theminequest.MineQuest.Quest.Parser.V1Handler;
 import com.theminequest.MineQuest.Quest.Parser.WorldHandler;
 import com.theminequest.MineQuest.Tasks.V1Task;
 
@@ -131,6 +132,7 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 		parser.addClassHandler("startreq",StartRequirementHandler.class);
 		parser.addClassHandler("target", TargetHandler.class);
 		parser.addClassHandler("task", TaskHandler.class);
+		parser.addClassHandler("v1", V1Handler.class);
 		parser.addClassHandler("world", WorldHandler.class);
 	}
 	
