@@ -135,8 +135,12 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 			return true;
 		}
 		
+		boolean detailsToggle = false;
+		if (details.getProperty(V1Task.DETAILS_TOGGLE) != null)
+			detailsToggle = details.getProperty(V1Task.DETAILS_TOGGLE);
+		
 		// well, this is slightly hacky.
-		if (!initialized && (Boolean)details.getProperty(V1Task.DETAILS_TOGGLE) == true) {
+		if (!initialized && detailsToggle) {
 			activeTask = new V1Task(this, taskid, null, null);
 			activeTask.start();
 			initialized = true;
@@ -158,7 +162,7 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 			eventnum.add(Integer.parseInt(e));
 		}
 		
-		if (details.getProperty(V1Task.DETAILS_TOGGLE))
+		if (detailsToggle)
 			activeTask = new V1Task(this, taskid, eventnum, (V1Task)activeTask);
 		else
 			activeTask = new V2Task(this, taskid, eventnum);
