@@ -17,28 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.theminequest.MQCoreEvents;
-
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.API.CompleteStatus;
 import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Events.QuestEvent;
-import com.theminequest.MineQuest.API.Group.Group;
 import com.theminequest.MineQuest.API.Group.QuestGroup;
+import com.theminequest.MineQuest.API.Utils.ItemUtils;
 
 public class RewardDamaged extends QuestEvent {
 	
 	private int taskid;
-	private int item;
-	private short itemDurability = 100;
-	private boolean isDurableItem;
+	private Material item;
+	private short itemDurability;
 	
 	/*
 	 * (non-Javadoc)
@@ -48,7 +41,7 @@ public class RewardDamaged extends QuestEvent {
 	@Override
 	public void parseDetails(String[] details) {
 		taskid = Integer.parseInt(details[0]);
-		item = Integer.parseInt(details[1]);
+		item = ItemUtils.getMaterial(details[1]);
 		itemDurability = Short.parseShort(details[2]);	
 	}
 
