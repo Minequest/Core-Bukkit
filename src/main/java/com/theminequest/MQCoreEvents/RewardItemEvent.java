@@ -18,26 +18,23 @@
  */
 package com.theminequest.MQCoreEvents;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.Map.Entry;
 
-import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.API.CompleteStatus;
 import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Events.QuestEvent;
-import com.theminequest.MineQuest.API.Group.Group;
 import com.theminequest.MineQuest.API.Group.QuestGroup;
+import com.theminequest.MineQuest.API.Utils.ItemUtils;
 
 public class RewardItemEvent extends QuestEvent {
 	
 	private int taskid;
-	private LinkedHashMap<Integer,Integer> items;
+	private LinkedHashMap<Material, Integer> items = new LinkedHashMap<Material, Integer>();
 
 	/*
 	 * (non-Javadoc)
@@ -46,11 +43,10 @@ public class RewardItemEvent extends QuestEvent {
 	 */
 	@Override
 	public void parseDetails(String[] details) {
-		items = new LinkedHashMap<Integer,Integer>();
 		taskid = Integer.parseInt(details[0]);
-		for (int i=1; i<details.length; i++){
+		for (int i=1; i<details.length; i++) {
 			String[] d = details[i].split(",");
-			items.put(Integer.parseInt(d[0]),Integer.parseInt(d[1]));
+			items.put(ItemUtils.getMaterial(d[0]), Integer.parseInt(d[1]));
 		}
 	}
 
@@ -62,9 +58,9 @@ public class RewardItemEvent extends QuestEvent {
 	@Override
 	public CompleteStatus action() {
 		QuestGroup g = Managers.getQuestGroupManager().get(getQuest());
-		for (Player p : g.getMembers()){
-			for (int i : items.keySet()){
-				p.getInventory().addItem(new ItemStack(i,items.get(i)));
+		for (Player p : g.getMembers()) {
+			for (Entry<Material, Integer> item : items.entrySet()) {
+				p.getInventory().addItem(new ItemStack(item.getKey(), item.getValue()));
 			}
 		}
 		return CompleteStatus.SUCCESS;
