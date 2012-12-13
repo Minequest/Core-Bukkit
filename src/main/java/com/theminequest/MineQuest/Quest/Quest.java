@@ -187,8 +187,6 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 	
 	// passed in from QuestManager
 	public synchronized void onTaskCompletion(TaskCompleteEvent e) {
-		if (!e.getQuest().equals(this))
-			return;
 		if (e.getResult()==CompleteStatus.CANCELED || e.getResult()==CompleteStatus.IGNORE)
 			return;
 		else if (e.getResult()==CompleteStatus.FAILURE || e.getResult()==CompleteStatus.ERROR)
@@ -239,10 +237,10 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 	public boolean equals(Object arg0) {
 		if (arg0==null)
 			return false;
-		if (!(arg0 instanceof Quest))
+		if (!(arg0 instanceof com.theminequest.MineQuest.API.Quest.Quest))
 			return false;
-		Quest q = (Quest) arg0;
-		return (q.questid == this.questid) && (q.getQuestOwner().equals(this.getQuestOwner()) && q.getDetails().equals(this.getDetails()));
+		com.theminequest.MineQuest.API.Quest.Quest q = (com.theminequest.MineQuest.API.Quest.Quest) arg0;
+		return (q.getQuestID() == this.questid) && (q.getQuestOwner().equals(this.getQuestOwner()) && q.getDetails().equals(this.getDetails()));
 	}
 	
 	@Override
