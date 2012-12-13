@@ -246,7 +246,7 @@ public class MQQuestGroupManager implements Listener, QuestGroupManager {
 	@EventHandler
 	public synchronized void onQuestCompleteEvent(QuestCompleteEvent e){
 		Quest q = e.getQuest();
-		if (!q.isInstanced() && e.getQuest().isFinished()!=CompleteStatus.CANCELED){
+		if (!q.isInstanced() && (e.getQuest().isFinished()!=CompleteStatus.CANCELED && e.getQuest().isFinished()!=CompleteStatus.IGNORE)){
 			try {
 				e.getGroup().finishQuest();
 			} catch (GroupException e1) {

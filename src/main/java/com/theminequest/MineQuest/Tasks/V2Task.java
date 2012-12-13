@@ -135,8 +135,12 @@ public class V2Task implements QuestTask {
 		if (complete!=null || !started)
 			return;
 		complete = status;
+		
+		CompleteStatus eventCStatus = (status == CompleteStatus.IGNORE) ? CompleteStatus.IGNORE : CompleteStatus.CANCELED;
+		
 		for (QuestEvent e : collection.values())
-			e.complete(CompleteStatus.CANCELED);
+			e.complete(eventCStatus);
+		
 		TaskCompleteEvent e = new TaskCompleteEvent(quest, taskid, status);
 		Bukkit.getPluginManager().callEvent(e);
 	}

@@ -268,7 +268,7 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 	@Override
 	@EventHandler
 	public void onQuestCompletion(QuestCompleteEvent e){
-		if (e.getResult()!=CompleteStatus.CANCELED){
+		if (e.getResult() != CompleteStatus.CANCELED && e.getResult() != CompleteStatus.IGNORE){
 			com.theminequest.MineQuest.API.Quest.Quest q = e.getQuest();
 			String questname = q.getDetails().getProperty(QUEST_NAME);
 			String questfinish = q.getDetails().getProperty(QUEST_COMPLETE);
@@ -403,7 +403,7 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 		if (qs == null)
 			return;
 		for (Quest q : qs.values()){
-			q.finishQuest(CompleteStatus.CANCELED);
+			q.finishQuest(CompleteStatus.IGNORE);
 			q.cleanupQuest();
 		}
 	}
@@ -414,7 +414,7 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 		if (qs == null)
 			return;
 		for (Quest q : qs.values()){
-			q.finishQuest(CompleteStatus.CANCELED);
+			q.finishQuest(CompleteStatus.IGNORE);
 			q.cleanupQuest();
 		}
 	}

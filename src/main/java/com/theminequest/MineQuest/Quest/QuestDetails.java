@@ -39,7 +39,6 @@ import com.theminequest.MineQuest.API.Target.TargetDetails;
 
 /**
  * Represents a QuestDetails and associated properties
- * @author Robert
  *
  */
 public class QuestDetails implements com.theminequest.MineQuest.API.Quest.QuestDetails {
