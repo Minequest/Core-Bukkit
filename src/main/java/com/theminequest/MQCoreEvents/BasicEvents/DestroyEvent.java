@@ -35,10 +35,13 @@ import com.theminequest.MineQuest.API.Group.QuestGroup;
 
 public class DestroyEvent extends QuestEvent implements UserQuestEvent {
 	
+	public static final String DETAILS_ENTRY = "mq.events.destroyevent.%d";
+	
 	private List<Integer> typestodestroy;
 	private int totaltodestroy;
 	private int currentdestroy;
 	private int taskid;
+	private String entry;
 
 	/*
 	 * (non-Javadoc)
@@ -56,7 +59,12 @@ public class DestroyEvent extends QuestEvent implements UserQuestEvent {
 			typestodestroy.add(Integer.parseInt(b));
 		}
 		totaltodestroy = Integer.parseInt(details[2]);
-		currentdestroy = 0;
+		
+		entry = String.format(DETAILS_ENTRY, getEventId());
+		if (!getQuest().getDetails().containsProperty(entry))
+			currentdestroy = 0;
+		else
+			currentdestroy = getQuest().getDetails().getProperty(entry);
 	}
 
 	@Override
@@ -67,6 +75,11 @@ public class DestroyEvent extends QuestEvent implements UserQuestEvent {
 	@Override
 	public CompleteStatus action() {
 		return CompleteStatus.SUCCESS;
+	}
+
+	@Override
+	public void cleanUpEvent() {
+		getQuest().getDetails().removeProperty(entry);
 	}
 
 	/* (non-Javadoc)
@@ -80,6 +93,7 @@ public class DestroyEvent extends QuestEvent implements UserQuestEvent {
 			for (int t : typestodestroy){
 				if (blockid==t){
 					currentdestroy++;
+					getQuest().getDetails().setProperty(entry, currentdestroy);
 					if (currentdestroy>=totaltodestroy)
 						return true;
 					else

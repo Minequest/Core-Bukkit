@@ -70,7 +70,7 @@ public class NRCollectEvent extends QuestEvent implements UserQuestEvent {
 			} catch (NumberFormatException e) {}
 			
 			if (amount == null) {
-				Managers.log(Level.SEVERE, "[Event] In CollectEvent, could not determine amount of items to collect for "+item);
+				Managers.log(Level.SEVERE, "[Event] In NRCollectEvent, could not determine amount of items to collect for "+item);
 				continue;
 			}
 			
@@ -82,7 +82,7 @@ public class NRCollectEvent extends QuestEvent implements UserQuestEvent {
 			}
 			
 			if (m == null) {
-				Managers.log(Level.SEVERE, "[Event] In CollectEvent, could not determine material of "+item);
+				Managers.log(Level.SEVERE, "[Event] In NRCollectEvent, could not determine material of "+item);
 				continue;
 			}
 			itemMap.put(m, amount);
