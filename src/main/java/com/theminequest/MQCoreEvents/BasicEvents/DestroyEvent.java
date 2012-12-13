@@ -32,6 +32,7 @@ import com.theminequest.MineQuest.API.Events.UserQuestEvent;
 import com.theminequest.MineQuest.API.Events.QuestEvent;
 import com.theminequest.MineQuest.API.Group.Group;
 import com.theminequest.MineQuest.API.Group.QuestGroup;
+import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils;
 
 public class DestroyEvent extends QuestEvent implements UserQuestEvent {
 	
@@ -79,7 +80,8 @@ public class DestroyEvent extends QuestEvent implements UserQuestEvent {
 
 	@Override
 	public void cleanUpEvent() {
-		getQuest().getDetails().removeProperty(entry);
+		if (isComplete() != CompleteStatus.IGNORE)
+			getQuest().getDetails().removeProperty(entry);
 	}
 
 	/* (non-Javadoc)

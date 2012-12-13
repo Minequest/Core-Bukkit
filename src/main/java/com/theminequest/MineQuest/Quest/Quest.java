@@ -83,9 +83,6 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 		this.questOwner = questOwner;
 		initialized = false;
 		
-		// sort the tasks, events, and targets in order of id.
-		// because we have absolutely 0 idea if someone would skip numbers...
-		
 		// load the world if necessary/move team to team leader
 		String world = details.getProperty(QUEST_WORLD);
 		if (Bukkit.getWorld(world) == null) {
@@ -94,6 +91,7 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 				w = w.environment(Environment.NETHER);
 			Bukkit.createWorld(w);
 		}
+		
 		if (details.getProperty(QUEST_LOADWORLD)) {
 			try {
 				world = QuestWorldManip.copyWorld(Bukkit.getWorld(world)).getName();
@@ -101,7 +99,10 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
+		} else {
+			details = new MutableQuestDetails(this);
 		}
+		
 		// enable edits
 		Map<Integer,Edit> edits = details.getProperty(QUEST_EDITS);
 		for (Edit e : edits.values())
@@ -199,7 +200,7 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 	public synchronized void finishQuest(CompleteStatus c) {
 		finished = c;
 		if (activeTask!=null && activeTask.isComplete()==null)
-			activeTask.completeTask(CompleteStatus.CANCELED);
+			activeTask.completeTask(CompleteStatus.IGNORE);
 		activeTask = null;
 		Map<Integer,Edit> edits = details.getProperty(QUEST_EDITS);
 		for (Edit e : edits.values())
