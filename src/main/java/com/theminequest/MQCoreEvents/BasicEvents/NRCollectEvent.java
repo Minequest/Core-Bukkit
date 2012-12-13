@@ -28,7 +28,6 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import com.theminequest.MineQuest.API.CompleteStatus;
@@ -36,6 +35,7 @@ import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Events.QuestEvent;
 import com.theminequest.MineQuest.API.Events.UserQuestEvent;
 import com.theminequest.MineQuest.API.Utils.InventoryUtils;
+import com.theminequest.MineQuest.API.Utils.ItemUtils;
 
 public class NRCollectEvent extends QuestEvent implements UserQuestEvent {
 	
@@ -74,12 +74,7 @@ public class NRCollectEvent extends QuestEvent implements UserQuestEvent {
 				continue;
 			}
 			
-			Material m = Material.matchMaterial(item.toUpperCase());
-			if (m == null) {
-				try {
-					m = Material.getMaterial(Integer.valueOf(item));
-				} catch (NumberFormatException e) {}
-			}
+			Material m = ItemUtils.getMaterial(item);
 			
 			if (m == null) {
 				Managers.log(Level.SEVERE, "[Event] In NRCollectEvent, could not determine material of "+item);
