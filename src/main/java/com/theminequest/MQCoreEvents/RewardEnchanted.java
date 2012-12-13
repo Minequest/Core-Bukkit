@@ -18,6 +18,7 @@
  */
 package com.theminequest.MQCoreEvents;
 
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -26,11 +27,12 @@ import com.theminequest.MineQuest.API.CompleteStatus;
 import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Events.QuestEvent;
 import com.theminequest.MineQuest.API.Group.QuestGroup;
+import com.theminequest.MineQuest.API.Utils.ItemUtils;
 
 public class RewardEnchanted extends QuestEvent {
 	
 	private int taskid;
-	private int item;
+	private Material item;
 	private short itemDurability;
 	private int enchantNumber;
 	private int enchantLevel;
@@ -43,7 +45,7 @@ public class RewardEnchanted extends QuestEvent {
 	@Override
 	public void parseDetails(String[] details) {
 		taskid = Integer.parseInt(details[0]);
-		item = Integer.parseInt(details[1]);
+		item = ItemUtils.getMaterial(details[1]);
 		enchantNumber = Integer.parseInt(details[2]);
 		enchantLevel = Integer.parseInt(details[3]);
 		itemDurability = Short.parseShort(details[4]);
