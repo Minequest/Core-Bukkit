@@ -41,8 +41,9 @@ import com.theminequest.MineQuest.API.Utils.ItemUtils;
 public class CollectEvent extends QuestEvent implements UserQuestEvent {
 
 	private int taskid;
-	private Map<Material, Integer> itemMap;
+	private Map<CollectableItem, Integer> itemMap = Collections.synchronizedMap(new LinkedHashMap<CollectableItem, Integer>());
 	private Future<Boolean> futureTask;
+	protected boolean collectItems = true;
 
 	/*
 	 * (non-Javadoc)
@@ -55,11 +56,11 @@ public class CollectEvent extends QuestEvent implements UserQuestEvent {
 	@Override
 	public void parseDetails(String[] details) {
 		taskid = Integer.parseInt(details[0]);
-		itemMap = Collections.synchronizedMap(new LinkedHashMap<Material, Integer>());
+		
 		String[] items = details[1].split(",");
 		String[] amounts = details[2].split(",");
-		
 		for (int i = 0; i < items.length; i++) {
+			int data = 0;
 			String item = items[i];
 			Integer amount = null;
 			try {
@@ -71,17 +72,25 @@ public class CollectEvent extends QuestEvent implements UserQuestEvent {
 			} catch (NumberFormatException e) {}
 			
 			if (amount == null) {
-				Managers.log(Level.SEVERE, "[Event] In CollectEvent, could not determine amount of items to collect for "+item);
+				Managers.log(Level.SEVERE, "[Event] In "+getClass().getSimpleName()+", could not determine amount of items to collect for "+item);
 				continue;
+			}
+			
+			int index = item.indexOf('-');
+			if (index > -1) {
+				try {
+					data = Integer.valueOf(item.substring(index + 1));
+				} catch (NumberFormatException e) {}
+				item = item.substring(0, index);
 			}
 			
 			Material m = ItemUtils.getMaterial(item);
 			
 			if (m == null) {
-				Managers.log(Level.SEVERE, "[Event] In CollectEvent, could not determine material of "+item);
+				Managers.log(Level.SEVERE, "[Event] In "+getClass().getSimpleName()+", could not determine material of "+item);
 				continue;
 			}
-			itemMap.put(m, amount);
+			itemMap.put(new CollectableItem(m, data), amount);
 		}
 	}
 
@@ -113,16 +122,24 @@ public class CollectEvent extends QuestEvent implements UserQuestEvent {
 					return false;
 				
 				PlayerInventory i = p.getInventory();
-				for (Map.Entry<Material, Integer> entry : itemMap.entrySet()) {
-					Material m = entry.getKey();
+				for (Map.Entry<CollectableItem, Integer> entry : itemMap.entrySet()) {
+					CollectableItem item = entry.getKey();
 					int amount = entry.getValue();
-					if (!InventoryUtils.inventoryContains(i, m, 0, amount))
+					if (!InventoryUtils.inventoryContains(i, item.material, item.data, amount))
 						return false;
 				}
 				
-				for (Map.Entry<Material, Integer> entry : itemMap.entrySet()) {
-					ItemStack stack = new ItemStack(entry.getKey(), entry.getValue());
-					i.removeItem(stack);
+				if (collectItems) {
+					for (Map.Entry<CollectableItem, Integer> entry : itemMap.entrySet()) {
+						CollectableItem item = entry.getKey();
+						ItemStack stack = new ItemStack(item.material, entry.getValue());
+						if (item.material == Material.POTION) {
+							stack.setDurability((short) item.data);
+						} else {
+							stack.getData().setData((byte) item.data);
+						}
+						i.removeItem(stack);
+					}
 				}
 				
 				return true;
@@ -150,7 +167,7 @@ public class CollectEvent extends QuestEvent implements UserQuestEvent {
 		builder.append("Collect ");
 		boolean first = true;
 		int i = 0;
-		for (Map.Entry<Material, Integer> entry : itemMap.entrySet()) {
+		for (Map.Entry<CollectableItem, Integer> entry : itemMap.entrySet()) {
 			i++;
 			if (first) {
 				first = false;
@@ -166,5 +183,23 @@ public class CollectEvent extends QuestEvent implements UserQuestEvent {
 		builder.append("!");
 		return builder.toString();
 	}
-
+	
+	private class CollectableItem {
+		public final Material material;
+		public final int data;
+		
+		public CollectableItem(Material material, int data) {
+			this.material = material;
+			this.data = data;
+		}
+		
+		@Override
+		public String toString() {
+			if (data == 0) {
+				return material.toString().toLowerCase().replace('_', ' ');
+			} else {
+				return material.toString() + ":" + data;
+			}
+		}
+	}
 }
