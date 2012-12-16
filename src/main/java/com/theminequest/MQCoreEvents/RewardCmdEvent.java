@@ -46,7 +46,7 @@ public class RewardCmdEvent extends QuestEvent {
 	@Override
 	public void parseDetails(String[] details) {
 		taskid = Integer.parseInt(details[0]);
-		cmds = Arrays.copyOfRange(details, 1, details.length-1, String[].class);
+		cmds = Arrays.copyOfRange(details, 1, details.length, String[].class);
 	}
 
 	@Override

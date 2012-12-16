@@ -47,7 +47,7 @@ public class RewardPermEvent extends QuestEvent {
 	@Override
 	public void parseDetails(String[] details) {
 		taskid = Integer.parseInt(details[0]);
-		details = Arrays.copyOfRange(details, 1, details.length-1, String[].class);
+		details = Arrays.copyOfRange(details, 1, details.length, String[].class);
 		permissions = new ArrayList<String>();
 		for (String d : details){
 			permissions.add(d);
