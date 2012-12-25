@@ -53,15 +53,11 @@ permissions:
     description: Allows access to all MineQuest-Core quest commands.
     default: false
     children:
-      minequest.command.quest.given: true
-      minequest.command.quest.main: true
       minequest.command.quest.drop: true
       minequest.command.quest.abandon: true
       minequest.command.quest.active: true
-      minequest.command.quest.enter: true
       minequest.command.quest.exit: true
       minequest.command.quest.info: true
-      minequest.command.quest.reload: true
       minequest.command.quest.start: true
       minequest.command.quest.help: true
   minequest.sign.placesign:
@@ -94,32 +90,29 @@ permissions:
   minequest.command.party.help:
     description: Displays party help
     default: true
-  minequest.command.quest.given:
-    description: Shows your given quests
-    default: true
-  minequest.command.quest.main:
-    description: View your main world quests
-    default: true
   minequest.command.quest.abandon:
     description: Abandons your current quest
-    default: true
-  minequest.command.quest.active:
-    description: Sets instanced quest to active
-    default: true
-  minequest.command.quest.enter:
-    description: Enters the quest instance
     default: true
   minequest.command.quest.exit:
     description: Exists the quest instance
     default: true
+  minequest.command.quest.admininfo:
+    description: Shows quest info for any quest
+    default: op
   minequest.command.quest.info:
-    description: Shows quest info
+    description: Shows quest info for a quest you have
     default: true
   minequest.command.quest.admindrop:
     description: Drops another player's quest
     default: op
   minequest.command.quest.drop:
     description: Drops a quest you have
+    default: op
+  minequest.command.quest.admingive:
+    description: Gives a player a quest
+    default: op
+  minequest.command.quest.userhas:
+    description: Check to see if a user has a quest
     default: op
   minequest.command.quest.reload:
     description: Reloads quest from disk

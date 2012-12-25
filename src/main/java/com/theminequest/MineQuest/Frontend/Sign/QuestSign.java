@@ -80,6 +80,7 @@ public class QuestSign implements Listener {
 		QuestDetails d = Managers.getQuestManager().getDetails(quest_name);
 		if (d==null){
 			player.sendMessage(ChatColor.RED + "Yikes! We can't find this quest anymore...");
+			return;
 		}
 		
 		if (QuestStatisticUtils.hasQuest(player.getName(), quest_name) == LogStatus.GIVEN) {

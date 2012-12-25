@@ -122,6 +122,49 @@ public class QuestCommandFrontend extends CommandFrontend {
 		p.sendMessage(QuestDetailsUtils.getOverviewString(qd).split(QuestDetailsUtils.CODE_NEWLINE_SEQ));
 	}
 	
+	public void admingive(Player p, String[] args) {
+		if (args.length!=2) {
+			p.sendMessage(I18NMessage.getLocale().getString(CommandFrontend.IINVALID));
+			return;
+		}
+		String username = args[0];
+		String questname = args[1];
+		
+		Player userPlayer = Bukkit.getPlayer(username);
+		if (userPlayer == null) {
+			p.sendMessage(I18NMessage.getLocale().getString(CommandFrontend.IINVALID));
+			return;
+		}
+		
+		QuestDetails d = Managers.getQuestManager().getDetails(questname);
+		if (d==null){
+			p.sendMessage(I18NMessage.getLocale().getString(CommandFrontend.IINVALID));
+			return;
+		}
+		
+		if (QuestStatisticUtils.hasQuest(userPlayer.getName(), questname) == LogStatus.GIVEN) {
+			p.sendMessage(userPlayer.getName() + " already has this quest! Check their given quests!");
+			return;
+		}
+		
+		if (QuestStatisticUtils.hasQuest(userPlayer.getName(), questname) == LogStatus.ACTIVE) {
+			p.sendMessage(userPlayer.getName() + "already has this quest running actively in their world!");
+			return;
+		}
+		
+		if (QuestDetailsUtils.getRequirementsMet(d, userPlayer)) {
+			try {
+				QuestStatisticUtils.giveQuest(userPlayer.getName(), questname);
+				userPlayer.sendMessage(ChatColor.GREEN + "Successfully added " + d.getProperty(QuestDetails.QUEST_DISPLAYNAME) + " to your quest list!");
+				p.sendMessage(ChatColor.GREEN + "Added to their quest list.");
+			} catch (QSException e) {
+				p.sendMessage("This quest doesn't seem to like them.");
+				e.printStackTrace();
+			}
+		} else
+			p.sendMessage("This quest is currently " + ChatColor.BOLD + ChatColor.RED + "not available" + ChatColor.RESET + " to them.");
+	}
+	
 	public void userhas(Player sender, String[] args) {
 		if (args.length!=1){
 			sender.sendMessage(I18NMessage.getLocale().getString(CommandFrontend.IINVALID));
