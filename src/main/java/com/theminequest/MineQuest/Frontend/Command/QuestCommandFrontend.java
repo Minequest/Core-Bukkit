@@ -378,6 +378,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 		 * OP: reload [name]
 		 * OP: admindrop <username> <name> <true/false (complete?)>
 		 * OP: admininfo [name]
+		 * OP: admingive <username> <questname>
 		 * OP: userhas <username>
 		 * NoByDefault: drop <name>
 		 *
@@ -396,6 +397,8 @@ public class QuestCommandFrontend extends CommandFrontend {
 			messages.add(ChatUtils.formatHelp("quest reload [name]", I18NMessage.getLocale().getString("QHELPRELOAD")));
 		if (p.hasPermission("minequest.command.quest.admindrop"))
 			messages.add(ChatUtils.formatHelp("quest admindrop <user> <name> <true/false>", I18NMessage.getLocale().getString("QHELPADMINDROP")));
+		if (p.hasPermission("minequest.command.quest.admingive"))
+			messages.add(ChatUtils.formatHelp("quest admingive <user> <quest>", I18NMessage.getLocale().getString("QHELPADMINGIVE")));
 		if (p.hasPermission("minequest.command.quest.admininfo"))
 			messages.add(ChatUtils.formatHelp("quest admininfo <name>", I18NMessage.getLocale().getString("QHELPADMININFO")));
 		if (p.hasPermission("minequest.command.quest.userhas"))

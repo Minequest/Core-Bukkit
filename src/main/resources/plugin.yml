@@ -9,7 +9,7 @@ description: This plugin, and its add-ons expands Minecraft to add in Npcs, Ques
 website: www.theminequest.com
 
 load: POSTWORLD
-loadbefore: [MineQuest-NPC, MineQuest-RPG, MineQuest-Events, MineQuest-Abilities, MineQuest-Spout]
+loadbefore: [MineQuest-Events, MineQuest-Idle]
 
 softdepend: [Vault]
 

@@ -170,6 +170,9 @@ QHELPRELOAD=Reload one or all quests into memory.
 # Quest AdminDrop
 QHELPADMINDROP=Drop a quest for a user completed or discarded.
 
+# Quest AdminGive
+QHELPADMINGIVE=Give a quest to a user.
+
 # Quest AdminInfo
 QHELPADMININFO=View information about a quest (global).
 
