@@ -10,7 +10,7 @@ import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils;
  * upon modification to a datastore, such as a database.
  * 
  * Modifying this detail will call createSnapshot() on every call.
- *
+ * 
  */
 public class MutableQuestDetails implements QuestDetails {
 	
@@ -24,13 +24,14 @@ public class MutableQuestDetails implements QuestDetails {
 	
 	/**
 	 * Initialize MutableQuestDetails as a wrapper to a Quest.
+	 * 
 	 * @param details
 	 */
 	public MutableQuestDetails(Quest quest) {
-		this.details = quest.getDetails();
+		details = quest.getDetails();
 		this.quest = quest;
 	}
-
+	
 	@Override
 	public boolean equals(Object arg0) {
 		return quest.equals(arg0);

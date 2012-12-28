@@ -2,28 +2,21 @@
  * This file is part of MineQuest, The ultimate MMORPG plugin!.
  * MineQuest is licensed under GNU General Public License v3.
  * Copyright (C) 2012 The MineQuest Team
- *
+ * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.theminequest.MineQuest.Quest;
-
-import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_EDITS;
-import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_LOADWORLD;
-import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_NAME;
-import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_NETHERWORLD;
-import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_TASKS;
-import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_WORLD;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -53,7 +46,6 @@ import com.theminequest.MineQuest.API.Utils.TimeUtils;
 import com.theminequest.MineQuest.Tasks.V1Task;
 import com.theminequest.MineQuest.Tasks.V2Task;
 
-
 public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 	
 	/**
@@ -72,8 +64,8 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 	
 	private boolean initialized;
 	
-	protected static Quest newInstance(long questid, QuestDetails id, String questOwner){
-		return new Quest(questid,id,questOwner);
+	protected static Quest newInstance(long questid, QuestDetails id, String questOwner) {
+		return new Quest(questid, id, questOwner);
 	}
 	
 	private Quest(long questid, QuestDetails id, String questOwner) {
@@ -84,27 +76,26 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 		initialized = false;
 		
 		// load the world if necessary/move team to team leader
-		String world = details.getProperty(QUEST_WORLD);
+		String world = details.getProperty(QuestDetails.QUEST_WORLD);
 		if (Bukkit.getWorld(world) == null) {
 			WorldCreator w = new WorldCreator(world);
-			if (details.getProperty(QUEST_NETHERWORLD))
+			if (details.getProperty(QuestDetails.QUEST_NETHERWORLD))
 				w = w.environment(Environment.NETHER);
 			Bukkit.createWorld(w);
 		}
 		
-		if (details.getProperty(QUEST_LOADWORLD)) {
+		if (details.getProperty(QuestDetails.QUEST_LOADWORLD))
 			try {
 				world = QuestWorldManip.copyWorld(Bukkit.getWorld(world)).getName();
-				details.setProperty(QUEST_WORLD,world);
+				details.setProperty(QuestDetails.QUEST_WORLD, world);
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
-		} else {
+		else
 			details = new MutableQuestDetails(this);
-		}
 		
 		// enable edits
-		Map<Integer,Edit> edits = details.getProperty(QUEST_EDITS);
+		Map<Integer, Edit> edits = details.getProperty(QuestDetails.QUEST_EDITS);
 		for (Edit e : edits.values())
 			e.startEdit(this);
 		
@@ -114,10 +105,11 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 		Bukkit.getPluginManager().callEvent(event);
 	}
 	
-	public synchronized void startQuest(){
-		Map<Integer,String[]> tasks = details.getProperty(QUEST_TASKS);
+	@Override
+	public synchronized void startQuest() {
+		Map<Integer, String[]> tasks = details.getProperty(QuestDetails.QUEST_TASKS);
 		if (!startTask(SetUtils.getFirstKey(tasks.keySet()))) {
-			Managers.log(Level.SEVERE, "Starting initial task for " + details.getProperty(QUEST_NAME) + "/" + getQuestOwner() + " failed!");
+			Managers.log(Level.SEVERE, "Starting initial task for " + details.getProperty(QuestDetails.QUEST_NAME) + "/" + getQuestOwner() + " failed!");
 			finishQuest(CompleteStatus.ERROR);
 		}
 	}
@@ -129,8 +121,9 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 	 *            task to start
 	 * @return true if task was started successfully
 	 */
+	@Override
 	public synchronized boolean startTask(int taskid) {
-		Map<Integer,String[]> tasks = details.getProperty(QUEST_TASKS);
+		Map<Integer, String[]> tasks = details.getProperty(QuestDetails.QUEST_TASKS);
 		if (taskid == -1) {
 			finishQuest(CompleteStatus.SUCCESS);
 			return true;
@@ -149,8 +142,8 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 		
 		if (!tasks.containsKey(taskid))
 			return false;
-		if (activeTask!=null) {
-			if (activeTask.isComplete()==null)
+		if (activeTask != null) {
+			if (activeTask.isComplete() == null)
 				activeTask.cancelTask();
 			
 			if (activeTask.getTaskID() == taskid)
@@ -159,51 +152,53 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 		
 		String[] eventnums = tasks.get(taskid);
 		List<Integer> eventnum = new ArrayList<Integer>();
-		for (String e : eventnums) {
+		for (String e : eventnums)
 			eventnum.add(Integer.parseInt(e));
-		}
 		
 		if (detailsToggle)
-			activeTask = new V1Task(this, taskid, eventnum, (V1Task)activeTask);
+			activeTask = new V1Task(this, taskid, eventnum, (V1Task) activeTask);
 		else
 			activeTask = new V2Task(this, taskid, eventnum);
 		
 		activeTask.start();
 		
 		// main world quest
-		if (questid == -1) {
+		if (questid == -1)
 			QuestStatisticUtils.checkpointQuest(this);
-		}
 		return true;
 	}
 	
-	public boolean isInstanced(){
-		return details.getProperty(QUEST_LOADWORLD);
+	@Override
+	public boolean isInstanced() {
+		return details.getProperty(QuestDetails.QUEST_LOADWORLD);
 	}
 	
+	@Override
 	public synchronized QuestTask getActiveTask() {
 		return activeTask;
 	}
 	
 	// passed in from QuestManager
+	@Override
 	public synchronized void onTaskCompletion(TaskCompleteEvent e) {
-		if (e.getResult()==CompleteStatus.CANCELED || e.getResult()==CompleteStatus.IGNORE)
+		if ((e.getResult() == CompleteStatus.CANCELED) || (e.getResult() == CompleteStatus.IGNORE))
 			return;
-		else if (e.getResult()==CompleteStatus.FAILURE || e.getResult()==CompleteStatus.ERROR)
+		else if ((e.getResult() == CompleteStatus.FAILURE) || (e.getResult() == CompleteStatus.ERROR))
 			finishQuest(e.getResult());
 		else
 			startTask(QuestUtils.getNextTask(this));
 	}
 	
+	@Override
 	public synchronized void finishQuest(CompleteStatus c) {
 		finished = c;
-		if (activeTask!=null && activeTask.isComplete()==null)
+		if ((activeTask != null) && (activeTask.isComplete() == null))
 			activeTask.completeTask(CompleteStatus.IGNORE);
 		activeTask = null;
-		Map<Integer,Edit> edits = details.getProperty(QUEST_EDITS);
+		Map<Integer, Edit> edits = details.getProperty(QuestDetails.QUEST_EDITS);
 		for (Edit e : edits.values())
 			e.dismantle();
-		String world = details.getProperty(QUEST_WORLD);
+		String world = details.getProperty(QuestDetails.QUEST_WORLD);
 		TimeUtils.unlock(Bukkit.getWorld(world));
 		QuestGroupManager qGM = Managers.getQuestGroupManager();
 		QuestGroup g = qGM.get(this);
@@ -211,19 +206,20 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 		Bukkit.getPluginManager().callEvent(event);
 	}
 	
+	@Override
 	public void cleanupQuest() {
-		if (details.getProperty(QUEST_LOADWORLD)){
+		if (details.getProperty(QuestDetails.QUEST_LOADWORLD))
 			try {
-				QuestWorldManip.removeWorld(Bukkit.getWorld((String) details.getProperty(QUEST_WORLD)));
+				QuestWorldManip.removeWorld(Bukkit.getWorld((String) details.getProperty(QuestDetails.QUEST_WORLD)));
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
-		}
 		activeTask = null;
 		questOwner = null;
 		questid = -1;
 	}
 	
+	@Override
 	public synchronized CompleteStatus isFinished() {
 		return finished;
 	}
@@ -235,12 +231,12 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 	 */
 	@Override
 	public boolean equals(Object arg0) {
-		if (arg0==null)
+		if (arg0 == null)
 			return false;
 		if (!(arg0 instanceof com.theminequest.MineQuest.API.Quest.Quest))
 			return false;
 		com.theminequest.MineQuest.API.Quest.Quest q = (com.theminequest.MineQuest.API.Quest.Quest) arg0;
-		return (q.getQuestID() == this.questid) && (q.getQuestOwner().equals(this.getQuestOwner()) && q.getDetails().equals(this.getDetails()));
+		return (q.getQuestID() == questid) && (q.getQuestOwner().equals(getQuestOwner()) && q.getDetails().equals(getDetails()));
 	}
 	
 	@Override
@@ -250,7 +246,7 @@ public class Quest implements com.theminequest.MineQuest.API.Quest.Quest {
 	
 	@Override
 	public int compareTo(com.theminequest.MineQuest.API.Quest.Quest arg0) {
-		return ((Long)getQuestID()).compareTo(arg0.getQuestID());
+		return ((Long) getQuestID()).compareTo(arg0.getQuestID());
 	}
 	
 	@Override

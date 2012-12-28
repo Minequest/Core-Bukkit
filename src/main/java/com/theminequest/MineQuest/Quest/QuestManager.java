@@ -2,28 +2,21 @@
  * This file is part of MineQuest, The ultimate MMORPG plugin!.
  * MineQuest is licensed under GNU General Public License v3.
  * Copyright (C) 2012 The MineQuest Team
- *
+ * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.theminequest.MineQuest.Quest;
-
-import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_COMPLETE;
-import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_EDITMESSAGE;
-import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_EDITS;
-import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_FAIL;
-import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_LOADWORLD;
-import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_NAME;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -89,29 +82,26 @@ import com.theminequest.MineQuest.Quest.Parser.TaskHandler;
 import com.theminequest.MineQuest.Quest.Parser.V1Handler;
 import com.theminequest.MineQuest.Quest.Parser.WorldHandler;
 
-
-public class QuestManager implements Listener, com.theminequest.MineQuest.API.Quest.QuestManager {
+public class QuestManager implements Listener,
+		com.theminequest.MineQuest.API.Quest.QuestManager {
 	
 	protected final String locationofQuests;
-	private LinkedHashMap<Long,Quest> quests;
+	private LinkedHashMap<Long, Quest> quests;
 	private Map<String, Map<String, Quest>> mwQuests;
 	private List<QuestDetails> descriptions;
 	private long questid;
 	private final QuestParser parser;
 	
-	public QuestManager(){
+	public QuestManager() {
 		Managers.log("[Quest] Starting Manager...");
-		quests = new LinkedHashMap<Long,Quest>();
+		quests = new LinkedHashMap<Long, Quest>();
 		mwQuests = new HashMap<String, Map<String, Quest>>();
 		descriptions = new ArrayList<QuestDetails>();
 		questid = 0;
 		parser = new QuestParser();
-		locationofQuests = MineQuest.configuration.questConfig
-				.getString("questfolderlocation",
-						Managers.getActivePlugin().getDataFolder().getAbsolutePath()
-						+File.separator+"quests");
+		locationofQuests = MineQuest.configuration.questConfig.getString("questfolderlocation", Managers.getActivePlugin().getDataFolder().getAbsolutePath() + File.separator + "quests");
 		File f = new File(locationofQuests);
-		if (!f.exists() || !f.isDirectory()){
+		if (!f.exists() || !f.isDirectory()) {
 			f.delete();
 			f.mkdirs();
 		}
@@ -129,10 +119,10 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 		parser.addClassHandler("loadworld", LoadWorldHandler.class);
 		parser.addClassHandler("name", NameHandler.class);
 		parser.addClassHandler("repeatable", RepeatableHandler.class);
-		parser.addClassHandler("requirement",RequirementHandler.class);
+		parser.addClassHandler("requirement", RequirementHandler.class);
 		parser.addClassHandler("reset", ResetHandler.class);
 		parser.addClassHandler("spawn", SpawnHandler.class);
-		parser.addClassHandler("startreq",StartRequirementHandler.class);
+		parser.addClassHandler("startreq", StartRequirementHandler.class);
 		parser.addClassHandler("target", TargetHandler.class);
 		parser.addClassHandler("task", TaskHandler.class);
 		parser.addClassHandler("v1", V1Handler.class);
@@ -140,28 +130,27 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 	}
 	
 	@Override
-	public synchronized void reloadQuests(){
+	public synchronized void reloadQuests() {
 		Managers.log("[Quest] Reload Triggered. Starting reload...");
 		descriptions.clear();
 		File file = new File(locationofQuests);
-		for (File f : file.listFiles(new FilenameFilter(){
+		for (File f : file.listFiles(new FilenameFilter() {
 			
 			@Override
 			public boolean accept(File dir, String name) {
 				return name.endsWith(".quest");
 			}
 			
-		})){
+		}))
 			loadQuest(f);
-		}
 	}
 	
 	@Override
-	public synchronized void reloadQuest(String name){
+	public synchronized void reloadQuest(String name) {
 		Managers.log("[Quest] Reload Triggered for Quest " + name + ". Attempting reload...");
 		String newname = name + ".quest";
 		File f = new File(locationofQuests);
-		File[] sorted = f.listFiles(new FilenameFilter(){
+		File[] sorted = f.listFiles(new FilenameFilter() {
 			
 			@Override
 			public boolean accept(File dir, String name) {
@@ -172,27 +161,26 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 		Arrays.sort(sorted);
 		File lookfor = new File(locationofQuests + File.separator + newname);
 		int loc = Arrays.binarySearch(sorted, lookfor);
-		if (loc>=sorted.length || loc<0)
+		if ((loc >= sorted.length) || (loc < 0))
 			throw new IllegalArgumentException("Can't find this quest!");
-		if (getDetails(name)!=null)
+		if (getDetails(name) != null)
 			descriptions.remove(getDetails(name));
 		loadQuest(sorted[loc]);
 	}
 	
-	private synchronized void loadQuest(File f){
+	private synchronized void loadQuest(File f) {
 		try {
 			QuestDetails d = new QuestDetails(f);
 			descriptions.add(d);
-			Managers.log("[Quest] Loaded " + d.getProperty(com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_NAME)+".");
+			Managers.log("[Quest] Loaded " + d.getProperty(com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_NAME) + ".");
 		} catch (IOException e) {
 			e.printStackTrace();
-			Managers.log(Level.SEVERE, "[Quest] Failed to load "+f.getName()+"!");
+			Managers.log(Level.SEVERE, "[Quest] Failed to load " + f.getName() + "!");
 		}
 	}
 	
 	@Override
-	public com.theminequest.MineQuest.API.Quest.QuestDetails getDetails(
-			String name) {
+	public com.theminequest.MineQuest.API.Quest.QuestDetails getDetails(String name) {
 		for (QuestDetails d : descriptions)
 			if (d.getProperty(com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_NAME).equals(name))
 				return d;
@@ -202,30 +190,29 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 	@Override
 	public List<String> getListOfDetails() {
 		List<String> s = new LinkedList<String>();
-		for (QuestDetails d : descriptions){
+		for (QuestDetails d : descriptions)
 			s.add((String) d.getProperty(com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_NAME));
-		}
 		return s;
 	}
 	
 	@Override
-	public Quest startQuest(com.theminequest.MineQuest.API.Quest.QuestDetails d, String ownerName){
-		if (d==null)
+	public Quest startQuest(com.theminequest.MineQuest.API.Quest.QuestDetails d, String ownerName) {
+		if (d == null)
 			throw new IllegalArgumentException(new NullPointerException());
 		d = QuestDetailsUtils.getCopy(d);
 		Quest q;
-		if (d.getProperty(QUEST_LOADWORLD)){
-			q = com.theminequest.MineQuest.Quest.Quest.newInstance(questid,d,ownerName);
-			quests.put(questid,q);
+		if (d.getProperty(QuestDetails.QUEST_LOADWORLD)) {
+			q = com.theminequest.MineQuest.Quest.Quest.newInstance(questid, d, ownerName);
+			quests.put(questid, q);
 			questid++;
 		} else {
-			q = com.theminequest.MineQuest.Quest.Quest.newInstance(-1,d,ownerName);
+			q = com.theminequest.MineQuest.Quest.Quest.newInstance(-1, d, ownerName);
 			Map<String, Quest> qs = mwQuests.get(ownerName);
 			if (qs == null) {
 				qs = new LinkedHashMap<String, Quest>();
 				mwQuests.put(ownerName, qs);
 			}
-			qs.put((String) q.getDetails().getProperty(QUEST_NAME), q);
+			qs.put((String) q.getDetails().getProperty(QuestDetails.QUEST_NAME), q);
 		}
 		return q;
 	}
@@ -238,7 +225,7 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 	}
 	
 	@Override
-	public Quest[] getMainWorldQuests(Player player){
+	public Quest[] getMainWorldQuests(Player player) {
 		Map<String, Quest> qs = mwQuests.get(player.getName());
 		if (qs == null)
 			return new Quest[0];
@@ -264,23 +251,23 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 	
 	@Override
 	@EventHandler
-	public void taskCompletion(TaskCompleteEvent e){
+	public void taskCompletion(TaskCompleteEvent e) {
 		e.getQuest().onTaskCompletion(e);
 	}
 	
 	@Override
 	@EventHandler
-	public void onQuestCompletion(QuestCompleteEvent e){
-		if (e.getResult() != CompleteStatus.CANCELED && e.getResult() != CompleteStatus.IGNORE){
+	public void onQuestCompletion(QuestCompleteEvent e) {
+		if ((e.getResult() != CompleteStatus.CANCELED) && (e.getResult() != CompleteStatus.IGNORE)) {
 			com.theminequest.MineQuest.API.Quest.Quest q = e.getQuest();
-			String questname = q.getDetails().getProperty(QUEST_NAME);
-			String questfinish = q.getDetails().getProperty(QUEST_COMPLETE);
-			boolean failed = (e.getResult()==CompleteStatus.FAILURE);
+			String questname = q.getDetails().getProperty(QuestDetails.QUEST_NAME);
+			String questfinish = q.getDetails().getProperty(QuestDetails.QUEST_COMPLETE);
+			boolean failed = (e.getResult() == CompleteStatus.FAILURE);
 			String color = ChatColor.GRAY + "[done] ";
 			switch (e.getResult()) {
 			case FAILURE:
 				color = ChatColor.RED + "[fail] ";
-				questfinish = q.getDetails().getProperty(QUEST_FAIL);
+				questfinish = q.getDetails().getProperty(QuestDetails.QUEST_FAIL);
 				break;
 			case ERROR:
 				color = ChatColor.BOLD + "" + ChatColor.RED + "[! error !] ";
@@ -295,72 +282,73 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 			default:
 				break;
 			}
-			for (Player p : e.getGroup().getMembers()){
+			for (Player p : e.getGroup().getMembers()) {
 				p.sendMessage(color + questfinish);
 				try {
 					if (!failed)
 						QuestStatisticUtils.completeQuest(p.getName(), questname);
 					else
 						QuestStatisticUtils.failQuest(p.getName(), questname);
-				} catch (QSException ignored) {}
+				} catch (QSException ignored) {
+				}
 			}
 		}
-		//quests.put(e.getQuestId(), null);
+		// quests.put(e.getQuestId(), null);
 	}
 	
 	@Override
 	@EventHandler
-	public void onBlockPlaceEvent(BlockPlaceEvent e){
+	public void onBlockPlaceEvent(BlockPlaceEvent e) {
 		Player p = e.getPlayer();
 		long indexof = Managers.getQuestGroupManager().indexOf(p);
-		if (indexof==-1)
+		if (indexof == -1)
 			return;
 		QuestGroup g = Managers.getQuestGroupManager().get(indexof);
-		if (g.getQuestStatus()==QuestStatus.INQUEST){
+		if (g.getQuestStatus() == QuestStatus.INQUEST) {
 			com.theminequest.MineQuest.API.Quest.Quest q = g.getQuest();
 			// by default, I don't allow this to happen.
 			e.setCancelled(true);
-			Map<Integer,Edit> edits = q.getDetails().getProperty(QUEST_EDITS);
-			for (Edit edit : edits.values()){
+			Map<Integer, Edit> edits = q.getDetails().getProperty(QuestDetails.QUEST_EDITS);
+			for (Edit edit : edits.values()) {
 				edit.onBlockPlace(e);
 				if (!e.isCancelled())
 					return;
 			}
-			e.getPlayer().sendMessage(ChatColor.YELLOW+"[!] " + q.getDetails().getProperty(QUEST_EDITMESSAGE));
+			e.getPlayer().sendMessage(ChatColor.YELLOW + "[!] " + q.getDetails().getProperty(QuestDetails.QUEST_EDITMESSAGE));
 		}
 	}
 	
 	@Override
 	@EventHandler
-	public void onBlockDamageEvent(BlockDamageEvent e){
+	public void onBlockDamageEvent(BlockDamageEvent e) {
 		Player p = e.getPlayer();
 		long indexof = Managers.getQuestGroupManager().indexOf(p);
-		if (indexof==-1)
+		if (indexof == -1)
 			return;
 		QuestGroup g = Managers.getQuestGroupManager().get(indexof);
-		if (g.getQuestStatus()==QuestStatus.INQUEST){
+		if (g.getQuestStatus() == QuestStatus.INQUEST) {
 			com.theminequest.MineQuest.API.Quest.Quest q = g.getQuest();
 			// by default, I don't allow this to happen.
 			e.setCancelled(true);
-			Map<Integer,Edit> edits = q.getDetails().getProperty(QUEST_EDITS);
-			for (Edit edit : edits.values()){
+			Map<Integer, Edit> edits = q.getDetails().getProperty(QuestDetails.QUEST_EDITS);
+			for (Edit edit : edits.values()) {
 				edit.onBlockDamage(e);
 				if (!e.isCancelled())
 					return;
 			}
-			e.getPlayer().sendMessage(ChatColor.YELLOW+"[!] " + q.getDetails().getProperty(QUEST_EDITMESSAGE));
+			e.getPlayer().sendMessage(ChatColor.YELLOW + "[!] " + q.getDetails().getProperty(QuestDetails.QUEST_EDITMESSAGE));
 		}
 	}
 	
 	@Override
 	@EventHandler
-	public void onPlayerRespawnEvent(PlayerRespawnEvent e){
+	public void onPlayerRespawnEvent(PlayerRespawnEvent e) {
 		Player p = e.getPlayer();
 		long indexof = Managers.getQuestGroupManager().indexOf(p);
-		if (indexof==-1)
+		if (indexof == -1)
 			return;
 		QuestGroup g = Managers.getQuestGroupManager().get(indexof);
-		if (g.getQuestStatus()==QuestStatus.INQUEST)
+		if (g.getQuestStatus() == QuestStatus.INQUEST)
 			e.setRespawnLocation(QuestUtils.getSpawnLocation(g.getQuest()));
 	}
 	
@@ -370,18 +358,17 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 	}
 	
 	@EventHandler
-	public void onPlayerJoin(PlayerJoinEvent e){
+	public void onPlayerJoin(PlayerJoinEvent e) {
 		List<SnapshotStatistic> snapshots = Managers.getStatisticManager().getAllStatistics(e.getPlayer().getName(), SnapshotStatistic.class);
 		LinkedHashMap<String, Quest> qs = new LinkedHashMap<String, Quest>();
 		for (SnapshotStatistic s : snapshots) {
 			Quest q = s.getSnapshot().recreateQuest();
-			String questName = q.getDetails().getProperty(QUEST_NAME);
+			String questName = q.getDetails().getProperty(QuestDetails.QUEST_NAME);
 			
 			int taskId = s.getSnapshot().getLastTaskID();
 			if (taskId != -1) {
-				if (!q.startTask(taskId)) {
-					Managers.log(Level.SEVERE, "Starting task "+taskId+" for "+questName+" failed during login!");
-				}
+				if (!q.startTask(taskId))
+					Managers.log(Level.SEVERE, "Starting task " + taskId + " for " + questName + " failed during login!");
 			} else
 				q.startQuest();
 			
@@ -390,33 +377,33 @@ public class QuestManager implements Listener, com.theminequest.MineQuest.API.Qu
 		mwQuests.put(e.getPlayer().getName(), qs);
 		
 		// consistency check
-		Map<String,Date> check = QuestStatisticUtils.getQuests(e.getPlayer().getName(), LogStatus.ACTIVE);
-		for (String s : check.keySet()){
-			if (getMainWorldQuest(e.getPlayer().getName(),s)==null){
+		Map<String, Date> check = QuestStatisticUtils.getQuests(e.getPlayer().getName(), LogStatus.ACTIVE);
+		for (String s : check.keySet())
+			if (getMainWorldQuest(e.getPlayer().getName(), s) == null)
 				try {
 					QuestStatisticUtils.dropQuest(e.getPlayer().getName(), s);
-				} catch (QSException e1) { e1.printStackTrace(); }
-			}
-		}
+				} catch (QSException e1) {
+					e1.printStackTrace();
+				}
 	}
 	
 	@EventHandler(priority = EventPriority.LOW)
-	public void onPlayerQuit(PlayerQuitEvent e){
+	public void onPlayerQuit(PlayerQuitEvent e) {
 		Map<String, Quest> qs = mwQuests.remove(e.getPlayer().getName());
 		if (qs == null)
 			return;
-		for (Quest q : qs.values()){
+		for (Quest q : qs.values()) {
 			q.finishQuest(CompleteStatus.IGNORE);
 			q.cleanupQuest();
 		}
 	}
 	
 	@EventHandler(priority = EventPriority.LOW)
-	public void onPlayerKick(PlayerKickEvent e){
+	public void onPlayerKick(PlayerKickEvent e) {
 		Map<String, Quest> qs = mwQuests.remove(e.getPlayer().getName());
 		if (qs == null)
 			return;
-		for (Quest q : qs.values()){
+		for (Quest q : qs.values()) {
 			q.finishQuest(CompleteStatus.IGNORE);
 			q.cleanupQuest();
 		}

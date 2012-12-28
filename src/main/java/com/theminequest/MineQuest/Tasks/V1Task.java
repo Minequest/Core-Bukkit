@@ -25,13 +25,14 @@ import com.theminequest.MineQuest.API.Task.QuestTask;
  * accompanies the Quest. Events run normally; and if an event needs
  * to be canceled, a CancelEvent (which only works with V1Task) can
  * be issued to cancel the event.
- *
+ * 
  */
 public class V1Task implements QuestTask {
 	
 	/**
 	 * The location within the QuestDetails object where all currently
-	 * running events are stored. Returns a {@link java.util.TreeSet} of Integers.
+	 * running events are stored. Returns a {@link java.util.TreeSet} of
+	 * Integers.
 	 */
 	public static final String DETAILS_NAME = "v1.tasks";
 	
@@ -47,30 +48,38 @@ public class V1Task implements QuestTask {
 	
 	/**
 	 * Initialize a new V1Task.
-	 * @param quest Quest to link to
-	 * @param taskid Task ID of this task (last called)
-	 * @param events Collection of events to start, or null to initialize previously used ones.
-	 * @param questEvents Objects of the Quest Events
+	 * 
+	 * @param quest
+	 *            Quest to link to
+	 * @param taskid
+	 *            Task ID of this task (last called)
+	 * @param events
+	 *            Collection of events to start, or null to initialize
+	 *            previously used ones.
+	 * @param questEvents
+	 *            Objects of the Quest Events
 	 */
-	public V1Task(Quest quest, int taskid, Collection<Integer> events, V1Task lastTask) {
+	public V1Task(Quest quest, int taskid, Collection<Integer> events,
+			V1Task lastTask) {
 		this.quest = quest;
 		this.taskid = taskid;
 		this.events = events;
 		if (lastTask != null)
-			this.questEvents = lastTask.questEvents;
+			questEvents = lastTask.questEvents;
 		else
-			this.questEvents = null;
+			questEvents = null;
 	}
 	
 	@Override
 	public void start() {
-		TreeSet<Integer> running = quest.getDetails().getProperty(DETAILS_NAME);
+		TreeSet<Integer> running = quest.getDetails().getProperty(V1Task.DETAILS_NAME);
 		if (running == null) {
 			running = new TreeSet<Integer>();
-			quest.getDetails().setProperty(DETAILS_NAME, running);
+			quest.getDetails().setProperty(V1Task.DETAILS_NAME, running);
 		}
 		
-		if (events == null) { // then start all events previously contained within v1.tasks
+		if (events == null) { // then start all events previously contained
+								// within v1.tasks
 			events = running;
 			running = new TreeSet<Integer>(); // dereference to avoid conflicts;
 		}
@@ -79,31 +88,32 @@ public class V1Task implements QuestTask {
 		
 		for (Integer event : events) {
 			
-			if (running.contains(event)) // event already there, ignore recalling of it
+			if (running.contains(event)) // event already there, ignore
+											// recalling of it
 				continue;
 			
-			String d = QuestUtils.getEvent(quest,event);
+			String d = QuestUtils.getEvent(quest, event);
 			if (d == null) {
-				Managers.log(Level.WARNING, "[Task] Missing event number " + event + " in V1Task "+taskid+" for quest "+quest.getDetails().getProperty(QuestDetails.QUEST_NAME)+"; Ignoring.");
+				Managers.log(Level.WARNING, "[Task] Missing event number " + event + " in V1Task " + taskid + " for quest " + quest.getDetails().getProperty(QuestDetails.QUEST_NAME) + "; Ignoring.");
 				running.remove(event);
 				continue;
 			}
 			String[] eventdetails = d.split(":");
 			String recombined = "";
-			for (int r=1; r<eventdetails.length; r++){
-				recombined+=eventdetails[r];
-				if (r!=(eventdetails.length-1));
-				recombined+=":";
+			for (int r = 1; r < eventdetails.length; r++) {
+				recombined += eventdetails[r];
+				if (r != (eventdetails.length - 1))
+					;
+				recombined += ":";
 			}
 			
 			QuestEvent eventObject = Managers.getEventManager().constructEvent(eventdetails[0], quest, event, recombined);
 			
-			if (eventObject!=null) {
+			if (eventObject != null) {
 				running.add(event);
 				objects.add(eventObject);
-			} else {
+			} else
 				Managers.log(Level.WARNING, "[Task] Missing event " + eventdetails[0] + "; Ignoring.");
-			}
 		}
 		
 		Managers.getEventManager().registerEventListeners(Collections.unmodifiableCollection(objects));
@@ -123,7 +133,8 @@ public class V1Task implements QuestTask {
 	 * This one is called by QuestEvent.)
 	 */
 	@Override
-	public void cancelTask() {}
+	public void cancelTask() {
+	}
 	
 	/**
 	 * V1Task does relatively nothing with completeTask,
@@ -132,10 +143,9 @@ public class V1Task implements QuestTask {
 	 */
 	@Override
 	public void completeTask(CompleteStatus status) {
-		if (status == CompleteStatus.CANCELED) {
+		if (status == CompleteStatus.CANCELED)
 			for (QuestEvent event : questEvents)
 				event.complete(CompleteStatus.CANCELED);
-		}
 	}
 	
 	@Override
@@ -164,6 +174,7 @@ public class V1Task implements QuestTask {
 	 * quest responsibly.
 	 */
 	@Override
-	public void checkTasks() {}
+	public void checkTasks() {
+	}
 	
 }

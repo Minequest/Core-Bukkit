@@ -2,19 +2,19 @@
  * This file is part of MineQuest, The ultimate MMORPG plugin!.
  * MineQuest is licensed under GNU General Public License v3.
  * Copyright (C) 2012 The MineQuest Team
- *
+ * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.theminequest.MineQuest.Frontend.Command;
 
@@ -40,9 +40,9 @@ public abstract class CommandFrontend implements CommandExecutor {
 	
 	private String cmdname;
 	
-	public CommandFrontend(String name){
+	public CommandFrontend(String name) {
 		cmdname = name;
-		Managers.log("[CommandFrontend] Starting Command Frontend for \""+cmdname+"\"...");
+		Managers.log("[CommandFrontend] Starting Command Frontend for \"" + cmdname + "\"...");
 	}
 	
 	@Override
@@ -50,21 +50,21 @@ public abstract class CommandFrontend implements CommandExecutor {
 		
 		Player player = null;
 		if (sender instanceof Player)
-			player = (Player)sender;
-		if ((player==null) && !allowConsole()){
-			Managers.log(Level.WARNING,"[CommandFrontend] No console use for \""+cmdname+"\"...");
+			player = (Player) sender;
+		if ((player == null) && !allowConsole()) {
+			Managers.log(Level.WARNING, "[CommandFrontend] No console use for \"" + cmdname + "\"...");
 			return false;
 		}
 		
-		if (args.length==0) {
-			noOptionSpecified(sender,args);
+		if (args.length == 0) {
+			noOptionSpecified(sender, args);
 			return true;
 		}
 		
 		String cmd = args[0].toLowerCase();
 		
-		if (!sender.hasPermission("minequest.command."+label+"."+cmd)) {
-			sender.sendMessage(I18NMessage.getLocale().getString(INOPERM));
+		if (!sender.hasPermission("minequest.command." + label + "." + cmd)) {
+			sender.sendMessage(I18NMessage.getLocale().getString(CommandFrontend.INOPERM));
 			return true;
 		}
 		
@@ -73,7 +73,7 @@ public abstract class CommandFrontend implements CommandExecutor {
 		Method m;
 		try {
 			if (cmd.equals("help")) {
-				help(sender,arguments);
+				help(sender, arguments);
 				return true;
 			}
 			if (!allowConsole()) {
@@ -83,7 +83,7 @@ public abstract class CommandFrontend implements CommandExecutor {
 					try {
 						m = this.getClass().getMethod(cmd, CommandSender.class, String[].class);
 					} catch (NoSuchMethodException e1) {
-						sender.sendMessage(I18NMessage.getLocale().getString(IINVALID));
+						sender.sendMessage(I18NMessage.getLocale().getString(CommandFrontend.IINVALID));
 						return true;
 					}
 				}
@@ -92,7 +92,7 @@ public abstract class CommandFrontend implements CommandExecutor {
 				try {
 					m = this.getClass().getMethod(cmd, CommandSender.class, String[].class);
 				} catch (NoSuchMethodException e) {
-					sender.sendMessage(I18NMessage.getLocale().getString(IINVALID));
+					sender.sendMessage(I18NMessage.getLocale().getString(CommandFrontend.IINVALID));
 					return true;
 				}
 				m.invoke(this, sender, arguments);
@@ -107,18 +107,20 @@ public abstract class CommandFrontend implements CommandExecutor {
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
 		}
-		sender.sendMessage(I18NMessage.getLocale().getString(ISEVERE));
+		sender.sendMessage(I18NMessage.getLocale().getString(CommandFrontend.ISEVERE));
 		return true;
 	}
 	
-	private String[] shrinkArray(String[] array){
-		if (array.length<=1)
+	private String[] shrinkArray(String[] array) {
+		if (array.length <= 1)
 			return new String[0];
 		return Arrays.copyOfRange(array, 1, array.length);
 	}
 	
 	public abstract void help(CommandSender p, String[] args);
+	
 	public abstract void noOptionSpecified(CommandSender sender, String[] args);
+	
 	public abstract boolean allowConsole();
 	
 }

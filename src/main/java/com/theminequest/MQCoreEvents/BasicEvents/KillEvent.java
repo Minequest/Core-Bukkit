@@ -2,19 +2,19 @@
  * This file is part of MineQuest, The ultimate MMORPG plugin!.
  * MineQuest is licensed under GNU General Public License v3.
  * Copyright (C) 2012 The MineQuest Team
- *
+ * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.theminequest.MQCoreEvents.BasicEvents;
 
@@ -41,14 +41,16 @@ import com.theminequest.MineQuest.API.Group.QuestGroup;
 import com.theminequest.MineQuest.API.Utils.MobUtils;
 
 public class KillEvent extends QuestEvent implements UserQuestEvent {
-
+	
 	private Map<EntityType, Integer> killMap;
 	private Map<EntityType, Integer> currentKills;
 	private int taskid;
-
+	
 	/*
 	 * (non-Javadoc)
-	 * @see com.theminequest.MineQuest.Events.QEvent#parseDetails(java.lang.String[])
+	 * 
+	 * @see
+	 * com.theminequest.MineQuest.Events.QEvent#parseDetails(java.lang.String[])
 	 * [0]: task id to trigger
 	 * [1]: entities
 	 * [2]: total # to kill
@@ -64,94 +66,93 @@ public class KillEvent extends QuestEvent implements UserQuestEvent {
 			String entity = entities[i];
 			Integer amount = null;
 			try {
-				if (amounts.length == 1) {
-						amount = Integer.valueOf(amounts[0]);
-				} else if (i < amounts.length) {
+				if (amounts.length == 1)
+					amount = Integer.valueOf(amounts[0]);
+				else if (i < amounts.length)
 					amount = Integer.valueOf(amounts[i]);
-				}
-			} catch (NumberFormatException e) {}
+			} catch (NumberFormatException e) {
+			}
 			
 			if (amount == null) {
-				Managers.log(Level.SEVERE, "[Event] In KillEvent, could not determine number of kills for "+entity);
+				Managers.log(Level.SEVERE, "[Event] In KillEvent, could not determine number of kills for " + entity);
 				continue;
 			}
 			
 			EntityType m = MobUtils.getEntityType(entity);
 			
 			if (m == null) {
-				Managers.log(Level.SEVERE, "[Event] In KillEvent, could not determine mob type for "+entity);
+				Managers.log(Level.SEVERE, "[Event] In KillEvent, could not determine mob type for " + entity);
 				continue;
 			}
 			killMap.put(m, amount);
 		}
 	}
-
+	
 	@Override
 	public boolean conditions() {
 		synchronized (killMap) {
 			for (Map.Entry<EntityType, Integer> entry : killMap.entrySet()) {
 				Integer kills = currentKills.get(entry.getKey());
-				if (kills == null || kills.intValue() < entry.getValue().intValue())
+				if ((kills == null) || (kills.intValue() < entry.getValue().intValue()))
 					return false;
 			}
 		}
 		return true;
 	}
-
+	
 	@Override
 	public CompleteStatus action() {
 		return CompleteStatus.SUCCESS;
 	}
-
-	/* (non-Javadoc)
-	 * @see com.theminequest.MineQuest.Events.QEvent#entityDeathCondition(org.bukkit.event.entity.EntityDeathEvent)
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.theminequest.MineQuest.Events.QEvent#entityDeathCondition(org.bukkit
+	 * .event.entity.EntityDeathEvent)
 	 */
 	@Override
 	public boolean entityDeathCondition(EntityDeathEvent e) {
 		if (!(e.getEntity() instanceof LivingEntity))
 			return false;
-		LivingEntity el = (LivingEntity) e.getEntity();
+		LivingEntity el = e.getEntity();
 		if (!(el.getLastDamageCause() instanceof EntityDamageByEntityEvent))
 			return false;
 		
 		EntityDamageByEntityEvent edbee = (EntityDamageByEntityEvent) el.getLastDamageCause();
 		Player p = null;
-		if (edbee.getDamager() instanceof Player) {
+		if (edbee.getDamager() instanceof Player)
 			p = (Player) edbee.getDamager();
-		} else if (edbee.getDamager() instanceof Projectile) {
+		else if (edbee.getDamager() instanceof Projectile) {
 			Projectile projectile = (Projectile) edbee.getDamager();
-			if (projectile.getShooter() instanceof Player) {
+			if (projectile.getShooter() instanceof Player)
 				p = (Player) projectile.getShooter();
-			}
 		} else if (edbee.getDamager() instanceof Tameable) {
 			Tameable tameable = (Tameable) edbee.getDamager();
-			if (tameable.getOwner() instanceof Player) {
+			if (tameable.getOwner() instanceof Player)
 				p = (Player) tameable.getOwner();
-			}
 		}
 		
 		if (p == null)
 			return false;
 		
-		
 		QuestGroup g = Managers.getQuestGroupManager().get(getQuest());
 		List<Player> team = g.getMembers();
-		if (team.contains(p)) {
+		if (team.contains(p))
 			if (currentKills.containsKey(el.getType())) {
 				int count = currentKills.get(el.getType());
 				currentKills.put(el.getType(), count + 1);
-			} else {
+			} else
 				currentKills.put(el.getType(), 1);
-			}
-		}
 		return false;
 	}
-
+	
 	@Override
 	public Integer switchTask() {
 		return taskid;
 	}
-
+	
 	@Override
 	public String getDescription() {
 		StringBuilder builder = new StringBuilder();
@@ -161,9 +162,9 @@ public class KillEvent extends QuestEvent implements UserQuestEvent {
 		synchronized (killMap) {
 			for (Map.Entry<EntityType, Integer> entry : killMap.entrySet()) {
 				i++;
-				if (first) {
+				if (first)
 					first = false;
-				} else {
+				else {
 					builder.append(", ");
 					
 					if (i == killMap.size())
@@ -176,5 +177,5 @@ public class KillEvent extends QuestEvent implements UserQuestEvent {
 		builder.append("!");
 		return builder.toString();
 	}
-
+	
 }

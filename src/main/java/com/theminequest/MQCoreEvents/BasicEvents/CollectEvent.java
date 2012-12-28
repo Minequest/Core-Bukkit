@@ -2,19 +2,19 @@
  * This file is part of MineQuest, The ultimate MMORPG plugin!.
  * MineQuest is licensed under GNU General Public License v3.
  * Copyright (C) 2012 The MineQuest Team
- *
+ * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.theminequest.MQCoreEvents.BasicEvents;
 
@@ -39,15 +39,17 @@ import com.theminequest.MineQuest.API.Utils.InventoryUtils;
 import com.theminequest.MineQuest.API.Utils.ItemUtils;
 
 public class CollectEvent extends QuestEvent implements UserQuestEvent {
-
+	
 	private int taskid;
 	private Map<CollectableItem, Integer> itemMap = Collections.synchronizedMap(new LinkedHashMap<CollectableItem, Integer>());
 	private Future<Boolean> futureTask;
 	protected boolean collectItems = true;
-
+	
 	/*
 	 * (non-Javadoc)
-	 * @see com.theminequest.MineQuest.Events.QEvent#parseDetails(java.lang.String[])
+	 * 
+	 * @see
+	 * com.theminequest.MineQuest.Events.QEvent#parseDetails(java.lang.String[])
 	 * Details:
 	 * [0]: task to incur upon completion
 	 * [1]: itemids;
@@ -64,15 +66,15 @@ public class CollectEvent extends QuestEvent implements UserQuestEvent {
 			String item = items[i];
 			Integer amount = null;
 			try {
-				if (amounts.length == 1) {
-						amount = Integer.valueOf(amounts[0]);
-				} else if (i < amounts.length) {
+				if (amounts.length == 1)
+					amount = Integer.valueOf(amounts[0]);
+				else if (i < amounts.length)
 					amount = Integer.valueOf(amounts[i]);
-				}
-			} catch (NumberFormatException e) {}
+			} catch (NumberFormatException e) {
+			}
 			
 			if (amount == null) {
-				Managers.log(Level.SEVERE, "[Event] In "+getClass().getSimpleName()+", could not determine amount of items to collect for "+item);
+				Managers.log(Level.SEVERE, "[Event] In " + getClass().getSimpleName() + ", could not determine amount of items to collect for " + item);
 				continue;
 			}
 			
@@ -80,22 +82,24 @@ public class CollectEvent extends QuestEvent implements UserQuestEvent {
 			if (index > -1) {
 				try {
 					data = Integer.valueOf(item.substring(index + 1));
-				} catch (NumberFormatException e) {}
+				} catch (NumberFormatException e) {
+				}
 				item = item.substring(0, index);
 			}
 			
 			Material m = ItemUtils.getMaterial(item);
 			
 			if (m == null) {
-				Managers.log(Level.SEVERE, "[Event] In "+getClass().getSimpleName()+", could not determine material of "+item);
+				Managers.log(Level.SEVERE, "[Event] In " + getClass().getSimpleName() + ", could not determine material of " + item);
 				continue;
 			}
 			itemMap.put(new CollectableItem(m, data), amount);
 		}
 	}
-
+	
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see com.theminequest.MineQuest.Events.QEvent#conditions()
 	 */
 	@Override
@@ -109,13 +113,14 @@ public class CollectEvent extends QuestEvent implements UserQuestEvent {
 					t.printStackTrace();
 				}
 				futureTask = null;
-				if (ret != null && ret.booleanValue())
+				if ((ret != null) && ret.booleanValue())
 					return true;
 			}
 			return false;
 		}
 		
 		Callable<Boolean> c = new Callable<Boolean>() {
+			@Override
 			public Boolean call() {
 				Player p = Bukkit.getServer().getPlayerExact(getQuest().getQuestOwner());
 				if (p == null)
@@ -129,18 +134,16 @@ public class CollectEvent extends QuestEvent implements UserQuestEvent {
 						return false;
 				}
 				
-				if (collectItems) {
+				if (collectItems)
 					for (Map.Entry<CollectableItem, Integer> entry : itemMap.entrySet()) {
 						CollectableItem item = entry.getKey();
 						ItemStack stack = new ItemStack(item.material, entry.getValue());
-						if (item.material == Material.POTION) {
+						if (item.material == Material.POTION)
 							stack.setDurability((short) item.data);
-						} else {
+						else
 							stack.getData().setData((byte) item.data);
-						}
 						i.removeItem(stack);
 					}
-				}
 				
 				return true;
 			}
@@ -150,17 +153,17 @@ public class CollectEvent extends QuestEvent implements UserQuestEvent {
 		
 		return false;
 	}
-
+	
 	@Override
 	public CompleteStatus action() {
 		return CompleteStatus.SUCCESS;
 	}
-
+	
 	@Override
 	public Integer switchTask() {
 		return taskid;
 	}
-
+	
 	@Override
 	public String getDescription() {
 		StringBuilder builder = new StringBuilder();
@@ -169,9 +172,9 @@ public class CollectEvent extends QuestEvent implements UserQuestEvent {
 		int i = 0;
 		for (Map.Entry<CollectableItem, Integer> entry : itemMap.entrySet()) {
 			i++;
-			if (first) {
+			if (first)
 				first = false;
-			} else {
+			else {
 				builder.append(", ");
 				
 				if (i == itemMap.size())
@@ -195,11 +198,10 @@ public class CollectEvent extends QuestEvent implements UserQuestEvent {
 		
 		@Override
 		public String toString() {
-			if (data == 0) {
+			if (data == 0)
 				return material.toString().toLowerCase().replace('_', ' ');
-			} else {
+			else
 				return material.toString() + ":" + data;
-			}
 		}
 	}
 }

@@ -2,19 +2,19 @@
  * This file is part of MineQuest, The ultimate MMORPG plugin!.
  * MineQuest is licensed under GNU General Public License v3.
  * Copyright (C) 2012 The MineQuest Team
- *
+ * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.theminequest.MineQuest.Frontend.Sign;
 
@@ -38,26 +38,25 @@ import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils.QSException;
 
 public class QuestSign implements Listener {
 	
-	public QuestSign(){
+	public QuestSign() {
 		Managers.log("[QuestSign] Starting Sign Frontends...");
 	}
 	
-	private boolean isQuestSign(Sign sign){
+	private boolean isQuestSign(Sign sign) {
 		String[] line = sign.getLines();
-		if (line[1] != null && line[1].contains("[Quest]")){
+		if ((line[1] != null) && line[1].contains("[Quest]"))
 			return (line[2] != null);
-		}
 		return false;
 	}
 	
-	//Listeners For Sign interact and place. 
+	// Listeners For Sign interact and place.
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerInteract(PlayerInteractEvent event){
+	public void onPlayerInteract(PlayerInteractEvent event) {
 		Action action = event.getAction();
 		Block block = event.getClickedBlock();
 		Player player = event.getPlayer();
-		if (block==null || block.getState()==null)
+		if ((block == null) || (block.getState() == null))
 			return;
 		if (!(block.getState() instanceof Sign))
 			return;
@@ -70,7 +69,7 @@ public class QuestSign implements Listener {
 		}
 		String quest_name = sign.getLine(2);
 		QuestDetails d = Managers.getQuestManager().getDetails(quest_name);
-		if (d==null){
+		if (d == null) {
 			player.sendMessage(ChatColor.RED + "Yikes! We can't find this quest anymore...");
 			return;
 		}
@@ -91,8 +90,8 @@ public class QuestSign implements Listener {
 				player.sendMessage("This quest is currently " + ChatColor.BOLD + ChatColor.GREEN + "available" + ChatColor.RESET + " to you - left click to accept!");
 			else
 				player.sendMessage("This quest is currently " + ChatColor.BOLD + ChatColor.RED + "not available" + ChatColor.RESET + " to you.");
-		} else if (action == Action.LEFT_CLICK_BLOCK) {
-			if (QuestDetailsUtils.getRequirementsMet(d, player)) {
+		} else if (action == Action.LEFT_CLICK_BLOCK)
+			if (QuestDetailsUtils.getRequirementsMet(d, player))
 				try {
 					QuestStatisticUtils.giveQuest(player.getName(), quest_name);
 					player.sendMessage(ChatColor.GREEN + "Successfully added " + d.getProperty(QuestDetails.QUEST_DISPLAYNAME) + " to your quest list!");
@@ -100,9 +99,8 @@ public class QuestSign implements Listener {
 					player.sendMessage("This quest doesn't seem to like you.");
 					e.printStackTrace();
 				}
-			} else
+			else
 				player.sendMessage("This quest is currently " + ChatColor.BOLD + ChatColor.RED + "not available" + ChatColor.RESET + " to you.");
-		}
 	}
 	
 	@EventHandler(priority = EventPriority.HIGH)
@@ -116,19 +114,19 @@ public class QuestSign implements Listener {
 			block.breakNaturally();
 			return;
 		}
-		if (event.getLine(2).equalsIgnoreCase("")){
+		if (event.getLine(2).equalsIgnoreCase("")) {
 			event.setCancelled(true);
 			player.sendMessage(ChatColor.RED + "Must specify a quest!");
 			block.breakNaturally();
 			return;
 		}
-		if (Managers.getQuestManager().getDetails(event.getLine(2))==null){
+		if (Managers.getQuestManager().getDetails(event.getLine(2)) == null) {
 			event.setCancelled(true);
 			player.sendMessage(ChatColor.RED + "No such quest!");
 			block.breakNaturally();
 			return;
 		}
 		// oh, prettify it ;D
-		event.setLine(1,ChatColor.GREEN+"[Quest]");
+		event.setLine(1, ChatColor.GREEN + "[Quest]");
 	}
 }

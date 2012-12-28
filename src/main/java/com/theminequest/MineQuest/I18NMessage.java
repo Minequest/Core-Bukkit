@@ -2,19 +2,19 @@
  * This file is part of MineQuest, The ultimate MMORPG plugin!.
  * MineQuest is licensed under GNU General Public License v3.
  * Copyright (C) 2012 The MineQuest Team
- *
+ * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.theminequest.MineQuest;
 
@@ -33,11 +33,11 @@ import com.theminequest.MineQuest.API.Utils.PropertiesFile;
 public class I18NMessage {
 	
 	private static final String LOCATION = Managers.getActivePlugin().getDataFolder().getAbsolutePath() + File.separator + "locales";
-	private static final String CUSTOM = LOCATION + File.separator + "custom.dict";
+	private static final String CUSTOM = I18NMessage.LOCATION + File.separator + "custom.dict";
 	private static final Locale LOCALE = new Locale(MineQuest.configuration.mainConfig.getString("locale", "en_US"));
 	
 	public synchronized static Locale getLocale() {
-		return LOCALE;
+		return I18NMessage.LOCALE;
 	}
 	
 	public static final class Locale {
@@ -46,29 +46,28 @@ public class I18NMessage {
 		private PropertiesFile customprops;
 		
 		private Locale(String localename) {
-			File localedir = new File(LOCATION);
+			File localedir = new File(I18NMessage.LOCATION);
 			if (!localedir.exists() || !localedir.isDirectory()) {
 				if (localedir.exists())
 					localedir.delete();
 				localedir.mkdirs();
 			}
 			
-			File localefile = new File(LOCATION + File.separator + localename + ".dict");
+			File localefile = new File(I18NMessage.LOCATION + File.separator + localename + ".dict");
 			if (!localefile.exists())
-				copyFromJar(localefile,localename);
+				copyFromJar(localefile, localename);
 			else {
 				localeprops = new PropertiesFile(localefile.getAbsolutePath());
 				if (!localeprops.getString("lastversion", "0").equals(MineQuest.getVersion())) {
 					localeprops = null;
-					copyFromJar(localefile,localename);
+					copyFromJar(localefile, localename);
 				}
 			}
 			localeprops = new PropertiesFile(localefile.getAbsolutePath());
 			localeprops.setString("lastversion", MineQuest.getVersion());
-			customprops = new PropertiesFile(CUSTOM);
-			if (!customprops.getString("lastversion", MineQuest.getVersion()).equals(MineQuest.getVersion())) {
+			customprops = new PropertiesFile(I18NMessage.CUSTOM);
+			if (!customprops.getString("lastversion", MineQuest.getVersion()).equals(MineQuest.getVersion()))
 				Managers.log(Level.WARNING, "[i18n] Custom translations may be out of date!");
-			}
 			customprops.setString("lastversion", MineQuest.getVersion());
 		}
 		
@@ -92,14 +91,13 @@ public class I18NMessage {
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			} finally {
-				if (file != null) {
+				if (file != null)
 					try {
 						file.close();
 					} catch (IOException e) {
 						Managers.log(Level.SEVERE, "Resource Leak! i18n");
 						e.printStackTrace();
 					}
-				}
 			}
 		}
 		
