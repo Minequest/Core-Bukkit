@@ -97,8 +97,7 @@ public class V2Task implements QuestTask {
 			for (int r = 1; r < eventdetails.length; r++) {
 				recombined += eventdetails[r];
 				if (r != (eventdetails.length - 1))
-					;
-				recombined += ":";
+					recombined += ":";
 			}
 			QuestEvent e = Managers.getEventManager().constructEvent(eventdetails[0], quest, event, recombined);
 			if (e != null)
