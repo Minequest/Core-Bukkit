@@ -18,14 +18,14 @@
  */
 package com.theminequest.MineQuest.Quest.Parser;
 
+import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_EDITMESSAGE;
+
 import java.util.List;
 
 import org.bukkit.ChatColor;
 
 import com.theminequest.MineQuest.API.Quest.QuestDetails;
 import com.theminequest.MineQuest.API.Quest.QuestParser.QHandler;
-import com.theminequest.MineQuest.Quest.Quest;
-import static com.theminequest.MineQuest.API.Quest.QuestDetails.*;
 
 public class EditMessageHandler implements QHandler {
 

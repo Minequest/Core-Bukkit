@@ -18,26 +18,17 @@
  */
 package com.theminequest.MineQuest.Frontend.Command;
 
-import java.io.File;
-import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.API.Managers;
-import com.theminequest.MineQuest.API.Group.Group;
-import com.theminequest.MineQuest.Group.Party;
 
 
 public class CommandListener implements CommandExecutor{

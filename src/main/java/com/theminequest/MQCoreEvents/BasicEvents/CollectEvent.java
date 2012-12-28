@@ -33,8 +33,8 @@ import org.bukkit.inventory.PlayerInventory;
 
 import com.theminequest.MineQuest.API.CompleteStatus;
 import com.theminequest.MineQuest.API.Managers;
-import com.theminequest.MineQuest.API.Events.UserQuestEvent;
 import com.theminequest.MineQuest.API.Events.QuestEvent;
+import com.theminequest.MineQuest.API.Events.UserQuestEvent;
 import com.theminequest.MineQuest.API.Utils.InventoryUtils;
 import com.theminequest.MineQuest.API.Utils.ItemUtils;
 

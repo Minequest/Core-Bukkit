@@ -18,6 +18,8 @@
  */
 package com.theminequest.MineQuest.Quest.Parser;
 
+import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_EDITS;
+
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +31,6 @@ import com.theminequest.MineQuest.API.Edit.ItemInHandEdit;
 import com.theminequest.MineQuest.API.Edit.OutsideAreaEdit;
 import com.theminequest.MineQuest.API.Quest.QuestDetails;
 import com.theminequest.MineQuest.API.Quest.QuestParser.QHandler;
-import static com.theminequest.MineQuest.API.Quest.QuestDetails.*;
 
 public class EditHandler implements QHandler {
 

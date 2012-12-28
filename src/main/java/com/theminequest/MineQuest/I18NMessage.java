@@ -21,12 +21,10 @@ package com.theminequest.MineQuest;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
 
-import org.bukkit.ChatColor;
 import org.h2.util.IOUtils;
 
 import com.theminequest.MineQuest.API.Managers;

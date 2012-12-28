@@ -24,7 +24,6 @@ import com.theminequest.MineQuest.API.CompleteStatus;
 import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Events.QuestEvent;
 import com.theminequest.MineQuest.API.Quest.QuestDetailsUtils;
-import com.theminequest.MineQuest.API.Requirements.QuestRequirement;
 
 public class RequirementMetEvent extends QuestEvent {
 	

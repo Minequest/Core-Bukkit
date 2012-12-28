@@ -22,17 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
 import org.bukkit.event.block.BlockBreakEvent;
 
-import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.API.CompleteStatus;
 import com.theminequest.MineQuest.API.Managers;
-import com.theminequest.MineQuest.API.Events.UserQuestEvent;
 import com.theminequest.MineQuest.API.Events.QuestEvent;
-import com.theminequest.MineQuest.API.Group.Group;
+import com.theminequest.MineQuest.API.Events.UserQuestEvent;
 import com.theminequest.MineQuest.API.Group.QuestGroup;
-import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils;
 
 public class DestroyEvent extends QuestEvent implements UserQuestEvent {
 	

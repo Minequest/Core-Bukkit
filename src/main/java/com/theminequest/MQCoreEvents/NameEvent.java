@@ -19,8 +19,8 @@
 package com.theminequest.MQCoreEvents;
 
 import com.theminequest.MineQuest.API.CompleteStatus;
-import com.theminequest.MineQuest.API.Events.UserQuestEvent;
 import com.theminequest.MineQuest.API.Events.QuestEvent;
+import com.theminequest.MineQuest.API.Events.UserQuestEvent;
 
 /**
  * Make an entry appear in Current Tasks. This allows

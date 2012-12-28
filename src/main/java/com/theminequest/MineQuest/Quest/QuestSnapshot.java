@@ -18,7 +18,6 @@
  */
 package com.theminequest.MineQuest.Quest;
 
-import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Quest.Quest;
 import com.theminequest.MineQuest.API.Quest.QuestDetails;
 

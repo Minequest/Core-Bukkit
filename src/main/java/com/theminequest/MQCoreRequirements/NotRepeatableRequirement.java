@@ -18,9 +18,6 @@
  */
 package com.theminequest.MQCoreRequirements;
 
-import java.util.Date;
-import java.util.Map;
-
 import org.bukkit.entity.Player;
 
 import com.theminequest.MineQuest.API.Quest.QuestDetails;

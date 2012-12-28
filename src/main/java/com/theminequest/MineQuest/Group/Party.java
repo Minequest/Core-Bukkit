@@ -18,12 +18,9 @@
  */
 package com.theminequest.MineQuest.Group;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -31,11 +28,9 @@ import org.bukkit.entity.Player;
 
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.API.CompleteStatus;
-import com.theminequest.MineQuest.API.ManagerException;
 import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.BukkitEvents.GroupPlayerJoinedEvent;
 import com.theminequest.MineQuest.API.BukkitEvents.GroupPlayerQuitEvent;
-import com.theminequest.MineQuest.API.BukkitEvents.QuestStartedEvent;
 import com.theminequest.MineQuest.API.Group.Group;
 import com.theminequest.MineQuest.API.Group.GroupException;
 import com.theminequest.MineQuest.API.Group.GroupException.GroupReason;
@@ -44,7 +39,6 @@ import com.theminequest.MineQuest.API.Quest.Quest;
 import com.theminequest.MineQuest.API.Quest.QuestDetails;
 import com.theminequest.MineQuest.API.Quest.QuestDetailsUtils;
 import com.theminequest.MineQuest.API.Quest.QuestUtils;
-import com.theminequest.MineQuest.API.Requirements.QuestRequirement;
 
 public class Party implements QuestGroup {
 	

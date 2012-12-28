@@ -27,12 +27,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.theminequest.MineQuest.I18NMessage;
-import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.API.ManagerException;
 import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Group.Group;
 import com.theminequest.MineQuest.API.Group.GroupException;
-import com.theminequest.MineQuest.API.Group.GroupException.GroupReason;
 import com.theminequest.MineQuest.API.Utils.ChatUtils;
 
 public class PartyCommandFrontend extends CommandFrontend {

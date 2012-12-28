@@ -33,7 +33,6 @@ import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import com.google.common.net.InetAddresses.TeredoInfo;
 import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Edit.Edit;
 import com.theminequest.MineQuest.API.Events.QuestEvent;

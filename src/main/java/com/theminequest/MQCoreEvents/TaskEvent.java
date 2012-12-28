@@ -18,10 +18,8 @@
  */
 package com.theminequest.MQCoreEvents;
 
-import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.API.CompleteStatus;
 import com.theminequest.MineQuest.API.Events.DelayedQuestEvent;
-import com.theminequest.MineQuest.API.Events.QuestEvent;
 
 public class TaskEvent extends DelayedQuestEvent {
 

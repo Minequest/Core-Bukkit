@@ -21,12 +21,9 @@ package com.theminequest.MQCoreEvents;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
-import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.API.CompleteStatus;
-import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Events.QuestEvent;
 import com.theminequest.MineQuest.API.Quest.QuestDetails;
-import com.theminequest.MineQuest.API.Quest.QuestDetailsUtils;
 import com.theminequest.MineQuest.API.Utils.TimeUtils;
 
 public class LockWorldTimeEvent extends QuestEvent {

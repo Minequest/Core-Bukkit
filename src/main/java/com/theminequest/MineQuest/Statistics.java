@@ -31,12 +31,10 @@ import com.alta189.simplesave.h2.H2Configuration;
 import com.alta189.simplesave.mysql.MySQLConfiguration;
 import com.alta189.simplesave.query.QueryResult;
 import com.alta189.simplesave.sqlite.SQLiteConfiguration;
-
 import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Tracker.QuestStatistic;
 import com.theminequest.MineQuest.API.Tracker.QuestStatisticManager;
 import com.theminequest.MineQuest.API.Tracker.Statistic;
-import com.theminequest.MineQuest.API.Tracker.StatisticManager;
 import com.theminequest.MineQuest.API.Utils.PropertiesFile;
 
 public class Statistics implements QuestStatisticManager, Listener {

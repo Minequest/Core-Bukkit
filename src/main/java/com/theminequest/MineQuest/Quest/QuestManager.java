@@ -18,8 +18,14 @@
  */
 package com.theminequest.MineQuest.Quest;
 
+import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_COMPLETE;
+import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_EDITMESSAGE;
+import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_EDITS;
+import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_FAIL;
+import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_LOADWORLD;
+import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_NAME;
+
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,10 +69,10 @@ import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils.QSException;
 import com.theminequest.MineQuest.API.Tracker.SnapshotStatistic;
 import com.theminequest.MineQuest.Quest.Parser.AcceptTextHandler;
 import com.theminequest.MineQuest.Quest.Parser.CancelTextHandler;
+import com.theminequest.MineQuest.Quest.Parser.CompleteTextHandler;
 import com.theminequest.MineQuest.Quest.Parser.DescriptionHandler;
 import com.theminequest.MineQuest.Quest.Parser.EditHandler;
 import com.theminequest.MineQuest.Quest.Parser.EditMessageHandler;
-import com.theminequest.MineQuest.Quest.Parser.CompleteTextHandler;
 import com.theminequest.MineQuest.Quest.Parser.FailedTextHandler;
 import com.theminequest.MineQuest.Quest.Parser.GetRequirementHandler;
 import com.theminequest.MineQuest.Quest.Parser.InstanceHandler;
@@ -82,9 +88,6 @@ import com.theminequest.MineQuest.Quest.Parser.TargetHandler;
 import com.theminequest.MineQuest.Quest.Parser.TaskHandler;
 import com.theminequest.MineQuest.Quest.Parser.V1Handler;
 import com.theminequest.MineQuest.Quest.Parser.WorldHandler;
-import com.theminequest.MineQuest.Tasks.V1Task;
-
-import static com.theminequest.MineQuest.API.Quest.QuestDetails.*;
 
 
 public class QuestManager implements Listener, com.theminequest.MineQuest.API.Quest.QuestManager {

@@ -18,19 +18,14 @@
  */
 package com.theminequest.MQCoreEvents;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.API.CompleteStatus;
 import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Events.DelayedQuestEvent;
-import com.theminequest.MineQuest.API.Events.QuestEvent;
-import com.theminequest.MineQuest.API.Group.Group;
 import com.theminequest.MineQuest.API.Group.QuestGroup;
 import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils;
 import com.theminequest.MineQuest.API.Tracker.QuestStatisticUtils.QSException;
-import com.theminequest.MineQuest.Group.Party;
 
 public class QuestAvailableEvent extends DelayedQuestEvent {
 

@@ -21,14 +21,11 @@ package com.theminequest.MQCoreEvents;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.API.CompleteStatus;
 import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Events.DelayedQuestEvent;
-import com.theminequest.MineQuest.API.Group.Group;
 import com.theminequest.MineQuest.API.Group.QuestGroup;
 import com.theminequest.MineQuest.API.Utils.ChatUtils;
-import com.theminequest.MineQuest.Group.Party;
 
 public class MessageEvent extends DelayedQuestEvent {
 	

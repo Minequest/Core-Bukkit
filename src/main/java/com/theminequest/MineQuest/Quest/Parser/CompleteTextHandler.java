@@ -18,14 +18,13 @@
  */
 package com.theminequest.MineQuest.Quest.Parser;
 
+import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_COMPLETE;
+
 import java.util.List;
 
 import com.theminequest.MineQuest.API.Documentation.ParserDocumentation;
-import com.theminequest.MineQuest.API.Documentation.ParserDocumentation.QHFields;
-import com.theminequest.MineQuest.API.Documentation.ParserDocumentation.QHInfo;
 import com.theminequest.MineQuest.API.Quest.QuestDetails;
 import com.theminequest.MineQuest.API.Quest.QuestParser.QHandler;
-import static com.theminequest.MineQuest.API.Quest.QuestDetails.*;
 
 @ParserDocumentation.QHInfo(name="FinishText", description="Complete Text: The message given to the player when he/she finishes the quest.")
 @ParserDocumentation.QHFields({"Message"})

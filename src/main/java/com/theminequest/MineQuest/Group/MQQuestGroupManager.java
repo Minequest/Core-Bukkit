@@ -39,18 +39,17 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import com.theminequest.MineQuest.MineQuest;
 import com.theminequest.MineQuest.API.CompleteStatus;
 import com.theminequest.MineQuest.API.ManagerException;
+import com.theminequest.MineQuest.API.ManagerException.ManagerReason;
 import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.BukkitEvents.GroupInviteEvent;
 import com.theminequest.MineQuest.API.BukkitEvents.GroupPlayerJoinedEvent;
 import com.theminequest.MineQuest.API.BukkitEvents.GroupPlayerQuitEvent;
 import com.theminequest.MineQuest.API.BukkitEvents.QuestCompleteEvent;
 import com.theminequest.MineQuest.API.Group.Group;
-import com.theminequest.MineQuest.API.Group.QuestGroup;
 import com.theminequest.MineQuest.API.Group.GroupException;
-import com.theminequest.MineQuest.API.Group.GroupException.GroupReason;
+import com.theminequest.MineQuest.API.Group.QuestGroup;
 import com.theminequest.MineQuest.API.Group.QuestGroupManager;
 import com.theminequest.MineQuest.API.Quest.Quest;
-import com.theminequest.MineQuest.API.ManagerException.ManagerReason;
 
 public class MQQuestGroupManager implements Listener, QuestGroupManager {
 

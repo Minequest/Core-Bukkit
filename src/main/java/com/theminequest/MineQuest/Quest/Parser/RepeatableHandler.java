@@ -18,15 +18,15 @@
  */
 package com.theminequest.MineQuest.Quest.Parser;
 
+import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_GETREQUIREMENTS;
+import static com.theminequest.MineQuest.API.Quest.QuestDetails.QUEST_REQUIREMENTDETAILS;
+
 import java.util.List;
 import java.util.Map;
 
 import com.theminequest.MineQuest.API.Managers;
-import com.theminequest.MineQuest.API.Quest.QuestParser.QHandler;
-
-import static com.theminequest.MineQuest.API.Quest.QuestDetails.*;
-
 import com.theminequest.MineQuest.API.Quest.QuestDetails;
+import com.theminequest.MineQuest.API.Quest.QuestParser.QHandler;
 import com.theminequest.MineQuest.API.Requirements.QuestRequirement;
 
 @Deprecated

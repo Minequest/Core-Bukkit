@@ -22,7 +22,6 @@ import java.util.LinkedHashMap;
 import java.util.logging.Level;
 
 import com.theminequest.MineQuest.API.Managers;
-import com.theminequest.MineQuest.API.Events.QuestEvent;
 import com.theminequest.MineQuest.API.Quest.QuestDetails;
 import com.theminequest.MineQuest.API.Requirements.QuestRequirement;
 import com.theminequest.MineQuest.API.Requirements.RequirementManager;
