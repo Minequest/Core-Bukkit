@@ -18,6 +18,7 @@
  */
 package com.theminequest.MQCoreEvents;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import com.theminequest.MineQuest.API.CompleteStatus;
@@ -59,14 +60,25 @@ public class QuestAvailableEvent extends DelayedQuestEvent {
 	
 	@Override
 	public CompleteStatus action() {
-		QuestGroup g = Managers.getQuestGroupManager().get(getQuest());
-		CompleteStatus toreturn = CompleteStatus.SUCCESS;
-		for (Player p : g.getMembers())
-			try {
-				QuestStatisticUtils.giveQuest(p.getName(), questavailable);
-			} catch (QSException e) {
-				toreturn = CompleteStatus.WARNING;
+		String questOwner = getQuest().getQuestOwner();
+		CompleteStatus toreturn = CompleteStatus.WARNING;
+		
+		Player owner = Bukkit.getPlayerExact(questOwner);
+		
+		if (owner != null) {
+			
+			if (Managers.getQuestGroupManager().get(getQuest()).contains(owner)) {
+				
+				try {
+					QuestStatisticUtils.giveQuest(questOwner, questavailable);
+					toreturn = CompleteStatus.SUCCESS;
+				} catch (QSException e) {
+					// ignored
+				}
+				
 			}
+			
+		}
 		return toreturn;
 	}
 	
