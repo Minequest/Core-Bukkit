@@ -1,5 +1,5 @@
 name: MineQuest
-main: com.theminequest.bukkit.MineQuest
+main: com.theminequest.MineQuest.MineQuest
 version: ${build.version}
 
 author: JMonk

@@ -1,6 +1,7 @@
-This file is part of ${name}, ${summary}.
+This file is part of ${name}:
+${summary}.
 ${name} is licensed under ${license}.
-Copyright (C) 2012 The MineQuest Team
+Copyright (C) 2013 The MineQuest Team
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
