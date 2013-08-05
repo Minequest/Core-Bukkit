@@ -1,5 +1,5 @@
 name: MineQuest
-main: com.theminequest.bukkit.MineQuest
+main: com.theminequest.bukkit.BukkitPlatform
 version: ${build.version}
 
 author: JMonk
@@ -14,6 +14,8 @@ loadbefore: [MineQuest-Events, MineQuest-Idle]
 softdepend: [Vault]
 
 commands:
+  mq:
+    description: View MineQuest inventory GUI.
   minequest:
     description: View MineQuest commands.
   quest:
