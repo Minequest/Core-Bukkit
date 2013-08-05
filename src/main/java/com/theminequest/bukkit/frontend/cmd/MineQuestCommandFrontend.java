@@ -8,8 +8,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import com.theminequest.api.Managers;
+import com.theminequest.bukkit.frontend.inventory.MineQuestMenu;
 
 public class MineQuestCommandFrontend implements CommandExecutor {
 	
@@ -27,6 +29,9 @@ public class MineQuestCommandFrontend implements CommandExecutor {
 		if (cmd.getName().equalsIgnoreCase("minequest")) {
 			showMineQuestHelp(sender);
 			return true;
+		} else if (cmd.getName().equalsIgnoreCase("mq")) {
+			if (sender instanceof Player)
+				MineQuestMenu.showMenu((Player) sender);
 		}
 		
 		return false;
