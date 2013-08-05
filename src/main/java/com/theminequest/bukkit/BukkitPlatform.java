@@ -128,11 +128,14 @@ public class BukkitPlatform extends JavaPlugin implements Platform {
 		} catch (ConnectionException e) {
 			e.printStackTrace();
 		}
-		Common.getCommon().stopCommon();
+
 		Managers.setQuestManager(null);
 		Managers.setGroupManager(null);
 		Managers.setQuestHandlerManager(null);
 		Managers.setRequirementManager(null);
+		
+		if (Common.getCommon() != null)
+			Common.getCommon().stopCommon();
 		
 		Managers.setPlatform(null);
 		HandlerList.unregisterAll(this);
@@ -180,7 +183,9 @@ public class BukkitPlatform extends JavaPlugin implements Platform {
 			Managers.log(Level.SEVERE, "[Core] We cannot provide support for this unless you know the GIT hash.");
 		}
 		
-		// Start Common and do a version check
+		Common.setCommon(new Common());
+		
+		// Common version check
 		if (Common.getCommon().getVersion().equals("unofficialDev")) {
 			Managers.log(Level.SEVERE, "[Common] You're using an unofficial dev build!");
 			Managers.log(Level.SEVERE, "[Common] We cannot provide support for this unless you know the GIT hash.");
