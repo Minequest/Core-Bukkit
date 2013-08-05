@@ -167,8 +167,8 @@ public class BukkitPlatform extends JavaPlugin implements Platform {
 		try {
 			Statistics s = new Statistics();
 			// Register
-			Managers.getStatisticManager().registerStatistic(LogStatistic.class);
-			Managers.getStatisticManager().registerStatistic(SnapshotStatistic.class);
+			s.registerStatistic(LogStatistic.class);
+			s.registerStatistic(SnapshotStatistic.class);
 			// Then set
 			Managers.setStatisticManager(s);
 			Managers.setQuestStatisticManager(s);
@@ -247,7 +247,9 @@ public class BukkitPlatform extends JavaPlugin implements Platform {
 		getServer().getPluginManager().registerEvents(new QuestSign(), this);
 		
 		// leftovers: command frontend
-		getCommand("minequest").setExecutor(new MineQuestCommandFrontend());
+		MineQuestCommandFrontend fe = new MineQuestCommandFrontend();
+		getCommand("mq").setExecutor(fe);
+		getCommand("minequest").setExecutor(fe);
 		getCommand("quest").setExecutor(new QuestCommandFrontend());
 		getCommand("party").setExecutor(new PartyCommandFrontend());
 		
@@ -280,7 +282,7 @@ public class BukkitPlatform extends JavaPlugin implements Platform {
 	
 	@Override
 	public File getJarFile() {
-		return getJarFile();
+		return getFile();
 	}
 	
 	@Override

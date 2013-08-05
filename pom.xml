@@ -85,7 +85,7 @@
 				<directory>${basedir}/src/main/resources/i18n/</directory>
 				<filtering>true</filtering>
 				<includes>
-					<include>**/*.dict</include>
+					<include>**/*.properties</include>
 				</includes>
 			</resource>
 		</resources>

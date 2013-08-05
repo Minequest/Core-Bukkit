@@ -257,7 +257,7 @@ public class PartyCommandFrontend extends CommandFrontend {
 			else
 				messages.add(ChatColor.GRAY + PartyCommandFrontend.INOINVITE);
 			messages.add(ChatUtils.formatHelp("party create", _("Create a party.")));
-			messages.add(ChatColor.AQUA + "PHELPHINT");
+			messages.add(ChatColor.AQUA + _("Join a party to see all the commands!"));
 		} else {
 			if (isLeader) {
 				messages.add(ChatUtils.formatHelp("party invite <name>", _("Invite someone to your party.")));
