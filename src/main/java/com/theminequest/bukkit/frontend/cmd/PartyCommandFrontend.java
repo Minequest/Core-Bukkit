@@ -122,7 +122,7 @@ public class PartyCommandFrontend extends CommandFrontend {
 			p.sendMessage(PartyCommandFrontend.INOTLEADER);
 			return;
 		}
-		Player mate = Bukkit.getPlayer(args[0]);
+		Player mate = Bukkit.getPlayerExact(args[0]);
 		
 		MQPlayer mqmate = Managers.getPlatform().toPlayer(mate);
 		if (!g.contains(mqmate)) {
@@ -208,7 +208,7 @@ public class PartyCommandFrontend extends CommandFrontend {
 			p.sendMessage(PartyCommandFrontend.INOTLEADER);
 			return;
 		}
-		Player mate = Bukkit.getPlayer(args[0]);
+		Player mate = Bukkit.getPlayerExact(args[0]);
 		
 		MQPlayer mqmate = Managers.getPlatform().toPlayer(mate);
 		if (!g.contains(mqmate)) {
