@@ -80,6 +80,7 @@ import com.theminequest.bukkit.util.TimeUtils;
 import com.theminequest.common.Common;
 import com.theminequest.common.quest.requirement.CommonRequirementManager;
 import com.theminequest.common.quest.v1.V1EventManager;
+import com.theminequest.common.util.ExceptionHandler;
 
 public class BukkitPlatform extends JavaPlugin implements Platform {
 	
@@ -178,11 +179,12 @@ public class BukkitPlatform extends JavaPlugin implements Platform {
 		}
 		
 		// version check
-		if (Managers.getVersion() == null || Managers.getVersion().equals("unofficialDev")) {
+		if (Managers.getVersion().equals("unofficialDev")) {
 			Managers.log(Level.SEVERE, "[Core] You're using an unofficial dev build!");
 			Managers.log(Level.SEVERE, "[Core] We cannot provide support for this unless you know the GIT hash.");
 		}
 		
+		ExceptionHandler.init();
 		Common.setCommon(new Common());
 		
 		// Common version check
