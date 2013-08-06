@@ -4,10 +4,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-
 import com.theminequest.api.CompleteStatus;
 import com.theminequest.api.Managers;
 import com.theminequest.api.group.Group;
@@ -174,10 +170,8 @@ public class Party implements Group {
 		Managers.getPlatform().callEvent(e);
 
 		players.remove(p);
-		if (locations != null) {
+		if (locations != null)
 			moveBackToLocations(p);
-			locations.remove(p);
-		}
 		
 		Managers.getGroupManager().groupPlayerQuit(this, p);
 		

@@ -339,7 +339,8 @@ public class QuestCommandFrontend extends CommandFrontend {
 			p.sendMessage(QuestCommandFrontend.IACTIVE);
 			return;
 		}
-		new Thread(new Runnable() {
+		
+		Managers.getPlatform().scheduleSyncTask(new Runnable() {
 			
 			@Override
 			public void run() {
@@ -352,7 +353,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 				}
 			}
 			
-		}).start();
+		});
 	}
 	
 	@Override

@@ -91,7 +91,12 @@ public class BukkitPlayer implements MQPlayer {
 
 	@Override
 	public boolean equals(Object obj) {
-		return player.equals(((BukkitPlayer)obj).player);
+		return player.getName().equals(((BukkitPlayer)obj).player.getName());
+	}
+
+	@Override
+	public int hashCode() {
+		return player.hashCode();
 	}
 	
 }
