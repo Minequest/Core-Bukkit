@@ -1,5 +1,7 @@
 package com.theminequest.bukkit;
 
+import static com.theminequest.common.util.I18NMessage._;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
@@ -144,6 +146,7 @@ public class BukkitPlatform extends JavaPlugin implements Platform {
 	
 	@Override
 	public void onEnable() {
+		
 		if (getServer().getPluginManager().getPlugin("Vault") == null) {
 			getServer().getLogger().severe("================= MineQuest ==================");
 			getServer().getLogger().severe("Vault is required for MineQuest to operate!");

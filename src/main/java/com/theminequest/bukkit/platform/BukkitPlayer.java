@@ -88,5 +88,10 @@ public class BukkitPlayer implements MQPlayer {
 	public double getHealth() {
 		return player.getHealth();
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return player.equals(((BukkitPlayer)obj).player);
+	}
 	
 }

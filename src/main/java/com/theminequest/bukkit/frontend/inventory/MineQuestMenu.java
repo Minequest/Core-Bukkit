@@ -27,25 +27,28 @@ import com.theminequest.bukkit.frontend.inventory.TemporaryIconMenu.Action;
 
 public class MineQuestMenu {
 	
-	private static final IconMenu MENU = new IconMenu(_("MineQuest v{0}", Managers.getVersion()), 9, new IconMenu.OptionClickEventHandler() {
+	private static final IconMenu MENU = new IconMenu(ChatColor.RESET + "MineQuest v" + Managers.getVersion(), 9, new IconMenu.OptionClickEventHandler() {
 		@Override
-		public void onOptionClick(IconMenu.OptionClickEvent event) {
-			switch (event.getName()) {
-			case "Party":
+		public void onOptionClick(final IconMenu.OptionClickEvent event) {
+			event.setWillClose(false);
+			
+			switch (event.getPosition()) {
+			case 3:
 				partyMenu(event.getPlayer());
 				break;
-			case "Quest":
+			case 5:
 				questMenu(event.getPlayer());
 				break;
 			}
+			
 		}
-	}, (Plugin) Managers.getPlatform().getPlatformObject()).setOption(3, new MaterialData(Material.SKULL_ITEM, (byte) 3).toItemStack(1), "Party", "Play with others!").setOption(5, new ItemStack(Material.IRON_SWORD, 1), "Quest", "Manage your adventure!");
+	}, (Plugin) Managers.getPlatform().getPlatformObject()).setOption(3, new MaterialData(Material.SKULL_ITEM, (byte) 3).toItemStack(1), ChatColor.RESET + "" + ChatColor.AQUA + _("Party"), ChatColor.RESET + _("Play with others!")).setOption(5, new ItemStack(Material.IRON_SWORD, 1), ChatColor.RESET + "" + ChatColor.GREEN + _("Quest"), ChatColor.RESET + _("Manage your adventure!"));
 	
 	public static void showMenu(Player sender) {
 		MENU.open(sender);
 	}
 	
-	private static void partyMenu(Player pl) {
+	private static void partyMenu(final Player pl) {
 		
 		final MQPlayer p = Managers.getPlatform().toPlayer(pl);
 		
@@ -97,7 +100,7 @@ public class MineQuestMenu {
 						}
 					}
 					
-				}, _("Accept Invite"), _("Accept invite to party."));
+				}, ChatColor.RESET + "" + ChatColor.BOLD + ChatColor.GREEN + _("Accept Invite"), ChatColor.RESET + _("Accept invite to party."));
 			}
 			
 			partyMenu.setOption(createLoc, new ItemStack(Material.BOOK_AND_QUILL, 1), new Action() {
@@ -115,7 +118,7 @@ public class MineQuestMenu {
 					p.sendMessage(PartyCommandFrontend.ICREATE);
 				}
 				
-			}, _("Create Party"), _("Create a new party."), _("This will set you as leader and allow you to invite others."));
+			}, ChatColor.RESET + "" + ChatColor.GOLD + _("Create Party"), ChatColor.RESET + _("Create a new party."));
 		} else {
 			// Top row, do individual players
 			List<MQPlayer> members = g.getMembers();
@@ -129,17 +132,19 @@ public class MineQuestMenu {
 						
 						@Override
 						public void run(OptionClickEvent event) {
+							event.setWillClose(false);
 							String header = String.format("%s: %s/%s", mqplayer.getDisplayName(), mqplayer.getHealth(), mqplayer.getMaxHealth());
 							
-							TemporaryIconMenu playerMenu = new TemporaryIconMenu(header, 9, (Plugin) Managers.getPlatform().getPlatformObject());
+							final TemporaryIconMenu playerMenu = new TemporaryIconMenu(header, 9, (Plugin) Managers.getPlatform().getPlatformObject());
 							playerMenu.setOption(0, new ItemStack(Material.ARROW, 1), new Action() {
 								
 								@Override
 								public void run(OptionClickEvent event) {
+									event.setWillClose(false);
 									partyMenu(event.getPlayer());
 								}
 								
-							}, _("Back"), _("Back to the previous menu."));
+							}, ChatColor.RESET + _("Back"), ChatColor.RESET + _("Back to the previous menu."));
 							
 							playerMenu.setOption(4, new ItemStack(Material.LAVA_BUCKET, 1), new Action() {
 								
@@ -174,7 +179,7 @@ public class MineQuestMenu {
 									
 								}
 								
-							}, _("Kick"), _("Kick {0} from the party.", mqplayer.getDisplayName()));
+							}, ChatColor.RESET + _("Kick"), ChatColor.RESET + _("Kick {0} from the party.", mqplayer.getDisplayName()));
 							
 							playerMenu.setOption(8, new ItemStack(Material.NETHER_STAR, 1), new Action() {
 								
@@ -208,16 +213,25 @@ public class MineQuestMenu {
 									}
 								}
 								
-							}, _("Promote"), _("Promote {0} as the leader of the party.", mqplayer.getDisplayName()), _("You will no longer be leader."));
+							}, ChatColor.RESET + _("Promote"), ChatColor.RESET + _("Promote {0} as the leader of the party.", mqplayer.getDisplayName()), _("You will no longer be leader."));
+							
+							Managers.getPlatform().scheduleSyncTask(new Runnable() {
+								
+								@Override
+								public void run() {
+									playerMenu.open(Bukkit.getPlayerExact(pl.getName()));
+								}
+								
+							});
 						}
 						
 					};
 				}
 				
 				if (i == 0)
-					partyMenu.setOption(0, new ItemStack(Material.GOLD_CHESTPLATE, 1), act, mqplayer.getDisplayName(), _("Health: {0}/{1}", mqplayer.getHealth(), mqplayer.getMaxHealth()));
+					partyMenu.setOption(0, new ItemStack(Material.GOLD_CHESTPLATE, 1), act, ChatColor.RESET + "" + ChatColor.GOLD + mqplayer.getDisplayName(), ChatColor.RESET + _("Health: {0}/{1}", mqplayer.getHealth(), mqplayer.getMaxHealth()));
 				else
-					partyMenu.setOption(i+1, new ItemStack(Material.IRON_CHESTPLATE, 1), act, mqplayer.getDisplayName(), _("Health: {0}/{1}", mqplayer.getHealth(), mqplayer.getMaxHealth()));
+					partyMenu.setOption(i + 1, new ItemStack(Material.IRON_CHESTPLATE, 1), act, ChatColor.RESET + "" + ChatColor.AQUA + mqplayer.getDisplayName(), ChatColor.RESET + _("Health: {0}/{1}", mqplayer.getHealth(), mqplayer.getMaxHealth()));
 			}
 			
 			// Bottom row, handle leaving the party or inviting
@@ -225,16 +239,16 @@ public class MineQuestMenu {
 			if (isLeader) {
 				leaveLoc = 12;
 				partyMenu.setOption(14, new ItemStack(Material.PAPER, 1), new Action() {
-
+					
 					@Override
 					public void run(OptionClickEvent event) {
-						event.getPlayer().sendMessage(_("You'll need to do /party invite [player]."));
+						event.getPlayer().sendMessage(_("You will need to do /party invite [player]."));
 					}
 					
-				}, _("Invite"), _("Invite a player to your party."));
+				}, ChatColor.RESET + "" + ChatColor.LIGHT_PURPLE + _("Invite"), ChatColor.RESET + _("Invite a player to your party."));
 			}
 			partyMenu.setOption(leaveLoc, new ItemStack(Material.IRON_DOOR, 1), new Action() {
-
+				
 				@Override
 				public void run(OptionClickEvent event) {
 					if (Managers.getGroupManager().indexOf(p) == -1) {
@@ -250,13 +264,14 @@ public class MineQuestMenu {
 						g.remove(p);
 						p.sendMessage(PartyCommandFrontend.ILEAVE);
 					} catch (GroupException e) {
-						throw new RuntimeException(e); // toss to CommandFrontend
+						throw new RuntimeException(e); // toss to
+														// CommandFrontend
 					}
 				}
 				
-			}, _("Leave"), _("Leave the party."));
-
-		}		
+			}, ChatColor.RESET + "" + ChatColor.RED + _("Leave"), ChatColor.RESET +_("Leave the party."));
+			
+		}
 		
 		partyMenu.open(pl);
 	}

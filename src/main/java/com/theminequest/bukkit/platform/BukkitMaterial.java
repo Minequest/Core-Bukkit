@@ -51,5 +51,11 @@ public class BukkitMaterial implements MQMaterial {
 	public <E> E getUnderlyingObject() {
 		return (E) material.getNewData((byte) data);
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		BukkitMaterial mat = (BukkitMaterial) obj;
+		return material.equals(mat) && data == mat.data;
+	}
 	
 }

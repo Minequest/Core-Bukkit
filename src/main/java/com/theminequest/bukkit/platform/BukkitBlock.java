@@ -37,5 +37,11 @@ public class BukkitBlock implements MQBlock {
 		block.setType(data.getItemType());
 		block.setData(data.getData());
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		BukkitBlock other = (BukkitBlock) obj;
+		return block.equals(other.block);
+	}
 	
 }

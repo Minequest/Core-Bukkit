@@ -48,9 +48,9 @@ public class TemporaryIconMenu implements Listener {
 			public void onOptionClick(OptionClickEvent event) {
 				Action act = actions.get(event.getPosition());
 				if (act != null) {
-					act.run(event);
 					event.setWillClose(true);
 					event.setWillDestroy(true);
+					act.run(event);
 				}
 			}
 			

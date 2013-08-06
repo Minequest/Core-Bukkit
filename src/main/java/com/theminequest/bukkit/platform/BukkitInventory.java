@@ -16,6 +16,10 @@ import com.theminequest.api.platform.MQItemStack;
 
 public class BukkitInventory implements MQInventory {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 486298531552899195L;
 	private Inventory inventory;
 	
 	public BukkitInventory(Inventory platformInventory) {
@@ -365,5 +369,11 @@ public class BukkitInventory implements MQInventory {
 				arg0[i] = (T) Managers.getPlatform().toItemStack(copy[i]);
 		}
 		return arg0;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		BukkitInventory other = (BukkitInventory) obj;
+		return inventory.equals(other.inventory);
 	}	
 }

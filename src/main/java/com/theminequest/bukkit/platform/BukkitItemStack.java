@@ -58,5 +58,11 @@ public class BukkitItemStack extends MQItemStack {
 		stack.setType(data.getItemType());
 		super.setMaterial(material);
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		BukkitItemStack other = (BukkitItemStack) obj;
+		return stack.equals(other.stack);
+	}
 	
 }
