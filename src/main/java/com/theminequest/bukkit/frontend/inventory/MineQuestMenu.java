@@ -2,8 +2,6 @@ package com.theminequest.bukkit.frontend.inventory;
 
 import static com.theminequest.common.util.I18NMessage._;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -19,8 +17,6 @@ import com.theminequest.api.Managers;
 import com.theminequest.api.group.Group;
 import com.theminequest.api.group.GroupException;
 import com.theminequest.api.platform.MQPlayer;
-import com.theminequest.api.util.ChatUtils;
-import com.theminequest.bukkit.frontend.cmd.CommandFrontend;
 import com.theminequest.bukkit.frontend.cmd.PartyCommandFrontend;
 import com.theminequest.bukkit.frontend.inventory.IconMenu.OptionClickEvent;
 import com.theminequest.bukkit.frontend.inventory.TemporaryIconMenu.Action;
@@ -144,7 +140,7 @@ public class MineQuestMenu {
 									partyMenu(event.getPlayer());
 								}
 								
-							}, ChatColor.RESET + _("Back"), ChatColor.RESET + _("Back to the previous menu."));
+							}, ChatColor.RESET + "" + ChatColor.AQUA + _("Back"), ChatColor.RESET + _("Back to the previous menu."));
 							
 							playerMenu.setOption(4, new ItemStack(Material.LAVA_BUCKET, 1), new Action() {
 								
@@ -179,7 +175,7 @@ public class MineQuestMenu {
 									
 								}
 								
-							}, ChatColor.RESET + _("Kick"), ChatColor.RESET + _("Kick {0} from the party.", mqplayer.getDisplayName()));
+							}, ChatColor.RESET + "" + ChatColor.RED + _("Kick"), ChatColor.RESET + _("Kick {0} from the party.", mqplayer.getDisplayName()));
 							
 							playerMenu.setOption(8, new ItemStack(Material.NETHER_STAR, 1), new Action() {
 								
@@ -213,7 +209,7 @@ public class MineQuestMenu {
 									}
 								}
 								
-							}, ChatColor.RESET + _("Promote"), ChatColor.RESET + _("Promote {0} as the leader of the party.", mqplayer.getDisplayName()), _("You will no longer be leader."));
+							}, ChatColor.RESET + "" + ChatColor.GOLD + _("Promote"), ChatColor.RESET + _("Promote {0} as the leader of the party.", mqplayer.getDisplayName()), _("You will no longer be leader."));
 							
 							Managers.getPlatform().scheduleSyncTask(new Runnable() {
 								

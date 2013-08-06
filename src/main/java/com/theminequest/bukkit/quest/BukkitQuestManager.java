@@ -132,6 +132,11 @@ public class BukkitQuestManager implements Listener, QuestManager {
 			String filename = f.getName();
 			QuestHandler<?> handle = Managers.getQuestHandlerManager().getQuestHandler(filename.substring(filename.lastIndexOf(".") + 1));
 			
+			if (handle == null) {
+				Managers.logf(Level.SEVERE, "Unable to find handler for %s (called from %s).", filename.substring(filename.lastIndexOf(".") + 1), filename);
+				return;
+			}
+			
 			QuestDetails d = handle.parseQuest(f);
 			descriptions.add(d);
 			Managers.logf("[Quest] Loaded %s from %s.", d.getProperty(QuestDetails.QUEST_NAME), f.getCanonicalPath());

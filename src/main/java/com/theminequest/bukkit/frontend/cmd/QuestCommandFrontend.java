@@ -401,7 +401,7 @@ public class QuestCommandFrontend extends CommandFrontend {
 		
 		// basic commands
 		boolean inGroup = Managers.getGroupManager().get(mp) != null;
-		boolean isLeader = inGroup && Managers.getGroupManager().get(mp).getLeader().equals(p);
+		boolean isLeader = inGroup && Managers.getGroupManager().get(mp).getLeader().equals(mp);
 		QuestStatus hasQuest = inGroup ? Managers.getGroupManager().get(mp).getQuestStatus() : QuestStatus.NOQUEST;
 		CompleteStatus questStatus = hasQuest == QuestStatus.INQUEST ? Managers.getGroupManager().get(mp).getQuest().isFinished() : CompleteStatus.IGNORE;
 		
