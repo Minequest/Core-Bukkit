@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Core-Bukkit - developing for the Bukkit-specific implementation of MineQuest by Minequest</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Core-Bukkit - developing for the Bukkit-specific implementation of MineQuest</h1>
+        <p class="header">Bukkit-specific implementation of the API</p>
+
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/Minequest/Core-Bukkit/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/Minequest/Core-Bukkit/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/Minequest/Core-Bukkit">View On GitHub</a></li>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/Minequest">Minequest</a></p>
+
+
+      </header>
+      <section>
+        <h1>
+<a name="overview" class="anchor" href="#overview"><span class="octicon octicon-link"></span></a>Overview</h1>
+
+<p>This site was created to help developers look up information and integrate MineQuest into their plugins through the use of our APIs. Starting with version 3.0.0, our API is platform-independent; so we have an API site for each specific implementation. This is the Bukkit implementation.</p>
+
+<h2>
+<a name="java-version" class="anchor" href="#java-version"><span class="octicon octicon-link"></span></a>Java Version</h2>
+
+<p>MineQuest and its components are built for <strong>Java 7</strong> and up. We do not support deprecated versions (including Java 6, which hit end of life in February 2013).</p>
+
+<h2>
+<a name="linking-to-our-apis" class="anchor" href="#linking-to-our-apis"><span class="octicon octicon-link"></span></a>Linking to our APIs</h2>
+
+<p>You can most easily do this with Maven, or Apache Ant if you have Ivy. If you want the bukkit-specific version:</p>
+
+<pre><code>&lt;dependency&gt;
+   &lt;groupId&gt;com.theminequest&lt;/groupId&gt;
+   &lt;artifactId&gt;bukkit&lt;/artifactId&gt;
+   &lt;version&gt;3.0.0-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+
+<p>Or, if you want the platform-independent version:</p>
+
+<pre><code>&lt;dependency&gt;
+   &lt;groupId&gt;com.theminequest&lt;/groupId&gt;
+   &lt;artifactId&gt;common&lt;/artifactId&gt;
+   &lt;version&gt;3.0.0-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+
+<p>In addition, you'll need our repository:</p>
+
+<pre><code>&lt;repositories&gt;
+   &lt;repository&gt;
+      &lt;id&gt;jci-lincom&lt;/id&gt;
+      &lt;url&gt;http://jci.lincomlinux.org/plugin/repository/everything/&lt;/url&gt;
+   &lt;/repository&gt;
+&lt;/repositories&gt;
+</code></pre>
+
+<h2>
+<a name="accessing-information" class="anchor" href="#accessing-information"><span class="octicon octicon-link"></span></a>Accessing Information</h2>
+
+<p>All accessible information should be done through the managers provided. See the <a href="http://jci.lincomlinux.org/job/MineQuest-3-API/javadoc/com/theminequest/api/Managers.html">Managers</a> class for more information on how to access these managers. In addition, the common implementation has its own Manager that can be accessed - see the <a href="http://jci.lincomlinux.org/job/MineQuest-Common/javadoc/com/theminequest/common/Common.html">Common Manager</a> for more details on how to utilise it.</p>
+
+<h2>
+<a name="listening-to-system-events" class="anchor" href="#listening-to-system-events"><span class="octicon octicon-link"></span></a>Listening to System Events</h2>
+
+<p>Whenever an action is triggered in MineQuest, the respective event is fired to the system event system for any plugins to process. You should listen for our <a href="http://jci.lincomlinux.org/job/MineQuest-3-Core-Bukkit/javadoc/index.html?com/theminequest/bukkit/platform/BukkitEvent.html">Bukkit Event</a>, switch on getName() to handle it respectively.</p>
+
+<p>Some events are cancellable. Should you not want an event to occur, simply cancel it.</p>
+
+<h2>
+<a name="extending-functionality-within-quests" class="anchor" href="#extending-functionality-within-quests"><span class="octicon octicon-link"></span></a>Extending functionality within quests</h2>
+
+<p>You can extend functionality any different number of ways. With the advent of new scripting frameworks, the Quest -&gt; Task -&gt; Event system is <strong>not required</strong>. We do, however, still have formats (V1-compatible) that work with this system, including our *.quest, *.json, and *.xml formats. All are documented below:</p>
+
+<h3>
+<a name="creating-quest-events-for-v1-compatible-formats" class="anchor" href="#creating-quest-events-for-v1-compatible-formats"><span class="octicon octicon-link"></span></a>Creating Quest Events for V1-compatible formats</h3>
+
+<p>Quest Events - that is, events that trigger during a quest, allow complete control over the quest (and if manually triggered outside a quest, complete control of the server).</p>
+
+<p>A brief overview of how this works:</p>
+
+<ul>
+<li>You make a class that extends QuestEvent, DelayedQuestEvent, or another class that extends off of one of those. It must have a default constructor (aka, no parameters in the constructor). </li>
+<li>MineQuest, with its EventManager, takes that event, initializes it, and keeps track of it.</li>
+<li>
+<em>In addition</em>, to have your event display an objective to the user, you may implement UserQuestEvent.</li>
+</ul><p>You can find the source for our implemented events at our Github.</p>
+
+<p>After you have created your QuestEvent, you should register it. The <strong>V1EventManager</strong> class should help
+you register your new event with MineQuest so that it becomes functional for V1-compatible formats. Give your event a name and register it and the class you've just created that implements QuestEvent in <a href="http://jci.lincomlinux.org/job/MineQuest-Common/javadoc/com/theminequest/common/quest/v1/V1EventManager.html#addEvent%28java.lang.String,%20java.lang.Class%29">the manager</a>.</p>
+
+<h3>
+<a name="accessing-the-quest-parser-for-v1-compatible-formats" class="anchor" href="#accessing-the-quest-parser-for-v1-compatible-formats"><span class="octicon octicon-link"></span></a>Accessing the Quest Parser for V1-compatible formats</h3>
+
+<p>If you wanted to add your own touch into Quest files, there's never been a better time! You can do that with our V1Parser interface. Simply <a href="http://jci.lincomlinux.org/job/MineQuest-Common/javadoc/com/theminequest/common/quest/v1/V1Parser.html">implement it</a> and register it.</p>
+
+<p>The <a href="http://jci.lincomlinux.org/job/MineQuest-3-API/javadoc/com/theminequest/api/quest/QuestDetails.html">QuestDetails</a> class describes the quest from start to finish, including every single minute detail. It is simply a LinkedHashMap database of String keys and <strong>Serializable</strong> objects.</p>
+
+<h3>
+<a name="creating-requirements-for-all-formats" class="anchor" href="#creating-requirements-for-all-formats"><span class="octicon octicon-link"></span></a>Creating Requirements for all formats</h3>
+
+<p>Requirements define a powerful feature of MineQuest - the ability to give, run, and shape quests based on the environment. This can be further extended to external leveling systems or meeting certain entities before being able to take quests.</p>
+
+<p>Creating a requirement is much like a Quest Event: You create a class that extends (QuestRequirement)[<a href="http://jci.lincomlinux.org/job/MineQuest-3-API/javadoc/com/theminequest/api/requirement/QuestRequirement.html">http://jci.lincomlinux.org/job/MineQuest-3-API/javadoc/com/theminequest/api/requirement/QuestRequirement.html</a>]. Then, add it to <a href="http://jci.lincomlinux.org/job/MineQuest-3-API/javadoc/com/theminequest/api/requirement/RequirementManager.html#register%28java.lang.String,%20java.lang.Class%29">the requirement manager</a> so that the requirement manager knows that it exists.</p>
+
+<p>Then, to utilise it in a V1-compatible quest:</p>
+
+<pre><code># define a requirement
+Requirement:ID:Name:Details...
+# as a requirement for getting the quest
+GetReq:ID,ID,ID
+# as a requirement for starting the quest
+StartReq:ID,ID,ID
+# as an event in a quest
+Event:ID:RequirementEvent:*delay*:*requirement ID*:*task if met*:*task if not met*
+</code></pre>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		
+  </body>
+</html>
