@@ -81,7 +81,7 @@ public class QuestSign implements Listener {
 					QuestStatisticUtils.giveQuest(player.getName(), quest_name);
 					player.sendMessage(ChatColor.GREEN + "Successfully added " + d.getProperty(QuestDetails.QUEST_DISPLAYNAME) + " to your quest list!");
 				} catch (QSException e) {
-					player.sendMessage("This quest doesn't seem to like you.");
+					player.sendMessage("This quest doesn't seem to like you. (call an admin - something went wrong)");
 					e.printStackTrace();
 				}
 			else
