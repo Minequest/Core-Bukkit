@@ -14,8 +14,8 @@ loadbefore: [MineQuest-Events, MineQuest-Idle]
 softdepend: [Vault]
 
 commands:
-  mq:
-    description: View MineQuest inventory GUI.
+  mp:
+    description: View MineQuest party inventory GUI.
   minequest:
     description: View MineQuest commands.
   quest:
@@ -30,9 +30,13 @@ permissions:
     description: Allows all MineQuest-Core permissions.
     default: false
     children:
+      minequest.gui.party: true
       minequest.command.*: true
       minequest.sign.placesign: true
       minequest.sign.takequest: true
+  minequest.gui.party:
+    description: Allows access to the GUI party interface.
+    default: false
   minequest.command.*:
     description: Allows access to all MineQuest-Core commands.
     default: false

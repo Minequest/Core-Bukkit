@@ -44,7 +44,7 @@ public class MineQuestMenu {
 		MENU.open(sender);
 	}
 	
-	private static void partyMenu(final Player pl) {
+	public static void partyMenu(final Player pl) {
 		
 		final MQPlayer p = Managers.getPlatform().toPlayer(pl);
 		
@@ -272,8 +272,8 @@ public class MineQuestMenu {
 		partyMenu.open(pl);
 	}
 	
-	private static void questMenu(Player p) {
-		p.sendMessage("Not implemented yet! Use /quest!");
+	private static void questMenu(Player pl) {
+		pl.sendMessage("[" + ChatColor.GOLD + _("Quest") + ChatColor.RESET + "] " + _("Unfortunately, you'll need to use the /quest command to manage your quests."));
 	}
 	
 }

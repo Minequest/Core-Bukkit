@@ -29,9 +29,9 @@ public class MineQuestCommandFrontend implements CommandExecutor {
 		if (cmd.getName().equalsIgnoreCase("minequest")) {
 			showMineQuestHelp(sender);
 			return true;
-		} else if (cmd.getName().equalsIgnoreCase("mq")) {
+		} if (cmd.getName().equalsIgnoreCase("mp")) {
 			if (sender instanceof Player)
-				MineQuestMenu.showMenu((Player) sender);
+				MineQuestMenu.partyMenu((Player) sender);
 		}
 		
 		return false;
