@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.inventory.ItemStack;
 
@@ -32,14 +33,16 @@ public class MobUtils {
 		return ret != null && ret.isAlive() ? ret : null;
 	}
 	
-	public static LivingEntity addlProps(LivingEntity e) {
-		EntityType entityType = e.getType();
-		if (entityType == EntityType.SKELETON && ((Skeleton) e).getSkeletonType().getId() == 1) {
-			((Skeleton) e).getEquipment().setItemInHand(new ItemStack(Material.STONE_SWORD));
-		} else if (entityType == EntityType.SKELETON && ((Skeleton) e).getSkeletonType().getId() == 0) {
-			((Skeleton) e).getEquipment().setItemInHand(new ItemStack(Material.BOW));
+	public static Entity addlProps(Entity entity) {
+		EntityType entityType = entity.getType();
+		if (entityType == EntityType.SKELETON && ((Skeleton) entity).getSkeletonType().getId() == 1) {
+			((Skeleton) entity).getEquipment().setItemInHand(new ItemStack(Material.STONE_SWORD));
+		} else if (entityType == EntityType.SKELETON && ((Skeleton) entity).getSkeletonType().getId() == 0) {
+			((Skeleton) entity).getEquipment().setItemInHand(new ItemStack(Material.BOW));
+		} else if (entityType == EntityType.PIG_ZOMBIE) {
+			((PigZombie) entity).getEquipment().setItemInHand(new ItemStack(Material.GOLD_SWORD));
 		}
-		return e;
+		return entity;
 	}
 	
 }
