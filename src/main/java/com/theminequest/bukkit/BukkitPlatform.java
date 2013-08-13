@@ -251,7 +251,7 @@ public class BukkitPlatform extends JavaPlugin implements Platform {
 		
 		// leftovers: command frontend
 		MineQuestCommandFrontend fe = new MineQuestCommandFrontend();
-		getCommand("mq").setExecutor(fe);
+		getCommand("mp").setExecutor(fe);
 		getCommand("minequest").setExecutor(fe);
 		getCommand("quest").setExecutor(new QuestCommandFrontend());
 		getCommand("party").setExecutor(new PartyCommandFrontend());
