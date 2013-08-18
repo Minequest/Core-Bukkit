@@ -8,7 +8,7 @@ import com.theminequest.api.platform.MQItemStack;
 import com.theminequest.api.platform.MQMaterial;
 
 public class BukkitItemStack extends MQItemStack {
-	
+
 	private ItemStack stack;
 	
 	public BukkitItemStack(ItemStack stack) {
@@ -63,6 +63,11 @@ public class BukkitItemStack extends MQItemStack {
 	public boolean equals(Object obj) {
 		BukkitItemStack other = (BukkitItemStack) obj;
 		return stack.equals(other.stack);
+	}
+	
+	@Override
+	public int hashCode() {
+		return stack.hashCode();
 	}
 	
 }

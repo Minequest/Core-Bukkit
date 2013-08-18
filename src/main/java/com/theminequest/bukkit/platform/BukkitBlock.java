@@ -43,5 +43,10 @@ public class BukkitBlock implements MQBlock {
 		BukkitBlock other = (BukkitBlock) obj;
 		return block.equals(other.block);
 	}
+
+	@Override
+	public int hashCode() {
+		return block.hashCode();
+	}
 	
 }

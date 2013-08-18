@@ -57,5 +57,13 @@ public class BukkitMaterial implements MQMaterial {
 		BukkitMaterial mat = (BukkitMaterial) obj;
 		return material.equals(mat) && data == mat.data;
 	}
+
+	@Override
+	public int hashCode() {
+		int baseHash = 301;
+		baseHash = 31 * baseHash + material.hashCode();
+		baseHash = 31 * baseHash + data;
+		return baseHash;
+	}
 	
 }

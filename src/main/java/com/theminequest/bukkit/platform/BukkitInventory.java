@@ -375,5 +375,10 @@ public class BukkitInventory implements MQInventory {
 	public boolean equals(Object obj) {
 		BukkitInventory other = (BukkitInventory) obj;
 		return inventory.equals(other.inventory);
+	}
+
+	@Override
+	public int hashCode() {
+		return inventory.hashCode();
 	}	
 }
