@@ -139,7 +139,7 @@ public class BukkitQuestManager implements Listener, QuestManager {
 			
 			QuestDetails d = handle.parseQuest(f);
 			descriptions.add(d);
-			Managers.logf("[Quest] Loaded %s from %s.", d.getProperty(QuestDetails.QUEST_NAME), f.getCanonicalPath());
+			Managers.logf("[Quest] Loaded %s from %s.", d.getName(), f.getCanonicalPath());
 		} catch (IOException e) {
 			e.printStackTrace();
 			Managers.logf(Level.SEVERE, "[Quest] Failed to load %s!", f.getName());
@@ -149,7 +149,7 @@ public class BukkitQuestManager implements Listener, QuestManager {
 	@Override
 	public QuestDetails getDetails(String name) {
 		for (QuestDetails d : descriptions)
-			if (d.getProperty(QuestDetails.QUEST_NAME).equals(name))
+			if (d.getName().equals(name))
 				return d;
 		return null;
 	}
@@ -158,7 +158,7 @@ public class BukkitQuestManager implements Listener, QuestManager {
 	public Set<String> getListOfDetails() {
 		Set<String> s = new HashSet<String>();
 		for (QuestDetails d : descriptions)
-			s.add((String) d.getProperty(QuestDetails.QUEST_NAME));
+			s.add(d.getName());
 		return s;
 	}
 	
@@ -181,7 +181,7 @@ public class BukkitQuestManager implements Listener, QuestManager {
 				qs = new LinkedHashMap<String, Quest>();
 				mwQuests.put(ownerName, qs);
 			}
-			qs.put((String) q.getDetails().getProperty(QuestDetails.QUEST_NAME), q);
+			qs.put(q.getDetails().getName(), q);
 		}
 		return q;
 	}
@@ -221,7 +221,7 @@ public class BukkitQuestManager implements Listener, QuestManager {
 	@Override
 	public void completeQuest(Quest q) {
 		if ((q.isFinished() != CompleteStatus.CANCELED) && (q.isFinished() != CompleteStatus.IGNORE)) {
-			String questname = q.getDetails().getProperty(QuestDetails.QUEST_NAME);
+			String questname = q.getDetails().getName();
 			String questfinish = q.getDetails().getProperty(QuestDetails.QUEST_COMPLETE);
 			boolean failed = (q.isFinished() == CompleteStatus.FAIL || q.isFinished() == CompleteStatus.ERROR);
 			String color = ChatColor.GRAY + "[done] ";
@@ -309,7 +309,7 @@ public class BukkitQuestManager implements Listener, QuestManager {
 		LinkedHashMap<String, Quest> qs = new LinkedHashMap<String, Quest>();
 		for (SnapshotStatistic s : snapshots) {
 			Quest q = s.getSnapshot().recreateQuest();
-			String questName = q.getDetails().getProperty(QuestDetails.QUEST_NAME);
+			String questName = q.getDetails().getName();
 			
 			int taskId = s.getSnapshot().getLastTaskID();
 			if (taskId != -1) {
