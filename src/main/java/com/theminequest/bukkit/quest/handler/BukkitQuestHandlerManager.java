@@ -8,6 +8,7 @@ import com.theminequest.api.quest.handler.QuestHandler;
 import com.theminequest.api.quest.handler.QuestHandlerManager;
 import com.theminequest.bukkit.quest.parser.InstancedHandler;
 import com.theminequest.bukkit.quest.parser.WorldHandler;
+import com.theminequest.common.quest.js.JsHandler;
 import com.theminequest.common.quest.v1.V1Handler;
 
 public class BukkitQuestHandlerManager implements QuestHandlerManager {
@@ -21,6 +22,11 @@ public class BukkitQuestHandlerManager implements QuestHandlerManager {
 		v1.addParser("instance", new InstancedHandler());
 		v1.addParser("world", new WorldHandler());
 		handlers.put("quest", v1);
+		
+		JsHandler js = new JsHandler();
+		js.addParser("instance", new InstancedHandler());
+		js.addParser("world", new WorldHandler());
+		handlers.put("jsq", js);
 	}
 	
 	@Override
