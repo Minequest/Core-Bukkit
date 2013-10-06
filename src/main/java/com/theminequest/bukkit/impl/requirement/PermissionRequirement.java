@@ -2,7 +2,8 @@ package com.theminequest.bukkit.impl.requirement;
 
 import org.bukkit.Bukkit;
 
-import com.theminequest.api.platform.MQPlayer;
+import com.theminequest.api.platform.entity.MQPlayer;
+import com.theminequest.api.quest.QuestDetails;
 import com.theminequest.api.requirement.QuestRequirement;
 
 public class PermissionRequirement extends QuestRequirement {
@@ -19,7 +20,7 @@ public class PermissionRequirement extends QuestRequirement {
 	}
 	
 	@Override
-	public boolean isSatisfied(MQPlayer player) {
+	public boolean isSatisfied(QuestDetails details, MQPlayer player) {
 		return Bukkit.getPlayerExact(player.getName()).hasPermission(permission);
 	}
 	

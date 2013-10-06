@@ -3,7 +3,8 @@ package com.theminequest.bukkit.impl.requirement;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import com.theminequest.api.platform.MQPlayer;
+import com.theminequest.api.platform.entity.MQPlayer;
+import com.theminequest.api.quest.QuestDetails;
 import com.theminequest.api.requirement.QuestRequirement;
 
 public class ItemInHandRequirement extends QuestRequirement {
@@ -20,7 +21,7 @@ public class ItemInHandRequirement extends QuestRequirement {
 	}
 	
 	@Override
-	public boolean isSatisfied(MQPlayer player) {
+	public boolean isSatisfied(QuestDetails details, MQPlayer player) {
 		Player p = Bukkit.getPlayerExact(player.getName());
 		return p.getItemInHand().getTypeId() == itemid;
 	}

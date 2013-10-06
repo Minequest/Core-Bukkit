@@ -21,7 +21,7 @@ package com.theminequest.bukkit.impl.event;
 import com.theminequest.api.CompleteStatus;
 import com.theminequest.api.Managers;
 import com.theminequest.api.group.Group;
-import com.theminequest.api.platform.MQPlayer;
+import com.theminequest.api.platform.entity.MQPlayer;
 import com.theminequest.api.quest.event.QuestEvent;
 import com.theminequest.bukkit.BukkitPlatform;
 

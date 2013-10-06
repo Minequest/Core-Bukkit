@@ -23,6 +23,7 @@ import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.Inventory;
@@ -43,7 +44,8 @@ import com.theminequest.api.platform.MQInventory;
 import com.theminequest.api.platform.MQItemStack;
 import com.theminequest.api.platform.MQLocation;
 import com.theminequest.api.platform.MQMaterial;
-import com.theminequest.api.platform.MQPlayer;
+import com.theminequest.api.platform.entity.MQEntity;
+import com.theminequest.api.platform.entity.MQPlayer;
 import com.theminequest.api.statistic.LogStatistic;
 import com.theminequest.api.statistic.SnapshotStatistic;
 import com.theminequest.api.statistic.StatisticManager;
@@ -74,13 +76,15 @@ import com.theminequest.bukkit.platform.BukkitInventory;
 import com.theminequest.bukkit.platform.BukkitItemStack;
 import com.theminequest.bukkit.platform.BukkitLocation;
 import com.theminequest.bukkit.platform.BukkitMaterial;
-import com.theminequest.bukkit.platform.BukkitPlayer;
+import com.theminequest.bukkit.platform.entity.BukkitEntity;
+import com.theminequest.bukkit.platform.entity.BukkitPlayer;
 import com.theminequest.bukkit.quest.BukkitQuestManager;
 import com.theminequest.bukkit.quest.handler.BukkitQuestHandlerManager;
 import com.theminequest.bukkit.statistic.Statistics;
 import com.theminequest.bukkit.util.TimeUtils;
 import com.theminequest.common.Common;
 import com.theminequest.common.quest.requirement.CommonRequirementManager;
+import com.theminequest.common.quest.target.CommonTargetManager;
 import com.theminequest.common.quest.v1.V1EventManager;
 import com.theminequest.common.util.ExceptionHandler;
 
@@ -131,7 +135,7 @@ public class BukkitPlatform extends JavaPlugin implements Platform {
 		} catch (ConnectionException e) {
 			e.printStackTrace();
 		}
-
+		
 		Managers.setQuestManager(null);
 		Managers.setGroupManager(null);
 		Managers.setQuestHandlerManager(null);
@@ -219,6 +223,10 @@ public class BukkitPlatform extends JavaPlugin implements Platform {
 		// Setup the Requirement Manager
 		CommonRequirementManager requireManager = new CommonRequirementManager();
 		Managers.setRequirementManager(requireManager);
+		
+		// Setup the Target Manager
+		CommonTargetManager targetManager = new CommonTargetManager();
+		Managers.setTargetManager(targetManager);
 		
 		// leftovers: add in bukkit specific events
 		V1EventManager v1eventmgr = Common.getCommon().getV1EventManager();
@@ -471,6 +479,28 @@ public class BukkitPlatform extends JavaPlugin implements Platform {
 		return (T) new Location(Bukkit.getWorld(location.getWorld()), location.getX(), location.getY(), location.getZ());
 	}
 	
+	@Override
+	public MQEntity getEntity(long entityID) {
+		for (World w : Bukkit.getWorlds()) {
+			for (Entity e : w.getEntities())
+				if (e.getEntityId() == entityID)
+					return new BukkitEntity(e);
+		}
+		return null;
+	}
+
+	@Override
+	public MQEntity toEntity(Object platformEntity) {
+		return new BukkitEntity((Entity) platformEntity);
+	}
+
+	@Override
+	public <T> T fromEntity(MQEntity entity) {
+		if (!(entity instanceof BukkitEntity))
+			throw new IllegalArgumentException("Need Bukkit Entity!");
+		return (T) ((BukkitEntity) entity).getBukkitEntity();
+	}
+
 	@Override
 	public MQPlayer toPlayer(Object platformPlayer) {
 		return new BukkitPlayer((Player) platformPlayer);

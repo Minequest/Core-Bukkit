@@ -23,7 +23,7 @@ import com.theminequest.api.Managers;
 import com.theminequest.api.group.Group;
 import com.theminequest.api.group.GroupException;
 import com.theminequest.api.group.GroupManager;
-import com.theminequest.api.platform.MQPlayer;
+import com.theminequest.api.platform.entity.MQPlayer;
 import com.theminequest.api.platform.event.GroupInviteEvent;
 import com.theminequest.api.quest.Quest;
 
@@ -253,12 +253,12 @@ public class BukkitGroupManager implements Listener, GroupManager {
 	@Override
 	public void groupPlayerJoin(Group g, MQPlayer player) {
 		for (MQPlayer p : g.getMembers())
-			p.sendMessage(ChatColor.GOLD + _("{0} joined the group.", player.getDisplayName()));
+			p.sendMessage(ChatColor.GOLD + _("{0} joined the group.", player.getCustomName()));
 	}
 	
 	@Override
 	public void groupPlayerQuit(Group g, MQPlayer player) {
 		for (MQPlayer p : g.getMembers())
-			p.sendMessage(ChatColor.GOLD + _("{0} left the group.", player.getDisplayName()));
+			p.sendMessage(ChatColor.GOLD + _("{0} left the group.", player.getCustomName()));
 	}
 }

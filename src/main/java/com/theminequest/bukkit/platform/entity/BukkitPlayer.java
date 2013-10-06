@@ -1,6 +1,7 @@
-package com.theminequest.bukkit.platform;
+package com.theminequest.bukkit.platform.entity;
 
 import java.net.InetSocketAddress;
+import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -8,14 +9,17 @@ import org.bukkit.entity.Player;
 import com.theminequest.api.Managers;
 import com.theminequest.api.platform.MQInventory;
 import com.theminequest.api.platform.MQLocation;
-import com.theminequest.api.platform.MQPlayer;
+import com.theminequest.api.platform.entity.MQPlayer;
+import com.theminequest.bukkit.platform.BukkitInventory;
 
 public class BukkitPlayer implements MQPlayer {
 	
+	private int properties;
 	private Player player;
 	
 	public BukkitPlayer(Player player) {
 		this.player = player;
+		this.properties = 0x00000000;
 	}
 	
 	@Override
@@ -24,7 +28,7 @@ public class BukkitPlayer implements MQPlayer {
 	}
 	
 	@Override
-	public String getDisplayName() {
+	public String getCustomName() {
 		return player.getDisplayName();
 	}
 	
@@ -54,7 +58,7 @@ public class BukkitPlayer implements MQPlayer {
 	}
 	
 	@Override
-	public void setDisplayName(String name) {
+	public void setCustomName(String name) {
 		player.setDisplayName(name);
 	}
 	
@@ -97,6 +101,31 @@ public class BukkitPlayer implements MQPlayer {
 	@Override
 	public int hashCode() {
 		return player.hashCode();
+	}
+
+	@Override
+	public void remove() {
+		player.remove();
+	}
+
+	@Override
+	public long getEntityId() {
+		return player.getEntityId();
+	}
+
+	@Override
+	public UUID getUUID() {
+		return player.getUniqueId();
+	}
+
+	@Override
+	public int getProperties() {
+		return properties;
+	}
+
+	@Override
+	public void setProperties(int properties) {
+		this.properties = properties;
 	}
 	
 }

@@ -1,7 +1,8 @@
 package com.theminequest.bukkit.impl.requirement;
 
 import com.theminequest.api.Managers;
-import com.theminequest.api.platform.MQPlayer;
+import com.theminequest.api.platform.entity.MQPlayer;
+import com.theminequest.api.quest.QuestDetails;
 import com.theminequest.api.requirement.QuestRequirement;
 import com.theminequest.bukkit.BukkitPlatform;
 
@@ -19,7 +20,7 @@ public class MoneyRequirement extends QuestRequirement {
 	}
 	
 	@Override
-	public boolean isSatisfied(MQPlayer player) {
+	public boolean isSatisfied(QuestDetails details, MQPlayer player) {
 		BukkitPlatform platform = (BukkitPlatform) Managers.getPlatform().getPlatformObject();
 		
 		if (platform.getEconomy() == null)

@@ -16,7 +16,7 @@ import com.theminequest.api.ManagerException;
 import com.theminequest.api.Managers;
 import com.theminequest.api.group.Group;
 import com.theminequest.api.group.GroupException;
-import com.theminequest.api.platform.MQPlayer;
+import com.theminequest.api.platform.entity.MQPlayer;
 import com.theminequest.bukkit.frontend.cmd.PartyCommandFrontend;
 import com.theminequest.bukkit.frontend.inventory.IconMenu.OptionClickEvent;
 import com.theminequest.bukkit.frontend.inventory.TemporaryIconMenu.Action;
@@ -129,7 +129,7 @@ public class MineQuestMenu {
 						@Override
 						public void run(OptionClickEvent event) {
 							event.setWillClose(false);
-							String header = String.format("%s: %s/%s", mqplayer.getDisplayName(), mqplayer.getHealth(), mqplayer.getMaxHealth());
+							String header = String.format("%s: %s/%s", mqplayer.getName(), mqplayer.getHealth(), mqplayer.getMaxHealth());
 							
 							final TemporaryIconMenu playerMenu = new TemporaryIconMenu(header, 9, (Plugin) Managers.getPlatform().getPlatformObject());
 							playerMenu.setOption(0, new ItemStack(Material.ARROW, 1), new Action() {
@@ -165,8 +165,8 @@ public class MineQuestMenu {
 									
 									try {
 										g.remove(mqplayer);
-										p.sendMessage(PartyCommandFrontend.IKICKED.replace("%n%", mqplayer.getDisplayName()));
-										mqplayer.sendMessage(PartyCommandFrontend.ITARGETKICKED.replace("%n%", p.getDisplayName()));
+										p.sendMessage(PartyCommandFrontend.IKICKED.replace("%n%", mqplayer.getName()));
+										mqplayer.sendMessage(PartyCommandFrontend.ITARGETKICKED.replace("%n%", p.getName()));
 									} catch (GroupException e) {
 										throw new RuntimeException(e); // toss
 																		// to
@@ -175,7 +175,7 @@ public class MineQuestMenu {
 									
 								}
 								
-							}, ChatColor.RESET + "" + ChatColor.RED + _("Kick"), ChatColor.RESET + _("Kick {0} from the party.", mqplayer.getDisplayName()));
+							}, ChatColor.RESET + "" + ChatColor.RED + _("Kick"), ChatColor.RESET + _("Kick {0} from the party.", mqplayer.getName()));
 							
 							playerMenu.setOption(8, new ItemStack(Material.NETHER_STAR, 1), new Action() {
 								
@@ -209,7 +209,7 @@ public class MineQuestMenu {
 									}
 								}
 								
-							}, ChatColor.RESET + "" + ChatColor.GOLD + _("Promote"), ChatColor.RESET + _("Promote {0} as the leader of the party.", mqplayer.getDisplayName()), _("You will no longer be leader."));
+							}, ChatColor.RESET + "" + ChatColor.GOLD + _("Promote"), ChatColor.RESET + _("Promote {0} as the leader of the party.", mqplayer.getName()), _("You will no longer be leader."));
 							
 							Managers.getPlatform().scheduleSyncTask(new Runnable() {
 								
@@ -225,9 +225,9 @@ public class MineQuestMenu {
 				}
 				
 				if (i == 0)
-					partyMenu.setOption(0, new ItemStack(Material.GOLD_CHESTPLATE, 1), act, ChatColor.RESET + "" + ChatColor.GOLD + mqplayer.getDisplayName(), ChatColor.RESET + _("Health: {0}/{1}", mqplayer.getHealth(), mqplayer.getMaxHealth()));
+					partyMenu.setOption(0, new ItemStack(Material.GOLD_CHESTPLATE, 1), act, ChatColor.RESET + "" + ChatColor.GOLD + mqplayer.getName(), ChatColor.RESET + _("Health: {0}/{1}", mqplayer.getHealth(), mqplayer.getMaxHealth()));
 				else
-					partyMenu.setOption(i + 1, new ItemStack(Material.IRON_CHESTPLATE, 1), act, ChatColor.RESET + "" + ChatColor.AQUA + mqplayer.getDisplayName(), ChatColor.RESET + _("Health: {0}/{1}", mqplayer.getHealth(), mqplayer.getMaxHealth()));
+					partyMenu.setOption(i + 1, new ItemStack(Material.IRON_CHESTPLATE, 1), act, ChatColor.RESET + "" + ChatColor.AQUA + mqplayer.getName(), ChatColor.RESET + _("Health: {0}/{1}", mqplayer.getHealth(), mqplayer.getMaxHealth()));
 			}
 			
 			// Bottom row, handle leaving the party or inviting

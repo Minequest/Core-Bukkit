@@ -14,7 +14,7 @@ import com.theminequest.api.ManagerException;
 import com.theminequest.api.Managers;
 import com.theminequest.api.group.Group;
 import com.theminequest.api.group.GroupException;
-import com.theminequest.api.platform.MQPlayer;
+import com.theminequest.api.platform.entity.MQPlayer;
 import com.theminequest.api.util.ChatUtils;
 
 public class PartyCommandFrontend extends CommandFrontend {
@@ -133,7 +133,7 @@ public class PartyCommandFrontend extends CommandFrontend {
 		try {
 			g.remove(mqmate);
 			pl.sendMessage(PartyCommandFrontend.IKICKED.replace("%n%", mate.getDisplayName()));
-			mate.sendMessage(PartyCommandFrontend.ITARGETKICKED.replace("%n%", p.getDisplayName()));
+			mate.sendMessage(PartyCommandFrontend.ITARGETKICKED.replace("%n%", p.getName()));
 		} catch (GroupException e) {
 			throw new RuntimeException(e); // toss to CommandFrontend
 		}

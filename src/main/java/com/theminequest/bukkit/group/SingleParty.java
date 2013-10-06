@@ -25,7 +25,7 @@ import com.theminequest.api.group.Group;
 import com.theminequest.api.group.GroupException;
 import com.theminequest.api.group.GroupException.GroupReason;
 import com.theminequest.api.platform.MQLocation;
-import com.theminequest.api.platform.MQPlayer;
+import com.theminequest.api.platform.entity.MQPlayer;
 import com.theminequest.api.quest.Quest;
 import com.theminequest.api.quest.QuestDetails;
 import com.theminequest.api.statistic.QuestStatisticUtils;
