@@ -3,8 +3,8 @@ package com.theminequest.bukkit.platform.entity;
 import java.net.InetSocketAddress;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 
 import com.theminequest.api.Managers;
 import com.theminequest.api.platform.MQInventory;
@@ -15,107 +15,107 @@ import com.theminequest.bukkit.platform.BukkitInventory;
 public class BukkitPlayer implements MQPlayer {
 	
 	private int properties;
-	private Player player;
+	private String player;
 	
-	public BukkitPlayer(Player player) {
+	public BukkitPlayer(String player) {
 		this.player = player;
 		this.properties = 0x00000000;
 	}
 	
 	@Override
 	public void chat(String message) {
-		player.chat(message);
+		Bukkit.getPlayerExact(player).chat(message);
 	}
 	
 	@Override
 	public String getCustomName() {
-		return player.getDisplayName();
+		return Bukkit.getPlayerExact(player).getDisplayName();
 	}
 	
 	@Override
 	public String getName() {
-		return player.getName();
+		return Bukkit.getPlayerExact(player).getName();
 	}
 	
 	@Override
 	public void kick(String message) {
-		player.kickPlayer(message);
+		Bukkit.getPlayerExact(player).kickPlayer(message);
 	}
 	
 	@Override
 	public boolean isOnline() {
-		return player.isOnline();
+		return Bukkit.getPlayerExact(player).isOnline();
 	}
 	
 	@Override
 	public InetSocketAddress getAddress() {
-		return player.getAddress();
+		return Bukkit.getPlayerExact(player).getAddress();
 	}
 	
 	@Override
 	public void sendMessage(String... message) {
-		player.sendMessage(message);
+		Bukkit.getPlayerExact(player).sendMessage(message);
 	}
 	
 	@Override
 	public void setCustomName(String name) {
-		player.setDisplayName(name);
+		Bukkit.getPlayerExact(player).setDisplayName(name);
 	}
 	
 	@Override
 	public MQLocation getLocation() {
-		return Managers.getPlatform().toLocation(player.getLocation());
+		return Managers.getPlatform().toLocation(Bukkit.getPlayerExact(player).getLocation());
 	}
 	
 	@Override
 	public void teleport(MQLocation location) {
 		Location loc = Managers.getPlatform().fromLocation(location);
-		player.teleport(loc);
+		Bukkit.getPlayerExact(player).teleport(loc);
 	}
 	
 	@Override
 	public MQInventory getInventory() {
-		return new BukkitInventory(player.getInventory());
+		return new BukkitInventory(Bukkit.getPlayerExact(player).getInventory());
 	}
 	
 	@Override
 	public double getMaxHealth() {
-		return player.getMaxHealth();
+		return Bukkit.getPlayerExact(player).getMaxHealth();
 	}
 	
 	@Override
 	public void setHealth(double health) {
-		player.setHealth(health);
+		Bukkit.getPlayerExact(player).setHealth(health);
 	}
 	
 	@Override
 	public double getHealth() {
-		return player.getHealth();
+		return Bukkit.getPlayerExact(player).getHealth();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		return player.getName().equals(((BukkitPlayer)obj).player.getName());
+		return Bukkit.getPlayerExact(player).getName().equals(((BukkitPlayer)obj).getName());
 	}
 
 	@Override
 	public int hashCode() {
-		return player.hashCode();
+		return Bukkit.getPlayerExact(player).hashCode();
 	}
 
 	@Override
 	public void remove() {
-		player.remove();
+		Bukkit.getPlayerExact(player).remove();
 	}
 
 	@Override
 	public long getEntityId() {
-		return player.getEntityId();
+		return Bukkit.getPlayerExact(player).getEntityId();
 	}
 
 	@Override
 	public UUID getUUID() {
-		return player.getUniqueId();
+		return Bukkit.getPlayerExact(player).getUniqueId();
 	}
 
 	@Override

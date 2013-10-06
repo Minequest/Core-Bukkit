@@ -503,7 +503,7 @@ public class BukkitPlatform extends JavaPlugin implements Platform {
 
 	@Override
 	public MQPlayer toPlayer(Object platformPlayer) {
-		return new BukkitPlayer((Player) platformPlayer);
+		return new BukkitPlayer(((Player) platformPlayer).getName());
 	}
 	
 	@Override
@@ -511,14 +511,14 @@ public class BukkitPlatform extends JavaPlugin implements Platform {
 		Player p = Bukkit.getPlayerExact(name);
 		if (p == null)
 			return null;
-		return new BukkitPlayer(p);
+		return new BukkitPlayer(name);
 	}
 	
 	@Override
 	public Set<MQPlayer> getPlayers() {
 		HashSet<MQPlayer> set = new HashSet<MQPlayer>();
 		for (Player p : Bukkit.getOnlinePlayers())
-			set.add(new BukkitPlayer(p));
+			set.add(new BukkitPlayer(p.getName()));
 		
 		return set;
 	}
