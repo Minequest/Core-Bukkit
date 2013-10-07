@@ -84,7 +84,7 @@ import com.theminequest.bukkit.statistic.Statistics;
 import com.theminequest.bukkit.util.TimeUtils;
 import com.theminequest.common.Common;
 import com.theminequest.common.quest.requirement.CommonRequirementManager;
-import com.theminequest.common.quest.target.CommonTargetManager;
+import com.theminequest.common.quest.targeted.CommonTargetManager;
 import com.theminequest.common.quest.v1.V1EventManager;
 import com.theminequest.common.util.ExceptionHandler;
 
