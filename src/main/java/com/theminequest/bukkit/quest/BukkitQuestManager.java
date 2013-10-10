@@ -130,6 +130,12 @@ public class BukkitQuestManager implements Listener, QuestManager {
 	private synchronized void loadQuest(File f) {
 		try {
 			String filename = f.getName();
+			
+			if (filename.endsWith("~")) {
+				Managers.logf(Level.WARNING, "Ignoring %s.", filename);
+				return;
+			}
+			
 			QuestHandler<?> handle = Managers.getQuestHandlerManager().getQuestHandler(filename.substring(filename.lastIndexOf(".") + 1));
 			
 			if (handle == null) {
