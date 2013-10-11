@@ -140,6 +140,8 @@ public class BukkitPlatform extends JavaPlugin implements Platform {
 		Managers.setGroupManager(null);
 		Managers.setQuestHandlerManager(null);
 		Managers.setRequirementManager(null);
+		Managers.setTargetManager(null);
+		Managers.setStatisticManager(null);
 		
 		if (Common.getCommon() != null)
 			Common.getCommon().stopCommon();
