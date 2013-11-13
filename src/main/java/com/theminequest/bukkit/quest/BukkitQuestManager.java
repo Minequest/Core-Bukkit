@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -258,6 +259,10 @@ public class BukkitQuestManager implements Listener, QuestManager {
 						QuestStatisticUtils.failQuest(p.getName(), questname);
 				} catch (QSException ignored) {
 				}
+			}
+			if (q.isFinished() == CompleteStatus.ERROR) {
+				// report to ops
+				Managers.logf(Level.SEVERE, "[MQ_ERROR] ERROR result wih quest %s/%s.", q.getQuestOwner(), q.getDetails().getName());
 			}
 		}
 	}
