@@ -25,6 +25,7 @@
 	</profiles>
 
 	<properties>
+		<shaded.prefix>com.theminequest.shaded</shaded.prefix>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -93,7 +94,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>1.5</version>
+				<version>1.6</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -101,6 +102,7 @@
 							<goal>shade</goal>
 						</goals>
 						<configuration>
+							<minimizeJar>true</minimizeJar>
 							<artifactSet>
 								<excludes>
 									<exclude>org.bukkit:*</exclude>
@@ -108,30 +110,38 @@
 									<exclude>org.xerial:sqlite-jdbc</exclude>
 								</excludes>
 							</artifactSet>
+							<filters>
+								<filter>
+									<artifact>com.h2database:h2</artifact>
+									<includes>
+										<include>**</include>
+									</includes>
+								</filter>
+							</filters>
 							<relocations>
 								<relocation>
 									<pattern>com.google</pattern>
-									<shadedPattern>shaded.com.google</shadedPattern>
+									<shadedPattern>${shaded.prefix}.com.google</shadedPattern>
 								</relocation>
 								<relocation>
 									<pattern>com.alta189</pattern>
-									<shadedPattern>shaded.com.alta189</shadedPattern>
+									<shadedPattern>${shaded.prefix}.com.alta189</shadedPattern>
 								</relocation>
 								<relocation>
 									<pattern>org.apache</pattern>
-									<shadedPattern>shaded.org.apache</shadedPattern>
+									<shadedPattern>${shaded.prefix}.org.apache</shadedPattern>
 								</relocation>
 								<relocation>
 									<pattern>org.h2</pattern>
-									<shadedPattern>shaded.org.h2</shadedPattern>
+									<shadedPattern>${shaded.prefix}.org.h2</shadedPattern>
 								</relocation>
 								<relocation>
 									<pattern>org.mcstats</pattern>
-									<shadedPattern>shaded.org.mcstats</shadedPattern>
+									<shadedPattern>${shaded.prefix}.org.mcstats</shadedPattern>
 								</relocation>
 								<relocation>
 									<pattern>org.mozilla</pattern>
-									<shadedPattern>shaded.org.mozilla</shadedPattern>
+									<shadedPattern>${shaded.prefix}.org.mozilla</shadedPattern>
 								</relocation>
 							</relocations>
 						</configuration>
