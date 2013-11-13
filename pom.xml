@@ -117,6 +117,18 @@
 										<include>**</include>
 									</includes>
 								</filter>
+								<filter>
+									<artifact>org.mozilla:rhino</artifact>
+									<includes>
+										<include>**</include>
+									</includes>
+								</filter>
+								<filter>
+									<artifact>com.theminequest:*</artifact>
+									<includes>
+										<include>**</include>
+									</includes>
+								</filter>
 							</filters>
 							<relocations>
 								<relocation>
