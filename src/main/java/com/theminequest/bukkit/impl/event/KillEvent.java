@@ -27,7 +27,16 @@ import com.theminequest.api.platform.entity.MQPlayer;
 import com.theminequest.api.quest.event.QuestEvent;
 import com.theminequest.api.quest.event.UserQuestEvent;
 import com.theminequest.bukkit.util.MobUtils;
+import com.theminequest.doc.DocArgType;
+import com.theminequest.doc.V1Documentation;
 
+@V1Documentation(
+		type = "Event",
+		ident = "KillEvent",
+		description = "Request party members to kill entities.",
+		arguments = { "Next Task", "Entities ENTITY1,ENTITY2", "Amounts AMT1,AMT2" },
+		typeArguments = { DocArgType.INT, DocArgType.STRING, DocArgType.STRING }
+		)
 public class KillEvent extends QuestEvent implements UserQuestEvent, Listener {
 	
 	private Map<EntityType, Integer> killMap;

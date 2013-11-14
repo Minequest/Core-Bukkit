@@ -29,7 +29,16 @@ import com.theminequest.api.group.Group;
 import com.theminequest.api.platform.entity.MQPlayer;
 import com.theminequest.api.quest.event.QuestEvent;
 import com.theminequest.bukkit.util.ItemUtils;
+import com.theminequest.doc.DocArgType;
+import com.theminequest.doc.V1Documentation;
 
+@V1Documentation(
+		type = "Event",
+		ident = "RewardDamagedEvent",
+		description = "Reward players an item with a set durability.",
+		arguments = { "Next Task", "Item", "Durability" },
+		typeArguments = { DocArgType.INT, DocArgType.STRING, DocArgType.FLOAT }
+		)
 public class RewardDamagedEvent extends QuestEvent {
 	
 	private int taskid;

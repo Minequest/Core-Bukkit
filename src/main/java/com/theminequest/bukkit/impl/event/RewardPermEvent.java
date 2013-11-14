@@ -30,7 +30,16 @@ import com.theminequest.api.group.Group;
 import com.theminequest.api.platform.entity.MQPlayer;
 import com.theminequest.api.quest.event.QuestEvent;
 import com.theminequest.bukkit.BukkitPlatform;
+import com.theminequest.doc.DocArgType;
+import com.theminequest.doc.V1Documentation;
 
+@V1Documentation(
+		type = "Event",
+		ident = "RewardPermEvent",
+		description = "Reward players with a permission.",
+		arguments = { "Next Task", "Permissions" },
+		typeArguments = { DocArgType.INT, DocArgType.STRARRAY }
+		)
 public class RewardPermEvent extends QuestEvent {
 	
 	private int taskid;

@@ -37,7 +37,16 @@ import com.theminequest.api.quest.event.QuestEvent;
 import com.theminequest.api.quest.event.UserQuestEvent;
 import com.theminequest.bukkit.util.InventoryUtils;
 import com.theminequest.bukkit.util.ItemUtils;
+import com.theminequest.doc.DocArgType;
+import com.theminequest.doc.V1Documentation;
 
+@V1Documentation(
+		type = "Event",
+		ident = "CollectEvent",
+		description = "Request quest owner to collect items.",
+		arguments = { "Task to Activate on completion", "ITEM1,ITEM2,etc", "AMT1,AMT2,etc" },
+		typeArguments = { DocArgType.INT, DocArgType.STRING, DocArgType.STRING }
+		)
 public class CollectEvent extends QuestEvent implements UserQuestEvent {
 	
 	private int taskid;

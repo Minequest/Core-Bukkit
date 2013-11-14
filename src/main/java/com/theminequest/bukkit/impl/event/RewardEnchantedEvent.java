@@ -30,7 +30,16 @@ import com.theminequest.api.group.Group;
 import com.theminequest.api.platform.entity.MQPlayer;
 import com.theminequest.api.quest.event.QuestEvent;
 import com.theminequest.bukkit.util.ItemUtils;
+import com.theminequest.doc.DocArgType;
+import com.theminequest.doc.V1Documentation;
 
+@V1Documentation(
+		type = "Event",
+		ident = "RewardEnchantedEvent",
+		description = "Reward players with an enchanted item.",
+		arguments = { "Next Task", "Item", "Enchanted Type #", "Enchanted Level", "Durability" },
+		typeArguments = { DocArgType.INT, DocArgType.INT, DocArgType.INT, DocArgType.FLOAT }
+		)
 public class RewardEnchantedEvent extends QuestEvent {
 	
 	private int taskid;

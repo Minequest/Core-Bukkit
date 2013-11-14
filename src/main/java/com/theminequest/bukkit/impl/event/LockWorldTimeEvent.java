@@ -25,7 +25,16 @@ import com.theminequest.api.CompleteStatus;
 import com.theminequest.api.quest.QuestDetails;
 import com.theminequest.api.quest.event.QuestEvent;
 import com.theminequest.bukkit.util.TimeUtils;
+import com.theminequest.doc.DocArgType;
+import com.theminequest.doc.V1Documentation;
 
+@V1Documentation(
+		type = "Event",
+		ident = "LockWorldTimeEvent",
+		description = "Set the health of the whole party to a certain amount.",
+		arguments = { "Delay", "Percentile of Health (0-100)" },
+		typeArguments = { DocArgType.INT, DocArgType.FLOAT }
+		)
 public class LockWorldTimeEvent extends QuestEvent {
 	
 	private long delay;

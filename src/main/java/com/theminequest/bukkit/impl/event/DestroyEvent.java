@@ -34,7 +34,16 @@ import com.theminequest.api.Managers;
 import com.theminequest.api.group.Group;
 import com.theminequest.api.quest.event.QuestEvent;
 import com.theminequest.api.quest.event.UserQuestEvent;
+import com.theminequest.doc.DocArgType;
+import com.theminequest.doc.V1Documentation;
 
+@V1Documentation(
+		type = "Event",
+		ident = "DestroyEvent",
+		description = "Request party members to destroy blocks.",
+		arguments = { "Next Task", "Allowed Block Types BLOCK1,BLOCK2,etc", "AMT" },
+		typeArguments = { DocArgType.INT, DocArgType.STRING, DocArgType.INT }
+		)
 public class DestroyEvent extends QuestEvent implements UserQuestEvent, Listener {
 	
 	public static final String DETAILS_ENTRY = "mq.events.destroyevent.%d";
