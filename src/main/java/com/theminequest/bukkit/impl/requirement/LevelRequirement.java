@@ -6,7 +6,16 @@ import org.bukkit.entity.Player;
 import com.theminequest.api.platform.entity.MQPlayer;
 import com.theminequest.api.quest.QuestDetails;
 import com.theminequest.api.requirement.QuestRequirement;
+import com.theminequest.doc.DocArgType;
+import com.theminequest.doc.V1Documentation;
 
+@V1Documentation(
+		type = "Requirement",
+		ident = "LevelRequirement",
+		description = "Pass if players have level requirements.",
+		arguments = { "Level", "<, <=, >, >=, == playerLevel?" },
+		typeArguments = { DocArgType.INT, DocArgType.STRING }
+		)
 public class LevelRequirement extends QuestRequirement {
 	
 	/**

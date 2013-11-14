@@ -5,7 +5,15 @@ import java.util.List;
 import com.theminequest.api.quest.QuestDetails;
 import com.theminequest.bukkit.BukkitPlatform;
 import com.theminequest.common.quest.v1.V1Parser;
+import com.theminequest.doc.DocArgType;
+import com.theminequest.doc.V1Documentation;
 
+@V1Documentation(
+		type = "World",
+		description = "Define the world for the quest. This is NOT instanced.",
+		arguments = { "World", "Type (normal|nether|end)", "Mod (flat|large)" },
+		typeArguments = { DocArgType.STRING, DocArgType.STRING, DocArgType.STRING }
+		)
 public class WorldHandler implements V1Parser {
 	
 	@Override
