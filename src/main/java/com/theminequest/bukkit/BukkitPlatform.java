@@ -53,6 +53,7 @@ import com.theminequest.api.util.PropertiesFile;
 import com.theminequest.bukkit.frontend.cmd.MineQuestCommandFrontend;
 import com.theminequest.bukkit.frontend.cmd.PartyCommandFrontend;
 import com.theminequest.bukkit.frontend.cmd.QuestCommandFrontend;
+import com.theminequest.bukkit.frontend.cmd.TriggerCommandFrontend;
 import com.theminequest.bukkit.frontend.sign.QuestSign;
 import com.theminequest.bukkit.group.BukkitGroupManager;
 import com.theminequest.bukkit.impl.event.CollectEvent;
@@ -66,6 +67,7 @@ import com.theminequest.bukkit.impl.event.RewardMoneyEvent;
 import com.theminequest.bukkit.impl.event.RewardNameLoreEnchantedEvent;
 import com.theminequest.bukkit.impl.event.RewardNameLoreEvent;
 import com.theminequest.bukkit.impl.event.RewardPermEvent;
+import com.theminequest.bukkit.impl.event.TriggerEvent;
 import com.theminequest.bukkit.impl.requirement.ItemInHandRequirement;
 import com.theminequest.bukkit.impl.requirement.LevelRequirement;
 import com.theminequest.bukkit.impl.requirement.MoneyRequirement;
@@ -245,6 +247,7 @@ public class BukkitPlatform extends JavaPlugin implements Platform {
 		v1eventmgr.addEvent("RewardNameLoreEvent", RewardNameLoreEvent.class);
 		v1eventmgr.addEvent("RewardNameLoreEnchantedEvent", RewardNameLoreEnchantedEvent.class);
 		v1eventmgr.addEvent("RewardPermEvent", RewardPermEvent.class);
+		v1eventmgr.addEvent("TriggerEvent", TriggerEvent.class);
 		
 		// leftovers: add in bukkit specific requirements
 		requireManager.register("ItemInHandRequirement", ItemInHandRequirement.class);
@@ -269,6 +272,7 @@ public class BukkitPlatform extends JavaPlugin implements Platform {
 		getCommand("minequest").setExecutor(fe);
 		getCommand("quest").setExecutor(new QuestCommandFrontend());
 		getCommand("party").setExecutor(new PartyCommandFrontend());
+		getCommand("mqtrigger").setExecutor(new TriggerCommandFrontend());
 		
 		// leftovers: queue quest loading
 		Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {

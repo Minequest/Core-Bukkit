@@ -24,6 +24,8 @@ commands:
   party:
     description: View Party commands.
     aliases: [mqparty,questparty]
+  mqtrigger:
+    description: Trigger a TriggerEvent
     
 permissions:
   minequest.*:
