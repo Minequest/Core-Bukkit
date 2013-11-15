@@ -1,4 +1,4 @@
-package com.theminequest.bukkit.quest.parser;
+package com.theminequest.bukkit.impl.v1parser;
 
 import java.util.List;
 

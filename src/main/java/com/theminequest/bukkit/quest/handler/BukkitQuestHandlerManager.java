@@ -6,8 +6,8 @@ import java.util.Set;
 
 import com.theminequest.api.quest.handler.QuestHandler;
 import com.theminequest.api.quest.handler.QuestHandlerManager;
-import com.theminequest.bukkit.quest.parser.InstancedHandler;
-import com.theminequest.bukkit.quest.parser.WorldHandler;
+import com.theminequest.bukkit.impl.v1parser.InstancedHandler;
+import com.theminequest.bukkit.impl.v1parser.WorldHandler;
 import com.theminequest.common.quest.js.JsHandler;
 import com.theminequest.common.quest.v1.V1Handler;
 
