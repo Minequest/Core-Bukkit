@@ -63,6 +63,8 @@ import com.theminequest.bukkit.impl.event.NRCollectEvent;
 import com.theminequest.bukkit.impl.event.RewardDamagedEvent;
 import com.theminequest.bukkit.impl.event.RewardEnchantedEvent;
 import com.theminequest.bukkit.impl.event.RewardMoneyEvent;
+import com.theminequest.bukkit.impl.event.RewardNameLoreEnchantedEvent;
+import com.theminequest.bukkit.impl.event.RewardNameLoreEvent;
 import com.theminequest.bukkit.impl.event.RewardPermEvent;
 import com.theminequest.bukkit.impl.requirement.ItemInHandRequirement;
 import com.theminequest.bukkit.impl.requirement.LevelRequirement;
@@ -240,6 +242,8 @@ public class BukkitPlatform extends JavaPlugin implements Platform {
 		v1eventmgr.addEvent("RewardDamagedEvent", RewardDamagedEvent.class);
 		v1eventmgr.addEvent("RewardEnchantedEvent", RewardEnchantedEvent.class);
 		v1eventmgr.addEvent("RewardMoneyEvent", RewardMoneyEvent.class);
+		v1eventmgr.addEvent("RewardNameLoreEvent", RewardNameLoreEvent.class);
+		v1eventmgr.addEvent("RewardNameLoreEnchantedEvent", RewardNameLoreEnchantedEvent.class);
 		v1eventmgr.addEvent("RewardPermEvent", RewardPermEvent.class);
 		
 		// leftovers: add in bukkit specific requirements

@@ -82,7 +82,7 @@ public class RewardEnchantedEvent extends QuestEvent {
 			
 			ItemStack itemStack = new ItemStack(item);
 			itemStack.setDurability(itemDurability);
-			itemStack.addEnchantment(enchantment, enchantLevel);
+			itemStack.addUnsafeEnchantment(enchantment, enchantLevel);
 			
 			bPlayer.getInventory().addItem(itemStack);
 		}
