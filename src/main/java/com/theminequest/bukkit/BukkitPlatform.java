@@ -187,7 +187,7 @@ public class BukkitPlatform extends JavaPlugin implements Platform {
 			Managers.setQuestStatisticManager(s);
 		} catch (ConnectionException e) {
 			Managers.logf(Level.SEVERE, "[Statistic] Can't start statistic manager: %s", e);
-			setEnabled(false);
+			Bukkit.getPluginManager().disablePlugin(this);
 			return;
 		}
 		

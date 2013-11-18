@@ -52,6 +52,8 @@ public class Statistics implements QuestStatisticManager {
 			backend = DatabaseFactory.createNewDatabase(s);
 		} else
 			backend = DatabaseFactory.createNewDatabase(new H2Configuration().setDatabase(Managers.getPlatform().getResourceDirectory().getAbsolutePath() + File.separator + "minequest_h2"));
+		
+		backend.setCheckTableOnRegistration(true);
 	}
 	
 	@Override
