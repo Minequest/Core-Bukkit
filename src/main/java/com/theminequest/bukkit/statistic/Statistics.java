@@ -2,6 +2,7 @@ package com.theminequest.bukkit.statistic;
 
 import java.io.File;
 import java.util.List;
+import java.util.logging.Level;
 
 import com.alta189.simplesave.Database;
 import com.alta189.simplesave.DatabaseFactory;
@@ -54,6 +55,17 @@ public class Statistics implements QuestStatisticManager {
 			backend = DatabaseFactory.createNewDatabase(new H2Configuration().setDatabase(Managers.getPlatform().getResourceDirectory().getAbsolutePath() + File.separator + "minequest_h2"));
 		
 		backend.setCheckTableOnRegistration(true);
+		
+		switch(databasetype) {
+		case SQlite:
+			Managers.log(Level.SEVERE, "[SQL] [URGENT] You're using SQlite - bad idea. Switch to mysql or h2. This configuration is now unsupported.");
+			break;
+		case H2:
+			Managers.log(Level.WARNING, "[SQL] [DEV] You're using H2 - this is mainly used for development purposes. Switch to MySQL for production.");
+			break;
+		default:
+			break;
+		}
 	}
 	
 	@Override
